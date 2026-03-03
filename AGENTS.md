@@ -19,6 +19,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 ## Active Technologies
 - TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9 (001-jwt-rbac-foundation)
 - PostgreSQL (via Prisma), plus JWT claim payload validation in request contex (001-jwt-rbac-foundation)
+- TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, pg 8, Pino 9 (005-crown-5)
+- PostgreSQL via Prisma for global metadata plus direct SQL execution for tenant schema DDL/migrations (005-crown-5)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9

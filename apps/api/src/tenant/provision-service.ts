@@ -1,0 +1,120 @@
+import { Client } from "pg";
+
+import { env } from "../config/env.js";
+import { prisma } from "../db/prisma.js";
+
+import { loadTenantMigrations } from "./migration-loader.js";
+import { executeTenantMigrations } from "./migrator.js";
+import { deriveTenantSchemaName, normalizeSlug, validateSlug } from "./slug.js";
+import type { ProvisionTenantInput, ProvisionTenantResult } from "./types.js";
+
+const quoteIdentifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
+
+const isUniqueConstraintError = (error: unknown): error is { code: string } =>
+  typeof error === "object" && error !== null && "code" in error && (error as { code: string }).code === "P2002";
+
+export const provisionTenant = async (input: ProvisionTenantInput): Promise<ProvisionTenantResult> => {
+  const normalizedName = input.name.trim();
+  const normalizedSlug = normalizeSlug(input.slug);
+
+  if (!normalizedName || !validateSlug(normalizedSlug)) {
+    return {
+      status: "conflict",
+      message: "invalid tenant provisioning input"
+    };
+  }
+
+  const schemaName = deriveTenantSchemaName(normalizedSlug);
+
+  let tenant = null;
+  try {
+    tenant = await prisma.tenant.create({
+      data: {
+        name: normalizedName,
+        slug: normalizedSlug,
+        schemaName,
+        status: "provisioning"
+      }
+    });
+  } catch (error) {
+    if (!isUniqueConstraintError(error)) throw error;
+
+    const existing = await prisma.tenant.findUnique({
+      where: { slug: normalizedSlug }
+    });
+
+    if (!existing || existing.schemaName !== schemaName || existing.status === "active") {
+      return {
+        status: "conflict",
+        message: "tenant slug already exists"
+      };
+    }
+
+    tenant = existing;
+  }
+
+  const client = new Client({ connectionString: env.DATABASE_URL });
+  await client.connect();
+
+  try {
+    await client.query(`CREATE SCHEMA IF NOT EXISTS ${quoteIdentifier(schemaName)}`);
+
+    const migrations = await loadTenantMigrations();
+    if (!migrations.length) {
+      return {
+        status: "failed",
+        errorCode: "migration_failed",
+        message: "No tenant migrations were found",
+        tenantId: tenant.id,
+        slug: normalizedSlug,
+        schemaName,
+        appliedVersions: []
+      };
+    }
+
+    const migrationResult = await executeTenantMigrations(
+      {
+        tenantId: tenant.id,
+        schemaName,
+        actorSub: input.actorSub,
+        migrations
+      },
+      { client }
+    );
+
+    if (migrationResult.status === "failed") {
+      await prisma.tenant.update({
+        where: { id: tenant.id },
+        data: { status: "provisioning_failed" }
+      });
+
+      return {
+        status: "failed",
+        errorCode: "migration_failed",
+        message: migrationResult.message ?? "baseline migration execution failed",
+        failedVersion: migrationResult.failedVersion,
+        tenantId: tenant.id,
+        slug: normalizedSlug,
+        schemaName,
+        appliedVersions: migrationResult.appliedVersions
+      };
+    }
+
+    const updatedTenant = await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: { status: "active" }
+    });
+
+    return {
+      status: "provisioned",
+      tenantId: updatedTenant.id,
+      slug: updatedTenant.slug,
+      schemaName: updatedTenant.schemaName,
+      appliedVersions: migrationResult.appliedVersions,
+      skippedVersions: migrationResult.skippedVersions,
+      tenant: updatedTenant
+    };
+  } finally {
+    await client.end();
+  }
+};
