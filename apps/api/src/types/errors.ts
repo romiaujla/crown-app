@@ -13,3 +13,5 @@ export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export const sendAuthError = (res: Response, status: number, errorCode: AuthErrorCode, message: string) => {
   res.status(status).json({ error_code: errorCode, message } satisfies ErrorResponse);
 };
+
+export const sendError = sendAuthError;

@@ -19,9 +19,12 @@ export const JwtClaimsSchema = z.object({
 export type JwtClaims = z.infer<typeof JwtClaimsSchema>;
 
 export const AuthErrorCodeSchema = z.enum([
+  "validation_error",
   "unauthenticated",
   "invalid_claims",
   "forbidden_role",
-  "forbidden_tenant"
+  "forbidden_tenant",
+  "conflict",
+  "migration_failed"
 ]);
 export type AuthErrorCode = z.infer<typeof AuthErrorCodeSchema>;

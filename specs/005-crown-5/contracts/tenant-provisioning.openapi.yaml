@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Crown CRM Tenant Provisioning API
+  version: 0.1.0
+  description: Contract for CROWN-5 tenant provisioning and schema bootstrap.
+servers:
+  - url: /api/v1
+paths:
+  /platform/tenants:
+    post:
+      summary: Provision a tenant and bootstrap baseline schema
+      operationId: provisionTenant
+      tags:
+        - Platform
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantProvisionRequest'
+      responses:
+        '201':
+          description: Tenant provisioned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantProvisionResponse'
+        '400':
+          description: Validation failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidSlug:
+                  value:
+                    error_code: validation_error
+                    message: slug must be lowercase kebab-case
+        '401':
+          description: Unauthenticated request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthenticated:
+                  value:
+                    error_code: unauthenticated
+                    message: Missing or invalid bearer token
+        '403':
+          description: Forbidden for non-super-admin identities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                forbiddenRole:
+                  value:
+                    error_code: forbidden_role
+                    message: Platform scope requires super_admin role
+        '409':
+          description: Tenant slug or schema already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                conflict:
+                  value:
+                    error_code: conflict
+                    message: tenant slug already exists
+        '500':
+          description: Migration execution failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                migrationFailed:
+                  value:
+                    error_code: migration_failed
+                    message: baseline migration execution failed
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    TenantProvisionRequest:
+      type: object
+      required:
+        - name
+        - slug
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+          example: Acme Corporation
+        slug:
+          type: string
+          pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+          maxLength: 48
+          example: acme
+    TenantProvisionResponse:
+      type: object
+      required:
+        - tenant_id
+        - slug
+        - schema_name
+        - applied_versions
+      properties:
+        tenant_id:
+          type: string
+          example: clx4yykto0000v2i9nlt7r3ww
+        slug:
+          type: string
+          example: acme
+        schema_name:
+          type: string
+          example: tenant_acme
+        applied_versions:
+          type: array
+          items:
+            type: string
+          example:
+            - 0001_base.001_accounts
+            - 0001_base.002_contacts
+        status:
+          type: string
+          enum:
+            - provisioned
+          example: provisioned
+    ErrorResponse:
+      type: object
+      required:
+        - error_code
+        - message
+      properties:
+        error_code:
+          type: string
+          enum:
+            - validation_error
+            - unauthenticated
+            - forbidden_role
+            - conflict
+            - migration_failed
+        message:
+          type: string
