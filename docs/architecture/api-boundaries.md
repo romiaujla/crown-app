@@ -7,5 +7,14 @@
 
 ## Contract rules
 - Platform endpoints require `super_admin`.
-- Tenant endpoints require tenant role and tenant context.
+- Tenant admin endpoints require `tenant_admin` and tenant context match.
+- Tenant user endpoints require `tenant_user` (or `tenant_admin`) and tenant context match.
 - All payloads validated with Zod.
+
+## Current contract examples
+- `POST /api/v1/auth/login`
+- `POST /api/v1/auth/refresh`
+- `POST /api/v1/auth/logout`
+- `GET /api/v1/platform/ping`
+- `GET /api/v1/tenant/admin/:tenantId`
+- `GET /api/v1/tenant/user/:tenantId`
