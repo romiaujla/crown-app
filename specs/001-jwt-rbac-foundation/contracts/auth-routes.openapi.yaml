@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Crown CRM Auth Contract
+  version: "1.0.0"
+  description: Contract baseline for auth route request/response behavior.
+servers:
+  - url: /api/v1
+paths:
+  /auth/login:
+    post:
+      summary: Issue access and refresh tokens for an authenticated principal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Tokens issued successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPairResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/refresh:
+    post:
+      summary: Exchange refresh token for a new access token and refreshed session tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "200":
+          description: Token refresh succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPairResponse"
+        "401":
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/logout:
+    post:
+      summary: Invalidate active session token material
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogoutRequest"
+      responses:
+        "204":
+          description: Logout accepted
+        "401":
+          description: Invalid token/session context
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    RefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+    LogoutRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+    TokenPairResponse:
+      type: object
+      required: [access_token, refresh_token, claims]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        claims:
+          $ref: "#/components/schemas/JwtClaims"
+    JwtClaims:
+      type: object
+      required: [sub, role, tenant_id]
+      properties:
+        sub:
+          type: string
+        role:
+          type: string
+          enum: [super_admin, tenant_admin, tenant_user]
+        tenant_id:
+          type: string
+          nullable: true
+      description: tenant_id is nullable only for super_admin principals.
+    ErrorResponse:
+      type: object
+      required: [error_code, message]
+      properties:
+        error_code:
+          type: string
+          enum: [unauthenticated, invalid_claims, forbidden_role, forbidden_tenant]
+        message:
+          type: string
