@@ -80,3 +80,8 @@ Major features require Spec Kit artifacts before implementation:
 2. `/specify`
 3. `/plan`
 4. `/tasks`
+
+Repository guidance:
+- Single canonical constitution: `docs/process/engineering-constitution.md`
+- Project-level Spec Kit installation and usage: `docs/process/spec-kit-installation.md`
+- Feature artifact/index guidance: `docs/features/README.md`
