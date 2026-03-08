@@ -26,7 +26,7 @@ As a platform operator, I can ensure only `super_admin` users perform global pla
 
 As a tenant administrator, I can manage resources only within my tenant boundary and cannot affect other tenants.
 
-**Why this priority**: Tenant isolation is required for trust and data protection in a multi-tenant CRM.
+**Why this priority**: Tenant isolation is required for trust and data protection in a multi-tenant platform.
 
 **Independent Test**: Can be fully tested by performing tenant-admin operations for both matching and non-matching `tenant_id` values.
 

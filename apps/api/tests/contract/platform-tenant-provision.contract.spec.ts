@@ -11,7 +11,7 @@ const createProvisioned = (): ProvisionTenantResult => ({
   tenantId: "tenant-id-1",
   slug: "acme",
   schemaName: "tenant_acme",
-  appliedVersions: ["0001_base.001_accounts"],
+  appliedVersions: ["0001_base.001_organizations"],
   skippedVersions: [],
   tenant: {
     id: "tenant-id-1",

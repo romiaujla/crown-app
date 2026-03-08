@@ -10,7 +10,7 @@ Define deterministic execution and tracking behavior for tenant schema bootstrap
 - `schemaName` (string, required; format `tenant_<slug>`)
 - `actorSub` (string, required; JWT `sub`)
 - `migrations[]` (ordered list of migration definitions):
-  - `version` (string, format `0001_base.001_accounts`)
+  - `version` (string, format `0001_base.001_organizations`)
   - `description` (string)
   - `sqlPath` (string)
 

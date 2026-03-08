@@ -3,16 +3,16 @@
 ## Global schema (`public`)
 - `platform_users`
 - `tenants`
-- `tenant_memberships`
+- `platform_user_tenants`
 - `tenant_schema_versions`
 - `audit_logs`
 
 ## Tenant schema (`tenant_<slug>`)
-- `accounts`
-- `contacts`
-- `deals`
-- `activities`
-- future vertical tables per tenant
+- `organizations`
+- `people`
+- `work_items`
+- `activity_records`
+- future tenant-system-specific tables per tenant
 
 ## Request routing
 1. Authenticate user and resolve `tenant_id`.

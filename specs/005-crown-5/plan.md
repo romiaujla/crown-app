@@ -5,7 +5,7 @@
 
 ## Summary
 
-Implement a platform-scoped provisioning flow for `CROWN-5` that validates tenant input, creates `tenant_<slug>` schemas, runs baseline tenant SQL migrations, and records applied schema versions in global metadata tables. The approach reuses existing auth/RBAC contracts and tenant migration strategy while adding deterministic conflict/failure semantics and idempotent-safe retry behavior.
+Implement a platform-scoped provisioning flow for `CROWN-5` that validates tenant input, creates `tenant_<slug>` schemas, runs baseline tenant SQL migrations, and records applied schema versions in global metadata tables. The approach reuses existing auth/RBAC contracts and tenant migration strategy while adding deterministic conflict/failure semantics and idempotent-safe retry behavior for the management-system tenant baseline.
 
 ## Technical Context
 
