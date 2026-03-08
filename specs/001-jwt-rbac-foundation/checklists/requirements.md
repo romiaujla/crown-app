@@ -2,7 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning  
 **Created**: 2026-03-02  
-**Feature**: [spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/001-jwt-rbac-foundation/spec.md)
+**Feature**: [spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/spec.md)
 
 ## Content Quality
 

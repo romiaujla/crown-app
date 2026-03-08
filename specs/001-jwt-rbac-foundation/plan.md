@@ -1,11 +1,11 @@
 # Implementation Plan: Global Auth and RBAC Foundation
 
-**Branch**: `001-jwt-rbac-foundation` | **Date**: 2026-03-02 | **Spec**: [/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/001-jwt-rbac-foundation/spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/001-jwt-rbac-foundation/spec.md)
+**Branch**: `001-jwt-rbac-foundation` | **Date**: 2026-03-02 | **Spec**: [/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/spec.md)
 **Input**: Feature specification from `/specs/001-jwt-rbac-foundation/spec.md`
 
 ## Summary
 
-Define an executable auth and authorization contract baseline for Crown CRM by formalizing JWT claim requirements, role policy boundaries, tenant-scope enforcement rules, and route/middleware contracts for `/api/v1/auth/*`, `/api/v1/platform/*`, and `/api/v1/tenant/*`. The implementation plan centers on shared claim validation and explicit role decision rules aligned with existing architecture docs.
+Define an executable auth and authorization contract baseline for Crown by formalizing JWT claim requirements, role policy boundaries, tenant-scope enforcement rules, and route/middleware contracts for `/api/v1/auth/*`, `/api/v1/platform/*`, and `/api/v1/tenant/*`. The implementation plan centers on shared claim validation and explicit role decision rules aligned with existing architecture docs.
 
 ## Technical Context
 

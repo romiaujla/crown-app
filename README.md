@@ -1,6 +1,6 @@
-# crown-crm
+# crown-app
 
-Multi-tenant CRM monorepo for Crown CRM MVP.
+Multi-tenant application monorepo for Crown.
 
 ## Stack
 - Monorepo: pnpm + Turborepo

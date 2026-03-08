@@ -1,7 +1,7 @@
 # Backlog Map
 
 ## Epic
-- `CROWN-1`: Crown CRM MVP Foundation
+- `CROWN-1`: Crown MVP Foundation
 
 ## Child issues
 - `CROWN-2`: Architecture and Planning Baseline
