@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS deals (
-  id TEXT PRIMARY KEY,
-  account_id TEXT,
-  title TEXT NOT NULL,
-  stage TEXT NOT NULL,
-  amount_cents BIGINT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);

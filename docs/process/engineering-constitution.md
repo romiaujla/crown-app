@@ -18,6 +18,8 @@ Applies to all contributors (human and AI) across all repository directories.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
 - Do not commit generated build artifacts unless explicitly required.
+- For persistence modeling, use singular `PascalCase` names for ORM/entity models, plural `snake_case` names for database tables, and `snake_case` for database columns.
+- Join or junction models must be named as the singular combination of the entities they connect (for example, `PlatformUserTenant`), and their database tables must use the corresponding plural `snake_case` form (for example, `platform_user_tenants`).
 
 ## Branching Standard (Mandatory)
 Branch naming maps to Jira issue type:

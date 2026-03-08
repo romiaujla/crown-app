@@ -22,13 +22,13 @@ As a super admin, I want tenant provisioning to create an isolated tenant schema
 
 ---
 
-### User Story 2 - Bootstrap Baseline CRM Tables (Priority: P1)
+### User Story 2 - Bootstrap Baseline Management-System Tables (Priority: P1)
 
-As a super admin, I want baseline tenant SQL migrations to execute during provisioning so that new tenants are immediately usable for core CRM entities.
+As a super admin, I want baseline tenant SQL migrations to execute during provisioning so that new tenants are immediately usable for core management-system entities.
 
 **Why this priority**: Provisioned tenants are not operational until baseline domain tables exist.
 
-**Independent Test**: Can be tested by provisioning a tenant and verifying required tables (`accounts`, `contacts`, `deals`, `activities`) in the tenant schema.
+**Independent Test**: Can be tested by provisioning a tenant and verifying required tables (`organizations`, `people`, `work_items`, `activity_records`) in the tenant schema.
 
 **Acceptance Scenarios**:
 

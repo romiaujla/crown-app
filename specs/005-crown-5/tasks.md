@@ -58,11 +58,11 @@
 
 ---
 
-## Phase 4: User Story 2 - Bootstrap Baseline CRM Tables (Priority: P1)
+## Phase 4: User Story 2 - Bootstrap Baseline Management-System Tables (Priority: P1)
 
 **Goal**: Execute baseline tenant SQL migrations during provisioning with deterministic failure reporting.
 
-**Independent Test**: Provisioning applies baseline migrations creating `accounts`, `contacts`, `deals`, and `activities`; simulated SQL failure returns `migration_failed` and stops further versions.
+**Independent Test**: Provisioning applies baseline migrations creating `organizations`, `people`, `work_items`, and `activity_records`; simulated SQL failure returns `migration_failed` and stops further versions.
 
 ### Tests for User Story 2
 
