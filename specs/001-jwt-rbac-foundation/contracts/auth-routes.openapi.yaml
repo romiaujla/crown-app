@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Crown CRM Auth Contract
+  title: Crown Auth Contract
   version: "1.0.0"
   description: Contract baseline for auth route request/response behavior.
 servers:

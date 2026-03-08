@@ -1,6 +1,6 @@
 # System Overview
 
-Crown CRM is a multi-tenant CRM with a control plane and tenant data planes.
+Crown is a multi-tenant platform with a control plane and tenant data planes.
 
 ## Components
 - `apps/api` exposes REST APIs for auth, platform administration, and tenant operations.

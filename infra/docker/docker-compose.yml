@@ -3,15 +3,15 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16
-    container_name: crown-crm-postgres
+    container_name: crown-app-postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: crown_crm
+      POSTGRES_DB: crown_app
     volumes:
-      - crown_pg_data:/var/lib/postgresql/data
+      - crown_app_pg_data:/var/lib/postgresql/data
 
 volumes:
-  crown_pg_data:
+  crown_app_pg_data:

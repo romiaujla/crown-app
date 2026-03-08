@@ -1,6 +1,6 @@
 # Tasks: Tenant Provisioning and Schema Bootstrap
 
-**Input**: Design documents from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/`
+**Input**: Design documents from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, data-model.md, contracts/, quickstart.md
 
 **Tests**: Included because spec and quickstart define explicit contract/integration testing outcomes.
@@ -11,10 +11,10 @@
 
 **Purpose**: Prepare feature-specific scaffolding and shared contracts for implementation.
 
-- [X] T001 Create tenant provisioning route module scaffold in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/routes/platform-tenants.ts
-- [X] T002 [P] Create tenant provisioning request/response Zod schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/contracts.ts
-- [X] T003 [P] Create tenant provisioning service type definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/types.ts
-- [X] T004 Wire platform tenant router into API app in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/app.ts
+- [X] T001 Create tenant provisioning route module scaffold in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts
+- [X] T002 [P] Create tenant provisioning request/response Zod schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/contracts.ts
+- [X] T003 [P] Create tenant provisioning service type definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts
+- [X] T004 Wire platform tenant router into API app in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/app.ts
 
 ---
 
@@ -24,12 +24,12 @@
 
 **⚠️ CRITICAL**: No user story work starts before this phase is complete.
 
-- [X] T005 Add provisioning-specific error code schema and response helper in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/types/errors.ts
-- [X] T006 [P] Add Prisma client singleton and lifecycle handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/db/prisma.ts
-- [X] T007 [P] Implement slug normalization and schema-name derivation utility in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/slug.ts
-- [X] T008 [P] Implement migration file discovery and lexical ordering helper in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migration-loader.ts
-- [X] T009 Implement baseline tenant migrator orchestration with skip-on-applied support in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migrator.ts
-- [X] T010 Implement provisioning service composition (validation, schema creation hook, migration hook) in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/provision-service.ts
+- [X] T005 Add provisioning-specific error code schema and response helper in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/types/errors.ts
+- [X] T006 [P] Add Prisma client singleton and lifecycle handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/db/prisma.ts
+- [X] T007 [P] Implement slug normalization and schema-name derivation utility in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/slug.ts
+- [X] T008 [P] Implement migration file discovery and lexical ordering helper in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migration-loader.ts
+- [X] T009 Implement baseline tenant migrator orchestration with skip-on-applied support in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migrator.ts
+- [X] T010 Implement provisioning service composition (validation, schema creation hook, migration hook) in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/provision-service.ts
 
 **Checkpoint**: Foundation ready - user stories can proceed.
 
@@ -43,16 +43,16 @@
 
 ### Tests for User Story 1
 
-- [X] T011 [P] [US1] Add provisioning endpoint contract tests for 201/400/401/403/409 outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/contract/platform-tenant-provision.contract.spec.ts
-- [X] T012 [P] [US1] Add provisioning integration test for schema creation and duplicate slug conflict in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/integration/tenant-provisioning.spec.ts
+- [X] T011 [P] [US1] Add provisioning endpoint contract tests for 201/400/401/403/409 outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-provision.contract.spec.ts
+- [X] T012 [P] [US1] Add provisioning integration test for schema creation and duplicate slug conflict in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-provisioning.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T013 [US1] Implement role-gated `POST /platform/tenants` handler in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/routes/platform-tenants.ts
-- [X] T014 [US1] Enforce request validation and slug constraints in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/contracts.ts
-- [X] T015 [US1] Implement tenant metadata create + unique conflict mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/provision-service.ts
-- [X] T016 [US1] Implement `CREATE SCHEMA IF NOT EXISTS` execution with safe identifier handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/provision-service.ts
-- [X] T017 [US1] Add structured provisioning attempt/result logging in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/provision-service.ts
+- [X] T013 [US1] Implement role-gated `POST /platform/tenants` handler in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts
+- [X] T014 [US1] Enforce request validation and slug constraints in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/contracts.ts
+- [X] T015 [US1] Implement tenant metadata create + unique conflict mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/provision-service.ts
+- [X] T016 [US1] Implement `CREATE SCHEMA IF NOT EXISTS` execution with safe identifier handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/provision-service.ts
+- [X] T017 [US1] Add structured provisioning attempt/result logging in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/provision-service.ts
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 
@@ -66,15 +66,15 @@
 
 ### Tests for User Story 2
 
-- [X] T018 [P] [US2] Add integration test validating baseline table creation in provisioned schema in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts
-- [X] T019 [P] [US2] Add integration test for mid-run migration failure stop behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts
+- [X] T018 [P] [US2] Add integration test validating baseline table creation in provisioned schema in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts
+- [X] T019 [P] [US2] Add integration test for mid-run migration failure stop behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T020 [US2] Implement per-migration SQL execution against tenant schema in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migrator.ts
-- [X] T021 [US2] Enforce stop-on-first-failure and `migration_failed` error mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migrator.ts
-- [X] T022 [US2] Integrate migration runner invocation into provisioning flow in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/provision-service.ts
-- [X] T023 [US2] Add migration file readability/ordering validation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migration-loader.ts
+- [X] T020 [US2] Implement per-migration SQL execution against tenant schema in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migrator.ts
+- [X] T021 [US2] Enforce stop-on-first-failure and `migration_failed` error mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migrator.ts
+- [X] T022 [US2] Integrate migration runner invocation into provisioning flow in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/provision-service.ts
+- [X] T023 [US2] Add migration file readability/ordering validation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migration-loader.ts
 
 **Checkpoint**: User Story 2 is independently functional and testable.
 
@@ -88,15 +88,15 @@
 
 ### Tests for User Story 3
 
-- [X] T024 [P] [US3] Add integration test for version-record persistence across full bootstrap run in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/integration/tenant-schema-versioning.spec.ts
-- [X] T025 [P] [US3] Add integration test for retry path skipping already-applied versions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/integration/tenant-schema-versioning.spec.ts
+- [X] T024 [P] [US3] Add integration test for version-record persistence across full bootstrap run in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
+- [X] T025 [P] [US3] Add integration test for retry path skipping already-applied versions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T026 [US3] Implement version insert and duplicate-skip semantics using `(tenantId, version)` uniqueness in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migrator.ts
-- [X] T027 [US3] Add provisioning response payload with `applied_versions` and status in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/routes/platform-tenants.ts
-- [X] T028 [US3] Persist `appliedBy` actor metadata from JWT `sub` into tenant schema version records in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/src/tenant/migrator.ts
-- [X] T029 [US3] Add metadata consistency assertions and helper queries for tenant/version state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/apps/api/tests/helpers/tenant-provisioning-db.ts
+- [X] T026 [US3] Implement version insert and duplicate-skip semantics using `(tenantId, version)` uniqueness in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migrator.ts
+- [X] T027 [US3] Add provisioning response payload with `applied_versions` and status in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts
+- [X] T028 [US3] Persist `appliedBy` actor metadata from JWT `sub` into tenant schema version records in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migrator.ts
+- [X] T029 [US3] Add metadata consistency assertions and helper queries for tenant/version state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/tenant-provisioning-db.ts
 
 **Checkpoint**: User Story 3 is independently functional and testable.
 
@@ -106,9 +106,9 @@
 
 **Purpose**: Align docs and run full verification across stories.
 
-- [X] T030 [P] Update tenant provisioning API contract examples and status codes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml
-- [X] T031 [P] Update migration runner invariants and retry semantics doc in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/contracts/tenant-migration-runner-contract.md
-- [X] T032 Run quickstart validation command set and record execution notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/quickstart.md
+- [X] T030 [P] Update tenant provisioning API contract examples and status codes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml
+- [X] T031 [P] Update migration runner invariants and retry semantics doc in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-migration-runner-contract.md
+- [X] T032 Run quickstart validation command set and record execution notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/quickstart.md
 
 ---
 
@@ -189,4 +189,3 @@ Task: "T029 [US3] Add metadata helper assertions in apps/api/tests/helpers/tenan
 1. One developer handles foundation orchestration (T009-T010).
 2. One developer handles route/contracts (T013-T014, T027).
 3. One developer handles migration/versioning + integration tests (T018-T026, T028-T029).
-

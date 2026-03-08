@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Crown CRM",
-  description: "Multi-tenant CRM MVP"
+  title: "Crown",
+  description: "Tenant workspaces powered by Crown"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

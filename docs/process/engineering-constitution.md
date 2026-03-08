@@ -1,7 +1,7 @@
 # Engineering Constitution
 
 ## Purpose
-This document is the canonical engineering policy for Crown CRM. It defines mandatory standards for coding, branching, commits, Jira hygiene, review, and release behavior.
+This document is the canonical engineering policy for Crown. It defines mandatory standards for coding, branching, commits, Jira hygiene, review, and release behavior.
 
 ## Scope
 Applies to all contributors (human and AI) across all repository directories.

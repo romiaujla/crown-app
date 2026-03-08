@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Crown CRM Tenant Provisioning API
+  title: Crown Tenant Provisioning API
   version: 0.1.0
   description: Contract for CROWN-5 tenant provisioning and schema bootstrap.
 servers:

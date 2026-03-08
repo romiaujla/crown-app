@@ -1,6 +1,6 @@
 # Implementation Plan: Tenant Provisioning and Schema Bootstrap
 
-**Branch**: `005-crown-5` | **Date**: 2026-03-03 | **Spec**: [/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/specs/005-crown-5/spec.md)
+**Branch**: `005-crown-5` | **Date**: 2026-03-03 | **Spec**: [/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/spec.md)
 **Input**: Feature specification from `/specs/005-crown-5/spec.md`
 
 ## Summary
