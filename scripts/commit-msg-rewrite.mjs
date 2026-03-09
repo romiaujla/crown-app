@@ -10,6 +10,7 @@ const trimmed = original.trim();
 
 if (!trimmed) process.exit(0);
 if (/^(Merge|Revert|fixup!|squash!)/i.test(trimmed)) process.exit(0);
+if (/^chore\(release\):\s+\S+/i.test(trimmed)) process.exit(0);
 if (/^[a-z][a-z-]*:\s*CROWN-\d+\s*-\s+/i.test(trimmed)) process.exit(0);
 
 let branch = "";
