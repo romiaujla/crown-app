@@ -70,7 +70,8 @@ Default local endpoints:
   - `hotfix` branch -> `hotfix` commit
 - If you squash merge to `main`, set the PR title to the same format:
   - `<type>: CROWN-<id> - <message>`
-- Trunk (`main`) releases are generated with semantic-release and Git tags.
+- Trunk (`main`) releases are generated with semantic-release, Git tags, and GitHub Releases.
+- Release automation does not commit changelog or version files back to protected `main`.
 
 ## Engineering Policy
 - Canonical policy document: `docs/process/engineering-constitution.md`
