@@ -4,11 +4,203 @@
 
 :root {
   color-scheme: light;
+  --background: #f4efe6;
+  --surface: rgba(255, 250, 242, 0.82);
+  --surface-strong: #fffaf2;
+  --surface-border: rgba(83, 53, 25, 0.12);
+  --ink: #1b1711;
+  --muted: #645647;
+  --accent: #9f4f2b;
+  --accent-soft: #f0c8a7;
+  --shadow: 0 24px 70px rgba(58, 38, 20, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(200, 134, 84, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(106, 144, 124, 0.16), transparent 26%),
+    linear-gradient(180deg, #f6f0e8 0%, #f1e8db 100%);
 }
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  background: #f7f7f5;
-  color: #111827;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  background: transparent;
+  color: var(--ink);
+}
+
+p,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 32px 20px 56px;
+}
+
+.hero,
+.section-block,
+.empty-state,
+.access-state {
+  width: min(1120px, 100%);
+  margin: 0 auto 20px;
+  border: 1px solid var(--surface-border);
+  border-radius: 28px;
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: end;
+  padding: 32px;
+}
+
+.eyebrow,
+.card-eyebrow,
+.hero-panel-label {
+  font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.hero h1,
+.access-state h1 {
+  margin-top: 10px;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 0.95;
+}
+
+.hero-copy,
+.access-state p:last-child,
+.empty-state p,
+.navigation-card p,
+.overview-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.hero-copy {
+  max-width: 60ch;
+  margin-top: 16px;
+}
+
+.hero-panel {
+  padding: 20px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 244, 229, 0.96), rgba(252, 233, 210, 0.92));
+  border: 1px solid rgba(159, 79, 43, 0.16);
+}
+
+.hero-panel-value {
+  margin-top: 8px;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.hero-panel-note {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.section-block,
+.empty-state,
+.access-state {
+  padding: 28px;
+}
+
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.section-heading h2,
+.empty-state h2 {
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+}
+
+.navigation-grid,
+.overview-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.navigation-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.overview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.navigation-card,
+.overview-card {
+  min-height: 190px;
+  padding: 20px;
+  border-radius: 22px;
+  background: var(--surface-strong);
+  border: 1px solid var(--surface-border);
+}
+
+.navigation-card h3,
+.overview-card strong {
+  display: block;
+  margin: 12px 0 10px;
+  font-size: 1.45rem;
+}
+
+.overview-card strong {
+  color: var(--accent);
+}
+
+.empty-state {
+  background:
+    linear-gradient(135deg, rgba(159, 79, 43, 0.08), transparent 44%),
+    var(--surface);
+}
+
+.access-state {
+  max-width: 760px;
+  margin-top: 12vh;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .navigation-grid,
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 18px 14px 32px;
+  }
+
+  .hero,
+  .section-block,
+  .empty-state,
+  .access-state {
+    border-radius: 22px;
+    padding: 20px;
+  }
 }

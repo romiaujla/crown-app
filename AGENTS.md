@@ -23,6 +23,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - PostgreSQL via Prisma for global metadata plus direct SQL execution for tenant schema DDL/migrations (005-crown-5)
 - TypeScript 5.x on Node.js 20, plus SQL migration assets and Markdown architecture/spec artifacts + Express 4, Zod 3, Prisma 5, pg 8, Pino 9 (006-domain-skeleton-update)
 - PostgreSQL via Prisma for control-plane metadata plus versioned SQL files for tenant schema artifacts (006-domain-skeleton-update)
+- TypeScript 5.x on Node.js 20 + Next.js 14 App Router, React 18, TypeScript, Tailwind CSS, existing Crown auth/RBAC contracts (feat/CROWN-7-platform-super-admin)
+- N/A for this shell feature directly; reads will eventually depend on existing platform APIs and PostgreSQL-backed platform data (feat/CROWN-7-platform-super-admin)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9

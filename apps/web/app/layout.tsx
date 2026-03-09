@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Crown",
-  description: "Tenant workspaces powered by Crown"
+  title: "Crown Control Plane",
+  description: "Crown platform control plane for tenant management systems"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
