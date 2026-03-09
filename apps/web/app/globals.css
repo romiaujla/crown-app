@@ -13,6 +13,7 @@
   --accent: #9f4f2b;
   --accent-soft: #f0c8a7;
   --shadow: 0 24px 70px rgba(58, 38, 20, 0.08);
+  --tenant-accent: #1d6b63;
 }
 
 * {
@@ -103,6 +104,30 @@ h3 {
   border-radius: 22px;
   background: linear-gradient(180deg, rgba(255, 244, 229, 0.96), rgba(252, 233, 210, 0.92));
   border: 1px solid rgba(159, 79, 43, 0.16);
+}
+
+.tenant-shell .hero,
+.tenant-shell .section-block,
+.tenant-shell .empty-state {
+  background: rgba(246, 252, 250, 0.86);
+}
+
+.tenant-shell .eyebrow,
+.tenant-shell .card-eyebrow,
+.tenant-shell .hero-panel-label,
+.tenant-shell .overview-card strong {
+  color: var(--tenant-accent);
+}
+
+.tenant-panel {
+  background: linear-gradient(180deg, rgba(232, 248, 244, 0.96), rgba(210, 240, 233, 0.92));
+  border-color: rgba(29, 107, 99, 0.18);
+}
+
+.tenant-empty-state {
+  background:
+    linear-gradient(135deg, rgba(29, 107, 99, 0.08), transparent 44%),
+    rgba(246, 252, 250, 0.9);
 }
 
 .hero-panel-value {
