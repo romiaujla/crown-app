@@ -61,7 +61,8 @@ Before implementation of major features, complete Spec Kit artifacts:
 PRs for major features must reference these artifacts.
 
 ## Pull Request Standard
-- PR title includes Jira key.
+- When squash merge is used, the PR title must match the commit format exactly: `<type>: CROWN-<id> - <message>`.
+- PR title format is release-significant because GitHub squash merge uses the PR title as the commit subject on `main`.
 - PR description includes summary, Jira linkage, and validation notes.
 - Required checks must pass before merge.
 - Keep PR scope aligned with Jira scope; split when scope drifts.

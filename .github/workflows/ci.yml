@@ -6,6 +6,16 @@ on:
     branches: [main]
 
 jobs:
+  pr_title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate PR title
+        run: node scripts/validate-pr-title.mjs "${{ github.event.pull_request.title }}"
+
   quality:
     runs-on: ubuntu-latest
     steps:
