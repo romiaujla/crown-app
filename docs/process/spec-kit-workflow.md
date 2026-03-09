@@ -21,7 +21,8 @@ For major features, complete these artifacts before implementation:
 - PR description must reference corresponding spec/plan/tasks artifacts.
 
 ### Required PR Checklist Gates (Major Features)
-- Jira key present in branch name and PR title.
+- Jira key present in branch name.
+- PR title matches `<type>: CROWN-<id> - <message>` so squash merge produces a release-safe commit subject on `main`.
 - Links to artifact files for `spec`, `plan`, and `tasks`.
 - `pnpm specify.audit` passes.
 - Scope statement confirms changes map to Jira issue scope.

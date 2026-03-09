@@ -13,6 +13,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "validate:pr-title": "node scripts/validate-pr-title.mjs",
     "specify.audit": "node scripts/specify-audit.mjs",
     "specify.drift": "node scripts/specify-drift.mjs",
     "prepare": "husky",
