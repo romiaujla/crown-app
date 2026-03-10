@@ -28,6 +28,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - N/A for the shell itself; future tenant workspace reads will depend on existing platform APIs and PostgreSQL-backed tenant data (feat/CROWN-8-tenant-app-shell)
 - TypeScript 5.x on Node.js 20 for the repo baseline; Markdown design artifacts for this story + Prisma 5, PostgreSQL, existing tenant SQL migration baseline, Spec Kit artifact workflow (feat/CROWN-29-tenant-domain-model)
 - PostgreSQL for control-plane models via Prisma and tenant schemas via versioned SQL migrations (feat/CROWN-29-tenant-domain-model)
+- SQL migration files for tenant schemas, TypeScript 5.x on Node.js 20 for repository tooling and integration validation + PostgreSQL, existing tenant SQL migration framework, Prisma 5 for adjacent control-plane tooling, Spec Kit artifacts from `CROWN-29` and this story (feat/CROWN-30-tenant-schema-migrations)
+- PostgreSQL with platform-wide shared tables in `core` and tenant-domain tables in `tenant_<tenant_slug>` schemas (feat/CROWN-30-tenant-schema-migrations)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9

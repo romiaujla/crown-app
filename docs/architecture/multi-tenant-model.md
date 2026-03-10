@@ -1,6 +1,6 @@
 # Multi-Tenant Model
 
-## Global schema (`public`)
+## Global schema (`core`)
 - `platform_users`
 - `tenants`
 - `platform_user_tenants`
@@ -9,9 +9,15 @@
 
 ## Tenant schema (`tenant_<slug>`)
 - `organizations`
+- `locations`
 - `people`
-- `work_items`
+- `tenant_role_definitions`
+- `tenant_role_assignments`
+- `equipment_assets`
+- `loads`
+- `load_stops`
 - `activity_records`
+- `reference_data_sets`
 - future tenant-system-specific tables per tenant
 
 ## Request routing
@@ -20,5 +26,5 @@
 3. Set DB schema context for tenant-scoped transactions.
 
 ## Migration strategy
-- Prisma migrations apply to `public` control-plane models.
-- Tenant schema migrations are versioned SQL files executed by migrator logic.
+- Prisma migrations apply to `core` control-plane models.
+- Tenant schema SQL is generated from `apps/api/prisma/tenant-schema.prisma`, inspected, and executed as versioned SQL files by migrator logic.

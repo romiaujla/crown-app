@@ -8,7 +8,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const defaultMigrationsRoot = path.resolve(dirname, "../../tenant-migrations");
 
 // Baseline tenant migration descriptions are derived from the canonical
-// management-system filenames to keep version metadata human-readable.
+// Prisma-generated management-system filenames to keep version metadata human-readable.
 const toDescription = (filename: string) => filename.replace(/^\d+_/, "").replace(/\.sql$/i, "").replace(/_/g, " ");
 
 export const loadTenantMigrations = async (migrationsRoot = defaultMigrationsRoot): Promise<TenantMigrationDefinition[]> => {
