@@ -128,8 +128,7 @@ components:
           items:
             type: string
           example:
-            - 0001_base.001_organizations
-            - 0001_base.002_people
+            - 0001_base.001_foundational_tms_schema
         status:
           type: string
           enum:

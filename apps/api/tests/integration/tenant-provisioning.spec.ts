@@ -66,11 +66,11 @@ describe("tenant provisioning integration", () => {
     });
 
     loadTenantMigrations.mockResolvedValue([
-      { version: "0001_base.001_organizations", description: "organizations", sqlPath: "a.sql", sequence: 1 }
+      { version: "0001_base.001_foundational_tms_schema", description: "foundational tms schema", sqlPath: "a.sql", sequence: 1 }
     ]);
     executeTenantMigrations.mockResolvedValue({
       status: "provisioned",
-      appliedVersions: ["0001_base.001_organizations"],
+      appliedVersions: ["0001_base.001_foundational_tms_schema"],
       skippedVersions: []
     });
   });
