@@ -21,6 +21,22 @@ Use this feature’s outputs to implement and review the runnable local Prisma s
 - Reload tenant-domain fixtures in dependency-safe order using stable business keys.
 - Keep the initial dataset small, representative, and extendable.
 
+## Canonical Seeded Records
+
+- Canonical tenant slug: `acme-local`
+- Canonical tenant schema: `tenant_acme-local`
+- Seeded platform users:
+  - `super-admin@acme-local.test`
+  - `tenant-admin@acme-local.test`
+- Stable tenant-domain lookup keys:
+  - `org-types`, `location-types`, `asset-types`, `load-modes`
+  - `ACME-SHIPPER`, `ACME-CUSTOMER`, `ACME-CARRIER`
+  - `CHI-WH1`, `DET-YARD1`, `CLE-PORT1`
+  - `DISPATCH-CHI`, `DRIVER-CLE`, `OPS-DET`
+  - `dispatcher`, `driver`
+  - `TRACTOR-100`, `TRAILER-200`
+  - `LOAD-1000`, `LOAD-1001`
+
 ## Validation Focus
 
 - successful first seed run
