@@ -30,6 +30,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - PostgreSQL for control-plane models via Prisma and tenant schemas via versioned SQL migrations (feat/CROWN-29-tenant-domain-model)
 - SQL migration files for tenant schemas, TypeScript 5.x on Node.js 20 for repository tooling and integration validation + PostgreSQL, existing tenant SQL migration framework, Prisma 5 for adjacent control-plane tooling, Spec Kit artifacts from `CROWN-29` and this story (feat/CROWN-30-tenant-schema-migrations)
 - PostgreSQL with platform-wide shared tables in `core` and tenant-domain tables in `tenant_<tenant_slug>` schemas (feat/CROWN-30-tenant-schema-migrations)
+- TypeScript 5.x on Node.js 20 for seed-entry design alignment, Prisma 5.x as the planned seed authoring/runtime entrypoin + Prisma, PostgreSQL, `CROWN-29` model handoff, `CROWN-30` migration handoff, Spec Kit artifacts for this story (feat/CROWN-31-prisma-seed-strategy)
+- PostgreSQL with shared control-plane data in `core` and tenant-domain data in `tenant_<tenant_slug>` schemas (feat/CROWN-31-prisma-seed-strategy)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9
