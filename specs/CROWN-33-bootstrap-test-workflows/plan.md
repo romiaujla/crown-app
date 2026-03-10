@@ -24,6 +24,7 @@ The implementation should stay workflow-focused. It should make the local bootst
 ## Bootstrap Workflow Outline
 
 - Consolidate local bootstrap expectations so maintainers can move from empty local database to canonical schema-plus-seed baseline through one documented flow.
+- Expose that flow through one repository-level bootstrap command rather than a loose collection of manual steps.
 - Ensure control-plane setup, canonical tenant schema bootstrap, and canonical seeded baseline preparation happen in the correct order.
 - Align repository-level setup commands and API-level seed/provision behavior so local and future automated workflows share the same baseline contract.
 - Preserve unrelated tenants and unrelated platform records during reruns while documenting the foundational multi-tenant assumptions later validation work may rely on.

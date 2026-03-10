@@ -10,6 +10,7 @@
 
 - **Purpose**: Represents the supported setup path that prepares a local environment from empty or partial state to the canonical schema-plus-seed baseline.
 - **Key attributes**:
+  - repository-level bootstrap command
   - control-plane setup step
   - canonical tenant schema bootstrap step
   - canonical seed execution step
@@ -72,6 +73,7 @@
 - **Purpose**: Represents how later e2e or container-based setup flows should consume the same canonical bootstrap contract.
 - **Key attributes**:
   - shared baseline source
+  - reuse of the repository-level bootstrap sequence
   - automation-neutral preparation guidance
   - rerun expectation
   - reuse boundary

@@ -36,6 +36,7 @@
 
 - The foundational bootstrap workflow directly prepares one canonical seeded tenant baseline.
 - Unrelated tenants may coexist locally and must remain untouched by canonical bootstrap reruns.
+- The repository-level bootstrap command should therefore be treated as a canonical-baseline refresh path, not as a command that normalizes every tenant in a local database.
 - Later tenant-scoped validation may create additional tenants or baselines, but those should layer on top of the same foundational schema and seed contract rather than replace it.
 
 ## Decision 4: Document Future Test Reuse Without Hardcoding One Automation Environment

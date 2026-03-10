@@ -87,6 +87,7 @@ The maintainer understands how the foundational bootstrap and seed workflow shou
 - `CROWN-31` defines the canonical seeded baseline, reset boundary, and deterministic lookup-key contract.
 - `CROWN-32` provides the runnable local seed workflow that this story will integrate into broader bootstrap and test-preparation expectations.
 - The initial foundational workflow may still center on one canonical seeded tenant so long as multi-tenant validation expectations are explicit for later stories.
+- The supported bootstrap rerun path refreshes only the canonical seeded tenant baseline and does not act as a general-purpose multi-tenant reset command.
 - Later e2e or container-based test automation should reuse the same canonical bootstrap and seed contract rather than define a separate seed baseline.
 
 ## Success Criteria *(mandatory)*

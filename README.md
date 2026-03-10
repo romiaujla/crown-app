@@ -20,6 +20,7 @@ Multi-tenant application monorepo for Crown.
 ## Commands
 - `pnpm install`
 - `pnpm postgres`
+- `pnpm db:bootstrap:local`
 - `pnpm db:setup`
 - `pnpm db:push`
 - `pnpm db:seed:local`
@@ -37,12 +38,10 @@ Multi-tenant application monorepo for Crown.
    - `pnpm install`
 2. Start local PostgreSQL:
    - `pnpm postgres`
-3. Initialize the database schema:
-   - `pnpm db:push`
-4. Copy `apps/api/.env.example` to `apps/api/.env.local`, then update the values you need for your local machine.
-5. Seed the canonical local tenant baseline:
-   - `pnpm db:seed:local`
-6. Start API and web in dev mode:
+3. Copy `apps/api/.env.example` to `apps/api/.env.local`, then update the values you need for your local machine.
+4. Run the canonical local bootstrap workflow:
+   - `pnpm db:bootstrap:local`
+5. Start API and web in dev mode:
    - `pnpm dev`
 
 Default local endpoints:
@@ -52,6 +51,11 @@ Default local endpoints:
 ## Database Commands
 - Start Postgres and apply schema in one step:
   - `pnpm db:setup`
+- Run the canonical local bootstrap workflow:
+  - `pnpm db:bootstrap:local`
+  - This is the supported bootstrap path for local development.
+  - It starts local PostgreSQL, prepares the control-plane schema state, then runs the canonical seeded tenant bootstrap and seed workflow.
+  - It is safe to rerun and continues to preserve unrelated tenants, unrelated platform users, and unrelated platform history outside the canonical seed boundary.
 - Apply schema to local Postgres:
   - `pnpm db:push`
 - Reset and reseed the canonical local tenant baseline:
@@ -59,6 +63,7 @@ Default local endpoints:
   - Copy `apps/api/.env.example` to `apps/api/.env.local` first and update `DATABASE_URL` or any local-only secrets before running the command.
   - This command loads `apps/api/.env.local`, bootstraps the canonical seeded tenant schema if it does not exist yet, then resets and reloads the seeded tenant-domain data.
   - Each run preserves unrelated tenants, unrelated platform users, and unrelated audit history. It resets only the canonical local seed scope for the seeded tenant and reloads the deterministic baseline records.
+  - Later automated or container-based setup should reuse this same canonical baseline contract rather than define a separate test-only seed path.
 - Create and apply a new migration during development:
   - `pnpm db:migrate -- --name <change-name>`
 - Regenerate Prisma client:

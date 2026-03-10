@@ -14,6 +14,7 @@ Use this feature’s outputs to align local setup, bootstrap, and later automate
 
 ## Implementation Guidance
 
+- Use `pnpm db:bootstrap:local` as the supported root bootstrap command for local development.
 - Use `pnpm db:push` to prepare control-plane schema state before canonical bootstrap relies on it.
 - Use `pnpm db:seed:local` as the canonical schema-plus-seed baseline loader.
 - Keep local bootstrap and later automated setup aligned to the same canonical tenant slug, schema name, and deterministic fixture contract.
@@ -23,10 +24,16 @@ Use this feature’s outputs to align local setup, bootstrap, and later automate
 ## Expected Local Bootstrap Flow
 
 1. Start local Postgres.
-2. Prepare control-plane schema state.
-3. Copy `apps/api/.env.example` to `apps/api/.env.local` and set local values.
-4. Run `pnpm db:seed:local` to bootstrap the canonical tenant schema if needed and reload the canonical baseline.
+2. Copy `apps/api/.env.example` to `apps/api/.env.local` and set local values.
+3. Run `pnpm db:bootstrap:local`.
+4. Let the bootstrap workflow prepare control-plane schema state and run the canonical local seed workflow in order.
 5. Start the API and web workspaces or hand the same baseline contract to later automated setup flows.
+
+## Multi-Tenant Boundary Note
+
+- `pnpm db:bootstrap:local` refreshes the canonical seeded tenant baseline only.
+- Unrelated tenant schemas and unrelated platform records remain untouched by canonical bootstrap reruns.
+- Later validation workflows may add more tenant setup, but they should build on the same canonical bootstrap contract instead of replacing it.
 
 ## Validation Focus
 

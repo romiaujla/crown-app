@@ -7,6 +7,7 @@ Define the supported foundational workflow that prepares schema and canonical se
 ## Supported Local Workflow
 
 - Local maintainers have one documented bootstrap path that prepares control-plane schema state and the canonical seeded tenant baseline.
+- That bootstrap path is exposed through one repository-level command intended for repeatable local setup.
 - The canonical local seed command remains the supported baseline loader.
 - The workflow may be rerun from empty or partially prepared local state without widening the reset boundary.
 
