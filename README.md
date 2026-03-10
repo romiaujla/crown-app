@@ -39,7 +39,7 @@ Multi-tenant application monorepo for Crown.
    - `pnpm postgres`
 3. Initialize the database schema:
    - `pnpm db:push`
-4. Create `apps/api/.env.local` with your local `DATABASE_URL` and any local-only API env overrides.
+4. Copy `apps/api/.env.example` to `apps/api/.env.local`, then update the values you need for your local machine.
 5. Seed the canonical local tenant baseline:
    - `pnpm db:seed:local`
 6. Start API and web in dev mode:
@@ -56,6 +56,7 @@ Default local endpoints:
   - `pnpm db:push`
 - Reset and reseed the canonical local tenant baseline:
   - `pnpm db:seed:local`
+  - Copy `apps/api/.env.example` to `apps/api/.env.local` first and update `DATABASE_URL` or any local-only secrets before running the command.
   - This command loads `apps/api/.env.local`, bootstraps the canonical seeded tenant schema if it does not exist yet, then resets and reloads the seeded tenant-domain data.
   - Each run preserves unrelated tenants, unrelated platform users, and unrelated audit history. It resets only the canonical local seed scope for the seeded tenant and reloads the deterministic baseline records.
 - Create and apply a new migration during development:
