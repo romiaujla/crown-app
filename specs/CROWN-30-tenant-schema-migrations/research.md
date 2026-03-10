@@ -55,3 +55,11 @@
 - **Alternatives considered**:
   - Boolean active flags: rejected because load and assignment records already require more than two states.
   - Freeform string status columns: rejected because they hide allowed values and invite inconsistent writes.
+
+## Decision 8: Keep Tenant Classifications Flexible While Enumerating Workflow Fields
+
+- **Decision**: `organization_type`, `location_type`, and `asset_type` remain flexible tenant-defined classifications for now, while `mode`, `stop_type`, and `activity_type` are modeled as explicit enums.
+- **Rationale**: Tenant classifications are more likely to vary by customer and evolve into reference-data-backed catalogs, while workflow fields need tighter shared semantics for routing, progression, and future automation.
+- **Alternatives considered**:
+  - Convert all classification and workflow fields into enums immediately: rejected because it would over-constrain tenant-owned classification data.
+  - Leave all fields as strings: rejected because operational workflow fields need a bounded shared vocabulary.

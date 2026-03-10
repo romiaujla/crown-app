@@ -13,6 +13,15 @@ CREATE TYPE "LoadStopStatus" AS ENUM ('planned', 'arrived', 'completed', 'skippe
 -- CreateEnum
 CREATE TYPE "RoleAssignmentStatus" AS ENUM ('active', 'ended');
 
+-- CreateEnum
+CREATE TYPE "LoadMode" AS ENUM ('road', 'rail', 'air', 'ocean', 'intermodal');
+
+-- CreateEnum
+CREATE TYPE "LoadStopType" AS ENUM ('pickup', 'delivery', 'handoff');
+
+-- CreateEnum
+CREATE TYPE "ActivityType" AS ENUM ('note', 'status_change', 'arrival', 'departure', 'assignment', 'exception');
+
 -- CreateTable
 CREATE TABLE "organizations" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -107,7 +116,7 @@ CREATE TABLE "loads" (
     "customer_organization_id" UUID,
     "dispatcher_person_id" UUID,
     "equipment_asset_id" UUID,
-    "mode" TEXT,
+    "mode" "LoadMode",
     "status" "LoadStatus" NOT NULL DEFAULT 'planned',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -121,7 +130,7 @@ CREATE TABLE "load_stops" (
     "load_id" UUID NOT NULL,
     "location_id" UUID NOT NULL,
     "stop_sequence" INTEGER NOT NULL,
-    "stop_type" TEXT NOT NULL,
+    "stop_type" "LoadStopType" NOT NULL,
     "planned_at" TIMESTAMP(3),
     "status" "LoadStopStatus" NOT NULL DEFAULT 'planned',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -139,7 +148,7 @@ CREATE TABLE "activity_records" (
     "person_id" UUID,
     "equipment_asset_id" UUID,
     "actor_person_id" UUID,
-    "activity_type" TEXT NOT NULL,
+    "activity_type" "ActivityType" NOT NULL,
     "details" TEXT,
     "occurred_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

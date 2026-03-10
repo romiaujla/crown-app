@@ -17,6 +17,7 @@ Use this feature's outputs to align tenant migration implementation with the app
 - Generate tenant baseline SQL with `pnpm db:tenant:migration:generate`, inspect the generated SQL, and treat the generated output in `apps/api/tenant-migrations/0001_base/` as the canonical migration asset.
 - Treat UUID primary keys as the default record identity and use stable business codes for deterministic fixtures and reviewable local data.
 - Use the explicit lifecycle enums in the Prisma schema as the source of truth for allowed record states instead of introducing ad hoc status strings or boolean active flags.
+- Keep tenant classification fields flexible for now, but treat workflow fields such as load mode, stop type, and activity type as shared enums in the Prisma source of truth.
 - Use the `core` versus `tenant_<tenant_slug>` placement rules before assigning any table to shared or tenant-specific schemas.
 - Use the tenant-owned reference-table boundary when designing resettable seeds and deterministic fixture catalogs.
 - Use the migration delta summary to explain how the richer TMS baseline replaces the earlier minimal abstraction.

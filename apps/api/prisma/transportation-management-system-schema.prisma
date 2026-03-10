@@ -28,6 +28,29 @@ enum RoleAssignmentStatus {
   ended
 }
 
+enum LoadMode {
+  road
+  rail
+  air
+  ocean
+  intermodal
+}
+
+enum LoadStopType {
+  pickup
+  delivery
+  handoff
+}
+
+enum ActivityType {
+  note
+  status_change
+  arrival
+  departure
+  assignment
+  exception
+}
+
 model Organization {
   id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   organizationCode String   @unique @map("organization_code")
@@ -141,7 +164,7 @@ model Load {
   customerOrganizationId String?  @map("customer_organization_id") @db.Uuid
   dispatcherPersonId     String?  @map("dispatcher_person_id") @db.Uuid
   equipmentAssetId       String?  @map("equipment_asset_id") @db.Uuid
-  mode                   String?
+  mode                   LoadMode?
   status                 LoadStatus @default(planned)
   createdAt              DateTime @default(now()) @map("created_at")
   updatedAt              DateTime @default(now()) @map("updated_at")
@@ -161,7 +184,7 @@ model LoadStop {
   loadId       String    @map("load_id") @db.Uuid
   locationId   String    @map("location_id") @db.Uuid
   stopSequence Int       @map("stop_sequence")
-  stopType     String    @map("stop_type")
+  stopType     LoadStopType @map("stop_type")
   plannedAt    DateTime? @map("planned_at")
   status       LoadStopStatus @default(planned)
   createdAt    DateTime  @default(now()) @map("created_at")
@@ -183,7 +206,7 @@ model ActivityRecord {
   personId         String?  @map("person_id") @db.Uuid
   equipmentAssetId String?  @map("equipment_asset_id") @db.Uuid
   actorPersonId    String?  @map("actor_person_id") @db.Uuid
-  activityType     String   @map("activity_type")
+  activityType     ActivityType @map("activity_type")
   details          String?
   occurredAt       DateTime @default(now()) @map("occurred_at")
 
