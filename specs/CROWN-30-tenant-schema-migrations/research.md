@@ -47,3 +47,11 @@
 - **Alternatives considered**:
   - Numeric primary keys: rejected because they are less suitable for distributed and multi-tenant data workflows.
   - Plain string IDs without UUID defaults: rejected because they require every writer to manage ID generation manually.
+
+## Decision 7: Use Explicit Enums For Foundational Lifecycle Fields
+
+- **Decision**: Foundational lifecycle fields are modeled as explicit enums rather than generic status strings or booleans. `ActiveStatus` covers simple active/inactive records, `LoadStatus` covers the load lifecycle, `LoadStopStatus` covers stop progression, and `RoleAssignmentStatus` covers assignment lifecycle.
+- **Rationale**: Boolean flags are too narrow for operational records, and unbounded strings make it easy to drift. Explicit enums keep the allowed states reviewable in the schema source of truth and in the generated SQL.
+- **Alternatives considered**:
+  - Boolean active flags: rejected because load and assignment records already require more than two states.
+  - Freeform string status columns: rejected because they hide allowed values and invite inconsistent writes.
