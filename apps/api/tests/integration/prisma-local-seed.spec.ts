@@ -39,4 +39,23 @@ describe("prisma local seed baseline", () => {
     expect(Array.from(harness.state.organizations.keys()).sort()).toEqual(["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"]);
     expect(harness.queries).toContain('DELETE FROM "organizations"');
   });
+
+  it("bootstraps the canonical tenant schema automatically when it is missing", async () => {
+    const harness = createSeedTestHarness();
+    harness.setTenantSchemaReady(false);
+
+    const summary = await runLocalSeed({
+      prismaClient: harness.prisma,
+      client: harness.client,
+      bootstrapTenantSchema: async () => {
+        harness.setTenantSchemaReady(true);
+      }
+    });
+
+    expect(summary.tenantSlug).toBe(expectedCanonicalTenantSlug);
+    expect(harness.snapshot()).toMatchObject({
+      schemaReady: true,
+      organizationCodes: ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"]
+    });
+  });
 });

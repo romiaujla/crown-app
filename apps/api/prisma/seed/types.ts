@@ -77,6 +77,13 @@ export type SeedExecutionSummary = {
   deterministicKeys: string[];
 };
 
+export type SeedBootstrapContext = {
+  tenantId: string;
+  tenantSlug: string;
+  schemaName: string;
+  client: SeedSqlClient;
+};
+
 export class SeedExecutionError extends Error {
   readonly phase?: SeedPhaseName;
 

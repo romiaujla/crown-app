@@ -114,6 +114,7 @@ type ActivityRow = {
 };
 
 type HarnessState = {
+  schemaReady: boolean;
   tenants: Map<string, TenantRow>;
   platformUsers: Map<string, PlatformUserRow>;
   platformUserTenants: Map<string, PlatformUserTenantRow>;
@@ -130,6 +131,7 @@ type HarnessState = {
 };
 
 const createState = (): HarnessState => ({
+  schemaReady: true,
   tenants: new Map(),
   platformUsers: new Map(),
   platformUserTenants: new Map(),
@@ -146,6 +148,7 @@ const createState = (): HarnessState => ({
 });
 
 const cloneState = (state: HarnessState): HarnessState => ({
+  schemaReady: state.schemaReady,
   tenants: new Map(state.tenants),
   platformUsers: new Map(state.platformUsers),
   platformUserTenants: new Map(state.platformUserTenants),
@@ -170,6 +173,7 @@ export const createSeedTestHarness = (): {
   state: HarnessState;
   seedUnrelatedPlatformData(): void;
   seedUnrelatedTenantDomainData(): void;
+  setTenantSchemaReady(ready: boolean): void;
   snapshot(): Record<string, unknown>;
 } => {
   let state = createState();
@@ -269,9 +273,15 @@ export const createSeedTestHarness = (): {
         return { rows: [] };
       }
 
+      if (normalized.includes("SELECT TO_REGCLASS($1) AS REGCLASS")) {
+        return {
+          rows: [{ regclass: state.schemaReady ? "organizations" : null }]
+        };
+      }
+
       if (normalized.includes("SELECT TO_REGCLASS('ORGANIZATIONS') AS REGCLASS")) {
         return {
-          rows: [{ regclass: "organizations" }]
+          rows: [{ regclass: state.schemaReady ? "organizations" : null }]
         };
       }
 
@@ -518,8 +528,12 @@ export const createSeedTestHarness = (): {
         organizationType: "shipper"
       });
     },
+    setTenantSchemaReady(ready: boolean) {
+      state.schemaReady = ready;
+    },
     snapshot() {
       return {
+        schemaReady: state.schemaReady,
         tenantSlugs: Array.from(state.tenants.keys()).sort(),
         platformUserEmails: Array.from(state.platformUsers.keys()).sort(),
         organizationCodes: Array.from(state.organizations.keys()).sort(),

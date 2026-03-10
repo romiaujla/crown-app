@@ -7,6 +7,14 @@ export const setTenantSearchPath = async (client: SeedSqlClient, schemaName: str
   await client.query(`SET LOCAL search_path TO ${quoteIdentifier(schemaName)}`);
 };
 
+export const tenantSchemaHasFoundationalTables = async (client: SeedSqlClient, schemaName: string): Promise<boolean> => {
+  const result = (await client.query("SELECT to_regclass($1) AS regclass", [`${schemaName}.organizations`])) as {
+    rows: Array<{ regclass: string | null }>;
+  };
+
+  return Boolean(result.rows[0]?.regclass);
+};
+
 export const assertTenantSchemaReady = async (client: SeedSqlClient): Promise<void> => {
   const result = (await client.query("SELECT to_regclass('organizations') AS regclass")) as {
     rows: Array<{ regclass: string | null }>;

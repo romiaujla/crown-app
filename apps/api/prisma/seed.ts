@@ -3,17 +3,19 @@ import { Client } from "pg";
 import { env } from "../src/config/env.js";
 import { prisma } from "../src/db/prisma.js";
 
+import { bootstrapCanonicalTenantSchema } from "./seed/bootstrap.js";
 import { LOCAL_SEED_TENANT } from "./seed/constants.js";
 import { ensureControlPlaneBaseline } from "./seed/control-plane.js";
 import { loadCanonicalBaseline } from "./seed/load.js";
 import { createSeedExecutionSummary, formatSeedExecutionSummary } from "./seed/reporting.js";
-import { assertTenantSchemaReady, resetTenantDomainTables, setTenantSearchPath } from "./seed/reset.js";
-import { SeedExecutionError, type SeedExecutionSummary, type SeedPhaseName, type SeedPrismaClient, type SeedSqlClient } from "./seed/types.js";
+import { assertTenantSchemaReady, resetTenantDomainTables, setTenantSearchPath, tenantSchemaHasFoundationalTables } from "./seed/reset.js";
+import { SeedExecutionError, type SeedBootstrapContext, type SeedExecutionSummary, type SeedPhaseName, type SeedPrismaClient, type SeedSqlClient } from "./seed/types.js";
 
 type RunLocalSeedOptions = {
   prismaClient?: SeedPrismaClient;
   client?: SeedSqlClient;
   failAtPhase?: SeedPhaseName;
+  bootstrapTenantSchema?: (context: SeedBootstrapContext) => Promise<void>;
 };
 
 const maybeFail = (failAtPhase: SeedPhaseName | undefined, phase: SeedPhaseName): void => {
@@ -37,6 +39,7 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
         }>
     } satisfies SeedSqlClient);
   const ownsClient = !options.client;
+  const bootstrapTenantSchema = options.bootstrapTenantSchema ?? bootstrapCanonicalTenantSchema;
 
   if (ownsClient) {
     await client.connect();
@@ -48,6 +51,16 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
     });
 
     maybeFail(options.failAtPhase, "after-control-plane");
+
+    const schemaReady = await tenantSchemaHasFoundationalTables(client, controlPlane.schemaName);
+    if (!schemaReady) {
+      await bootstrapTenantSchema({
+        tenantId: controlPlane.tenantId,
+        tenantSlug: controlPlane.tenantSlug,
+        schemaName: controlPlane.schemaName,
+        client
+      });
+    }
 
     await client.query("BEGIN");
 
