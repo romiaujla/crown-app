@@ -8,9 +8,14 @@
     "start": "node dist/index.js",
     "lint": "echo 'lint placeholder for @crown/api'",
     "db:tenant:migration:generate": "node ./scripts/generate-tenant-baseline-migration.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "db:seed": "prisma db seed",
+    "db:seed:local": "node ./scripts/run-local-seed.mjs",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
