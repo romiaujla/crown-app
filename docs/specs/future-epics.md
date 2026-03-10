@@ -2,9 +2,9 @@
 
 This document drafts Jira-ready epic definitions using the mandatory Lean Jira template from the engineering constitution.
 
-Jira IDs are intentionally left as `TBD` until you create each issue in Jira.
+These epics now exist in Jira and should stay aligned here.
 
-## Epic `TBD`: Detailed Tenant DB Schema Expansion and Local Seed Baseline
+## Epic `CROWN-23`: Detailed Tenant DB Schema Expansion and Local Seed Baseline
 
 ### Problem
 Current tenant-domain schema depth is not yet sufficient for realistic role-path testing, and local environments need deterministic seeded data aligned to expanded tables.
@@ -35,7 +35,7 @@ Before `/plan` and `/tasks` for this epic, Jira must include a checklist item re
 
 If this checklist is incomplete, implementation is blocked.
 
-## Epic `TBD`: Identity and Role-Based Login Experiences
+## Epic `CROWN-24`: Identity and Role-Based Login Experiences
 
 ### Problem
 The product needs explicit role-based login and post-login routing behavior for `super_admin`, `tenant_admin`, and `tenant_user` personas.
@@ -53,7 +53,7 @@ As a Crown user with one of the supported roles, I want role-aware authenticatio
 - Session and claim validation behavior is documented for each role path.
 - Jira explicitly links this epic as dependent on completion of the schema-and-seed epic.
 
-## Epic `TBD`: Super-Admin Capability Expansion
+## Epic `CROWN-25`: Super-Admin Capability Expansion
 
 ### Problem
 The super-admin shell exists as a foundation, but deeper platform-management capabilities across schema, routes, and UI components are still undefined.
@@ -70,7 +70,7 @@ As a super admin, I want full platform-level controls so that I can configure an
 - Access boundaries remain strictly platform-scoped and separated from tenant-only operations.
 - Auditability expectations for super-admin actions are defined.
 
-## Epic `TBD`: Tenant Admin Capability Expansion
+## Epic `CROWN-26`: Tenant Admin Capability Expansion
 
 ### Problem
 Tenant admins need deeper operational controls in their tenant workspace, but current capabilities are only foundational.
@@ -87,7 +87,7 @@ As a tenant admin, I want broad tenant-management controls so that I can configu
 - Tenant admin permissions are clearly documented and enforced via RBAC.
 - Tenant admin experience remains isolated to their tenant boundary.
 
-## Epic `TBD`: Tenant User RBAC and TMS Role Controls
+## Epic `CROWN-27`: Tenant User RBAC and TMS Role Controls
 
 ### Problem
 Tenant-user roles in TMS scenarios require explicit action boundaries (for example, dispatcher vs driver), but these rules are not yet codified end to end.
@@ -104,7 +104,7 @@ As a tenant user in a specific role, I want permissions that match my operationa
 - Driver restrictions include inability to self-unassign from assigned jobs.
 - Restricted actions return clear and testable authorization outcomes.
 
-## Epic `TBD`: Tenant TMS Product Depth
+## Epic `CROWN-28`: Tenant TMS Product Depth
 
 ### Problem
 Core tenant shell and role foundations exist, but deeper TMS modules (dashboards, load management, operations) are not yet sequenced.
@@ -135,3 +135,10 @@ As a tenant operations team, I want core TMS modules so that I can manage daily 
   - Tenant user RBAC and TMS role controls
 - Milestone 5: Tenant product depth
   - Dashboards, load management, and additional TMS modules
+
+## Additional Follow-On Epics
+
+- `CROWN-36`: Data Lifecycle, Auditability, and Schema Metadata Foundation
+- `CROWN-42`: Future Tenant Schema Management GUI
+- `CROWN-43`: Management System Tenant Onboarding and Provisioning
+- `CROWN-50`: Management System Module Registry and Enablement
