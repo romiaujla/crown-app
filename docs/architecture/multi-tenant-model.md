@@ -27,4 +27,4 @@
 
 ## Migration strategy
 - Prisma migrations apply to `core` control-plane models.
-- Tenant schema SQL is generated from `apps/api/prisma/tenant-schema.prisma`, inspected, and executed as versioned SQL files by migrator logic.
+- Tenant schema SQL is generated from `apps/api/prisma/transportation-management-system-schema.prisma`, inspected, and executed as versioned SQL files by migrator logic.

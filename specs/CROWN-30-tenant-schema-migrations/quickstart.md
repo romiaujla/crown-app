@@ -13,7 +13,7 @@ Use this feature's outputs to align tenant migration implementation with the app
 
 ## Downstream Usage
 
-- Use `apps/api/prisma/tenant-schema.prisma` as the authoring source for foundational tenant tables.
+- Use `apps/api/prisma/transportation-management-system-schema.prisma` as the authoring source for foundational tenant tables.
 - Generate tenant baseline SQL with `pnpm db:tenant:migration:generate`, inspect the generated SQL, and treat the generated output in `apps/api/tenant-migrations/0001_base/` as the canonical migration asset.
 - Use the `core` versus `tenant_<tenant_slug>` placement rules before assigning any table to shared or tenant-specific schemas.
 - Use the tenant-owned reference-table boundary when designing resettable seeds and deterministic fixture catalogs.

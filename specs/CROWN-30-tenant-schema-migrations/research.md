@@ -34,7 +34,7 @@
 
 ## Decision 5: Generate Tenant Baseline SQL From Prisma Models
 
-- **Decision**: Author foundational tenant tables in `apps/api/prisma/tenant-schema.prisma`, generate the canonical baseline SQL with `pnpm db:tenant:migration:generate`, inspect the generated SQL, and only hand-edit the output if Prisma emits something unsafe or structurally incorrect.
+- **Decision**: Author foundational tenant tables in `apps/api/prisma/transportation-management-system-schema.prisma`, generate the canonical baseline SQL with `pnpm db:tenant:migration:generate`, inspect the generated SQL, and only hand-edit the output if Prisma emits something unsafe or structurally incorrect.
 - **Rationale**: This keeps the schema source of truth declarative, makes migration output reproducible, and prevents the baseline from drifting back to handwritten SQL assets.
 - **Alternatives considered**:
   - Continue authoring tenant baseline SQL manually: rejected because it is harder to review and easier to drift from the approved model.
