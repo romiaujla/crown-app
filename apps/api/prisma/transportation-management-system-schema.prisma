@@ -4,27 +4,27 @@ datasource db {
 }
 
 model Organization {
-  id               String      @id
-  organizationCode String      @unique @map("organization_code")
-  displayName      String      @map("display_name")
-  organizationType String      @map("organization_type")
-  status           String      @default("active")
-  createdAt        DateTime    @default(now()) @map("created_at")
-  updatedAt        DateTime    @default(now()) @map("updated_at")
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationCode String   @unique @map("organization_code")
+  displayName      String   @map("display_name")
+  organizationType String   @map("organization_type")
+  status           String   @default("active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
 
-  locations             Location[]
-  people                Person[]
-  equipmentAssets       EquipmentAsset[]
-  shipperLoads          Load[] @relation("ShipperOrganizationLoads")
-  customerLoads         Load[] @relation("CustomerOrganizationLoads")
-  activityRecords       ActivityRecord[]
+  locations       Location[]
+  people          Person[]
+  equipmentAssets EquipmentAsset[]
+  shipperLoads    Load[]           @relation("ShipperOrganizationLoads")
+  customerLoads   Load[]           @relation("CustomerOrganizationLoads")
+  activityRecords ActivityRecord[]
 
   @@map("organizations")
 }
 
 model Location {
-  id             String   @id
-  organizationId String   @map("organization_id")
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
   locationCode   String   @unique @map("location_code")
   displayName    String   @map("display_name")
   locationType   String   @map("location_type")
@@ -42,67 +42,67 @@ model Location {
 }
 
 model Person {
-  id                String      @id
-  organizationId    String?     @map("organization_id")
-  personCode        String      @unique @map("person_code")
-  givenName         String      @map("given_name")
-  familyName        String      @map("family_name")
-  email             String?
-  phoneNumber       String?     @map("phone_number")
-  status            String      @default("active")
-  createdAt         DateTime    @default(now()) @map("created_at")
-  updatedAt         DateTime    @default(now()) @map("updated_at")
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String?  @map("organization_id") @db.Uuid
+  personCode     String   @unique @map("person_code")
+  givenName      String   @map("given_name")
+  familyName     String   @map("family_name")
+  email          String?
+  phoneNumber    String?  @map("phone_number")
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
 
-  organization           Organization?        @relation(fields: [organizationId], references: [id])
+  organization          Organization?          @relation(fields: [organizationId], references: [id])
   tenantRoleAssignments TenantRoleAssignment[]
-  dispatchedLoads        Load[]               @relation("DispatcherPersonLoads")
-  actorActivities        ActivityRecord[]     @relation("ActorPersonActivities")
-  subjectActivities      ActivityRecord[]     @relation("SubjectPersonActivities")
+  dispatchedLoads       Load[]                 @relation("DispatcherPersonLoads")
+  actorActivities       ActivityRecord[]       @relation("ActorPersonActivities")
+  subjectActivities     ActivityRecord[]       @relation("SubjectPersonActivities")
 
   @@map("people")
 }
 
 model TenantRoleDefinition {
-  id           String               @id
-  roleCode     String               @unique @map("role_code")
-  displayName  String               @map("display_name")
-  description  String?
-  status       String               @default("active")
-  createdAt    DateTime             @default(now()) @map("created_at")
-  updatedAt    DateTime             @default(now()) @map("updated_at")
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roleCode    String   @unique @map("role_code")
+  displayName String   @map("display_name")
+  description String?
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 
-  assignments  TenantRoleAssignment[]
+  assignments TenantRoleAssignment[]
 
   @@map("tenant_role_definitions")
 }
 
 model TenantRoleAssignment {
-  id                     String               @id
-  personId               String               @map("person_id")
-  tenantRoleDefinitionId String               @map("tenant_role_definition_id")
-  assignmentStatus       String               @default("active") @map("assignment_status")
-  assignedAt             DateTime             @default(now()) @map("assigned_at")
-  endedAt                DateTime?            @map("ended_at")
-  createdAt              DateTime             @default(now()) @map("created_at")
-  updatedAt              DateTime             @default(now()) @map("updated_at")
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  personId               String    @map("person_id") @db.Uuid
+  tenantRoleDefinitionId String    @map("tenant_role_definition_id") @db.Uuid
+  assignmentStatus       String    @default("active") @map("assignment_status")
+  assignedAt             DateTime  @default(now()) @map("assigned_at")
+  endedAt                DateTime? @map("ended_at")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @default(now()) @map("updated_at")
 
-  person                 Person               @relation(fields: [personId], references: [id])
-  tenantRoleDefinition   TenantRoleDefinition @relation(fields: [tenantRoleDefinitionId], references: [id])
+  person               Person               @relation(fields: [personId], references: [id])
+  tenantRoleDefinition TenantRoleDefinition @relation(fields: [tenantRoleDefinitionId], references: [id])
 
   @@unique([personId, tenantRoleDefinitionId])
   @@map("tenant_role_assignments")
 }
 
 model EquipmentAsset {
-  id             String           @id
-  organizationId String?          @map("organization_id")
-  assetCode      String           @unique @map("asset_code")
-  assetType      String           @map("asset_type")
-  status         String           @default("active")
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @default(now()) @map("updated_at")
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizationId String?  @map("organization_id") @db.Uuid
+  assetCode      String   @unique @map("asset_code")
+  assetType      String   @map("asset_type")
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @map("updated_at")
 
-  organization    Organization?     @relation(fields: [organizationId], references: [id])
+  organization    Organization?    @relation(fields: [organizationId], references: [id])
   loads           Load[]
   activityRecords ActivityRecord[]
 
@@ -110,37 +110,37 @@ model EquipmentAsset {
 }
 
 model Load {
-  id                    String           @id
-  loadCode              String           @unique @map("load_code")
-  shipperOrganizationId String?          @map("shipper_organization_id")
-  customerOrganizationId String?         @map("customer_organization_id")
-  dispatcherPersonId    String?          @map("dispatcher_person_id")
-  equipmentAssetId      String?          @map("equipment_asset_id")
-  mode                  String?
-  status                String           @default("planned")
-  createdAt             DateTime         @default(now()) @map("created_at")
-  updatedAt             DateTime         @default(now()) @map("updated_at")
+  id                     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  loadCode               String   @unique @map("load_code")
+  shipperOrganizationId  String?  @map("shipper_organization_id") @db.Uuid
+  customerOrganizationId String?  @map("customer_organization_id") @db.Uuid
+  dispatcherPersonId     String?  @map("dispatcher_person_id") @db.Uuid
+  equipmentAssetId       String?  @map("equipment_asset_id") @db.Uuid
+  mode                   String?
+  status                 String   @default("planned")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @default(now()) @map("updated_at")
 
-  shipperOrganization   Organization?    @relation("ShipperOrganizationLoads", fields: [shipperOrganizationId], references: [id])
-  customerOrganization  Organization?    @relation("CustomerOrganizationLoads", fields: [customerOrganizationId], references: [id])
-  dispatcherPerson      Person?          @relation("DispatcherPersonLoads", fields: [dispatcherPersonId], references: [id])
-  equipmentAsset        EquipmentAsset?  @relation(fields: [equipmentAssetId], references: [id])
-  loadStops             LoadStop[]
-  activityRecords       ActivityRecord[]
+  shipperOrganization  Organization?    @relation("ShipperOrganizationLoads", fields: [shipperOrganizationId], references: [id])
+  customerOrganization Organization?    @relation("CustomerOrganizationLoads", fields: [customerOrganizationId], references: [id])
+  dispatcherPerson     Person?          @relation("DispatcherPersonLoads", fields: [dispatcherPersonId], references: [id])
+  equipmentAsset       EquipmentAsset?  @relation(fields: [equipmentAssetId], references: [id])
+  loadStops            LoadStop[]
+  activityRecords      ActivityRecord[]
 
   @@map("loads")
 }
 
 model LoadStop {
-  id           String      @id
-  loadId       String      @map("load_id")
-  locationId   String      @map("location_id")
-  stopSequence Int         @map("stop_sequence")
-  stopType     String      @map("stop_type")
-  plannedAt    DateTime?   @map("planned_at")
-  status       String      @default("planned")
-  createdAt    DateTime    @default(now()) @map("created_at")
-  updatedAt    DateTime    @default(now()) @map("updated_at")
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  loadId       String    @map("load_id") @db.Uuid
+  locationId   String    @map("location_id") @db.Uuid
+  stopSequence Int       @map("stop_sequence")
+  stopType     String    @map("stop_type")
+  plannedAt    DateTime? @map("planned_at")
+  status       String    @default("planned")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @default(now()) @map("updated_at")
 
   load            Load             @relation(fields: [loadId], references: [id])
   location        Location         @relation(fields: [locationId], references: [id])
@@ -151,36 +151,36 @@ model LoadStop {
 }
 
 model ActivityRecord {
-  id               String         @id
-  loadId           String?        @map("load_id")
-  loadStopId       String?        @map("load_stop_id")
-  organizationId   String?        @map("organization_id")
-  personId         String?        @map("person_id")
-  equipmentAssetId String?        @map("equipment_asset_id")
-  actorPersonId    String?        @map("actor_person_id")
-  activityType     String         @map("activity_type")
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  loadId           String?  @map("load_id") @db.Uuid
+  loadStopId       String?  @map("load_stop_id") @db.Uuid
+  organizationId   String?  @map("organization_id") @db.Uuid
+  personId         String?  @map("person_id") @db.Uuid
+  equipmentAssetId String?  @map("equipment_asset_id") @db.Uuid
+  actorPersonId    String?  @map("actor_person_id") @db.Uuid
+  activityType     String   @map("activity_type")
   details          String?
-  occurredAt       DateTime       @default(now()) @map("occurred_at")
+  occurredAt       DateTime @default(now()) @map("occurred_at")
 
-  load             Load?          @relation(fields: [loadId], references: [id])
-  loadStop         LoadStop?      @relation(fields: [loadStopId], references: [id])
-  organization     Organization?  @relation(fields: [organizationId], references: [id])
-  person           Person?        @relation("SubjectPersonActivities", fields: [personId], references: [id])
-  equipmentAsset   EquipmentAsset? @relation(fields: [equipmentAssetId], references: [id])
-  actorPerson      Person?        @relation("ActorPersonActivities", fields: [actorPersonId], references: [id])
+  load           Load?           @relation(fields: [loadId], references: [id])
+  loadStop       LoadStop?       @relation(fields: [loadStopId], references: [id])
+  organization   Organization?   @relation(fields: [organizationId], references: [id])
+  person         Person?         @relation("SubjectPersonActivities", fields: [personId], references: [id])
+  equipmentAsset EquipmentAsset? @relation(fields: [equipmentAssetId], references: [id])
+  actorPerson    Person?         @relation("ActorPersonActivities", fields: [actorPersonId], references: [id])
 
   @@map("activity_records")
 }
 
 model ReferenceDataSet {
-  id           String   @id
-  dataSetCode  String   @unique @map("data_set_code")
-  displayName  String   @map("display_name")
-  domainName   String   @map("domain_name")
-  valuesJson   Json     @map("values_json")
-  status       String   @default("active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  dataSetCode String   @unique @map("data_set_code")
+  displayName String   @map("display_name")
+  domainName  String   @map("domain_name")
+  valuesJson  Json     @map("values_json")
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 
   @@map("reference_data_sets")
 }

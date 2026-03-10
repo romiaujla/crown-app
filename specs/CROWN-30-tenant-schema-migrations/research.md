@@ -39,3 +39,11 @@
 - **Alternatives considered**:
   - Continue authoring tenant baseline SQL manually: rejected because it is harder to review and easier to drift from the approved model.
   - Skip SQL inspection entirely: rejected because generated output still needs human review before it becomes the canonical bootstrap baseline.
+
+## Decision 6: Use UUID Primary Keys For Foundational Tenant Tables
+
+- **Decision**: Foundational TMS tenant tables use UUID primary keys, while deterministic fixture behavior and business-facing references rely on stable code columns such as `organization_code`, `person_code`, `asset_code`, and `load_code`.
+- **Rationale**: UUIDs are a better default for multi-tenant data creation, future imports, and cross-system integration, while stable business codes remain more useful than record IDs for fixtures and local testing.
+- **Alternatives considered**:
+  - Numeric primary keys: rejected because they are less suitable for distributed and multi-tenant data workflows.
+  - Plain string IDs without UUID defaults: rejected because they require every writer to manage ID generation manually.

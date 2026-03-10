@@ -19,6 +19,7 @@ Applies to all contributors (human and AI) across all repository directories.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
 - Do not commit generated build artifacts unless explicitly required.
 - For persistence modeling, use singular `PascalCase` names for ORM/entity models, plural `snake_case` names for database tables, and `snake_case` for database columns.
+- Use UUID primary keys by default for new persistence models. Use separate stable business codes or slugs for deterministic fixtures, imports, and user-facing references rather than numeric or sequential record IDs.
 - Join or junction models must be named as the singular combination of the entities they connect (for example, `PlatformUserTenant`), and their database tables must use the corresponding plural `snake_case` form (for example, `platform_user_tenants`).
 - For database schema changes, update the Prisma schema/model definitions first, use Prisma to generate the migration SQL, inspect the generated SQL before applying it, and only hand-edit generated SQL when Prisma produces something unsafe or structurally incorrect.
 
