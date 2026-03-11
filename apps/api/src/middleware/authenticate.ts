@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+import { defaultAuthService } from "../auth/default-auth-service.js";
 import { JwtClaimsSchema } from "../auth/claims.js";
 
 import { sendAuthError } from "../types/errors.js";
@@ -30,7 +31,14 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   try {
     const claims = JwtClaimsSchema.parse(decodeTokenPayload(token));
     req.auth = claims;
-    return next();
+    return defaultAuthService.resolveCurrentUser(claims).then((currentUser) => {
+      if (!currentUser) return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
+      req.authContext = {
+        claims,
+        currentUser
+      };
+      return next();
+    });
   } catch {
     return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
   }
