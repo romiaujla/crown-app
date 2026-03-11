@@ -6,6 +6,7 @@ import pinoHttp from "pino-http";
 
 import { createAuthRouter } from "./routes/auth.js";
 import { authorizationRouter } from "./routes/authorization.js";
+import { docsRouter } from "./routes/docs.js";
 import { healthRouter } from "./routes/health.js";
 import { createPlatformTenantsRouter } from "./routes/platform-tenants.js";
 
@@ -28,6 +29,7 @@ export const buildApp = (options: BuildAppOptions = {}) => {
   app.use(express.json());
   app.use(httpLogger);
 
+  app.use("/api/v1/docs", docsRouter);
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1", authorizationRouter);
   app.use("/api/v1", platformRouter);
