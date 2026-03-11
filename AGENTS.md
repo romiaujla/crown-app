@@ -35,6 +35,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - TypeScript 5.x on Node.js 20, Prisma 5.19.x + Prisma Client, Prisma CLI seed entrypoint support, `pg`, `tsx`, Vitest, existing `apps/api` tenant migration and provisioning modules (feat/CROWN-32-prisma-local-seed-runner)
 - PostgreSQL with control-plane tables in `core` via `apps/api/prisma/schema.prisma` and tenant-domain tables in `tenant_<tenant_slug>` via `apps/api/prisma/transportation-management-system-schema.prisma` (feat/CROWN-32-prisma-local-seed-runner)
 - TypeScript 5.x on Node.js 20, Prisma 5.19.x, Markdown documentation in the repository root and `specs/` + Prisma CLI and Prisma seed entrypoint support, `pg`, `tsx`, existing `apps/api` tenant provisioning and local seed modules, README-based local setup guidance (feat/CROWN-33-bootstrap-test-workflows)
+- TypeScript 5.x on Node.js 20, Prisma 5.19.x, Markdown documentation in the repository root and `specs/` + Vitest, existing `apps/api/prisma/seed.ts` seed entrypoint, repository-level local bootstrap script, current seed/bootstrap test harnesses, README-based local setup guidance (feat/CROWN-34-seed-validation-expectations)
+- PostgreSQL with control-plane data in `core` via Prisma and tenant-domain data in `tenant_<tenant_slug>` schemas established by the existing migration and seed baseline (feat/CROWN-34-seed-validation-expectations)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9
