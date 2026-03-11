@@ -1,4 +1,4 @@
-import type { AccountStatus } from "./account-status.js";
+import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
 import { isDisabledAccountStatus } from "./account-status.js";
 import type { Role } from "./claims.js";
 
@@ -7,7 +7,7 @@ export type AuthPlatformUser = {
   email: string;
   username: string | null;
   passwordHash: string | null;
-  accountStatus: AccountStatus;
+  accountStatus: PlatformUserAccountStatus;
   role: Role;
 };
 

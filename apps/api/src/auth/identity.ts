@@ -1,4 +1,4 @@
-import type { AccountStatus } from "./account-status.js";
+import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
 import type { Role } from "./claims.js";
 
 export type AuthIdentityRecord = {
@@ -6,7 +6,7 @@ export type AuthIdentityRecord = {
   email: string;
   username: string | null;
   passwordHash: string | null;
-  accountStatus: AccountStatus;
+  accountStatus: PlatformUserAccountStatus;
   role: Role;
   tenantLinks: Array<{
     tenantId: string;

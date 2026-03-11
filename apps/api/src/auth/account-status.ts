@@ -1,11 +1,9 @@
 import {
   PlatformUserAccountStatus,
-  PlatformUserAccountStatusSchema,
-  type PlatformUserAccountStatus as PlatformUserAccountStatusValue
+  PlatformUserAccountStatusSchema
 } from "../domain/status-enums.js";
 
 export const AccountStatusSchema = PlatformUserAccountStatusSchema;
-export type AccountStatus = PlatformUserAccountStatusValue;
 
-export const isDisabledAccountStatus = (status: AccountStatus): boolean =>
+export const isDisabledAccountStatus = (status: PlatformUserAccountStatus): boolean =>
   status === PlatformUserAccountStatus.disabled || status === PlatformUserAccountStatus.inactive;
