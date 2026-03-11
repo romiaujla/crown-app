@@ -17,9 +17,9 @@
 
 **Purpose**: Confirm the existing agent and Spec Kit guidance surfaces that must stay aligned
 
-- [ ] T001 Review the current agent workflow guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
-- [ ] T002 [P] Review the installation and governance references in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-installation.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/specify-audit.mjs`
-- [ ] T003 [P] Confirm the planning artifact paths and PR checklist references for this story in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/`
+- [x] T001 Review the current agent workflow guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
+- [x] T002 [P] Review the installation and governance references in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-installation.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/specify-audit.mjs`
+- [x] T003 [P] Confirm the planning artifact paths and PR checklist references for this story in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/`
 
 ---
 
@@ -29,9 +29,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Add a prompt-driven implementation workflow section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
-- [ ] T005 [P] Extend `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md` with the explicit phase sequence and stage-gate expectations
-- [ ] T006 [P] Keep `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-installation.md` aligned with the new workflow entrypoint and required artifact flow
+- [x] T004 Add a prompt-driven implementation workflow section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
+- [x] T005 [P] Extend `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md` with the explicit phase sequence and stage-gate expectations
+- [x] T006 [P] Keep `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-installation.md` aligned with the new workflow entrypoint and required artifact flow
 
 **Checkpoint**: The repository has one explicit place for agents to start and matching human-readable workflow references
 
@@ -45,12 +45,12 @@
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Review the final `AGENTS.md` guidance against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/quickstart.md`
+- [x] T007 [P] [US1] Review the final `AGENTS.md` guidance against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/quickstart.md`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Document the `Start implementing <JIRA ISSUE>` entrypoint and Jira-resolution behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
-- [ ] T009 [US1] Add a repository-facing discovery example for the prompt-driven start path in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [x] T008 [US1] Document the `Start implementing <JIRA ISSUE>` entrypoint and Jira-resolution behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
+- [x] T009 [US1] Add a repository-facing discovery example for the prompt-driven start path in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
 
 **Checkpoint**: The prompt-driven start behavior is documented and discoverable
 
@@ -64,13 +64,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T010 [P] [US2] Review the documented phase order and gate language in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md` against the CROWN-79 contract
+- [x] T010 [P] [US2] Review the documented phase order and gate language in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md` against the CROWN-79 contract
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Add the explicit `specify -> plan -> tasks -> implement -> PR` sequence to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
-- [ ] T012 [US2] Document the commit-and-push checkpoint required after `/specify`, `/plan`, `/tasks`, and implementation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
-- [ ] T013 [US2] Mirror the same stage-gate expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
+- [x] T011 [US2] Add the explicit `specify -> plan -> tasks -> implement -> PR` sequence to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
+- [x] T012 [US2] Document the commit-and-push checkpoint required after `/specify`, `/plan`, `/tasks`, and implementation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
+- [x] T013 [US2] Mirror the same stage-gate expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
 
 **Checkpoint**: The phase order and reviewable gates are explicit in both agent and process guidance
 
@@ -84,13 +84,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T014 [P] [US3] Review the clarification-stop and PR-handoff guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [x] T014 [P] [US3] Review the clarification-stop and PR-handoff guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Document the ambiguity and dirty-state pause conditions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
-- [ ] T016 [US3] Add the required PR description contents and scope statement expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
-- [ ] T017 [US3] Keep `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` scoped to prompt-driven workflow discovery without widening into unrelated delivery policy
+- [x] T015 [US3] Document the ambiguity and dirty-state pause conditions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/AGENTS.md`
+- [x] T016 [US3] Add the required PR description contents and scope statement expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/spec-kit-workflow.md`
+- [x] T017 [US3] Keep `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` scoped to prompt-driven workflow discovery without widening into unrelated delivery policy
 
 **Checkpoint**: The workflow guidance stops safely and finishes with a compliant PR handoff definition
 
@@ -100,9 +100,9 @@
 
 **Purpose**: Validate the updated workflow guidance and prepare the final PR
 
-- [ ] T018 [P] Update any plan-phase notes that changed during implementation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/quickstart.md` if needed
-- [ ] T019 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T020 Review the final diff to confirm the change remains scoped to `CROWN-79`
+- [x] T018 [P] Update any plan-phase notes that changed during implementation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/quickstart.md` if needed
+- [x] T019 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T020 Review the final diff to confirm the change remains scoped to `CROWN-79`
 - [ ] T021 Create the PR for `feat/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-79-support-prompt-driven-spec-kit-implementation-workflow/tasks.md`
 
 ---

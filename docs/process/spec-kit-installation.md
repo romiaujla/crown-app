@@ -23,6 +23,8 @@ After initialization, generate and maintain these artifacts for major feature wo
 3. `/plan`
 4. `/tasks`
 
+When work starts from a prompt such as `Start implementing <JIRA ISSUE>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation for major features.
+
 ## Verification
 Run:
 
@@ -48,3 +50,4 @@ This updates:
 ## Notes
 - We intentionally track the latest upstream Spec Kit for now.
 - If upstream behavior changes, update this runbook and workflow docs in the same PR.
+- Keep installation guidance aligned with the prompt-driven workflow instructions in `AGENTS.md` so the repository has one execution path for major feature starts.
