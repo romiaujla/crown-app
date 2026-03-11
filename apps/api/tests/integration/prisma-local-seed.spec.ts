@@ -28,6 +28,7 @@ describe("prisma local seed baseline", () => {
     expect(harness.snapshot()).toMatchObject({
       tenantSlugs: ["acme-local", "other-tenant"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
+      platformUsernames: ["other.user", "seed.super.admin", "seed.tenant.admin", "seed.tenant.user"].sort(),
       organizationCodes: expectedOrganizationCodes
     });
 
@@ -42,13 +43,19 @@ describe("prisma local seed baseline", () => {
       prismaClient: harness.prisma,
       client: harness.client
     });
+    const expectedCanonicalSnapshot = createExpectedCanonicalSnapshot() as {
+      platformUsernames: string[];
+      platformUserStatuses: string[];
+    };
 
     expect(secondRun.loadedCounts.organizations).toBe(3);
     expect(secondRun.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(harness.snapshot()).toMatchObject({
-      ...createExpectedCanonicalSnapshot(),
+      ...expectedCanonicalSnapshot,
       tenantSlugs: ["acme-local", "other-tenant"],
-      platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort()
+      platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
+      platformUsernames: [...expectedCanonicalSnapshot.platformUsernames, "other.user"].sort(),
+      platformUserStatuses: [...expectedCanonicalSnapshot.platformUserStatuses, "other-user@test.local:active"].sort()
     });
     expect(harness.queries).toContain('DELETE FROM "organizations"');
   });

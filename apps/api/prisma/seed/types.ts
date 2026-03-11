@@ -20,9 +20,30 @@ export type SeedTenantDelegate = {
 export type SeedPlatformUserDelegate = {
   upsert(args: {
     where: { email: string };
-    create: { email: string; displayName: string; role: string };
-    update: { displayName: string; role: string };
-  }): Promise<{ id: string; email: string; displayName: string; role: string }>;
+    create: {
+      email: string;
+      username: string;
+      passwordHash: string;
+      accountStatus: string;
+      displayName: string;
+      role: string;
+    };
+    update: {
+      username: string;
+      passwordHash: string;
+      accountStatus: string;
+      displayName: string;
+      role: string;
+    };
+  }): Promise<{
+    id: string;
+    email: string;
+    username: string | null;
+    passwordHash: string | null;
+    accountStatus: string;
+    displayName: string;
+    role: string;
+  }>;
 };
 
 export type SeedPlatformUserTenantDelegate = {
@@ -54,6 +75,7 @@ export type SeedControlPlaneBaseline = {
   platformUserIds: {
     superAdmin: string;
     tenantAdmin: string;
+    tenantUser: string;
   };
 };
 

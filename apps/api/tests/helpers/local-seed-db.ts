@@ -12,6 +12,9 @@ type TenantRow = {
 type PlatformUserRow = {
   id: string;
   email: string;
+  username: string;
+  passwordHash: string;
+  accountStatus: string;
   displayName: string;
   role: string;
 };
@@ -514,6 +517,9 @@ export const createSeedTestHarness = (): {
       const unrelatedUser: PlatformUserRow = {
         id: createId("platform-user", "other-user@test"),
         email: "other-user@test.local",
+        username: "other.user",
+        passwordHash: "scrypt$other$hash",
+        accountStatus: "active",
         displayName: "Other User",
         role: "viewer"
       };
@@ -536,6 +542,12 @@ export const createSeedTestHarness = (): {
         schemaReady: state.schemaReady,
         tenantSlugs: Array.from(state.tenants.keys()).sort(),
         platformUserEmails: Array.from(state.platformUsers.keys()).sort(),
+        platformUsernames: Array.from(state.platformUsers.values())
+          .map((user) => user.username)
+          .sort(),
+        platformUserStatuses: Array.from(state.platformUsers.values())
+          .map((user) => `${user.email}:${user.accountStatus}`)
+          .sort(),
         organizationCodes: Array.from(state.organizations.keys()).sort(),
         locationCodes: Array.from(state.locations.keys()).sort(),
         personCodes: Array.from(state.people.keys()).sort(),
@@ -586,7 +598,11 @@ const clearTable = (tableName: (typeof LOCAL_SEED_RESET_TABLES)[number], state: 
 
 export const expectedCanonicalTenantSlug = LOCAL_SEED_TENANT.slug;
 export const expectedCanonicalTenantSchemaName = LOCAL_SEED_TENANT.schemaName;
-export const expectedSeededUserEmails = [LOCAL_SEED_USERS.superAdmin.email, LOCAL_SEED_USERS.tenantAdmin.email];
+export const expectedSeededUserEmails = [
+  LOCAL_SEED_USERS.superAdmin.email,
+  LOCAL_SEED_USERS.tenantAdmin.email,
+  LOCAL_SEED_USERS.tenantUser.email
+];
 export const expectedReferenceDataCodes = ["asset-types", "load-modes", "location-types", "org-types"];
 export const expectedOrganizationCodes = ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"];
 export const expectedLocationCodes = ["CHI-WH1", "CLE-PORT1", "DET-YARD1"];
@@ -598,7 +614,11 @@ export const expectedCanonicalDeterministicLookupFields = [
   "tenant.slug",
   "tenant.schema_name",
   `platform_user.email:${LOCAL_SEED_USERS.superAdmin.email}`,
+  `platform_user.username:${LOCAL_SEED_USERS.superAdmin.username}`,
   `platform_user.email:${LOCAL_SEED_USERS.tenantAdmin.email}`,
+  `platform_user.username:${LOCAL_SEED_USERS.tenantAdmin.username}`,
+  `platform_user.email:${LOCAL_SEED_USERS.tenantUser.email}`,
+  `platform_user.username:${LOCAL_SEED_USERS.tenantUser.username}`,
   "reference_data_sets.data_set_code",
   "organizations.organization_code",
   "locations.location_code",
@@ -612,6 +632,16 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
   schemaReady: true,
   tenantSlugs: [expectedCanonicalTenantSlug],
   platformUserEmails: [...expectedSeededUserEmails].sort(),
+  platformUsernames: [
+    LOCAL_SEED_USERS.superAdmin.username,
+    LOCAL_SEED_USERS.tenantAdmin.username,
+    LOCAL_SEED_USERS.tenantUser.username
+  ].sort(),
+  platformUserStatuses: [
+    `${LOCAL_SEED_USERS.superAdmin.email}:${LOCAL_SEED_USERS.superAdmin.accountStatus}`,
+    `${LOCAL_SEED_USERS.tenantAdmin.email}:${LOCAL_SEED_USERS.tenantAdmin.accountStatus}`,
+    `${LOCAL_SEED_USERS.tenantUser.email}:${LOCAL_SEED_USERS.tenantUser.accountStatus}`
+  ].sort(),
   organizationCodes: expectedOrganizationCodes,
   locationCodes: expectedLocationCodes,
   personCodes: expectedPersonCodes,

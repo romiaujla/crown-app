@@ -1,7 +1,7 @@
 # API Boundaries
 
 ## Namespaces
-- `/api/v1/auth/*`: login, refresh, logout
+- `/api/v1/auth/*`: login and logout
 - `/api/v1/platform/*`: tenant provisioning and platform controls
 - `/api/v1/tenant/*`: tenant-scoped management-system operations
 
@@ -13,7 +13,6 @@
 
 ## Current contract examples
 - `POST /api/v1/auth/login`
-- `POST /api/v1/auth/refresh`
 - `POST /api/v1/auth/logout`
 - `GET /api/v1/platform/ping`
 - `GET /api/v1/tenant/admin/:tenantId`
