@@ -13,9 +13,8 @@ export const createDocsRouter = () => {
     }
   });
 
-  router.get("", docsHandler);
-  router.get("/", docsHandler);
   router.use("/", swaggerUi.serve);
+  router.get("/", docsHandler);
 
   return router;
 };
