@@ -39,6 +39,8 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - PostgreSQL with control-plane data in `core` via Prisma and tenant-domain data in `tenant_<tenant_slug>` schemas established by the existing migration and seed baseline (feat/CROWN-34-seed-validation-expectations)
 - TypeScript 5.x on Node.js 20, Prisma ORM 7.x, Markdown documentation in the repository root and `specs/` + `prisma`, `@prisma/client`, `@prisma/adapter-pg`, `pg`, `tsx`, existing API seed and tenant tooling, repository-level pnpm command surfaces (chore/CROWN-35-prisma-7-upgrade)
 - PostgreSQL with control-plane data in `core` via Prisma and tenant-domain data in `tenant_<tenant_slug>` via the existing SQL migration baseline (chore/CROWN-35-prisma-7-upgrade)
+- TypeScript 5.x on Node.js 20, Prisma ORM 7.x, SQL migrations, Markdown planning artifacts + Express 4, Zod 3, Prisma 7, `@prisma/client`, `@prisma/adapter-pg`, `pg`, `tsx`, existing control-plane seed/bootstrap tooling (feat/CROWN-60-auth-credential-foundation)
+- PostgreSQL control-plane schema via Prisma and canonical local seed baseline for control-plane records (feat/CROWN-60-auth-credential-foundation)
 
 ## Recent Changes
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9
