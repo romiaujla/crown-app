@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { TenantStatus } from "../../src/domain/status-enums.js";
 
 const tenantCreate = vi.fn();
 const tenantFindUnique = vi.fn();
@@ -51,7 +52,7 @@ describe("tenant provisioning integration", () => {
       name: "Acme",
       slug: "acme",
       schemaName: "tenant_acme",
-      status: "provisioning",
+      status: TenantStatus.provisioning,
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -60,7 +61,7 @@ describe("tenant provisioning integration", () => {
       name: "Acme",
       slug: "acme",
       schemaName: "tenant_acme",
-      status: "active",
+      status: TenantStatus.active,
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -95,7 +96,7 @@ describe("tenant provisioning integration", () => {
       name: "Acme",
       slug: "acme",
       schemaName: "tenant_acme",
-      status: "active",
+      status: TenantStatus.active,
       createdAt: new Date(),
       updatedAt: new Date()
     });

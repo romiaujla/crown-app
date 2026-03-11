@@ -5,8 +5,7 @@ import type { JwtClaims } from "../auth/claims.js";
 import {
   LoginRequestSchema,
   LogoutRequestSchema,
-  RefreshRequestSchema,
-  TokenPairResponseSchema
+  AccessTokenResponseSchema
 } from "../auth/contracts.js";
 import { sendAuthError } from "../types/errors.js";
 
@@ -27,28 +26,8 @@ authRouter.post("/login", (req, res) => {
       ? { sub: "user-super-admin", role: "super_admin", tenant_id: null }
       : { sub: "user-tenant-admin", role: "tenant_admin", tenant_id: "tenant-acme" };
 
-  const response = TokenPairResponseSchema.parse({
+  const response = AccessTokenResponseSchema.parse({
     access_token: toToken(claims),
-    refresh_token: `refresh-${claims.sub}`,
-    claims
-  });
-
-  return res.status(200).json(response);
-});
-
-authRouter.post("/refresh", (req, res) => {
-  const parsed = RefreshRequestSchema.safeParse(req.body);
-  if (!parsed.success || !parsed.data.refresh_token.startsWith("refresh-")) {
-    return sendAuthError(res, 401, "unauthenticated", "Invalid refresh token");
-  }
-
-  const claims: JwtClaims = parsed.data.refresh_token.includes("super")
-    ? { sub: "user-super-admin", role: "super_admin", tenant_id: null }
-    : { sub: "user-tenant-admin", role: "tenant_admin", tenant_id: "tenant-acme" };
-
-  const response = TokenPairResponseSchema.parse({
-    access_token: toToken(claims),
-    refresh_token: `refresh-${claims.sub}`,
     claims
   });
 
@@ -57,8 +36,8 @@ authRouter.post("/refresh", (req, res) => {
 
 authRouter.post("/logout", (req, res) => {
   const parsed = LogoutRequestSchema.safeParse(req.body);
-  if (!parsed.success || !parsed.data.refresh_token.startsWith("refresh-")) {
-    return sendAuthError(res, 401, "unauthenticated", "Invalid token/session context");
+  if (!parsed.success) {
+    return sendAuthError(res, 400, "validation_error", "Invalid logout payload");
   }
   return res.status(204).send();
 });

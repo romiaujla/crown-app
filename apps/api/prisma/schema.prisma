@@ -7,13 +7,29 @@ datasource db {
   provider = "postgresql"
 }
 
+enum PlatformUserAccountStatus {
+  active
+  disabled
+  inactive
+}
+
+enum TenantStatus {
+  active
+  inactive
+  provisioning
+  provisioning_failed
+}
+
 model PlatformUser {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  displayName String   @map("display_name")
-  role        String
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id            String                    @id @default(cuid())
+  email         String                    @unique
+  username      String?                   @unique
+  passwordHash  String?                   @map("password_hash")
+  accountStatus PlatformUserAccountStatus @default(active) @map("account_status")
+  displayName   String                    @map("display_name")
+  role          String
+  createdAt     DateTime                  @default(now()) @map("created_at")
+  updatedAt     DateTime                  @updatedAt @map("updated_at")
 
   tenantLinks PlatformUserTenant[]
 
@@ -21,13 +37,13 @@ model PlatformUser {
 }
 
 model Tenant {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String
-  slug        String   @unique
-  schemaName  String   @unique @map("schema_name")
-  status      String   @default("active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  slug        String       @unique
+  schemaName  String       @unique @map("schema_name")
+  status      TenantStatus @default(active)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
 
   platformUserTenants PlatformUserTenant[]
   versions    TenantSchemaVersion[]

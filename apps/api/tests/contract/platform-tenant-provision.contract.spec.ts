@@ -2,6 +2,7 @@ import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 
 import { buildApp } from "../../src/app.js";
+import { TenantStatus } from "../../src/domain/status-enums.js";
 import { createPlatformTenantsRouter } from "../../src/routes/platform-tenants.js";
 import type { ProvisionTenantResult } from "../../src/tenant/types.js";
 import { createJwtToken, superAdminClaims, tenantAdminClaims } from "../helpers/auth-fixtures.js";
@@ -18,7 +19,7 @@ const createProvisioned = (): ProvisionTenantResult => ({
     name: "Acme",
     slug: "acme",
     schemaName: "tenant_acme",
-    status: "active",
+    status: TenantStatus.active,
     createdAt: new Date(),
     updatedAt: new Date()
   }

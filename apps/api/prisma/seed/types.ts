@@ -1,3 +1,5 @@
+import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
   rowCount?: number | null;
@@ -12,17 +14,38 @@ export type SeedSqlClient = {
 export type SeedTenantDelegate = {
   upsert(args: {
     where: { slug: string };
-    create: { name: string; slug: string; schemaName: string; status: string };
-    update: { name: string; schemaName: string; status: string };
-  }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: string }>;
+    create: { name: string; slug: string; schemaName: string; status: TenantStatus };
+    update: { name: string; schemaName: string; status: TenantStatus };
+  }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: TenantStatus }>;
 };
 
 export type SeedPlatformUserDelegate = {
   upsert(args: {
     where: { email: string };
-    create: { email: string; displayName: string; role: string };
-    update: { displayName: string; role: string };
-  }): Promise<{ id: string; email: string; displayName: string; role: string }>;
+    create: {
+      email: string;
+      username: string;
+      passwordHash: string;
+      accountStatus: PlatformUserAccountStatus;
+      displayName: string;
+      role: string;
+    };
+    update: {
+      username: string;
+      passwordHash: string;
+      accountStatus: PlatformUserAccountStatus;
+      displayName: string;
+      role: string;
+    };
+  }): Promise<{
+    id: string;
+    email: string;
+    username: string | null;
+    passwordHash: string | null;
+    accountStatus: PlatformUserAccountStatus;
+    displayName: string;
+    role: string;
+  }>;
 };
 
 export type SeedPlatformUserTenantDelegate = {
@@ -54,6 +77,7 @@ export type SeedControlPlaneBaseline = {
   platformUserIds: {
     superAdmin: string;
     tenantAdmin: string;
+    tenantUser: string;
   };
 };
 

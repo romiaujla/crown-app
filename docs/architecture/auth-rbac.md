@@ -1,11 +1,19 @@
 # Auth and RBAC
 
 ## Token model
-- Access + refresh JWT.
+- Access-token-only JWT foundation for the current phase.
 - Claims:
   - `sub`
   - `role` (`super_admin`, `tenant_admin`, `tenant_user`)
   - `tenant_id` (nullable for super-admin global ops)
+
+## Credential foundation
+- Control-plane identities persist:
+  - unique `email`
+  - unique `username`
+  - hashed password material
+  - account status (`active`, `disabled`, `inactive`)
+- Refresh-session persistence is out of scope for the current phase.
 
 ## RBAC matrix
 - `super_admin`: tenant lifecycle, platform settings, global audit visibility, platform namespace access.
