@@ -1,7 +1,11 @@
-import { z } from "zod";
+import {
+  PlatformUserAccountStatus,
+  PlatformUserAccountStatusSchema,
+  type PlatformUserAccountStatus as PlatformUserAccountStatusValue
+} from "../domain/status-enums.js";
 
-export const AccountStatusSchema = z.enum(["active", "disabled", "inactive"]);
-export type AccountStatus = z.infer<typeof AccountStatusSchema>;
+export const AccountStatusSchema = PlatformUserAccountStatusSchema;
+export type AccountStatus = PlatformUserAccountStatusValue;
 
 export const isDisabledAccountStatus = (status: AccountStatus): boolean =>
-  status === "disabled" || status === "inactive";
+  status === PlatformUserAccountStatus.disabled || status === PlatformUserAccountStatus.inactive;

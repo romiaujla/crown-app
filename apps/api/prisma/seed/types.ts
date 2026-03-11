@@ -1,3 +1,5 @@
+import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
   rowCount?: number | null;
@@ -12,9 +14,9 @@ export type SeedSqlClient = {
 export type SeedTenantDelegate = {
   upsert(args: {
     where: { slug: string };
-    create: { name: string; slug: string; schemaName: string; status: string };
-    update: { name: string; schemaName: string; status: string };
-  }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: string }>;
+    create: { name: string; slug: string; schemaName: string; status: TenantStatus };
+    update: { name: string; schemaName: string; status: TenantStatus };
+  }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: TenantStatus }>;
 };
 
 export type SeedPlatformUserDelegate = {
@@ -24,14 +26,14 @@ export type SeedPlatformUserDelegate = {
       email: string;
       username: string;
       passwordHash: string;
-      accountStatus: string;
+      accountStatus: PlatformUserAccountStatus;
       displayName: string;
       role: string;
     };
     update: {
       username: string;
       passwordHash: string;
-      accountStatus: string;
+      accountStatus: PlatformUserAccountStatus;
       displayName: string;
       role: string;
     };
@@ -40,7 +42,7 @@ export type SeedPlatformUserDelegate = {
     email: string;
     username: string | null;
     passwordHash: string | null;
-    accountStatus: string;
+    accountStatus: PlatformUserAccountStatus;
     displayName: string;
     role: string;
   }>;

@@ -1,12 +1,17 @@
 import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS, LOCAL_SEED_RESET_TABLES } from "../../prisma/seed/constants.js";
 import type { SeedPrismaClient, SeedSqlClient, SeedQueryResult } from "../../prisma/seed/types.js";
+import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import {
+  PlatformUserAccountStatus as PlatformUserAccountStatusValues,
+  TenantStatus as TenantStatusValues
+} from "../../src/domain/status-enums.js";
 
 type TenantRow = {
   id: string;
   name: string;
   slug: string;
   schemaName: string;
-  status: string;
+  status: TenantStatus;
 };
 
 type PlatformUserRow = {
@@ -14,7 +19,7 @@ type PlatformUserRow = {
   email: string;
   username: string;
   passwordHash: string;
-  accountStatus: string;
+  accountStatus: PlatformUserAccountStatus;
   displayName: string;
   role: string;
 };
@@ -512,14 +517,14 @@ export const createSeedTestHarness = (): {
         name: "Other Tenant",
         slug: "other-tenant",
         schemaName: "tenant_other_tenant",
-        status: "active"
+        status: TenantStatusValues.active
       };
       const unrelatedUser: PlatformUserRow = {
         id: createId("platform-user", "other-user@test"),
         email: "other-user@test.local",
         username: "other.user",
         passwordHash: "scrypt$other$hash",
-        accountStatus: "active",
+        accountStatus: PlatformUserAccountStatusValues.active,
         displayName: "Other User",
         role: "viewer"
       };

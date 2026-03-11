@@ -1,10 +1,11 @@
 import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
+import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
 
 export const LOCAL_SEED_TENANT = {
   name: "Acme Local Logistics",
   slug: "acme-local",
   schemaName: deriveTenantSchemaName("acme-local"),
-  status: "active"
+  status: TenantStatus.active
 } as const;
 
 export const LOCAL_SEED_USERS = {
@@ -12,7 +13,7 @@ export const LOCAL_SEED_USERS = {
     email: "super-admin@acme-local.test",
     username: "super.admin",
     password: "Password123!",
-    accountStatus: "active",
+    accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
     role: "super_admin"
   },
@@ -20,7 +21,7 @@ export const LOCAL_SEED_USERS = {
     email: "tenant-admin@acme-local.test",
     username: "tenant.admin",
     password: "Password123!",
-    accountStatus: "active",
+    accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin",
     role: "tenant_admin"
   },
@@ -28,7 +29,7 @@ export const LOCAL_SEED_USERS = {
     email: "tenant-user@acme-local.test",
     username: "tenant.user",
     password: "Password123!",
-    accountStatus: "active",
+    accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
     role: "tenant_user"
   }

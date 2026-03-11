@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { PlatformUserAccountStatus } from "../../src/domain/status-enums.js";
 import { findAuthIdentityByIdentifier } from "../../src/auth/identity.js";
 import { hashPassword, verifyPassword } from "../../src/auth/passwords.js";
 import { resolveAuthenticatedRoleContext } from "../../src/auth/role-resolution.js";
@@ -20,7 +21,7 @@ describe("auth credential foundation", () => {
         email: "super-admin@acme-local.test",
         username: "seed.super.admin",
         passwordHash: "scrypt$salt$hash",
-        accountStatus: "active",
+        accountStatus: PlatformUserAccountStatus.active,
         role: "super_admin"
       },
       null
@@ -41,7 +42,7 @@ describe("auth credential foundation", () => {
         email: "tenant-admin@acme-local.test",
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
-        accountStatus: "active",
+        accountStatus: PlatformUserAccountStatus.active,
         role: "tenant_admin"
       },
       {
@@ -66,7 +67,7 @@ describe("auth credential foundation", () => {
           email: "tenant-user@acme-local.test",
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
-          accountStatus: "disabled",
+          accountStatus: PlatformUserAccountStatus.disabled,
           role: "tenant_user"
         },
         {
@@ -86,7 +87,7 @@ describe("auth credential foundation", () => {
           email: "tenant-user@acme-local.test",
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
-          accountStatus: "active",
+          accountStatus: PlatformUserAccountStatus.active,
           role: "tenant_user"
         },
         null
@@ -119,7 +120,7 @@ describe("auth credential foundation", () => {
             email: "tenant-user@acme-local.test",
             username: "seed.tenant.user",
             passwordHash: "scrypt$salt$hash",
-            accountStatus: "active" as const,
+            accountStatus: PlatformUserAccountStatus.active,
             role: "tenant_user" as const,
             tenantLinks: [{ tenantId: "tenant-acme-local", role: "tenant_user" as const }]
           };

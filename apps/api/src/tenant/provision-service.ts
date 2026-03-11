@@ -2,6 +2,7 @@ import { Client } from "pg";
 
 import { env } from "../config/env.js";
 import { prisma } from "../db/prisma.js";
+import { TenantStatus } from "../domain/status-enums.js";
 
 import { loadTenantMigrations } from "./migration-loader.js";
 import { executeTenantMigrations } from "./migrator.js";
@@ -33,7 +34,7 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
         name: normalizedName,
         slug: normalizedSlug,
         schemaName,
-        status: "provisioning"
+        status: TenantStatus.provisioning
       }
     });
   } catch (error) {
@@ -43,7 +44,7 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
       where: { slug: normalizedSlug }
     });
 
-    if (!existing || existing.schemaName !== schemaName || existing.status === "active") {
+    if (!existing || existing.schemaName !== schemaName || existing.status === TenantStatus.active) {
       return {
         status: "conflict",
         message: "tenant slug already exists"
@@ -85,7 +86,7 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
     if (migrationResult.status === "failed") {
       await prisma.tenant.update({
         where: { id: tenant.id },
-        data: { status: "provisioning_failed" }
+        data: { status: TenantStatus.provisioning_failed }
       });
 
       return {
@@ -102,7 +103,7 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
 
     const updatedTenant = await prisma.tenant.update({
       where: { id: tenant.id },
-      data: { status: "active" }
+      data: { status: TenantStatus.active }
     });
 
     return {
