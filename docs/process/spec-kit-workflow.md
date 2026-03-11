@@ -28,6 +28,7 @@ For major features, complete these artifacts before implementation:
 - Scope statement confirms changes map to Jira issue scope.
 - Validation evidence included (tests/lint/typecheck as applicable).
 - Documentation updates included for behavior/process changes.
+- API route changes must keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned for created, materially changed, and deleted routes.
 
 ## Convention Source of Truth
 - Branch naming, commit formatting, Jira linkage, and type mapping are defined in:
