@@ -608,6 +608,11 @@ export const expectedSeededUserEmails = [
   LOCAL_SEED_USERS.tenantAdmin.email,
   LOCAL_SEED_USERS.tenantUser.email
 ];
+export const expectedSeededUsernames = [
+  LOCAL_SEED_USERS.superAdmin.username,
+  LOCAL_SEED_USERS.tenantAdmin.username,
+  LOCAL_SEED_USERS.tenantUser.username
+];
 export const expectedReferenceDataCodes = ["asset-types", "load-modes", "location-types", "org-types"];
 export const expectedOrganizationCodes = ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"];
 export const expectedLocationCodes = ["CHI-WH1", "CLE-PORT1", "DET-YARD1"];
@@ -637,11 +642,7 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
   schemaReady: true,
   tenantSlugs: [expectedCanonicalTenantSlug],
   platformUserEmails: [...expectedSeededUserEmails].sort(),
-  platformUsernames: [
-    LOCAL_SEED_USERS.superAdmin.username,
-    LOCAL_SEED_USERS.tenantAdmin.username,
-    LOCAL_SEED_USERS.tenantUser.username
-  ].sort(),
+  platformUsernames: [...expectedSeededUsernames].sort(),
   platformUserStatuses: [
     `${LOCAL_SEED_USERS.superAdmin.email}:${LOCAL_SEED_USERS.superAdmin.accountStatus}`,
     `${LOCAL_SEED_USERS.tenantAdmin.email}:${LOCAL_SEED_USERS.tenantAdmin.accountStatus}`,

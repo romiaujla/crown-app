@@ -7,7 +7,8 @@ import {
   expectedCanonicalTenantSchemaName,
   expectedCanonicalTenantSlug,
   expectedOrganizationCodes,
-  expectedSeededUserEmails
+  expectedSeededUserEmails,
+  expectedSeededUsernames
 } from "../helpers/local-seed-db.js";
 
 describe("prisma local seed baseline", () => {
@@ -28,7 +29,7 @@ describe("prisma local seed baseline", () => {
     expect(harness.snapshot()).toMatchObject({
       tenantSlugs: ["acme-local", "other-tenant"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
-      platformUsernames: ["other.user", "seed.super.admin", "seed.tenant.admin", "seed.tenant.user"].sort(),
+      platformUsernames: ["other.user", ...expectedSeededUsernames].sort(),
       organizationCodes: expectedOrganizationCodes
     });
 
