@@ -585,4 +585,39 @@ const clearTable = (tableName: (typeof LOCAL_SEED_RESET_TABLES)[number], state: 
 };
 
 export const expectedCanonicalTenantSlug = LOCAL_SEED_TENANT.slug;
+export const expectedCanonicalTenantSchemaName = LOCAL_SEED_TENANT.schemaName;
 export const expectedSeededUserEmails = [LOCAL_SEED_USERS.superAdmin.email, LOCAL_SEED_USERS.tenantAdmin.email];
+export const expectedReferenceDataCodes = ["asset-types", "load-modes", "location-types", "org-types"];
+export const expectedOrganizationCodes = ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"];
+export const expectedLocationCodes = ["CHI-WH1", "CLE-PORT1", "DET-YARD1"];
+export const expectedPersonCodes = ["DISPATCH-CHI", "DRIVER-CLE", "OPS-DET"];
+export const expectedRoleCodes = ["dispatcher", "driver"];
+export const expectedAssetCodes = ["TRACTOR-100", "TRAILER-200"];
+export const expectedLoadCodes = ["LOAD-1000", "LOAD-1001"];
+export const expectedCanonicalDeterministicLookupFields = [
+  "tenant.slug",
+  "tenant.schema_name",
+  `platform_user.email:${LOCAL_SEED_USERS.superAdmin.email}`,
+  `platform_user.email:${LOCAL_SEED_USERS.tenantAdmin.email}`,
+  "reference_data_sets.data_set_code",
+  "organizations.organization_code",
+  "locations.location_code",
+  "people.person_code",
+  "tenant_role_definitions.role_code",
+  "equipment_assets.asset_code",
+  "loads.load_code"
+];
+
+export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
+  schemaReady: true,
+  tenantSlugs: [expectedCanonicalTenantSlug],
+  platformUserEmails: [...expectedSeededUserEmails].sort(),
+  organizationCodes: expectedOrganizationCodes,
+  locationCodes: expectedLocationCodes,
+  personCodes: expectedPersonCodes,
+  roleCodes: expectedRoleCodes,
+  assetCodes: expectedAssetCodes,
+  loadCodes: expectedLoadCodes,
+  referenceDataCodes: expectedReferenceDataCodes,
+  activityCount: 4
+});

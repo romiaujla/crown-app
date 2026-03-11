@@ -77,6 +77,7 @@ Default local endpoints:
   - `pnpm db:seed:local`
   - Copy `apps/api/.env.example` to `apps/api/.env.local` first and update `DATABASE_URL` or any local-only secrets before running the command.
   - This command loads `apps/api/.env.local`, bootstraps the canonical seeded tenant schema if it does not exist yet, then resets and reloads the seeded tenant-domain data.
+  - Validation relies on the same deterministic tenant slug, tenant schema name, seeded user emails, and representative business codes on every successful rerun.
   - Each run preserves unrelated tenants, unrelated platform users, and unrelated audit history. It resets only the canonical local seed scope for the seeded tenant and reloads the deterministic baseline records.
   - Later automated or container-based setup should reuse this same canonical baseline contract rather than define a separate test-only seed path.
 - Create and apply a new migration during development:
