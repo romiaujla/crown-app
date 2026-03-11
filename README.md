@@ -54,6 +54,21 @@ Default local endpoints:
 - Run the canonical local bootstrap workflow:
   - `pnpm db:bootstrap:local`
   - This is the supported bootstrap path for local development.
+  - Use it when:
+    - you are setting up the project locally for the first time
+    - your local DB is empty or only partially prepared
+    - you want to get back to the canonical baseline without manually remembering the order of setup steps
+  - What it does:
+    - starts local Postgres
+    - runs `pnpm db:push` to prepare the control-plane schema
+    - runs `pnpm db:seed:local` to bootstrap the canonical tenant if needed and reload the canonical seeded baseline
+  - When to use `db:bootstrap:local` vs `db:seed:local`:
+    - use `pnpm db:bootstrap:local` when you want full local DB preparation from the repo root
+    - use `pnpm db:seed:local` when Postgres and schema setup are already handled and you only want to refresh the canonical seeded tenant data
+  - Important boundary:
+    - it does not wipe the whole database
+    - it refreshes only the canonical local seeded tenant baseline
+    - unrelated tenants and unrelated platform records are preserved
   - It starts local PostgreSQL, prepares the control-plane schema state, then runs the canonical seeded tenant bootstrap and seed workflow.
   - It is safe to rerun and continues to preserve unrelated tenants, unrelated platform users, and unrelated platform history outside the canonical seed boundary.
 - Apply schema to local Postgres:
