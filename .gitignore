@@ -21,3 +21,4 @@ Thumbs.db
 
 *.tsbuildinfo
 .codex/
+apps/api/src/generated/
