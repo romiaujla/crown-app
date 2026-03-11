@@ -17,8 +17,8 @@
 
 **Purpose**: Review the current Prisma 5 surfaces that the Prisma 7 upgrade must replace
 
-- [ ] T001 Review current Prisma package, generator, and command usage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [ ] T002 [P] Review current Prisma client import and workflow dependencies in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/db/prisma.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/generate-tenant-baseline-migration.mjs`, and focused integration tests under `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
+- [X] T001 Review current Prisma package, generator, and command usage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [X] T002 [P] Review current Prisma client import and workflow dependencies in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/db/prisma.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/generate-tenant-baseline-migration.mjs`, and focused integration tests under `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Upgrade Prisma dependencies to Prisma 7 and add the PostgreSQL adapter in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/pnpm-lock.yaml`
-- [ ] T004 [P] Replace the Prisma 5 generator setup with the supported Prisma 7 generator and explicit output path in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [ ] T005 [P] Add repository-local Prisma 7 config in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma.config.ts`
-- [ ] T006 Prepare generated-client typecheck coverage and workspace structure expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tsconfig.typecheck.json` and related workspace paths
+- [X] T003 Upgrade Prisma dependencies to Prisma 7 and add the PostgreSQL adapter in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/pnpm-lock.yaml`
+- [X] T004 [P] Replace the Prisma 5 generator setup with the supported Prisma 7 generator and explicit output path in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [X] T005 [P] Add repository-local Prisma 7 config in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma.config.ts`
+- [X] T006 Prepare generated-client typecheck coverage and workspace structure expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/.gitignore` and related generated workspace paths
 
 **Checkpoint**: Prisma 7 package and configuration foundations are in place for application and workflow updates
 
@@ -45,13 +45,13 @@
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Add or adjust focused Prisma-upgrade compatibility assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-provisioning.spec.ts` and related Prisma-dependent tests if import paths or generation assumptions change
+- [X] T007 [P] [US1] Add or adjust focused Prisma-upgrade compatibility assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-provisioning.spec.ts` and related Prisma-dependent tests if import paths or generation assumptions change
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Update Prisma client imports and initialization for Prisma 7 in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/db/prisma.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts`
-- [ ] T009 [US1] Align repository and API workspace Prisma command surfaces with explicit generation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
-- [ ] T010 [US1] Refine Prisma 7 command and generation guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [X] T008 [US1] Update Prisma client imports and initialization for Prisma 7 in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/db/prisma.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts`
+- [X] T009 [US1] Align repository and API workspace Prisma command surfaces with explicit generation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
+- [X] T010 [US1] Refine Prisma 7 command and generation guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
 
 **Checkpoint**: User Story 1 is complete when the upgraded Prisma baseline supports the repository’s core Prisma command surfaces
 
@@ -65,14 +65,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Validate Prisma-dependent provisioning and migration compatibility in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-provisioning.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts`
-- [ ] T012 [P] [US2] Validate canonical seed and bootstrap compatibility in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [X] T011 [P] [US2] Validate Prisma-dependent provisioning and migration compatibility in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-provisioning.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts`
+- [X] T012 [P] [US2] Validate canonical seed and bootstrap compatibility in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Align tenant migration generation and related Prisma CLI usage with Prisma 7 in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/generate-tenant-baseline-migration.mjs`
-- [ ] T014 [US2] Update API seed and local Prisma workflow assumptions where needed for Prisma 7 in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/run-local-seed.mjs`
-- [ ] T015 [US2] Refine upgrade contract and quickstart guidance around preserved workflow behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/contracts/prisma-7-upgrade-contract.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/quickstart.md`
+- [X] T013 [US2] Align tenant migration generation and related Prisma CLI usage with Prisma 7 through the repository-local Prisma config and existing script compatibility in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma.config.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/generate-tenant-baseline-migration.mjs`
+- [X] T014 [US2] Update API seed and local Prisma workflow assumptions where needed for Prisma 7 in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma.config.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/scripts/run-local-seed.mjs`
+- [X] T015 [US2] Refine upgrade contract and quickstart guidance around preserved workflow behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/contracts/prisma-7-upgrade-contract.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/quickstart.md`
 
 **Checkpoint**: User Story 2 is complete when the foundation workflows still behave the same under Prisma 7
 
@@ -86,12 +86,12 @@
 
 ### Tests for User Story 3
 
-- [ ] T016 [P] [US3] Extend documentation-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/quickstart.md` and focused Prisma-dependent tests if command flow assertions are added
+- [X] T016 [P] [US3] Extend documentation-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/quickstart.md` and focused Prisma-dependent tests if command flow assertions are added
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Clarify Prisma 7 generation/configuration expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
-- [ ] T018 [US3] Align spec-facing upgrade expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/research.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/data-model.md`
+- [X] T017 [US3] Clarify Prisma 7 generation/configuration expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [X] T018 [US3] Align spec-facing upgrade expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/research.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/data-model.md`
 
 **Checkpoint**: User Story 3 is complete when contributors can understand the supported Prisma 7 workflow from repository guidance alone
 
@@ -101,10 +101,10 @@
 
 **Purpose**: Final validation and readiness checks across the Prisma 7 upgrade
 
-- [ ] T019 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T020 [P] Run focused Prisma-dependent tests with `pnpm --filter @crown/api exec vitest run tests/integration/tenant-provisioning.spec.ts tests/integration/tenant-bootstrap-migrations.spec.ts tests/integration/tenant-schema-versioning.spec.ts tests/integration/prisma-local-seed.spec.ts tests/integration/prisma-local-seed-determinism.spec.ts tests/integration/prisma-local-seed-recovery.spec.ts tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T021 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T022 Perform final terminology and workflow-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/contracts/prisma-7-upgrade-contract.md`
+- [X] T019 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T020 [P] Run focused Prisma-dependent tests with `pnpm --filter @crown/api exec vitest run tests/integration/tenant-provisioning.spec.ts tests/integration/tenant-bootstrap-migrations.spec.ts tests/integration/tenant-schema-versioning.spec.ts tests/integration/prisma-local-seed.spec.ts tests/integration/prisma-local-seed-determinism.spec.ts tests/integration/prisma-local-seed-recovery.spec.ts tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T021 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T022 Perform final terminology and workflow-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-35-prisma-7-upgrade/contracts/prisma-7-upgrade-contract.md`
 
 ---
 

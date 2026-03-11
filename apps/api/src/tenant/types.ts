@@ -1,4 +1,4 @@
-import type { Tenant } from "@prisma/client";
+import type { Tenant } from "../generated/prisma/client.js";
 
 export type TenantMigrationDefinition = {
   version: string;

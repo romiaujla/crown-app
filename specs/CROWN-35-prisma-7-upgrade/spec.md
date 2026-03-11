@@ -84,6 +84,7 @@ The maintainer can understand any new development expectations introduced by Pri
 - `CROWN-29` explicitly deferred Prisma 7+ work to this separate task.
 - The repository’s current Prisma baseline is still Prisma 5 and needs explicit modernization work rather than silent drift.
 - Prisma 7 introduces supported configuration and client-generation expectations that differ from the repository’s current Prisma 5 setup.
+- The supported Prisma 7 repository shape should use repository-local Prisma config, explicit generated-client output, and explicit client generation during Prisma-related workflows.
 - The canonical local seed, bootstrap, and tenant migration workflows should keep their current behavioral contract even if the underlying Prisma setup changes.
 - This task is an infrastructure upgrade and documentation exercise, not a redesign of domain, seed, or bootstrap behavior.
 

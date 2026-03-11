@@ -21,6 +21,13 @@ Use this feature’s outputs to upgrade the repository Prisma baseline to Prisma
 - Keep repository commands and contributor guidance explicit about when generated client code is refreshed.
 - Revalidate only the Prisma-dependent foundation workflows most likely to regress.
 
+## Repository Upgrade Markers
+
+- generated Prisma client output: `apps/api/src/generated/prisma`
+- Prisma config entrypoint: `apps/api/prisma.config.ts`
+- Prisma client import path: `apps/api/src/generated/prisma/client.js`
+- explicit generation hooks: API workspace `postinstall`, root `db:push`, root `db:migrate`
+
 ## Validation Focus
 
 - Prisma client generation and typecheck compatibility

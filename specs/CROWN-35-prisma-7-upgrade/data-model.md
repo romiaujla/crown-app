@@ -26,6 +26,9 @@
   - generated output path
   - import path used by application code
   - explicit generation command surface
+- **Repository shape**:
+  - generated output path: `apps/api/src/generated/prisma`
+  - application import path: `../generated/prisma/client.js`
 - **Validation rules**:
   - Must avoid deprecated Prisma 5 generation assumptions
   - Must be stable enough for application code and typecheck to consume directly
@@ -38,6 +41,8 @@
   - datasource URL source
   - migrations path
   - seed command
+- **Repository shape**:
+  - config file path: `apps/api/prisma.config.ts`
 - **Validation rules**:
   - Must support repository Prisma commands without environment-loading ambiguity
   - Must remain aligned to the API workspace layout

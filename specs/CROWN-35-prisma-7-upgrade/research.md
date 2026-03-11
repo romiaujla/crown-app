@@ -12,6 +12,7 @@
 
 - **Decision**: Introduce `prisma.config.ts` in the API workspace to define schema location, migrations/seed configuration, and datasource loading for Prisma CLI workflows.
 - **Rationale**: Prisma 7 formalizes config-driven datasource handling and environment loading for CLI workflows. Centralizing this removes reliance on older schema-only assumptions.
+- **Repository application**: `apps/api/prisma.config.ts` should own the schema path, migration path, seed command, and datasource URL for the API workspace.
 - **Alternatives considered**:
   - Keep configuration implicit in `schema.prisma` only: rejected because Prisma 7 moves CLI configuration responsibilities into the config file.
   - Hardcode URLs in repository scripts: rejected because it would weaken local-environment flexibility and type-safe config handling.
@@ -28,6 +29,7 @@
 
 - **Decision**: Repository workflows should explicitly run `prisma generate` where Prisma 7 no longer guarantees the older implicit generation behavior is sufficient.
 - **Rationale**: Contributors should not have to rediscover why generated-client imports drift after schema or version changes. Explicit generation keeps the workflow deterministic.
+- **Repository application**: the API workspace should generate on install, and root Prisma commands that change schema state should refresh the generated client first.
 - **Alternatives considered**:
   - Rely on contributors to remember `prisma generate` manually: rejected because it creates avoidable local setup errors.
   - Generate on every unrelated command: rejected because it adds unnecessary churn outside Prisma-related workflows.

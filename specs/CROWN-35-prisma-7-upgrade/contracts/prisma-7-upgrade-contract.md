@@ -10,6 +10,7 @@ Define the infrastructure guarantees that `CROWN-35` must provide while upgradin
 - Prisma client generation uses the supported Prisma 7 generator with an explicit output path.
 - Prisma CLI configuration is explicit and repository-local to the API workspace.
 - Existing Prisma-powered repository workflows remain available for tenant provisioning, migration generation, seeding, and bootstrap support.
+- The upgraded repository uses explicit generated-client refresh steps for Prisma-related install and schema commands.
 
 ## Compatibility Rule
 

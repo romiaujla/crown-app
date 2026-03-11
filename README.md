@@ -73,6 +73,7 @@ Default local endpoints:
   - It is safe to rerun and continues to preserve unrelated tenants, unrelated platform users, and unrelated platform history outside the canonical seed boundary.
 - Apply schema to local Postgres:
   - `pnpm db:push`
+  - Prisma 7 uses an explicit generated client path, so this command refreshes Prisma Client before applying schema changes.
 - Reset and reseed the canonical local tenant baseline:
   - `pnpm db:seed:local`
   - Copy `apps/api/.env.example` to `apps/api/.env.local` first and update `DATABASE_URL` or any local-only secrets before running the command.
@@ -84,6 +85,7 @@ Default local endpoints:
   - `pnpm db:migrate -- --name <change-name>`
 - Regenerate Prisma client:
   - `pnpm db:generate`
+  - Prisma 7 no longer relies on the older implicit generation default, so run this after Prisma schema or package changes if you need to refresh the generated client manually.
 
 ## Commit and Release Convention
 - Branch naming by Jira issue type:
