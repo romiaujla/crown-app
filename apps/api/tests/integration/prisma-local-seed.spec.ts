@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { runLocalSeed } from "../../prisma/seed.js";
-import { createSeedTestHarness, expectedCanonicalTenantSlug, expectedSeededUserEmails } from "../helpers/local-seed-db.js";
+import {
+  createExpectedCanonicalSnapshot,
+  createSeedTestHarness,
+  expectedCanonicalTenantSchemaName,
+  expectedCanonicalTenantSlug,
+  expectedOrganizationCodes,
+  expectedSeededUserEmails
+} from "../helpers/local-seed-db.js";
 
 describe("prisma local seed baseline", () => {
   it("creates the canonical baseline on first run and replaces stale tenant-domain data on rerun", async () => {
@@ -15,12 +22,13 @@ describe("prisma local seed baseline", () => {
     });
 
     expect(firstRun.tenantSlug).toBe(expectedCanonicalTenantSlug);
+    expect(firstRun.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(firstRun.loadedCounts.organizations).toBe(3);
     expect(firstRun.loadedCounts.loads).toBe(2);
     expect(harness.snapshot()).toMatchObject({
       tenantSlugs: ["acme-local", "other-tenant"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
-      organizationCodes: ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"]
+      organizationCodes: expectedOrganizationCodes
     });
 
     harness.state.organizations.set("STALE-ORG", {
@@ -36,7 +44,12 @@ describe("prisma local seed baseline", () => {
     });
 
     expect(secondRun.loadedCounts.organizations).toBe(3);
-    expect(Array.from(harness.state.organizations.keys()).sort()).toEqual(["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"]);
+    expect(secondRun.schemaName).toBe(expectedCanonicalTenantSchemaName);
+    expect(harness.snapshot()).toMatchObject({
+      ...createExpectedCanonicalSnapshot(),
+      tenantSlugs: ["acme-local", "other-tenant"],
+      platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort()
+    });
     expect(harness.queries).toContain('DELETE FROM "organizations"');
   });
 
@@ -53,9 +66,10 @@ describe("prisma local seed baseline", () => {
     });
 
     expect(summary.tenantSlug).toBe(expectedCanonicalTenantSlug);
+    expect(summary.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(harness.snapshot()).toMatchObject({
       schemaReady: true,
-      organizationCodes: ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"]
+      organizationCodes: expectedOrganizationCodes
     });
   });
 });

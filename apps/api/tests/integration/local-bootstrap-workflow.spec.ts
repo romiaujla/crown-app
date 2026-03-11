@@ -79,4 +79,18 @@ describe("local bootstrap workflow integration", () => {
     expect(harness.recordedSteps.some((step) => step.args.includes("db:reset"))).toBe(false);
     expect(harness.recordedSteps.some((step) => step.args.includes("migrate"))).toBe(false);
   });
+
+  it("keeps bootstrap and direct reseed aligned to one canonical baseline contract", async () => {
+    const harness = createBootstrapWorkflowHarness();
+
+    const result = await runLocalBootstrap({
+      runCommand: harness.runCommand,
+      logger: harness.logger
+    });
+
+    expect(result.baselineCommand).toBe("pnpm db:seed:local");
+    expect(harness.infoMessages.some((message) => message.includes("canonical tenant schema"))).toBe(true);
+    expect(harness.recordedSteps.filter((step) => step.id === "db:seed:local")).toHaveLength(1);
+    expect(harness.recordedSteps.some((step) => step.id === "db:setup")).toBe(false);
+  });
 });

@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { runLocalSeed } from "../../prisma/seed.js";
-import { createSeedTestHarness } from "../helpers/local-seed-db.js";
+import { createExpectedCanonicalSnapshot, createSeedTestHarness } from "../helpers/local-seed-db.js";
 
 describe("prisma local seed recovery", () => {
   it("preserves out-of-scope platform data and recovers after a controlled partial failure", async () => {
     const harness = createSeedTestHarness();
     harness.seedUnrelatedPlatformData();
+    harness.seedUnrelatedTenantDomainData();
 
     await runLocalSeed({
       prismaClient: harness.prisma,
@@ -31,6 +32,10 @@ describe("prisma local seed recovery", () => {
 
     expect(recovered.loadedCounts.activityRecords).toBe(4);
     expect(harness.snapshot()).toEqual(baselineSnapshot);
-    expect(Array.from(harness.state.platformUsers.keys()).sort()).toContain("other-user@test.local");
+    expect(harness.snapshot()).toMatchObject({
+      ...createExpectedCanonicalSnapshot(),
+      tenantSlugs: ["acme-local", "other-tenant"],
+      platformUserEmails: ["other-user@test.local", "super-admin@acme-local.test", "tenant-admin@acme-local.test"]
+    });
   });
 });

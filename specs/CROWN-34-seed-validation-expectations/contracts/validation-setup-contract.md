@@ -10,6 +10,7 @@ Define the validation and documentation guarantees that `CROWN-34` must provide 
 - Rerun and reset-boundary safety are validated without widening the existing setup contract.
 - Contributors can distinguish when to use `db:bootstrap:local` versus `db:seed:local`.
 - Later automated workflows can point to one canonical setup and validation contract.
+- The canonical lookup examples remain tenant slug, tenant schema name, seeded operator emails, and representative tenant-domain business codes rather than generated IDs.
 
 ## Validation Rule
 

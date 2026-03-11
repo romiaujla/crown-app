@@ -20,6 +20,13 @@ Use this feature’s outputs to verify that the canonical seed and bootstrap fou
 - Make the contributor choice between `pnpm db:bootstrap:local` and `pnpm db:seed:local` direct and unambiguous.
 - Keep later automated workflow guidance tied to the same canonical baseline and validation contract.
 
+## Canonical Lookup Examples
+
+- tenant slug: `acme-local`
+- tenant schema name: `tenant_acme_local`
+- seeded operator emails: `super-admin@acme-local.test`, `tenant-admin@acme-local.test`
+- representative business codes: `ACME-SHIPPER`, `CHI-WH1`, `DISPATCH-CHI`, `TRACTOR-100`, `LOAD-1000`
+
 ## Validation Focus
 
 - deterministic seeded lookups across repeated reruns

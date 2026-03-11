@@ -28,6 +28,15 @@
   - platform user email
   - tenant-domain business code
   - reference-data code
+- **Canonical examples**:
+  - `acme-local`
+  - `tenant_acme_local`
+  - `super-admin@acme-local.test`
+  - `ACME-SHIPPER`
+  - `CHI-WH1`
+  - `DISPATCH-CHI`
+  - `TRACTOR-100`
+  - `LOAD-1000`
 - **Validation rules**:
   - Must use business identifiers instead of generated primary keys
   - Must remain stable across repeated canonical reruns

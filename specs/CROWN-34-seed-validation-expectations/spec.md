@@ -86,6 +86,7 @@ The maintainer can review one clear description of how local bootstrap, local re
 - `CROWN-31` defines the canonical seed baseline, deterministic lookup-key contract, and rerun/recovery expectations.
 - `CROWN-32` provides the runnable canonical local seed workflow and representative baseline dataset that this story validates.
 - `CROWN-33` provides the repository-level local bootstrap workflow and setup guidance that this story validates and clarifies.
+- Canonical validation examples should center on the tenant slug, tenant schema name, seeded operator emails, and representative business codes rather than generated IDs.
 - This story validates and documents the existing canonical baseline contract; it does not expand fixture scope or widen reset boundaries.
 
 ## Success Criteria *(mandatory)*

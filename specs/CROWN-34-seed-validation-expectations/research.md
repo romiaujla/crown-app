@@ -12,6 +12,7 @@
 
 - **Decision**: Validation should assert canonical tenant slug, schema identity, operator email lookups, and representative tenant-domain business codes rather than generated IDs or insertion order.
 - **Rationale**: Upstream contracts explicitly say downstream workflows must not rely on generated primary keys. Business identifiers are the stable integration surface for later setup and test reuse.
+- **Canonical examples**: `acme-local`, `tenant_acme_local`, `super-admin@acme-local.test`, `ACME-SHIPPER`, `CHI-WH1`, `DISPATCH-CHI`, `TRACTOR-100`, and `LOAD-1000`.
 - **Alternatives considered**:
   - Validate generated UUID values directly: rejected because those are not the supported downstream lookup contract.
   - Validate only record counts: rejected because counts do not prove deterministic lookup behavior.

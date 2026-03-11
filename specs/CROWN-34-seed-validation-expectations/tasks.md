@@ -17,8 +17,8 @@
 
 **Purpose**: Review the existing validation and setup surfaces that `CROWN-34` extends
 
-- [ ] T001 Review canonical seed validation coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
-- [ ] T002 [P] Review bootstrap workflow validation and setup guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [X] T001 Review canonical seed validation coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
+- [X] T002 [P] Review bootstrap workflow validation and setup guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
 
 ---
 
@@ -28,9 +28,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create reusable canonical validation helpers for deterministic lookup and preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
-- [ ] T004 [P] Align root setup guidance wording with the canonical validation contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
-- [ ] T005 [P] Prepare the focused `CROWN-34` validation story artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
+- [X] T003 Create reusable canonical validation helpers for deterministic lookup and preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
+- [X] T004 [P] Align root setup guidance wording with the canonical validation contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [X] T005 [P] Prepare the focused `CROWN-34` validation story artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
 
 **Checkpoint**: Validation helpers and setup guidance surfaces are ready for story-specific additions
 
@@ -44,12 +44,12 @@
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] Extend canonical seed determinism coverage for seeded tenant, platform user, and representative tenant-domain lookups in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`
+- [X] T006 [P] [US1] Extend canonical seed determinism coverage for seeded tenant, platform user, and representative tenant-domain lookups in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Add reusable deterministic lookup expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
-- [ ] T008 [US1] Refine the canonical seed validation narrative in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/data-model.md`
+- [X] T007 [US1] Add reusable deterministic lookup expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
+- [X] T008 [US1] Refine the canonical seed validation narrative in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/data-model.md`
 
 **Checkpoint**: User Story 1 is complete when deterministic seeded lookups are explicit, stable, and reviewable
 
@@ -63,14 +63,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T009 [P] [US2] Extend local seed recovery and baseline coverage for preserved unrelated data assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
-- [ ] T010 [P] [US2] Extend bootstrap workflow validation for canonical boundary and rerun expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [X] T009 [P] [US2] Extend local seed recovery and baseline coverage for preserved unrelated data assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
+- [X] T010 [P] [US2] Extend bootstrap workflow validation for canonical boundary and rerun expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Add shared preserved-boundary expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
-- [ ] T012 [US2] Refine rerun and preserved-boundary guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
-- [ ] T013 [US2] Align the validation data model and research notes with preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/research.md`
+- [X] T011 [US2] Add shared preserved-boundary expectations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
+- [X] T012 [US2] Refine rerun and preserved-boundary guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
+- [X] T013 [US2] Align the validation data model and research notes with preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/research.md`
 
 **Checkpoint**: User Story 2 is complete when canonical rerun and preserved-boundary behavior is executable and clearly documented
 
@@ -84,13 +84,13 @@
 
 ### Tests for User Story 3
 
-- [ ] T014 [P] [US3] Extend setup-focused validation narratives and reviewer expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md`
+- [X] T014 [P] [US3] Extend setup-focused validation narratives and reviewer expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Clarify bootstrap-versus-seed command guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
-- [ ] T016 [US3] Refine the validation-and-setup contract for later workflow reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
-- [ ] T017 [US3] Align spec-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/research.md`
+- [X] T015 [US3] Clarify bootstrap-versus-seed command guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [X] T016 [US3] Refine the validation-and-setup contract for later workflow reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
+- [X] T017 [US3] Align spec-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/quickstart.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/research.md`
 
 **Checkpoint**: User Story 3 is complete when setup-command choice and shared canonical baseline expectations are explicit for contributors and later workflow authors
 
@@ -100,10 +100,10 @@
 
 **Purpose**: Final validation and readiness checks across the canonical setup-and-validation contract
 
-- [ ] T018 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T019 [P] Run focused validation tests with `pnpm --filter @crown/api exec vitest run tests/integration/prisma-local-seed.spec.ts tests/integration/prisma-local-seed-determinism.spec.ts tests/integration/prisma-local-seed-recovery.spec.ts tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T020 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T021 Perform final terminology and contract-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
+- [X] T018 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T019 [P] Run focused validation tests with `pnpm --filter @crown/api exec vitest run tests/integration/prisma-local-seed.spec.ts tests/integration/prisma-local-seed-determinism.spec.ts tests/integration/prisma-local-seed-recovery.spec.ts tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T020 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T021 Perform final terminology and contract-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-34-seed-validation-expectations/contracts/validation-setup-contract.md`
 
 ---
 
