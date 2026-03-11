@@ -1,6 +1,10 @@
 import { Router } from "express";
 
 import type { JwtClaims } from "../auth/claims.js";
+import { CurrentUserResponseSchema } from "../auth/contracts.js";
+import { defaultAuthService } from "../auth/default-auth-service.js";
+import type { AuthService } from "../auth/service.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 import {
   LoginRequestSchema,
@@ -15,29 +19,76 @@ const toToken = (claims: JwtClaims) => {
   return `${header}.${payload}.signature`;
 };
 
-export const authRouter = Router();
+type AuthRouterOptions = {
+  authService?: AuthService;
+};
 
-authRouter.post("/login", (req, res) => {
-  const parsed = LoginRequestSchema.safeParse(req.body);
-  if (!parsed.success) return sendAuthError(res, 401, "unauthenticated", "Invalid credentials");
-
-  const claims: JwtClaims =
-    parsed.data.email === "super@crowncrm.dev"
-      ? { sub: "user-super-admin", role: "super_admin", tenant_id: null }
-      : { sub: "user-tenant-admin", role: "tenant_admin", tenant_id: "tenant-acme" };
-
-  const response = AccessTokenResponseSchema.parse({
-    access_token: toToken(claims),
-    claims
+const toCurrentUserResponse = (currentUser: Awaited<ReturnType<AuthService["resolveCurrentUser"]>>) =>
+  CurrentUserResponseSchema.parse({
+    principal: {
+      id: currentUser?.principal.id,
+      email: currentUser?.principal.email,
+      username: currentUser?.principal.username ?? null,
+      display_name: currentUser?.principal.displayName,
+      role: currentUser?.principal.role,
+      account_status: currentUser?.principal.accountStatus
+    },
+    role_context: {
+      role: currentUser?.roleContext.role,
+      tenant_id: currentUser?.roleContext.tenantId ?? null
+    },
+    tenant: currentUser?.tenant
+      ? {
+          id: currentUser.tenant.id,
+          slug: currentUser.tenant.slug,
+          name: currentUser.tenant.name,
+          role: currentUser.tenant.role
+        }
+      : null,
+    target_app: currentUser?.targetApp
   });
 
-  return res.status(200).json(response);
-});
+export const createAuthRouter = (options: AuthRouterOptions = {}) => {
+  const router = Router();
+  const authService = options.authService ?? defaultAuthService;
 
-authRouter.post("/logout", (req, res) => {
-  const parsed = LogoutRequestSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return sendAuthError(res, 400, "validation_error", "Invalid logout payload");
-  }
-  return res.status(204).send();
-});
+  router.post("/login", async (req, res) => {
+    const parsed = LoginRequestSchema.safeParse(req.body);
+    if (!parsed.success) return sendAuthError(res, 400, "validation_error", "Invalid login payload");
+
+    const result = await authService.login(parsed.data.identifier, parsed.data.password);
+    if (!result.ok) {
+      if (result.reason === "disabled_account") {
+        return sendAuthError(res, 403, "disabled_account", "Account is disabled");
+      }
+      return sendAuthError(res, 401, "invalid_credentials", "Invalid credentials");
+    }
+
+    const response = AccessTokenResponseSchema.parse({
+      access_token: toToken(result.claims),
+      claims: result.claims,
+      current_user: toCurrentUserResponse(result.currentUser)
+    });
+
+    return res.status(200).json(response);
+  });
+
+  router.get("/me", authenticate, async (req, res) => {
+    if (!req.auth) return sendAuthError(res, 401, "unauthenticated", "Missing bearer token");
+    const currentUser = req.authContext?.currentUser ?? (await authService.resolveCurrentUser(req.auth));
+    if (!currentUser) return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
+    return res.status(200).json(toCurrentUserResponse(currentUser));
+  });
+
+  router.post("/logout", (req, res) => {
+    const parsed = LogoutRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return sendAuthError(res, 400, "validation_error", "Invalid logout payload");
+    }
+    return res.status(204).send();
+  });
+
+  return router;
+};
+
+export const authRouter = createAuthRouter();

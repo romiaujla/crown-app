@@ -1,4 +1,5 @@
 import type { JwtClaims } from "../../src/auth/claims.js";
+import { AUTH_LOGIN_FIXTURES, DISABLED_AUTH_TEST_USER } from "../../src/auth/default-auth-service.js";
 
 export const createJwtToken = (claims: JwtClaims) => {
   const header = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" }), "utf8").toString("base64url");
@@ -23,3 +24,11 @@ export const tenantUserClaims: JwtClaims = {
   role: "tenant_user",
   tenant_id: "tenant-acme"
 };
+
+export const loginFixtures = {
+  ...AUTH_LOGIN_FIXTURES,
+  disabledUser: {
+    identifier: DISABLED_AUTH_TEST_USER.email,
+    password: DISABLED_AUTH_TEST_USER.password
+  }
+} as const;
