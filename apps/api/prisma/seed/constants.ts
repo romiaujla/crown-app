@@ -10,26 +10,26 @@ export const LOCAL_SEED_TENANT = {
 export const LOCAL_SEED_USERS = {
   superAdmin: {
     email: "super-admin@acme-local.test",
-    username: "seed.super.admin",
-    password: "SeedPassword123!",
+    username: "super.admin",
+    password: "Password123!",
     accountStatus: "active",
-    displayName: "Seed Super Admin",
+    displayName: "Super Admin",
     role: "super_admin"
   },
   tenantAdmin: {
     email: "tenant-admin@acme-local.test",
-    username: "seed.tenant.admin",
-    password: "SeedPassword123!",
+    username: "tenant.admin",
+    password: "Password123!",
     accountStatus: "active",
-    displayName: "Seed Tenant Admin",
+    displayName: "Tenant Admin",
     role: "tenant_admin"
   },
   tenantUser: {
     email: "tenant-user@acme-local.test",
-    username: "seed.tenant.user",
-    password: "SeedPassword123!",
+    username: "tenant.user",
+    password: "Password123!",
     accountStatus: "active",
-    displayName: "Seed Tenant User",
+    displayName: "Tenant User",
     role: "tenant_user"
   }
 } as const;
