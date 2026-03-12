@@ -10,7 +10,7 @@ Multi-tenant application monorepo for Crown.
 
 ## Workspace Layout
 - `apps/api` - Express API and global Prisma schema
-- `apps/web` - Next.js application
+- `apps/web` - Next.js application with a shadcn/ui CLI-compatible component setup
 - `packages/config` - shared configuration presets
 - `packages/types` - shared types and Zod schemas
 - `packages/ui` - shared UI primitives
@@ -47,6 +47,14 @@ Multi-tenant application monorepo for Crown.
 Default local endpoints:
 - Web: `http://localhost:3000`
 - API health: `http://localhost:4000/api/v1/health`
+
+## Web UI Baseline
+- `apps/web` is configured for shadcn/ui component generation through `apps/web/components.json`.
+- Use the repo root or `apps/web` as your working directory when adding components with the CLI:
+  - `cd apps/web && pnpm dlx shadcn@latest add button`
+  - or `pnpm dlx shadcn@latest add button --cwd apps/web`
+- The baseline utility lives at `apps/web/lib/utils.ts`.
+- The initial shared UI primitives live under `apps/web/components/ui/`.
 
 ## Database Commands
 - Start Postgres and apply schema in one step:
