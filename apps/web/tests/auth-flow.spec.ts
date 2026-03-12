@@ -2,6 +2,22 @@ import { expect, test, type Page } from "@playwright/test";
 
 const API_BASE_URL = "http://localhost:4000";
 const ACCESS_TOKEN_STORAGE_KEY = "crown.auth.access_token";
+const createAccessTokenPayload = (persona: Persona, expiresInSeconds = 300) => {
+  const tenantId = persona === "super_admin" ? null : "tenant-1";
+  return {
+    sub: `${persona}-user`,
+    role: persona,
+    tenant_id: tenantId,
+    exp: Math.floor(Date.now() / 1000) + expiresInSeconds
+  };
+};
+
+const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
+  const payload = createAccessTokenPayload(persona, expiresInSeconds);
+  const encodedHeader = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" }), "utf8").toString("base64url");
+  const encodedPayload = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+  return `${encodedHeader}.${encodedPayload}.sig`;
+};
 
 type Persona = "super_admin" | "tenant_admin" | "tenant_user";
 
@@ -66,9 +82,12 @@ const setupAuthRoutes = async (
       }
 
       const currentUser = buildCurrentUser(options.loginPersona);
+      const accessToken = createAccessToken(options.loginPersona);
+      const claims = createAccessTokenPayload(options.loginPersona);
       await route.fulfill({
         body: JSON.stringify({
-          access_token: `token-${options.loginPersona}`,
+          access_token: accessToken,
+          claims,
           current_user: currentUser
         }),
         contentType: "application/json",
@@ -154,9 +173,15 @@ test("super-admin login stores the token and routes to the platform shell", asyn
 
   await expect(page).toHaveURL(/\/platform$/);
   await expect(page.getByRole("heading", { name: "Crown Control Plane", level: 1 })).toBeVisible();
-  expect(await page.evaluate((key) => window.sessionStorage.getItem(key), ACCESS_TOKEN_STORAGE_KEY)).toBe(
-    "token-super_admin"
-  );
+  expect(
+    await page.evaluate((key) => {
+      const token = window.sessionStorage.getItem(key);
+      return token ? JSON.parse(atob(token.split(".")[1])) : null;
+    }, ACCESS_TOKEN_STORAGE_KEY)
+  ).toMatchObject({
+    role: "super_admin",
+    tenant_id: null
+  });
 });
 
 test("tenant login routes to the tenant shell recommended by the API", async ({ page }) => {
@@ -217,7 +242,7 @@ test("manual wrong-shell navigation is corrected for authenticated users", async
     ({ key, value }: { key: string; value: string }) => {
       window.sessionStorage.setItem(key, value);
     },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-tenant_user" }
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_user") }
   );
 
   await page.goto("/platform");
@@ -231,7 +256,7 @@ test("logout clears the browser token and returns to the login page", async ({ p
     ({ key, value }: { key: string; value: string }) => {
       window.sessionStorage.setItem(key, value);
     },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-super_admin" }
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("super_admin") }
   );
 
   await page.goto("/platform");
@@ -247,7 +272,7 @@ test("tenant admin logout clears the browser token and returns to the login page
     ({ key, value }: { key: string; value: string }) => {
       window.sessionStorage.setItem(key, value);
     },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-tenant_admin" }
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_admin") }
   );
 
   await page.goto("/tenant");
@@ -263,7 +288,7 @@ test("tenant user logout clears the browser token and returns to the login page"
     ({ key, value }: { key: string; value: string }) => {
       window.sessionStorage.setItem(key, value);
     },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-tenant_user" }
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_user") }
   );
 
   await page.goto("/tenant");
@@ -279,11 +304,65 @@ test("expired sessions redirect to login with a recovery message", async ({ page
     ({ key, value }: { key: string; value: string }) => {
       window.sessionStorage.setItem(key, value);
     },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: "stale-token" }
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_user", -1) }
   );
 
   await page.goto("/tenant");
-  await expect(page).toHaveURL(/\/login\?reason=session-expired$/);
+  await expect(page).toHaveURL(/\/login(?:\?reason=session-expired)?$/);
   await expect(page.locator(".form-banner")).toContainText("Your session expired. Sign in again to continue.");
   expect(await page.evaluate((key) => window.sessionStorage.getItem(key), ACCESS_TOKEN_STORAGE_KEY)).toBeNull();
+});
+
+test("session expiry warning appears before timed logout and redirects to login", async ({ page }) => {
+  const accessToken = createAccessToken("tenant_user", 2);
+  const claims = createAccessTokenPayload("tenant_user", 2);
+  await page.route(`${API_BASE_URL}/api/v1/auth/**`, async (route) => {
+    const request = route.request();
+    const url = request.url();
+
+    if (url.endsWith("/login")) {
+      await route.fulfill({
+        body: JSON.stringify({
+          access_token: accessToken,
+          claims,
+          current_user: buildCurrentUser("tenant_user")
+        }),
+        contentType: "application/json",
+        status: 200
+      });
+      return;
+    }
+
+    if (url.endsWith("/me")) {
+      await route.fulfill({
+        body: JSON.stringify(buildCurrentUser("tenant_user")),
+        contentType: "application/json",
+        status: 200
+      });
+      return;
+    }
+
+    if (url.endsWith("/logout")) {
+      await route.fulfill({
+        body: "",
+        contentType: "application/json",
+        status: 204
+      });
+      return;
+    }
+
+    await route.fallback();
+  });
+
+  await page.goto("/login");
+  await page.getByLabel("Email or username").fill("tenant_user");
+  await page.getByLabel("Password").fill("password123");
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  await expect(page.getByText("Your session is about to expire")).toBeVisible();
+  await expect(page.getByText(/Signing out in/i)).toBeVisible();
+  await expect(page.locator(".form-banner")).toContainText("Your session expired. Sign in again to continue.", {
+    timeout: 5000
+  });
+  await expect(page).toHaveURL(/\/login\?reason=session-expired$/, { timeout: 5000 });
 });

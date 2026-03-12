@@ -25,6 +25,13 @@ export const AuthRoutingSchema = z.object({
   reason_code: AuthRoutingReasonCodeSchema.nullable()
 });
 
+export const AccessTokenClaimsSchema = z.object({
+  sub: z.string(),
+  role: RoleSchema,
+  tenant_id: z.string().nullable(),
+  exp: z.number().int().positive()
+});
+
 export const CurrentUserResponseSchema = z.object({
   principal: z.object({
     id: z.string(),
@@ -52,6 +59,7 @@ export const CurrentUserResponseSchema = z.object({
 
 export const AccessTokenResponseSchema = z.object({
   access_token: z.string(),
+  claims: AccessTokenClaimsSchema,
   current_user: CurrentUserResponseSchema
 });
 
@@ -67,5 +75,6 @@ export type AuthTargetApp = z.infer<typeof AuthTargetAppSchema>;
 export type AuthRoutingStatus = z.infer<typeof AuthRoutingStatusSchema>;
 export type AuthRoutingReasonCode = z.infer<typeof AuthRoutingReasonCodeSchema>;
 export type CurrentUserResponse = z.infer<typeof CurrentUserResponseSchema>;
+export type AccessTokenClaims = z.infer<typeof AccessTokenClaimsSchema>;
 export type AccessTokenResponse = z.infer<typeof AccessTokenResponseSchema>;
 export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;

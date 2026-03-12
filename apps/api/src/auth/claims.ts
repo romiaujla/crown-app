@@ -32,7 +32,8 @@ export enum AuthErrorCodeEnum {
 export const JwtClaimsSchema = z.object({
   sub: z.string(),
   role: RoleSchema,
-  tenant_id: z.string().nullable()
+  tenant_id: z.string().nullable(),
+  exp: z.number().int().positive()
 }).superRefine((claims, ctx) => {
   if ((claims.role === RoleEnum.TENANT_ADMIN || claims.role === RoleEnum.TENANT_USER) && !claims.tenant_id) {
     ctx.addIssue({
@@ -46,6 +47,7 @@ export type JwtClaims = {
   sub: string;
   role: RoleEnum;
   tenant_id: string | null;
+  exp: number;
 };
 
 export const AuthErrorCodeSchema = z.enum(AuthErrorCodeEnum);
