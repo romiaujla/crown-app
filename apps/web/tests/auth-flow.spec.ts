@@ -184,6 +184,20 @@ test("protected tenant routes restore after login when the destination is valid"
   await expect(page).toHaveURL(/\/tenant$/);
 });
 
+test("tenant admin cannot remain in the control plane after login", async ({ page }) => {
+  await setupAuthRoutes(page, { loginPersona: "tenant_admin" });
+
+  await page.goto("/platform");
+  await expect(page).toHaveURL(/\/login$/);
+
+  await page.getByLabel("Email or username").fill("tenant_admin");
+  await page.getByLabel("Password").fill("password123");
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  await expect(page).toHaveURL(/\/tenant$/);
+  await expect(page.getByRole("heading", { name: "Northwind Operations Workspace", level: 1 })).toBeVisible();
+});
+
 test("invalid return paths fall back to the safe recommended shell", async ({ page }) => {
   await setupAuthRoutes(page, { loginPersona: "tenant_user" });
 
@@ -221,6 +235,38 @@ test("logout clears the browser token and returns to the login page", async ({ p
   );
 
   await page.goto("/platform");
+  await page.getByRole("button", { name: "Log out" }).click();
+
+  await expect(page).toHaveURL(/\/login$/);
+  expect(await page.evaluate((key) => window.sessionStorage.getItem(key), ACCESS_TOKEN_STORAGE_KEY)).toBeNull();
+});
+
+test("tenant admin logout clears the browser token and returns to the login page", async ({ page }) => {
+  await setupAuthRoutes(page, { mePersona: "tenant_admin" });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-tenant_admin" }
+  );
+
+  await page.goto("/tenant");
+  await page.getByRole("button", { name: "Log out" }).click();
+
+  await expect(page).toHaveURL(/\/login$/);
+  expect(await page.evaluate((key) => window.sessionStorage.getItem(key), ACCESS_TOKEN_STORAGE_KEY)).toBeNull();
+});
+
+test("tenant user logout clears the browser token and returns to the login page", async ({ page }) => {
+  await setupAuthRoutes(page, { mePersona: "tenant_user" });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: "token-tenant_user" }
+  );
+
+  await page.goto("/tenant");
   await page.getByRole("button", { name: "Log out" }).click();
 
   await expect(page).toHaveURL(/\/login$/);
