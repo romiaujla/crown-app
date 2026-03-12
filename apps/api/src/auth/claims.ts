@@ -3,7 +3,7 @@ import { z } from "zod";
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
-export enum AuthErrorCode {
+export enum AuthErrorCodeEnum {
   VALIDATION_ERROR = "validation_error",
   UNAUTHENTICATED = "unauthenticated",
   INVALID_CREDENTIALS = "invalid_credentials",
@@ -32,4 +32,4 @@ export const JwtClaimsSchema = z.object({
 
 export type JwtClaims = z.infer<typeof JwtClaimsSchema>;
 
-export const AuthErrorCodeSchema = z.nativeEnum(AuthErrorCode);
+export const AuthErrorCodeSchema = z.nativeEnum(AuthErrorCodeEnum);

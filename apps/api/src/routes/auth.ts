@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { AuthErrorCode, type JwtClaims } from "../auth/claims.js";
+import { AuthErrorCodeEnum, type JwtClaims } from "../auth/claims.js";
 import { CurrentUserResponseSchema } from "../auth/contracts.js";
 import { defaultAuthService } from "../auth/default-auth-service.js";
 import type { AuthService, CurrentUserContext } from "../auth/service.js";
@@ -59,7 +59,7 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
 
   router.post("/login", async (req, res) => {
     const parsed = LoginRequestSchema.safeParse(req.body);
-    if (!parsed.success) return sendAuthError(res, 400, AuthErrorCode.VALIDATION_ERROR, "Invalid login payload");
+    if (!parsed.success) return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid login payload");
 
     const result = await authService.login(parsed.data.identifier, parsed.data.password);
     if (!result.ok) {
@@ -76,7 +76,7 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
   });
 
   router.get("/me", authenticate, async (req, res) => {
-    if (!req.auth) return sendAuthError(res, 401, AuthErrorCode.UNAUTHENTICATED, "Missing bearer token");
+    if (!req.auth) return sendAuthError(res, 401, AuthErrorCodeEnum.UNAUTHENTICATED, "Missing bearer token");
     const currentUser = req.authContext
       ? { ok: true as const, currentUser: req.authContext.currentUser }
       : await authService.resolveCurrentUser(req.auth);
@@ -91,7 +91,7 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
   router.post("/logout", (req, res) => {
     const parsed = LogoutRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return sendAuthError(res, 400, AuthErrorCode.VALIDATION_ERROR, "Invalid logout payload");
+      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid logout payload");
     }
     return res.status(204).send();
   });

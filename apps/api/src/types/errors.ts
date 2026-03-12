@@ -2,7 +2,7 @@ import type { Response } from "express";
 import { z } from "zod";
 
 import { AuthRoutingSchema } from "../auth/contracts.js";
-import { AuthErrorCodeSchema, type AuthErrorCode } from "../auth/claims.js";
+import { AuthErrorCodeSchema, type AuthErrorCodeEnum } from "../auth/claims.js";
 import type { BlockedAuthRouting } from "../auth/service.js";
 
 export const ErrorResponseSchema = z.object({
@@ -16,7 +16,7 @@ export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export const sendAuthError = (
   res: Response,
   status: number,
-  errorCode: AuthErrorCode,
+  errorCode: AuthErrorCodeEnum,
   message: string,
   routing?: BlockedAuthRouting
 ) => {

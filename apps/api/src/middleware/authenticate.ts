@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { AuthErrorCode } from "../auth/claims.js";
+import { AuthErrorCodeEnum } from "../auth/claims.js";
 import { defaultAuthService } from "../auth/default-auth-service.js";
 import { JwtClaimsSchema } from "../auth/claims.js";
 
@@ -25,7 +25,7 @@ const decodeTokenPayload = (rawToken: string): unknown => {
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.header("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return sendAuthError(res, 401, AuthErrorCode.UNAUTHENTICATED, "Missing bearer token");
+    return sendAuthError(res, 401, AuthErrorCodeEnum.UNAUTHENTICATED, "Missing bearer token");
   }
 
   const token = authHeader.slice("Bearer ".length);
@@ -49,6 +49,6 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
       return next();
     });
   } catch {
-    return sendAuthError(res, 401, AuthErrorCode.INVALID_CLAIMS, "Invalid authentication claims");
+    return sendAuthError(res, 401, AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
   }
 };

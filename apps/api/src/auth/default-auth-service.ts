@@ -1,8 +1,8 @@
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import { AuthErrorCode, type JwtClaims } from "./claims.js";
+import { AuthErrorCodeEnum, type JwtClaims } from "./claims.js";
 import { findAuthIdentityByIdentifier, type AuthIdentityRecord } from "./identity.js";
 import { hashPassword, verifyPassword } from "./passwords.js";
-import { AuthResolutionFailureReason, resolveAuthenticatedRoleContext } from "./role-resolution.js";
+import { AuthResolutionFailureReasonEnum, resolveAuthenticatedRoleContext } from "./role-resolution.js";
 import type {
   AuthService,
   BlockedAuthRouting,
@@ -12,7 +12,7 @@ import type {
   ResolveCurrentUserFailure,
   ResolveCurrentUserResult
 } from "./service.js";
-import { AuthRoutingReasonCode, AuthRoutingStatus } from "./service.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "./service.js";
 
 type DirectoryUser = AuthIdentityRecord & {
   displayName: string;
@@ -190,25 +190,27 @@ const toCurrentUserContext = (user: DirectoryUser, role: JwtClaims["role"], tena
       : null,
   targetApp: role === "super_admin" ? "platform" : "tenant",
   routing: {
-    status: AuthRoutingStatus.ALLOWED,
+    status: AuthRoutingStatusEnum.ALLOWED,
     targetApp: role === "super_admin" ? "platform" : "tenant",
     reasonCode: null
   }
 });
 
 const buildBlockedRouting = (
-  reason: AuthResolutionFailureReason.MISSING_TENANT_MEMBERSHIP | AuthResolutionFailureReason.MULTIPLE_TENANT_MEMBERSHIPS
+  reason:
+    | AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP
+    | AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS
 ): BlockedAuthRouting =>
-  reason === AuthResolutionFailureReason.MULTIPLE_TENANT_MEMBERSHIPS
+  reason === AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS
     ? {
-        status: AuthRoutingStatus.SELECTION_REQUIRED,
+        status: AuthRoutingStatusEnum.SELECTION_REQUIRED,
         targetApp: null,
-        reasonCode: AuthRoutingReasonCode.MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS
+        reasonCode: AuthRoutingReasonCodeEnum.MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS
       }
     : {
-        status: AuthRoutingStatus.ACCESS_DENIED,
+        status: AuthRoutingStatusEnum.ACCESS_DENIED,
         targetApp: null,
-        reasonCode: AuthRoutingReasonCode.MISSING_ACTIVE_TENANT_MEMBERSHIP
+        reasonCode: AuthRoutingReasonCodeEnum.MISSING_ACTIVE_TENANT_MEMBERSHIP
       };
 
 const buildLoginFailure = (
@@ -250,23 +252,23 @@ const buildResolveCurrentUserFailure = (
 });
 
 const mapResolutionFailure = (
-  reason: AuthResolutionFailureReason
+  reason: AuthResolutionFailureReasonEnum
 ): ResolveCurrentUserFailure => {
   switch (reason) {
-    case AuthResolutionFailureReason.MISSING_TENANT_MEMBERSHIP:
+    case AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP:
       return buildResolveCurrentUserFailure(
-        AuthErrorCode.TENANT_MEMBERSHIP_REQUIRED,
+        AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
         "An active tenant membership is required for this user",
         buildBlockedRouting(reason)
       );
-    case AuthResolutionFailureReason.MULTIPLE_TENANT_MEMBERSHIPS:
+    case AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS:
       return buildResolveCurrentUserFailure(
-        AuthErrorCode.TENANT_SELECTION_REQUIRED,
+        AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
         "Tenant selection is required and is not yet supported",
         buildBlockedRouting(reason)
       );
     default:
-      return buildResolveCurrentUserFailure(AuthErrorCode.INVALID_CLAIMS, "Invalid authentication claims");
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
   }
 };
 
@@ -274,38 +276,38 @@ export const defaultAuthService: AuthService = {
   async login(identifier, password) {
     const directory = await createDirectoryClient();
     const identity = await findAuthIdentityByIdentifier(directory.prisma, identifier);
-    if (!identity) return buildLoginFailure(AuthErrorCode.INVALID_CREDENTIALS, "Invalid credentials");
+    if (!identity) return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     if (!identity.passwordHash || !(await verifyPassword(password, identity.passwordHash))) {
-      return buildLoginFailure(AuthErrorCode.INVALID_CREDENTIALS, "Invalid credentials");
+      return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     }
 
     const user = directory.users.find((entry) => entry.id === identity.id);
-    if (!user) return buildLoginFailure(AuthErrorCode.INVALID_CREDENTIALS, "Invalid credentials");
+    if (!user) return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
 
     const resolved = resolveAuthenticatedRoleContext(user);
 
     if (!resolved.ok) {
-      if (resolved.reason === AuthResolutionFailureReason.DISABLED_ACCOUNT) {
-        return buildLoginFailure(AuthErrorCode.DISABLED_ACCOUNT, "Account is disabled");
+      if (resolved.reason === AuthResolutionFailureReasonEnum.DISABLED_ACCOUNT) {
+        return buildLoginFailure(AuthErrorCodeEnum.DISABLED_ACCOUNT, "Account is disabled");
       }
 
-      if (resolved.reason === AuthResolutionFailureReason.MISSING_TENANT_MEMBERSHIP) {
+      if (resolved.reason === AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP) {
         return buildLoginFailure(
-          AuthErrorCode.TENANT_MEMBERSHIP_REQUIRED,
+          AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
           "An active tenant membership is required for this user",
           buildBlockedRouting(resolved.reason)
         );
       }
 
-      if (resolved.reason === AuthResolutionFailureReason.MULTIPLE_TENANT_MEMBERSHIPS) {
+      if (resolved.reason === AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS) {
         return buildLoginFailure(
-          AuthErrorCode.TENANT_SELECTION_REQUIRED,
+          AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
           "Tenant selection is required and is not yet supported",
           buildBlockedRouting(resolved.reason)
         );
       }
 
-      return buildLoginFailure(AuthErrorCode.INVALID_CREDENTIALS, "Invalid credentials");
+      return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     }
 
     return buildLoginSuccess(user, resolved.resolvedRole, resolved.tenantId);
@@ -314,15 +316,15 @@ export const defaultAuthService: AuthService = {
   async resolveCurrentUser(claims) {
     const directory = await createDirectoryClient();
     const user = directory.users.find((entry) => entry.id === claims.sub);
-    if (!user) return buildResolveCurrentUserFailure(AuthErrorCode.INVALID_CLAIMS, "Invalid authentication claims");
+    if (!user) return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
 
     const resolved = resolveAuthenticatedRoleContext(user);
     if (!resolved.ok) return mapResolutionFailure(resolved.reason);
     if (resolved.resolvedRole !== claims.role) {
-      return buildResolveCurrentUserFailure(AuthErrorCode.INVALID_CLAIMS, "Invalid authentication claims");
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
     }
     if (resolved.tenantId !== claims.tenant_id) {
-      return buildResolveCurrentUserFailure(AuthErrorCode.INVALID_CLAIMS, "Invalid authentication claims");
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
     }
 
     return {
