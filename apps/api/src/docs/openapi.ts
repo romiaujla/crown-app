@@ -1,11 +1,14 @@
-import { AuthErrorCodeEnum } from "../auth/claims.js";
-import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../auth/service.js";
+import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
 
 const bearerSecurity = [{ bearerAuth: [] }];
 const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
+const roleValues = Object.values(RoleEnum);
+const tenantRoleValues = Object.values(TenantRoleEnum);
 const authRoutingStatusValues = Object.values(AuthRoutingStatusEnum);
 const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
+const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
@@ -49,7 +52,7 @@ export const authDocsDocument = {
     schemas: {
       Role: {
         type: "string",
-        enum: ["super_admin", "tenant_admin", "tenant_user"]
+        enum: roleValues
       },
       PlatformUserAccountStatus: {
         type: "string",
@@ -102,7 +105,7 @@ export const authDocsDocument = {
           target_app: {
             type: "string",
             nullable: true,
-            enum: ["platform", "tenant"]
+            enum: authTargetAppValues
           },
           reason_code: {
             type: "string",
@@ -143,7 +146,7 @@ export const authDocsDocument = {
               name: { type: "string" },
               role: {
                 type: "string",
-                enum: ["tenant_admin", "tenant_user"]
+                enum: tenantRoleValues
               }
             }
           }
@@ -158,7 +161,7 @@ export const authDocsDocument = {
           tenant: { $ref: "#/components/schemas/CurrentUserTenant" },
           target_app: {
             type: "string",
-            enum: ["platform", "tenant"]
+            enum: authTargetAppValues
           },
           routing: { $ref: "#/components/schemas/AuthRouting" }
         }

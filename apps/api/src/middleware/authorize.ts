@@ -1,13 +1,13 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { AuthErrorCodeEnum, type Role } from "../auth/claims.js";
+import { AuthErrorCodeEnum, type RoleEnum } from "../auth/claims.js";
 
 import { evaluateAccess, resolveNamespaceFromPath, type Namespace } from "../auth/policy.js";
 import { sendAuthError } from "../types/errors.js";
 
 type AuthorizeOptions = {
   namespace?: Namespace;
-  allowedRoles?: Role[];
+  allowedRoles?: RoleEnum[];
 };
 
 const resolveTargetTenant = (req: Request) => req.header("x-tenant-id") ?? req.params.tenantId ?? null;

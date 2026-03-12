@@ -2,13 +2,13 @@ import { z } from "zod";
 
 import { PlatformUserAccountStatusSchema } from "../domain/status-enums.js";
 import { JwtClaimsSchema, RoleSchema, TenantRoleSchema } from "./claims.js";
-import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, authTargetAppValues } from "./service.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "./service.js";
 
-export const AuthRoutingReasonCodeSchema = z.nativeEnum(AuthRoutingReasonCodeEnum);
-export const AuthTargetAppSchema = z.enum(authTargetAppValues);
+export const AuthRoutingReasonCodeSchema = z.enum(AuthRoutingReasonCodeEnum);
+export const AuthTargetAppSchema = z.enum(AuthTargetAppEnum);
 
 export const AuthRoutingSchema = z.object({
-  status: z.nativeEnum(AuthRoutingStatusEnum),
+  status: z.enum(AuthRoutingStatusEnum),
   target_app: AuthTargetAppSchema.nullable(),
   reason_code: AuthRoutingReasonCodeSchema.nullable()
 });

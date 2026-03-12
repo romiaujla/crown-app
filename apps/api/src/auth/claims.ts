@@ -11,15 +11,9 @@ export enum TenantRoleEnum {
   TENANT_USER = "tenant_user"
 }
 
-const roleValues = [RoleEnum.SUPER_ADMIN, RoleEnum.TENANT_ADMIN, RoleEnum.TENANT_USER] as const;
+export const RoleSchema = z.enum(RoleEnum);
 
-export const RoleSchema = z.enum(roleValues);
-export type Role = `${RoleEnum}`;
-
-const tenantRoleValues = [TenantRoleEnum.TENANT_ADMIN, TenantRoleEnum.TENANT_USER] as const;
-
-export const TenantRoleSchema = z.enum(tenantRoleValues);
-export type TenantRole = `${TenantRoleEnum}`;
+export const TenantRoleSchema = z.enum(TenantRoleEnum);
 
 export enum AuthErrorCodeEnum {
   VALIDATION_ERROR = "validation_error",
@@ -50,8 +44,8 @@ export const JwtClaimsSchema = z.object({
 
 export type JwtClaims = {
   sub: string;
-  role: Role;
+  role: RoleEnum;
   tenant_id: string | null;
 };
 
-export const AuthErrorCodeSchema = z.nativeEnum(AuthErrorCodeEnum);
+export const AuthErrorCodeSchema = z.enum(AuthErrorCodeEnum);

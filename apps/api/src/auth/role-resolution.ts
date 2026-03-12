@@ -1,6 +1,6 @@
 import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
 import { isDisabledAccountStatus } from "./account-status.js";
-import type { Role } from "./claims.js";
+import { RoleEnum } from "./claims.js";
 
 export enum AuthResolutionFailureReasonEnum {
   DISABLED_ACCOUNT = "disabled_account",
@@ -16,17 +16,17 @@ export type AuthPlatformUser = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
-  role: Role;
+  role: RoleEnum;
 };
 
 export type AuthTenantMembership = {
   tenantId: string;
-  role: Role;
+  role: RoleEnum;
 };
 
 export type AuthResolutionResult =
-  | { ok: true; platformUserId: string; resolvedRole: "super_admin"; tenantId: null }
-  | { ok: true; platformUserId: string; resolvedRole: "tenant_admin" | "tenant_user"; tenantId: string }
+  | { ok: true; platformUserId: string; resolvedRole: RoleEnum.SUPER_ADMIN; tenantId: null }
+  | { ok: true; platformUserId: string; resolvedRole: RoleEnum.TENANT_ADMIN | RoleEnum.TENANT_USER; tenantId: string }
   | {
       ok: false;
       reason: AuthResolutionFailureReasonEnum;
@@ -40,11 +40,11 @@ export const resolveAuthenticatedRoleContext = (
   }
   if (!platformUser.passwordHash) return { ok: false, reason: AuthResolutionFailureReasonEnum.MISSING_PASSWORD };
 
-  if (platformUser.role === "super_admin") {
+  if (platformUser.role === RoleEnum.SUPER_ADMIN) {
     return {
       ok: true,
       platformUserId: platformUser.id,
-      resolvedRole: "super_admin",
+      resolvedRole: RoleEnum.SUPER_ADMIN,
       tenantId: null
     };
   }

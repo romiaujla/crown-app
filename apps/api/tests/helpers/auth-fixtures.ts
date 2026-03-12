@@ -1,4 +1,4 @@
-import type { JwtClaims } from "../../src/auth/claims.js";
+import { RoleEnum, type JwtClaims } from "../../src/auth/claims.js";
 import { AUTH_LOGIN_FIXTURES, DISABLED_AUTH_TEST_USER } from "../../src/auth/default-auth-service.js";
 
 export const createJwtToken = (claims: JwtClaims) => {
@@ -9,31 +9,31 @@ export const createJwtToken = (claims: JwtClaims) => {
 
 export const superAdminClaims: JwtClaims = {
   sub: "user-super-admin",
-  role: "super_admin",
+  role: RoleEnum.SUPER_ADMIN,
   tenant_id: null
 };
 
 export const tenantAdminClaims: JwtClaims = {
   sub: "user-tenant-admin",
-  role: "tenant_admin",
+  role: RoleEnum.TENANT_ADMIN,
   tenant_id: "tenant-acme"
 };
 
 export const tenantUserClaims: JwtClaims = {
   sub: "user-tenant-user",
-  role: "tenant_user",
+  role: RoleEnum.TENANT_USER,
   tenant_id: "tenant-acme"
 };
 
 export const tenantUserWithoutMembershipClaims: JwtClaims = {
   sub: "user-tenant-user-orphan",
-  role: "tenant_user",
+  role: RoleEnum.TENANT_USER,
   tenant_id: "tenant-acme"
 };
 
 export const tenantAdminMultiTenantClaims: JwtClaims = {
   sub: "user-tenant-admin-multi",
-  role: "tenant_admin",
+  role: RoleEnum.TENANT_ADMIN,
   tenant_id: "tenant-acme"
 };
 

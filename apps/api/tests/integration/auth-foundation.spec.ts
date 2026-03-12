@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { RoleEnum } from "../../src/auth/claims.js";
 import { PlatformUserAccountStatus } from "../../src/domain/status-enums.js";
 import { findAuthIdentityByIdentifier } from "../../src/auth/identity.js";
 import { hashPassword, verifyPassword } from "../../src/auth/passwords.js";
@@ -22,7 +23,7 @@ describe("auth credential foundation", () => {
         username: "seed.super.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: "super_admin",
+        role: RoleEnum.SUPER_ADMIN,
         tenantLinks: []
       }
     );
@@ -30,7 +31,7 @@ describe("auth credential foundation", () => {
     expect(result).toEqual({
       ok: true,
       platformUserId: "platform-user-super-admin",
-      resolvedRole: "super_admin",
+      resolvedRole: RoleEnum.SUPER_ADMIN,
       tenantId: null
     });
   });
@@ -43,11 +44,11 @@ describe("auth credential foundation", () => {
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: "tenant_admin",
+        role: RoleEnum.TENANT_ADMIN,
         tenantLinks: [
           {
             tenantId: "tenant-acme-local",
-            role: "tenant_admin"
+            role: RoleEnum.TENANT_ADMIN
           }
         ]
       }
@@ -56,7 +57,7 @@ describe("auth credential foundation", () => {
     expect(result).toEqual({
       ok: true,
       platformUserId: "platform-user-tenant-admin",
-      resolvedRole: "tenant_admin",
+      resolvedRole: RoleEnum.TENANT_ADMIN,
       tenantId: "tenant-acme-local"
     });
   });
@@ -70,11 +71,11 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.disabled,
-          role: "tenant_user",
+          role: RoleEnum.TENANT_USER,
           tenantLinks: [
             {
               tenantId: "tenant-acme-local",
-              role: "tenant_user"
+              role: RoleEnum.TENANT_USER
             }
           ]
         }
@@ -92,7 +93,7 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.active,
-          role: "tenant_user",
+          role: RoleEnum.TENANT_USER,
           tenantLinks: []
         }
       )
@@ -110,15 +111,15 @@ describe("auth credential foundation", () => {
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: "tenant_admin",
+        role: RoleEnum.TENANT_ADMIN,
         tenantLinks: [
           {
             tenantId: "tenant-acme-local",
-            role: "tenant_admin"
+            role: RoleEnum.TENANT_ADMIN
           },
           {
             tenantId: "tenant-zenith-local",
-            role: "tenant_admin"
+            role: RoleEnum.TENANT_ADMIN
           }
         ]
       })
@@ -151,8 +152,8 @@ describe("auth credential foundation", () => {
             username: "seed.tenant.user",
             passwordHash: "scrypt$salt$hash",
             accountStatus: PlatformUserAccountStatus.active,
-            role: "tenant_user" as const,
-            tenantLinks: [{ tenantId: "tenant-acme-local", role: "tenant_user" as const }]
+            role: RoleEnum.TENANT_USER,
+            tenantLinks: [{ tenantId: "tenant-acme-local", role: RoleEnum.TENANT_USER }]
           };
         }
       }

@@ -1,15 +1,11 @@
 import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { JwtClaims, Role, TenantRole } from "./claims.js";
-import { AuthErrorCodeEnum } from "./claims.js";
+import type { JwtClaims } from "./claims.js";
+import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "./claims.js";
 
 export enum AuthTargetAppEnum {
   PLATFORM = "platform",
   TENANT = "tenant"
 }
-
-export const authTargetAppValues = [AuthTargetAppEnum.PLATFORM, AuthTargetAppEnum.TENANT] as const;
-
-export type AuthTargetApp = `${AuthTargetAppEnum}`;
 
 export enum AuthRoutingStatusEnum {
   ALLOWED = "allowed",
@@ -27,7 +23,7 @@ export type AuthPrincipal = {
   email: string;
   username: string | null;
   displayName: string;
-  role: Role;
+  role: RoleEnum;
   accountStatus: PlatformUserAccountStatus;
 };
 
@@ -35,12 +31,12 @@ export type AuthTenantContext = {
   id: string;
   slug: string;
   name: string;
-  role: TenantRole;
+  role: TenantRoleEnum;
 };
 
 export type AllowedAuthRouting = {
   status: AuthRoutingStatusEnum.ALLOWED;
-  targetApp: AuthTargetApp;
+  targetApp: AuthTargetAppEnum;
   reasonCode: null;
 };
 
@@ -55,11 +51,11 @@ export type AuthRouting = AllowedAuthRouting | BlockedAuthRouting;
 export type CurrentUserContext = {
   principal: AuthPrincipal;
   roleContext: {
-    role: Role;
+    role: RoleEnum;
     tenantId: string | null;
   };
   tenant: AuthTenantContext | null;
-  targetApp: AuthTargetApp;
+  targetApp: AuthTargetAppEnum;
   routing: AllowedAuthRouting;
 };
 
