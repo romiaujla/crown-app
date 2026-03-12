@@ -28,27 +28,33 @@ export type ProvisionTenantInput = {
   actorSub: string;
 };
 
+export type ProvisionTenantSuccessResult = {
+  status: "provisioned";
+  tenantId: string;
+  slug: string;
+  schemaName: string;
+  appliedVersions: string[];
+  skippedVersions: string[];
+  tenant: Tenant;
+};
+
+export type ProvisionTenantConflictResult = {
+  status: "conflict";
+  message: string;
+};
+
+export type ProvisionTenantFailureResult = {
+  status: "failed";
+  errorCode: "migration_failed";
+  message: string;
+  failedVersion?: string;
+  tenantId: string;
+  slug: string;
+  schemaName: string;
+  appliedVersions: string[];
+};
+
 export type ProvisionTenantResult =
-  | {
-      status: "provisioned";
-      tenantId: string;
-      slug: string;
-      schemaName: string;
-      appliedVersions: string[];
-      skippedVersions: string[];
-      tenant: Tenant;
-    }
-  | {
-      status: "conflict";
-      message: string;
-    }
-  | {
-      status: "failed";
-      errorCode: "migration_failed";
-      message: string;
-      failedVersion?: string;
-      tenantId: string;
-      slug: string;
-      schemaName: string;
-      appliedVersions: string[];
-    };
+  | ProvisionTenantSuccessResult
+  | ProvisionTenantConflictResult
+  | ProvisionTenantFailureResult;
