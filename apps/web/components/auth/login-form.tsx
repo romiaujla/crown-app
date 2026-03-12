@@ -88,9 +88,6 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
         />
         {fieldErrors.password ? <span className="field-error">{fieldErrors.password}</span> : null}
       </label>
-
-      <p className="form-hint">Crown keeps the access token only in this browser session for the current tab.</p>
-
       <button className="form-submit" disabled={isSubmitting} type="submit">
         {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
