@@ -14,6 +14,11 @@ Applies to all contributors (human and AI) across all repository directories.
 
 ## Coding Standards
 - Use TypeScript strict mode for new code where applicable.
+- For reusable finite state or value sets in TypeScript, prefer named enums over ad hoc string unions or inline string tuples.
+- One-off literal values that are local to a single type or schema may remain inline when the value set is not reused elsewhere.
+- TypeScript enum member keys must use `SNAKE_CASE`.
+- TypeScript enum type names must use the `Enum` suffix.
+- When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum rather than repeat the same inline string array.
 - Validate external input with Zod before business logic.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
