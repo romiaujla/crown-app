@@ -13,6 +13,7 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
   - `--help` for prompt discovery and supported command lookup
   - `--speckit CROWN-<id>` for full Spec Kit delivery
   - `--implement CROWN-<id>` for implementation-only delivery
+- Use documented workflow-helper prompts from `docs/process/ai-agent-prompt-help.md` for audit, Jira sync, PR comment resolution, PR refresh, status, handoff, reconcile, test-fix, OpenAPI audit, review, and scope-drift loops.
 - Keep the prompt help registry in `docs/process/ai-agent-prompt-help.md` aligned with any documented prompt behavior changes.
 
 ## Prompt-Driven Start Workflow
@@ -32,6 +33,17 @@ When a user prompt is `--help`:
 1. Use `docs/process/ai-agent-prompt-help.md` as the source-of-truth registry for supported repository AI-agent prompt patterns.
 2. Return the documented prompt patterns with concise behavior descriptions.
 3. Keep the response limited to prompts that are actually documented in the repository.
+
+When a user prompt matches a documented workflow-helper command such as `--audit`, `--sync-to-jira`, `--sync-from-jira`, `--resolve-pr-comments`, `--review`, `--refresh-pr`, `--status`, `--handoff`, `--reconcile`, `--test-fix`, `--openapi-audit`, or `--scope-drift`:
+
+1. Treat the current Jira-linked branch or specified PR/Jira issue as the working scope unless the documented command explicitly requires a follow-up Jira issue.
+2. Preserve branch, commit, Jira, and PR metadata required by `docs/process/engineering-constitution.md`.
+3. Use `--audit` to report Jira coverage, gaps, validation debt, and out-of-scope changes without silently rewriting scope.
+4. Use `--sync-to-jira` only to append structured implementation notes, validation evidence, and accepted scope increases back into Jira.
+5. Use `--sync-from-jira` only to pull Jira changes into an in-flight branch; if the prior Jira-linked branch already merged to `main`, create a follow-up Jira issue instead of reopening merged work.
+6. Use `--resolve-pr-comments` to inspect the current branch PR or a specified PR, make safe straightforward fixes, reply when automation should not change behavior, and resolve completed conversations when supported.
+7. Use `--review`, `--refresh-pr`, `--status`, `--handoff`, `--reconcile`, `--test-fix`, `--openapi-audit`, and `--scope-drift` only for delivery-maintenance work that stays aligned with the Jira-linked branch and PR.
+8. Pause for clarification or create a follow-up issue when a helper command reveals scope drift that should not be merged under the current Jira issue.
 
 ## Operational Rules
 - Do not bypass repository hooks, CI checks, or branch protection requirements.

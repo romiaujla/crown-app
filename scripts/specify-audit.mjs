@@ -8,6 +8,23 @@ import { readdir } from "node:fs/promises";
 
 const ROOT = process.cwd();
 const BRANCH_PATTERN = /^(chore|feat|fix|hotfix)\/CROWN-\d+(-[a-z0-9-]+)?$/;
+const PROMPT_PATTERNS = [
+  "--help",
+  "--speckit CROWN-<id>",
+  "--implement CROWN-<id>",
+  "--audit CROWN-<id>",
+  "--sync-to-jira CROWN-<id>",
+  "--sync-from-jira CROWN-<id>",
+  "--resolve-pr-comments [PR-NUMBER]",
+  "--review [PR-NUMBER]",
+  "--refresh-pr [PR-NUMBER]",
+  "--status [CROWN-<id>]",
+  "--handoff CROWN-<id>",
+  "--reconcile CROWN-<id>",
+  "--test-fix [TARGET]",
+  "--openapi-audit [TARGET]",
+  "--scope-drift CROWN-<id>"
+];
 const REQUIRED_DOCS = [
   "docs/process/engineering-constitution.md",
   "docs/process/ai-agent-prompt-help.md",
@@ -20,6 +37,8 @@ const checks = [];
 const addCheck = (name, ok, detail) => {
   checks.push({ name, ok, detail });
 };
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const ensureFileContains = async (filePath, pattern, label) => {
   try {
@@ -94,15 +113,27 @@ const main = async () => {
     featureConstitutions.length === 0 ? "No duplicates found" : `Remove: ${featureConstitutions.join(", ")}`
   );
 
-  await ensureFileContains(
-    "docs/process/ai-agent-prompt-help.md",
-    /--help[\s\S]*--speckit CROWN-<id>[\s\S]*--implement CROWN-<id>/i,
-    "Prompt help registry lists the supported command patterns"
-  );
+  for (const promptPattern of PROMPT_PATTERNS) {
+    await ensureFileContains(
+      "docs/process/ai-agent-prompt-help.md",
+      new RegExp(escapeRegExp(promptPattern), "i"),
+      `Prompt help registry documents ${promptPattern}`
+    );
+  }
   await ensureFileContains(
     "docs/process/ai-agent-prompt-help.md",
     /registry[\s\S]*future|future[\s\S]*registry/i,
     "Prompt help registry defines how future commands are added"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /--audit CROWN-<id>[\s\S]*--sync-to-jira CROWN-<id>[\s\S]*--sync-from-jira CROWN-<id>[\s\S]*--resolve-pr-comments \[PR-NUMBER\]/i,
+    "Spec workflow documents the workflow-helper prompt contract"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /--audit[\s\S]*--sync-to-jira[\s\S]*--sync-from-jira[\s\S]*--resolve-pr-comments/i,
+    "AGENTS documents the workflow-helper prompts"
   );
   await ensureFileContains(
     "AGENTS.md",
@@ -163,6 +194,11 @@ const main = async () => {
     "README.md",
     /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
     "README documents the --implement command"
+  );
+  await ensureFileContains(
+    "README.md",
+    /--audit CROWN-<id>[\s\S]*--resolve-pr-comments|workflow-helper prompts/i,
+    "README links the workflow-helper prompt catalog"
   );
   await ensureFileContains(
     ".husky/commit-msg",

@@ -33,6 +33,14 @@ For tagged workflow commands:
 
 Future prompt patterns should be added to the help registry first, then documented here only if they change workflow behavior.
 
+## Workflow Helper Prompt Contract
+- `--audit CROWN-<id>` audits the active implementation against Jira scope, acceptance criteria, validation evidence, and out-of-scope changes before merge or handoff.
+- `--sync-to-jira CROWN-<id>` pushes branch-derived implementation notes, validation evidence, and accepted scope changes back into Jira without rewriting unrelated issue sections.
+- `--sync-from-jira CROWN-<id>` pulls Jira changes into an active branch only while that branch remains in flight; if the prior Jira-linked branch already merged to `main`, create a follow-up Jira issue instead of reopening the merged branch scope.
+- `--resolve-pr-comments [PR-NUMBER]` reviews the current branch PR or the specified PR, applies safe straightforward fixes, responds where automation should not change behavior, and resolves completed conversations when the platform supports it.
+- `--review [PR-NUMBER]`, `--refresh-pr [PR-NUMBER]`, `--status [CROWN-<id>]`, `--handoff CROWN-<id>`, `--reconcile CROWN-<id>`, `--test-fix [TARGET]`, `--openapi-audit [TARGET]`, and `--scope-drift CROWN-<id>` are governed by the help registry and must remain limited to delivery-maintenance, validation, and scope-reconciliation work for the current Jira-linked branch or PR.
+- If any helper prompt discovers branch/Jira/PR drift that would widen scope or invalidate release-safe metadata, stop, surface the drift explicitly, and either trim the change or create the necessary follow-up issue before continuing.
+
 ## Required Phase Sequence
 For work started with `--speckit CROWN-<id>`, advance in this order only:
 
