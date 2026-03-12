@@ -1,11 +1,11 @@
-# Implementation Plan: Enforce Spec Kit Workflow For `Start implementing <JIRA ISSUE>` Prompts
+# Implementation Plan: Enforce Tagged AI-Agent Workflow Commands
 
 **Branch**: `fix/CROWN-80-enforce-start-implementing-spec-kit-workflow` | **Date**: 2026-03-11 | **Spec**: [/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-80-enforce-start-implementing-spec-kit-workflow/spec.md](/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-80-enforce-start-implementing-spec-kit-workflow/spec.md)
 **Input**: Feature specification from `/specs/CROWN-80-enforce-start-implementing-spec-kit-workflow/spec.md`
 
 ## Summary
 
-Keep `Start implementing <JIRA ISSUE>` on the Spec Kit flow by default, add `--skip-speckit` as the only explicit user-controlled override, mirror that rule across the repository guidance surfaces, and extend `pnpm specify.audit` to catch regressions.
+Replace the mixed natural-language workflow contract with canonical tagged commands: `--speckit CROWN-<id>` for the full Spec Kit path and `--implement CROWN-<id>` for implementation-only work. Mirror that contract across the repository guidance surfaces and extend `pnpm specify.audit` to catch regressions.
 
 ## Technical Context
 
@@ -15,7 +15,7 @@ Keep `Start implementing <JIRA ISSUE>` on the Spec Kit flow by default, add `--s
 **Testing**: `pnpm specify.audit`  
 **Target Platform**: Repository workflow guidance consumed during local AI-agent sessions  
 **Project Type**: Documentation/process fix with lightweight validation tooling  
-**Performance Goals**: Deterministic prompt-driven workflow behavior with no issue-size reinterpretation during startup and no silent Spec Kit skipping without the explicit tag  
+**Performance Goals**: Deterministic command-driven workflow behavior with no natural-language ambiguity and no hidden mode selection  
 **Constraints**: Stay scoped to AI-agent workflow enforcement; do not widen into unrelated runtime features or governance rewrites  
 **Scale/Scope**: One Jira bug spanning four guidance surfaces and one audit script
 
@@ -25,7 +25,7 @@ Keep `Start implementing <JIRA ISSUE>` on the Spec Kit flow by default, add `--s
 
 - Branch naming: PASS. `fix/CROWN-80-enforce-start-implementing-spec-kit-workflow` matches the constitution for a Bug.
 - Commit/PR convention: PASS. Work on this branch will use `fix: CROWN-80 - ...` subjects and a squash-safe PR title.
-- Scope control: PASS. The fix is limited to prompt-driven workflow enforcement, the explicit `--skip-speckit` override, and repository-local validation.
+- Scope control: PASS. The fix is limited to tagged workflow command enforcement and repository-local validation.
 - Planning gate: PASS. This work is proceeding through `/specify`, `/plan`, and `/tasks` before implementation in accordance with the prompt-driven rule being fixed.
 - Testing discipline: PASS. `pnpm specify.audit` is sufficient because the change is documentation and repository-tooling only.
 
@@ -33,9 +33,9 @@ Post-design re-check: PASS. The design keeps the fix inside repository guidance 
 
 ## Implementation Outline
 
-- Update `AGENTS.md` so the prompt-driven start workflow uses `/specify` by default and documents `--skip-speckit` as the only override.
-- Update `README.md`, `docs/process/spec-kit-workflow.md`, and `docs/process/spec-kit-installation.md` to mirror the same default-and-override rule.
-- Extend `scripts/specify-audit.mjs` with explicit checks for the prompt-driven default and `--skip-speckit` override requirements in the audited guidance.
+- Update `AGENTS.md` so the workflow entrypoint uses `--speckit CROWN-<id>` and `--implement CROWN-<id>` as the canonical commands.
+- Update `README.md`, `docs/process/spec-kit-workflow.md`, and `docs/process/spec-kit-installation.md` to mirror the same tagged-command contract.
+- Extend `scripts/specify-audit.mjs` with explicit checks for the `--speckit` and `--implement` requirements in the audited guidance.
 - Validate the changes with `pnpm specify.audit`.
 
 ## Project Structure
@@ -53,7 +53,7 @@ docs/process/spec-kit-workflow.md
 scripts/specify-audit.mjs
 ```
 
-**Structure Decision**: No runtime code or product contracts change. The implementation should stay inside the repository instruction documents and the existing Spec Kit audit script. The future `--help` prompt catalog is intentionally split to `CROWN-86`.
+**Structure Decision**: No runtime code or product contracts change. The implementation should stay inside the repository instruction documents and the existing Spec Kit audit script. The future `--help` prompt catalog remains split to its own issue.
 
 ## Complexity Tracking
 

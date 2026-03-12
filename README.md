@@ -110,26 +110,29 @@ Default local endpoints:
 - AI-agent mandatory entrypoint: `AGENTS.md`
 
 ## Planning-First Workflow
-Prompt-driven starts in the form `Start implementing <JIRA ISSUE>` require Spec Kit artifacts before implementation unless the prompt explicitly includes `--skip-speckit`:
+Use tagged workflow commands to choose the delivery path:
+- `--speckit CROWN-<id>` requires Spec Kit artifacts before implementation:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
 4. `/tasks`
+- `--implement CROWN-<id>` skips `/specify`, `/plan`, and `/tasks` and goes straight to implementation.
 
 Repository guidance:
 - Single canonical constitution: `docs/process/engineering-constitution.md`
 - Project-level Spec Kit installation and usage: `docs/process/spec-kit-installation.md`
 - Feature artifact/index guidance: `docs/features/README.md`
 
-Prompt-driven start example:
+Tagged workflow examples:
 
 ```text
-Start implementing CROWN-79
+--speckit CROWN-79
+--implement CROWN-79
 ```
 
 Expected repository behavior for prompt-driven starts:
 - Resolve the Jira issue first and create or validate the Jira-linked branch.
-- Start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order by default.
-- If the prompt includes `--skip-speckit`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+- Use `--speckit CROWN-<id>` to start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
+- Use `--implement CROWN-<id>` to skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 - Commit and push each completed phase before advancing when no unresolved clarification remains.
 - Pause for clarification instead of auto-advancing when scope, requirements, or repository state are ambiguous.

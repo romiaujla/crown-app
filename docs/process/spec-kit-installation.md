@@ -17,13 +17,13 @@ uvx --from git+https://github.com/github/spec-kit.git specify init . --here --ai
 ```
 
 ## Required Artifact Flow for Prompt-Driven Starts
-After initialization, generate and maintain these artifacts for prompt-driven starts in the form `Start implementing <JIRA ISSUE>` unless the prompt explicitly includes `--skip-speckit`:
+After initialization, generate and maintain these artifacts for `--speckit CROWN-<id>` runs:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
 4. `/tasks`
 
-When work starts from a prompt such as `Start implementing <JIRA ISSUE>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation unless the prompt explicitly includes `--skip-speckit`.
+When work starts from `--speckit CROWN-<id>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation. When work starts from `--implement CROWN-<id>`, skip the Spec Kit phases and proceed directly to implementation under the same Jira and branch controls.
 
 ## Verification
 Run:
@@ -50,4 +50,4 @@ This updates:
 ## Notes
 - We intentionally track the latest upstream Spec Kit for now.
 - If upstream behavior changes, update this runbook and workflow docs in the same PR.
-- Keep installation guidance aligned with the prompt-driven workflow instructions in `AGENTS.md` so the repository has one execution path for prompt-driven starts.
+- Keep installation guidance aligned with the tagged workflow instructions in `AGENTS.md` so the repository has one canonical command contract.

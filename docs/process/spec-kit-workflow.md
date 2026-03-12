@@ -1,9 +1,9 @@
-# Spec Kit Workflow (Default For Prompt-Driven Starts)
+# Spec Kit Workflow (Tagged Command Contract)
 
 Canonical governance policy lives in:
 - `docs/process/engineering-constitution.md`
 
-For prompts in the form `Start implementing <JIRA ISSUE>`, complete these artifacts before implementation unless the prompt explicitly includes `--skip-speckit`:
+For prompts in the form `--speckit CROWN-<id>`, complete these artifacts before implementation:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -21,16 +21,16 @@ For prompts in the form `Start implementing <JIRA ISSUE>`, complete these artifa
 - PR description must reference corresponding spec/plan/tasks artifacts.
 
 ## Prompt-Driven Start Contract
-For prompts in the form `Start implementing <JIRA ISSUE>`:
+For tagged workflow commands:
 
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
-4. If the prompt includes `--skip-speckit`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
-5. Otherwise, start the workflow with `/specify`.
+4. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+5. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
 
 ## Required Phase Sequence
-For work started from a Jira prompt without `--skip-speckit`, advance in this order only:
+For work started with `--speckit CROWN-<id>`, advance in this order only:
 
 1. `/specify`
 2. `/plan`
@@ -40,7 +40,7 @@ For work started from a Jira prompt without `--skip-speckit`, advance in this or
 
 The workflow must not skip or reorder these phases unless the user explicitly changes scope or direction.
 
-When the prompt includes `--skip-speckit`, the workflow bypasses `/specify`, `/plan`, and `/tasks` and starts at implementation. This override applies only when the user includes the exact tag in the prompt.
+When the prompt is `--implement CROWN-<id>`, the workflow bypasses `/specify`, `/plan`, and `/tasks` and starts at implementation.
 
 ## Phase Gate Rules
 - `/specify` may advance to `/plan` only after the specification is complete, no unresolved clarification remains, and the phase changes are committed and pushed.

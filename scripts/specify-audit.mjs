@@ -105,33 +105,33 @@ const main = async () => {
   );
   await ensureFileContains(
     "AGENTS.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*begin with `?\/specify`?/i,
-    "AGENTS requires /specify for prompt-driven starts"
+    /--speckit CROWN-<id>[\s\S]*begin with `?\/specify`?/i,
+    "AGENTS requires /specify for --speckit runs"
   );
   await ensureFileContains(
     "AGENTS.md",
-    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
-    "AGENTS documents the --skip-speckit override"
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "AGENTS documents the --implement command"
   );
   await ensureFileContains(
     "docs/process/spec-kit-workflow.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*start the workflow with `?\/specify`?/i,
-    "Spec workflow requires /specify for prompt-driven starts"
+    /--speckit CROWN-<id>[\s\S]*start the workflow with `?\/specify`?/i,
+    "Spec workflow requires /specify for --speckit runs"
   );
   await ensureFileContains(
     "docs/process/spec-kit-workflow.md",
-    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
-    "Spec workflow documents the --skip-speckit override"
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "Spec workflow documents the --implement command"
   );
   await ensureFileContains(
     "docs/process/spec-kit-installation.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation unless the prompt explicitly includes `?--skip-speckit`?/i,
-    "Spec installation guidance preserves prompt-driven /specify rule"
+    /--speckit CROWN-<id>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
+    "Spec installation guidance preserves --speckit /specify rule"
   );
   await ensureFileContains(
     "README.md",
-    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
-    "README documents the --skip-speckit override"
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "README documents the --implement command"
   );
   await ensureFileContains(
     ".husky/commit-msg",
