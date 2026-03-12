@@ -58,11 +58,6 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
 
   return (
     <form className="login-form" onSubmit={handleSubmit} noValidate>
-      <div>
-        <p className="eyebrow">Browser session</p>
-        <h2>Sign in to continue</h2>
-      </div>
-
       {bannerMessage ? (
         <p className="form-banner" role="alert">
           {bannerMessage}

@@ -47,12 +47,8 @@ const LoginPage = () => {
     <main className="login-shell">
       <section className="login-panel" aria-labelledby="login-title">
         <div className="login-copy">
-          <p className="eyebrow">Shared sign in</p>
-          <h1 id="login-title">Enter Crown</h1>
-          <p>
-            Sign in once, then Crown will route you into the platform control plane or the correct tenant workspace
-            using the API-authenticated role context.
-          </p>
+          <p className="eyebrow">Sign in to</p>
+          <h1 id="login-title">Crown</h1>
         </div>
         <LoginForm reason={reason} />
       </section>
