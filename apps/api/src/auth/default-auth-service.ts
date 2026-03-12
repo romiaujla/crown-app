@@ -1,5 +1,5 @@
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import { AuthErrorCodeEnum, type JwtClaims } from "./claims.js";
+import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum, type JwtClaims } from "./claims.js";
 import { findAuthIdentityByIdentifier, type AuthIdentityRecord } from "./identity.js";
 import { hashPassword, verifyPassword } from "./passwords.js";
 import { AuthResolutionFailureReasonEnum, resolveAuthenticatedRoleContext } from "./role-resolution.js";
@@ -12,7 +12,7 @@ import type {
   ResolveCurrentUserFailure,
   ResolveCurrentUserResult
 } from "./service.js";
-import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "./service.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "./service.js";
 
 type DirectoryUser = AuthIdentityRecord & {
   displayName: string;
@@ -59,7 +59,7 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
-    role: "super_admin",
+    role: RoleEnum.SUPER_ADMIN,
     tenantLinks: []
   },
   {
@@ -70,8 +70,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin",
-    role: "tenant_admin",
-    tenantLinks: [{ tenantId: "tenant-acme", role: "tenant_admin" as const }]
+    role: RoleEnum.TENANT_ADMIN,
+    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_ADMIN }]
   },
   {
     id: "user-tenant-user",
@@ -81,8 +81,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
-    role: "tenant_user",
-    tenantLinks: [{ tenantId: "tenant-acme", role: "tenant_user" as const }]
+    role: RoleEnum.TENANT_USER,
+    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_USER }]
   },
   {
     id: "user-disabled",
@@ -92,8 +92,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.disabled,
     displayName: "Disabled User",
-    role: "tenant_user" as const,
-    tenantLinks: [{ tenantId: "tenant-acme", role: "tenant_user" as const }]
+    role: RoleEnum.TENANT_USER,
+    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_USER }]
   },
   {
     id: "user-tenant-user-orphan",
@@ -103,7 +103,7 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User Orphan",
-    role: "tenant_user",
+    role: RoleEnum.TENANT_USER,
     tenantLinks: []
   },
   {
@@ -114,10 +114,10 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin Multi",
-    role: "tenant_admin",
+    role: RoleEnum.TENANT_ADMIN,
     tenantLinks: [
-      { tenantId: "tenant-acme", role: "tenant_admin" as const },
-      { tenantId: "tenant-zenith", role: "tenant_admin" as const }
+      { tenantId: "tenant-acme", role: RoleEnum.TENANT_ADMIN },
+      { tenantId: "tenant-zenith", role: RoleEnum.TENANT_ADMIN }
     ]
   }
 ] as const;
@@ -166,6 +166,9 @@ const createDirectoryClient = async () => {
   };
 };
 
+const toTenantRole = (role: Exclude<JwtClaims["role"], RoleEnum.SUPER_ADMIN>): TenantRoleEnum =>
+  role === RoleEnum.TENANT_ADMIN ? TenantRoleEnum.TENANT_ADMIN : TenantRoleEnum.TENANT_USER;
+
 const toCurrentUserContext = (user: DirectoryUser, role: JwtClaims["role"], tenantId: string | null): CurrentUserContext => ({
   principal: {
     id: user.id,
@@ -180,18 +183,18 @@ const toCurrentUserContext = (user: DirectoryUser, role: JwtClaims["role"], tena
     tenantId
   },
   tenant:
-    tenantId && role !== "super_admin"
+    tenantId && role !== RoleEnum.SUPER_ADMIN
       ? {
           id: tenantId,
           slug: DEFAULT_TENANT.slug,
           name: DEFAULT_TENANT.name,
-          role
+          role: toTenantRole(role)
         }
       : null,
-  targetApp: role === "super_admin" ? "platform" : "tenant",
+  targetApp: role === RoleEnum.SUPER_ADMIN ? AuthTargetAppEnum.PLATFORM : AuthTargetAppEnum.TENANT,
   routing: {
     status: AuthRoutingStatusEnum.ALLOWED,
-    targetApp: role === "super_admin" ? "platform" : "tenant",
+    targetApp: role === RoleEnum.SUPER_ADMIN ? AuthTargetAppEnum.PLATFORM : AuthTargetAppEnum.TENANT,
     reasonCode: null
   }
 });

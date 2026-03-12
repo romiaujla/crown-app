@@ -1,4 +1,4 @@
-import type { JwtClaims, Role } from "./claims.js";
+import { RoleEnum, type JwtClaims } from "./claims.js";
 
 export type Namespace = "platform" | "tenant";
 export type DenyReason = "forbidden_role" | "forbidden_tenant";
@@ -16,14 +16,14 @@ export const resolveNamespaceFromPath = (path: string): Namespace | null => {
   return null;
 };
 
-const isTenantRole = (role: Role) => role === "tenant_admin" || role === "tenant_user";
+const isTenantRole = (role: RoleEnum) => role === RoleEnum.TENANT_ADMIN || role === RoleEnum.TENANT_USER;
 
 export const evaluateAccess = (claims: JwtClaims, namespace: Namespace, targetTenantId?: string | null): AccessDecision => {
   if (namespace === "platform") {
-    return claims.role === "super_admin" ? { allow: true } : { allow: false, reason: "forbidden_role" };
+    return claims.role === RoleEnum.SUPER_ADMIN ? { allow: true } : { allow: false, reason: "forbidden_role" };
   }
 
-  if (claims.role === "super_admin") return { allow: true };
+  if (claims.role === RoleEnum.SUPER_ADMIN) return { allow: true };
 
   if (!isTenantRole(claims.role)) return { allow: false, reason: "forbidden_role" };
 

@@ -12,10 +12,8 @@ export enum TenantRoleEnum {
 }
 
 export const RoleSchema = z.enum(RoleEnum);
-export type Role = `${RoleEnum}`;
 
 export const TenantRoleSchema = z.enum(TenantRoleEnum);
-export type TenantRole = `${TenantRoleEnum}`;
 
 export enum AuthErrorCodeEnum {
   VALIDATION_ERROR = "validation_error",
@@ -46,7 +44,7 @@ export const JwtClaimsSchema = z.object({
 
 export type JwtClaims = {
   sub: string;
-  role: Role;
+  role: RoleEnum;
   tenant_id: string | null;
 };
 

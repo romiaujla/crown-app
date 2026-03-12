@@ -1,5 +1,5 @@
 import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { Role } from "./claims.js";
+import type { RoleEnum } from "./claims.js";
 
 export type AuthIdentityRecord = {
   id: string;
@@ -7,10 +7,10 @@ export type AuthIdentityRecord = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
-  role: Role;
+  role: RoleEnum;
   tenantLinks: Array<{
     tenantId: string;
-    role: Role;
+    role: RoleEnum;
   }>;
 };
 
