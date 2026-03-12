@@ -1,8 +1,15 @@
 import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { JwtClaims, Role } from "./claims.js";
+import type { JwtClaims, Role, TenantRole } from "./claims.js";
 import { AuthErrorCodeEnum } from "./claims.js";
 
-export type AuthTargetApp = "platform" | "tenant";
+export enum AuthTargetAppEnum {
+  PLATFORM = "platform",
+  TENANT = "tenant"
+}
+
+export const authTargetAppValues = [AuthTargetAppEnum.PLATFORM, AuthTargetAppEnum.TENANT] as const;
+
+export type AuthTargetApp = `${AuthTargetAppEnum}`;
 
 export enum AuthRoutingStatusEnum {
   ALLOWED = "allowed",
@@ -28,7 +35,7 @@ export type AuthTenantContext = {
   id: string;
   slug: string;
   name: string;
-  role: Extract<Role, "tenant_admin" | "tenant_user">;
+  role: TenantRole;
 };
 
 export type AllowedAuthRouting = {

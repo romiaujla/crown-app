@@ -1,7 +1,25 @@
 import { z } from "zod";
 
-export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
-export type Role = z.infer<typeof RoleSchema>;
+export enum RoleEnum {
+  SUPER_ADMIN = "super_admin",
+  TENANT_ADMIN = "tenant_admin",
+  TENANT_USER = "tenant_user"
+}
+
+export enum TenantRoleEnum {
+  TENANT_ADMIN = "tenant_admin",
+  TENANT_USER = "tenant_user"
+}
+
+const roleValues = [RoleEnum.SUPER_ADMIN, RoleEnum.TENANT_ADMIN, RoleEnum.TENANT_USER] as const;
+
+export const RoleSchema = z.enum(roleValues);
+export type Role = `${RoleEnum}`;
+
+const tenantRoleValues = [TenantRoleEnum.TENANT_ADMIN, TenantRoleEnum.TENANT_USER] as const;
+
+export const TenantRoleSchema = z.enum(tenantRoleValues);
+export type TenantRole = `${TenantRoleEnum}`;
 
 export enum AuthErrorCodeEnum {
   VALIDATION_ERROR = "validation_error",
@@ -22,7 +40,7 @@ export const JwtClaimsSchema = z.object({
   role: RoleSchema,
   tenant_id: z.string().nullable()
 }).superRefine((claims, ctx) => {
-  if ((claims.role === "tenant_admin" || claims.role === "tenant_user") && !claims.tenant_id) {
+  if ((claims.role === RoleEnum.TENANT_ADMIN || claims.role === RoleEnum.TENANT_USER) && !claims.tenant_id) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "tenant_id is required for tenant roles"
@@ -30,6 +48,10 @@ export const JwtClaimsSchema = z.object({
   }
 });
 
-export type JwtClaims = z.infer<typeof JwtClaimsSchema>;
+export type JwtClaims = {
+  sub: string;
+  role: Role;
+  tenant_id: string | null;
+};
 
 export const AuthErrorCodeSchema = z.nativeEnum(AuthErrorCodeEnum);
