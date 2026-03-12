@@ -1,9 +1,9 @@
-# Spec Kit Workflow (Required for Major Features)
+# Spec Kit Workflow (Required for Prompt-Driven Starts)
 
 Canonical governance policy lives in:
 - `docs/process/engineering-constitution.md`
 
-For major features, complete these artifacts before implementation:
+For prompts in the form `Start implementing <JIRA ISSUE>`, complete these artifacts before implementation:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -26,10 +26,10 @@ For prompts in the form `Start implementing <JIRA ISSUE>`:
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
-4. Start major-feature execution with `/specify`.
+4. Start the workflow with `/specify`.
 
 ## Required Phase Sequence
-For major feature work started from a Jira prompt, advance in this order only:
+For work started from a Jira prompt, advance in this order only:
 
 1. `/specify`
 2. `/plan`

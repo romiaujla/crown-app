@@ -104,6 +104,21 @@ const main = async () => {
     "README links to Spec Kit installation guidance"
   );
   await ensureFileContains(
+    "AGENTS.md",
+    /Start implementing <JIRA ISSUE>[\s\S]*Begin with `?\/specify`?/i,
+    "AGENTS requires /specify for prompt-driven starts"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /Start implementing <JIRA ISSUE>[\s\S]*Start the workflow with `?\/specify`?/i,
+    "Spec workflow requires /specify for prompt-driven starts"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-installation.md",
+    /Start implementing <JIRA ISSUE>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
+    "Spec installation guidance preserves prompt-driven /specify rule"
+  );
+  await ensureFileContains(
     ".husky/commit-msg",
     /commit-msg-rewrite\.mjs/,
     "Commit hook routes through rewrite script"

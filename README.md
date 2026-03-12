@@ -110,7 +110,7 @@ Default local endpoints:
 - AI-agent mandatory entrypoint: `AGENTS.md`
 
 ## Planning-First Workflow
-Major features require Spec Kit artifacts before implementation:
+Prompt-driven starts in the form `Start implementing <JIRA ISSUE>` require Spec Kit artifacts before implementation:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -127,7 +127,7 @@ Prompt-driven start example:
 Start implementing CROWN-79
 ```
 
-Expected repository behavior for major features:
+Expected repository behavior for prompt-driven starts:
 - Resolve the Jira issue first and create or validate the Jira-linked branch.
 - Start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
 - Commit and push each completed phase before advancing when no unresolved clarification remains.

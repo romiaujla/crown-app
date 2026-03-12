@@ -9,7 +9,7 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 ## Required Workflow
 - Use Jira-linked branches and commits per constitution.
 - Keep issue descriptions aligned with Lean Jira template.
-- For major features, require Spec Kit artifacts before implementation.
+- For prompt-driven starts in the form `Start implementing <JIRA ISSUE>`, require Spec Kit artifacts before implementation.
 
 ## Prompt-Driven Start Workflow
 When a user prompt is in the form `Start implementing <JIRA ISSUE>`:
@@ -17,7 +17,7 @@ When a user prompt is in the form `Start implementing <JIRA ISSUE>`:
 1. Resolve the Jira issue first and use that issue as the only delivery scope unless the user explicitly broadens it.
 2. Use `docs/process/engineering-constitution.md` as the governing policy for branch naming, commits, pull requests, and release-safe metadata.
 3. Create or validate the Jira-linked branch that matches the issue type before editing files.
-4. For major feature work, begin with `/specify`, then continue in this order: `/plan`, `/tasks`, implementation, and pull request creation.
+4. Begin with `/specify`, then continue in this order only: `/plan`, `/tasks`, implementation, and pull request creation.
 5. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
 6. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
 7. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, and `tasks.md`, a scope statement, and validation notes in the PR description.
