@@ -63,6 +63,7 @@ If any stop condition is active, pause for user clarification instead of auto-ad
 - Validation evidence included (tests/lint/typecheck as applicable).
 - Documentation updates included for behavior/process changes.
 - Pull request is created only after implementation has been committed and pushed.
+- API route changes must keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned for created, materially changed, and deleted routes.
 
 ## Convention Source of Truth
 - Branch naming, commit formatting, Jira linkage, and type mapping are defined in:

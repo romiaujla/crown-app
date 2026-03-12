@@ -26,6 +26,8 @@ When a user prompt is in the form `Start implementing <JIRA ISSUE>`:
 - Do not bypass repository hooks, CI checks, or branch protection requirements.
 - Do not widen PR scope beyond the Jira issue(s) named in the branch/PR.
 - Prefer additive, reviewable commits and explicit rationale for policy exceptions.
+- For API route changes, keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned with the implemented route surface.
+- Creating a new API route, materially changing an existing API route contract/behavior, or deleting an API route requires updating the corresponding entries in `apps/api/src/docs/openapi.ts`.
 
 ## Active Technologies
 - TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9 (001-jwt-rbac-foundation)
