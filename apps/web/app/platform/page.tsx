@@ -1,19 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { StatusPanel } from "@/components/auth/status-panel";
+import { useProtectedShell } from "@/components/auth/use-protected-shell";
 import { WorkspaceShell } from "@/components/auth/workspace-shell";
-
-import { useAuth } from "../../components/auth/auth-provider";
-import { AuthStateStatusEnum } from "../../lib/auth/types";
-import {
-  buildLoginHref,
-  buildUnauthorizedHref,
-  captureReturnPath,
-  resolveProtectedPath
-} from "../../lib/routing/auth-routing";
 
 const platformNavigation = [
   {
@@ -53,30 +44,9 @@ const overviewCards = [
 
 const PlatformPage = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const { state } = useAuth();
+  const protectedShell = useProtectedShell(pathname);
 
-  useEffect(() => {
-    if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) return;
-
-    if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) {
-      captureReturnPath(pathname);
-      router.replace(buildLoginHref(state.reason));
-      return;
-    }
-
-    const decision = resolveProtectedPath(pathname, state.currentUser);
-    if (decision.kind === "redirect") {
-      router.replace(decision.path);
-      return;
-    }
-
-    if (decision.kind === "unauthorized") {
-      router.replace(buildUnauthorizedHref(decision.reason));
-    }
-  }, [pathname, router, state]);
-
-  if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
+  if (protectedShell.kind === "bootstrapping") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -89,10 +59,7 @@ const PlatformPage = () => {
     );
   }
 
-  if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) return null;
-
-  const decision = resolveProtectedPath(pathname, state.currentUser);
-  if (decision.kind !== "allow") {
+  if (protectedShell.kind !== "ready") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -105,11 +72,13 @@ const PlatformPage = () => {
     );
   }
 
+  const { currentUser } = protectedShell;
+
   return (
     <WorkspaceShell
       contextLabel="Operator context"
       contextNote="No tenant needs to be selected before platform work begins."
-      contextValue={state.currentUser.principal.role}
+      contextValue={currentUser.principal.role}
       description="Operate Crown as the platform for tenant management systems, with global navigation, overview context, and clear separation from tenant workspaces."
       emptyDescription="Crown is ready for platform setup even when no live tenant data exists yet. Use the tenant-management entry points above to provision and oversee upcoming workspaces."
       emptyEyebrow="No-data guidance"
@@ -122,7 +91,7 @@ const PlatformPage = () => {
       shellLabel="Platform operator shell"
       title="Crown Control Plane"
       tone="platform"
-      userDisplayName={state.currentUser.principal.display_name}
+      userDisplayName={currentUser.principal.display_name}
     />
   );
 };
