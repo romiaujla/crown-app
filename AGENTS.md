@@ -9,18 +9,21 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 ## Required Workflow
 - Use Jira-linked branches and commits per constitution.
 - Keep issue descriptions aligned with Lean Jira template.
-- For major features, require Spec Kit artifacts before implementation.
+- Use tagged workflow commands to select delivery mode:
+  - `--speckit CROWN-<id>` for full Spec Kit delivery
+  - `--implement CROWN-<id>` for implementation-only delivery
 
 ## Prompt-Driven Start Workflow
-When a user prompt is in the form `Start implementing <JIRA ISSUE>`:
+When a user prompt is in the form `--speckit CROWN-<id>` or `--implement CROWN-<id>`:
 
 1. Resolve the Jira issue first and use that issue as the only delivery scope unless the user explicitly broadens it.
 2. Use `docs/process/engineering-constitution.md` as the governing policy for branch naming, commits, pull requests, and release-safe metadata.
 3. Create or validate the Jira-linked branch that matches the issue type before editing files.
-4. For major feature work, begin with `/specify`, then continue in this order: `/plan`, `/tasks`, implementation, and pull request creation.
-5. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
-6. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
-7. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, and `tasks.md`, a scope statement, and validation notes in the PR description.
+4. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+5. If the prompt is `--speckit CROWN-<id>`, begin with `/specify`, then continue in this order only: `/plan`, `/tasks`, implementation, and pull request creation.
+6. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
+7. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
+8. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, and `tasks.md` when the Spec Kit phases were used, a scope statement, and validation notes in the PR description.
 
 ## Operational Rules
 - Do not bypass repository hooks, CI checks, or branch protection requirements.

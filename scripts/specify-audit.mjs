@@ -104,6 +104,36 @@ const main = async () => {
     "README links to Spec Kit installation guidance"
   );
   await ensureFileContains(
+    "AGENTS.md",
+    /--speckit CROWN-<id>[\s\S]*begin with `?\/specify`?/i,
+    "AGENTS requires /specify for --speckit runs"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "AGENTS documents the --implement command"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /--speckit CROWN-<id>[\s\S]*start the workflow with `?\/specify`?/i,
+    "Spec workflow requires /specify for --speckit runs"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "Spec workflow documents the --implement command"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-installation.md",
+    /--speckit CROWN-<id>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
+    "Spec installation guidance preserves --speckit /specify rule"
+  );
+  await ensureFileContains(
+    "README.md",
+    /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "README documents the --implement command"
+  );
+  await ensureFileContains(
     ".husky/commit-msg",
     /commit-msg-rewrite\.mjs/,
     "Commit hook routes through rewrite script"

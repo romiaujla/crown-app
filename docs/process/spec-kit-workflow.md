@@ -1,9 +1,9 @@
-# Spec Kit Workflow (Required for Major Features)
+# Spec Kit Workflow (Tagged Command Contract)
 
 Canonical governance policy lives in:
 - `docs/process/engineering-constitution.md`
 
-For major features, complete these artifacts before implementation:
+For prompts in the form `--speckit CROWN-<id>`, complete these artifacts before implementation:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -21,15 +21,16 @@ For major features, complete these artifacts before implementation:
 - PR description must reference corresponding spec/plan/tasks artifacts.
 
 ## Prompt-Driven Start Contract
-For prompts in the form `Start implementing <JIRA ISSUE>`:
+For tagged workflow commands:
 
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
-4. Start major-feature execution with `/specify`.
+4. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+5. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
 
 ## Required Phase Sequence
-For major feature work started from a Jira prompt, advance in this order only:
+For work started with `--speckit CROWN-<id>`, advance in this order only:
 
 1. `/specify`
 2. `/plan`
@@ -38,6 +39,8 @@ For major feature work started from a Jira prompt, advance in this order only:
 5. pull request creation
 
 The workflow must not skip or reorder these phases unless the user explicitly changes scope or direction.
+
+When the prompt is `--implement CROWN-<id>`, the workflow bypasses `/specify`, `/plan`, and `/tasks` and starts at implementation.
 
 ## Phase Gate Rules
 - `/specify` may advance to `/plan` only after the specification is complete, no unresolved clarification remains, and the phase changes are committed and pushed.
