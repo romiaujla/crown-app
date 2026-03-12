@@ -135,6 +135,7 @@ Use tagged workflow commands to choose the delivery path:
 3. `/plan`
 4. `/tasks`
 - `--implement CROWN-<id>` skips `/specify`, `/plan`, and `/tasks` and goes straight to implementation.
+- Workflow-helper prompts such as `--audit CROWN-<id>`, `--sync-to-jira CROWN-<id>`, `--sync-from-jira CROWN-<id>`, `--resolve-pr-comments [PR-NUMBER]`, `--review [PR-NUMBER]`, `--refresh-pr [PR-NUMBER]`, `--status [CROWN-<id>]`, `--handoff CROWN-<id>`, `--reconcile CROWN-<id>`, `--test-fix [TARGET]`, `--openapi-audit [TARGET]`, and `--scope-drift CROWN-<id>` are documented in the prompt help registry for delivery maintenance and reconciliation work.
 
 Repository guidance:
 - Single canonical constitution: `docs/process/engineering-constitution.md`
@@ -148,6 +149,8 @@ Tagged workflow examples:
 --help
 --speckit CROWN-79
 --implement CROWN-79
+--audit CROWN-79
+--resolve-pr-comments
 ```
 
 Expected repository behavior for prompt-driven starts:
@@ -155,5 +158,6 @@ Expected repository behavior for prompt-driven starts:
 - Use `--help` to list the documented repository AI-agent prompt patterns and their behavior.
 - Use `--speckit CROWN-<id>` to start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
 - Use `--implement CROWN-<id>` to skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+- Use the workflow-helper prompts from `docs/process/ai-agent-prompt-help.md` for Jira coverage audits, Jira sync, PR comment resolution, PR refresh, delivery status, handoff, reconciliation, targeted test fixing, OpenAPI alignment audits, review, and scope-drift checks.
 - Commit and push each completed phase before advancing when no unresolved clarification remains.
 - Pause for clarification instead of auto-advancing when scope, requirements, or repository state are ambiguous.
