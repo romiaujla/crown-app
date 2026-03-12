@@ -18,7 +18,7 @@ Applies to all contributors (human and AI) across all repository directories.
 - One-off literal values that are local to a single type or schema may remain inline when the value set is not reused elsewhere.
 - TypeScript enum member keys must use `SNAKE_CASE`.
 - TypeScript enum type names must use the `Enum` suffix.
-- When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum rather than repeat the same inline string array.
+- When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum directly, using `z.enum(SharedEnum)` on the repository's Zod 4 baseline rather than repeating inline string arrays.
 - For multi-branch discriminated unions, prefer composing the union from named branch type aliases instead of inlining multiple object-literal branches in a single declaration.
 - Use named result-branch aliases when the branches carry distinct meaning, are reused, or would otherwise make the union harder to scan in review.
 - Validate external input with Zod before business logic.

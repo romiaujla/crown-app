@@ -7,8 +7,6 @@ export enum AuthTargetAppEnum {
   TENANT = "tenant"
 }
 
-export const authTargetAppValues = [AuthTargetAppEnum.PLATFORM, AuthTargetAppEnum.TENANT] as const;
-
 export type AuthTargetApp = `${AuthTargetAppEnum}`;
 
 export enum AuthRoutingStatusEnum {
