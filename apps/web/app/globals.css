@@ -3,6 +3,26 @@
 @tailwind utilities;
 
 :root {
+  --background-hsl: 40 22% 92%;
+  --foreground-hsl: 35 27% 9%;
+  --card-hsl: 36 33% 95%;
+  --card-foreground-hsl: 35 27% 9%;
+  --popover-hsl: 36 33% 95%;
+  --popover-foreground-hsl: 35 27% 9%;
+  --primary-hsl: 22 60% 42%;
+  --primary-foreground-hsl: 32 44% 96%;
+  --secondary-hsl: 32 24% 90%;
+  --secondary-foreground-hsl: 35 27% 9%;
+  --muted-hsl: 32 18% 88%;
+  --muted-foreground-hsl: 30 13% 34%;
+  --accent-hsl: 24 43% 82%;
+  --accent-foreground-hsl: 35 27% 9%;
+  --destructive-hsl: 6 58% 45%;
+  --destructive-foreground-hsl: 32 44% 96%;
+  --border-hsl: 30 16% 82%;
+  --input-hsl: 30 16% 82%;
+  --ring-hsl: 22 60% 42%;
+  --radius: 0.75rem;
   color-scheme: light;
   --background: #f4efe6;
   --surface: rgba(255, 250, 242, 0.82);
@@ -18,6 +38,38 @@
 
 * {
   box-sizing: border-box;
+}
+
+@layer base {
+  :root {
+    --background: var(--background-hsl);
+    --foreground: var(--foreground-hsl);
+    --card: var(--card-hsl);
+    --card-foreground: var(--card-foreground-hsl);
+    --popover: var(--popover-hsl);
+    --popover-foreground: var(--popover-foreground-hsl);
+    --primary: var(--primary-hsl);
+    --primary-foreground: var(--primary-foreground-hsl);
+    --secondary: var(--secondary-hsl);
+    --secondary-foreground: var(--secondary-foreground-hsl);
+    --muted: var(--muted-hsl);
+    --muted-foreground: var(--muted-foreground-hsl);
+    --accent: var(--accent-hsl);
+    --accent-foreground: var(--accent-foreground-hsl);
+    --destructive: var(--destructive-hsl);
+    --destructive-foreground: var(--destructive-foreground-hsl);
+    --border: var(--border-hsl);
+    --input: var(--input-hsl);
+    --ring: var(--ring-hsl);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 html {
