@@ -30,9 +30,12 @@ describe("api docs openapi document", () => {
       authDocsDocument.paths["/api/v1/auth/login"].post.requestBody.content["application/json"].schema;
     const currentUserSchema =
       authDocsDocument.paths["/api/v1/auth/me"].get.responses["200"].content["application/json"].schema;
+    const currentUserForbidden =
+      authDocsDocument.paths["/api/v1/auth/me"].get.responses["403"].content["application/json"].schema;
 
     expect(loginSchema).toEqual({ $ref: "#/components/schemas/LoginRequest" });
     expect(currentUserSchema).toEqual({ $ref: "#/components/schemas/CurrentUserResponse" });
+    expect(currentUserForbidden).toEqual({ $ref: "#/components/schemas/ErrorResponse" });
   });
 
   it("does not include a raw openapi json route in the document", () => {

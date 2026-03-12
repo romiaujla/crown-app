@@ -1,4 +1,12 @@
+import { AuthErrorCodeEnum } from "../auth/claims.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../auth/service.js";
+import { PlatformUserAccountStatus } from "../domain/status-enums.js";
+
 const bearerSecurity = [{ bearerAuth: [] }];
+const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
+const authRoutingStatusValues = Object.values(AuthRoutingStatusEnum);
+const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
+const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
@@ -45,7 +53,7 @@ export const authDocsDocument = {
       },
       PlatformUserAccountStatus: {
         type: "string",
-        enum: ["active", "disabled", "inactive"]
+        enum: platformUserAccountStatusValues
       },
       JwtClaims: {
         type: "object",
@@ -77,19 +85,30 @@ export const authDocsDocument = {
         properties: {
           error_code: {
             type: "string",
-            enum: [
-              "validation_error",
-              "unauthenticated",
-              "invalid_credentials",
-              "disabled_account",
-              "invalid_claims",
-              "forbidden_role",
-              "forbidden_tenant",
-              "conflict",
-              "migration_failed"
-            ]
+            enum: authErrorCodeValues
           },
-          message: { type: "string" }
+          message: { type: "string" },
+          routing: { $ref: "#/components/schemas/AuthRouting" }
+        }
+      },
+      AuthRouting: {
+        type: "object",
+        required: ["status", "target_app", "reason_code"],
+        properties: {
+          status: {
+            type: "string",
+            enum: authRoutingStatusValues
+          },
+          target_app: {
+            type: "string",
+            nullable: true,
+            enum: ["platform", "tenant"]
+          },
+          reason_code: {
+            type: "string",
+            nullable: true,
+            enum: authRoutingReasonCodeValues
+          }
         }
       },
       CurrentUserPrincipal: {
@@ -132,7 +151,7 @@ export const authDocsDocument = {
       },
       CurrentUserResponse: {
         type: "object",
-        required: ["principal", "role_context", "tenant", "target_app"],
+        required: ["principal", "role_context", "tenant", "target_app", "routing"],
         properties: {
           principal: { $ref: "#/components/schemas/CurrentUserPrincipal" },
           role_context: { $ref: "#/components/schemas/CurrentUserRoleContext" },
@@ -140,7 +159,8 @@ export const authDocsDocument = {
           target_app: {
             type: "string",
             enum: ["platform", "tenant"]
-          }
+          },
+          routing: { $ref: "#/components/schemas/AuthRouting" }
         }
       },
       AccessTokenResponse: {
@@ -226,7 +246,44 @@ export const authDocsDocument = {
           },
           "400": errorResponse("Invalid login payload", "validation_error", "Invalid login payload"),
           "401": errorResponse("Invalid credentials", "invalid_credentials", "Invalid credentials"),
-          "403": errorResponse("Disabled account", "disabled_account", "Account is disabled")
+          "403": {
+            description: "Account disabled or routing unavailable",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                examples: {
+                  disabledAccount: {
+                    value: {
+                      error_code: "disabled_account",
+                      message: "Account is disabled"
+                    }
+                  },
+                  tenantMembershipRequired: {
+                    value: {
+                      error_code: "tenant_membership_required",
+                      message: "An active tenant membership is required for this user",
+                      routing: {
+                        status: "access_denied",
+                        target_app: null,
+                        reason_code: "missing_active_tenant_membership"
+                      }
+                    }
+                  },
+                  tenantSelectionRequired: {
+                    value: {
+                      error_code: "tenant_selection_required",
+                      message: "Tenant selection is required and is not yet supported",
+                      routing: {
+                        status: "selection_required",
+                        target_app: null,
+                        reason_code: "multiple_active_tenant_memberships"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -234,7 +291,8 @@ export const authDocsDocument = {
       get: {
         tags: ["Auth"],
         summary: "Resolve the current authenticated user",
-        description: "Returns principal, role context, tenant context when applicable, and the target app.",
+        description:
+          "Returns principal, role context, tenant context when applicable, and the target app. Authenticated tenant users without a single active tenant membership receive a structured routing 403 response.",
         security: bearerSecurity,
         responses: {
           "200": {
@@ -245,7 +303,39 @@ export const authDocsDocument = {
               }
             }
           },
-          "401": errorResponse("Missing or invalid bearer token", "unauthenticated", "Missing bearer token")
+          "401": errorResponse("Missing or invalid bearer token", "unauthenticated", "Missing bearer token"),
+          "403": {
+            description: "Authenticated user cannot be routed into a supported app target",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+                examples: {
+                  tenantMembershipRequired: {
+                    value: {
+                      error_code: "tenant_membership_required",
+                      message: "An active tenant membership is required for this user",
+                      routing: {
+                        status: "access_denied",
+                        target_app: null,
+                        reason_code: "missing_active_tenant_membership"
+                      }
+                    }
+                  },
+                  tenantSelectionRequired: {
+                    value: {
+                      error_code: "tenant_selection_required",
+                      message: "Tenant selection is required and is not yet supported",
+                      routing: {
+                        status: "selection_required",
+                        target_app: null,
+                        reason_code: "multiple_active_tenant_memberships"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },

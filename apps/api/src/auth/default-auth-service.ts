@@ -1,9 +1,18 @@
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { JwtClaims } from "./claims.js";
+import { AuthErrorCodeEnum, type JwtClaims } from "./claims.js";
 import { findAuthIdentityByIdentifier, type AuthIdentityRecord } from "./identity.js";
 import { hashPassword, verifyPassword } from "./passwords.js";
-import { resolveAuthenticatedRoleContext } from "./role-resolution.js";
-import type { AuthService, CurrentUserContext, LoginFailure, LoginSuccess } from "./service.js";
+import { AuthResolutionFailureReasonEnum, resolveAuthenticatedRoleContext } from "./role-resolution.js";
+import type {
+  AuthService,
+  BlockedAuthRouting,
+  CurrentUserContext,
+  LoginFailure,
+  LoginSuccess,
+  ResolveCurrentUserFailure,
+  ResolveCurrentUserResult
+} from "./service.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "./service.js";
 
 type DirectoryUser = AuthIdentityRecord & {
   displayName: string;
@@ -27,6 +36,14 @@ export const AUTH_LOGIN_FIXTURES = {
   },
   tenantAdminByEmail: {
     identifier: "tenant-admin@acme-local.test",
+    password: "Password123!"
+  },
+  tenantUserWithoutMembership: {
+    identifier: "tenant-user-orphan@acme-local.test",
+    password: "Password123!"
+  },
+  tenantAdminMultiTenant: {
+    identifier: "tenant-admin-multi@acme-local.test",
     password: "Password123!"
   }
 } as const;
@@ -77,6 +94,31 @@ const directorySeed: DirectorySeedUser[] = [
     displayName: "Disabled User",
     role: "tenant_user" as const,
     tenantLinks: [{ tenantId: "tenant-acme", role: "tenant_user" as const }]
+  },
+  {
+    id: "user-tenant-user-orphan",
+    email: "tenant-user-orphan@acme-local.test",
+    username: "tenant.user.orphan",
+    password: "Password123!",
+    passwordHash: "",
+    accountStatus: PlatformUserAccountStatus.active,
+    displayName: "Tenant User Orphan",
+    role: "tenant_user",
+    tenantLinks: []
+  },
+  {
+    id: "user-tenant-admin-multi",
+    email: "tenant-admin-multi@acme-local.test",
+    username: "tenant.admin.multi",
+    password: "Password123!",
+    passwordHash: "",
+    accountStatus: PlatformUserAccountStatus.active,
+    displayName: "Tenant Admin Multi",
+    role: "tenant_admin",
+    tenantLinks: [
+      { tenantId: "tenant-acme", role: "tenant_admin" as const },
+      { tenantId: "tenant-zenith", role: "tenant_admin" as const }
+    ]
   }
 ] as const;
 
@@ -146,10 +188,42 @@ const toCurrentUserContext = (user: DirectoryUser, role: JwtClaims["role"], tena
           role
         }
       : null,
-  targetApp: role === "super_admin" ? "platform" : "tenant"
+  targetApp: role === "super_admin" ? "platform" : "tenant",
+  routing: {
+    status: AuthRoutingStatusEnum.ALLOWED,
+    targetApp: role === "super_admin" ? "platform" : "tenant",
+    reasonCode: null
+  }
 });
 
-const buildLoginFailure = (reason: LoginFailure["reason"]): LoginFailure => ({ ok: false, reason });
+const buildBlockedRouting = (
+  reason:
+    | AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP
+    | AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS
+): BlockedAuthRouting =>
+  reason === AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS
+    ? {
+        status: AuthRoutingStatusEnum.SELECTION_REQUIRED,
+        targetApp: null,
+        reasonCode: AuthRoutingReasonCodeEnum.MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS
+      }
+    : {
+        status: AuthRoutingStatusEnum.ACCESS_DENIED,
+        targetApp: null,
+        reasonCode: AuthRoutingReasonCodeEnum.MISSING_ACTIVE_TENANT_MEMBERSHIP
+      };
+
+const buildLoginFailure = (
+  errorCode: LoginFailure["errorCode"],
+  message: string,
+  routing?: BlockedAuthRouting
+): LoginFailure => ({
+  ok: false,
+  status: errorCode === AuthErrorCodeEnum.INVALID_CREDENTIALS ? 401 : 403,
+  errorCode,
+  message,
+  routing
+});
 
 const buildLoginSuccess = (user: DirectoryUser, role: JwtClaims["role"], tenantId: string | null): LoginSuccess => {
   const claims: JwtClaims = {
@@ -165,25 +239,75 @@ const buildLoginSuccess = (user: DirectoryUser, role: JwtClaims["role"], tenantI
   };
 };
 
+const buildResolveCurrentUserFailure = (
+  errorCode: ResolveCurrentUserFailure["errorCode"],
+  message: string,
+  routing?: BlockedAuthRouting
+): ResolveCurrentUserFailure => ({
+  ok: false,
+  status: errorCode === AuthErrorCodeEnum.INVALID_CLAIMS ? 401 : 403,
+  errorCode,
+  message,
+  routing
+});
+
+const mapResolutionFailure = (
+  reason: AuthResolutionFailureReasonEnum
+): ResolveCurrentUserFailure => {
+  switch (reason) {
+    case AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP:
+      return buildResolveCurrentUserFailure(
+        AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
+        "An active tenant membership is required for this user",
+        buildBlockedRouting(reason)
+      );
+    case AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS:
+      return buildResolveCurrentUserFailure(
+        AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
+        "Tenant selection is required and is not yet supported",
+        buildBlockedRouting(reason)
+      );
+    default:
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
+  }
+};
+
 export const defaultAuthService: AuthService = {
   async login(identifier, password) {
     const directory = await createDirectoryClient();
     const identity = await findAuthIdentityByIdentifier(directory.prisma, identifier);
-    if (!identity) return buildLoginFailure("invalid_credentials");
+    if (!identity) return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     if (!identity.passwordHash || !(await verifyPassword(password, identity.passwordHash))) {
-      return buildLoginFailure("invalid_credentials");
+      return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     }
 
     const user = directory.users.find((entry) => entry.id === identity.id);
-    if (!user) return buildLoginFailure("invalid_credentials");
+    if (!user) return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
 
-    const preferredMembership =
-      user.role === "super_admin" ? null : user.tenantLinks.find((tenantLink) => tenantLink.role === user.role) ?? null;
-    const resolved = resolveAuthenticatedRoleContext(user, preferredMembership);
+    const resolved = resolveAuthenticatedRoleContext(user);
 
     if (!resolved.ok) {
-      if (resolved.reason === "disabled_account") return buildLoginFailure("disabled_account");
-      return buildLoginFailure("invalid_credentials");
+      if (resolved.reason === AuthResolutionFailureReasonEnum.DISABLED_ACCOUNT) {
+        return buildLoginFailure(AuthErrorCodeEnum.DISABLED_ACCOUNT, "Account is disabled");
+      }
+
+      if (resolved.reason === AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP) {
+        return buildLoginFailure(
+          AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
+          "An active tenant membership is required for this user",
+          buildBlockedRouting(resolved.reason)
+        );
+      }
+
+      if (resolved.reason === AuthResolutionFailureReasonEnum.MULTIPLE_TENANT_MEMBERSHIPS) {
+        return buildLoginFailure(
+          AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
+          "Tenant selection is required and is not yet supported",
+          buildBlockedRouting(resolved.reason)
+        );
+      }
+
+      return buildLoginFailure(AuthErrorCodeEnum.INVALID_CREDENTIALS, "Invalid credentials");
     }
 
     return buildLoginSuccess(user, resolved.resolvedRole, resolved.tenantId);
@@ -192,17 +316,20 @@ export const defaultAuthService: AuthService = {
   async resolveCurrentUser(claims) {
     const directory = await createDirectoryClient();
     const user = directory.users.find((entry) => entry.id === claims.sub);
-    if (!user) return null;
+    if (!user) return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
 
-    const membership =
-      claims.role === "super_admin"
-        ? null
-        : user.tenantLinks.find((tenantLink) => tenantLink.tenantId === claims.tenant_id && tenantLink.role === claims.role) ?? null;
-    const resolved = resolveAuthenticatedRoleContext(user, membership);
-    if (!resolved.ok) return null;
-    if (resolved.resolvedRole !== claims.role) return null;
-    if (resolved.tenantId !== claims.tenant_id) return null;
+    const resolved = resolveAuthenticatedRoleContext(user);
+    if (!resolved.ok) return mapResolutionFailure(resolved.reason);
+    if (resolved.resolvedRole !== claims.role) {
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
+    }
+    if (resolved.tenantId !== claims.tenant_id) {
+      return buildResolveCurrentUserFailure(AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
+    }
 
-    return toCurrentUserContext(user, claims.role, claims.tenant_id);
+    return {
+      ok: true,
+      currentUser: toCurrentUserContext(user, claims.role, claims.tenant_id)
+    } satisfies ResolveCurrentUserResult;
   }
 };

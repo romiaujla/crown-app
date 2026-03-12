@@ -22,9 +22,9 @@ describe("auth credential foundation", () => {
         username: "seed.super.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: "super_admin"
-      },
-      null
+        role: "super_admin",
+        tenantLinks: []
+      }
     );
 
     expect(result).toEqual({
@@ -43,11 +43,13 @@ describe("auth credential foundation", () => {
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: "tenant_admin"
-      },
-      {
-        tenantId: "tenant-acme-local",
-        role: "tenant_admin"
+        role: "tenant_admin",
+        tenantLinks: [
+          {
+            tenantId: "tenant-acme-local",
+            role: "tenant_admin"
+          }
+        ]
       }
     );
 
@@ -68,11 +70,13 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.disabled,
-          role: "tenant_user"
-        },
-        {
-          tenantId: "tenant-acme-local",
-          role: "tenant_user"
+          role: "tenant_user",
+          tenantLinks: [
+            {
+              tenantId: "tenant-acme-local",
+              role: "tenant_user"
+            }
+          ]
         }
       )
     ).toEqual({
@@ -88,13 +92,39 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.active,
-          role: "tenant_user"
-        },
-        null
+          role: "tenant_user",
+          tenantLinks: []
+        }
       )
     ).toEqual({
       ok: false,
       reason: "missing_tenant_membership"
+    });
+  });
+
+  it("rejects unsupported multi-tenant role resolution in the current phase", () => {
+    expect(
+      resolveAuthenticatedRoleContext({
+        id: "platform-user-tenant-admin",
+        email: "tenant-admin@acme-local.test",
+        username: "seed.tenant.admin",
+        passwordHash: "scrypt$salt$hash",
+        accountStatus: PlatformUserAccountStatus.active,
+        role: "tenant_admin",
+        tenantLinks: [
+          {
+            tenantId: "tenant-acme-local",
+            role: "tenant_admin"
+          },
+          {
+            tenantId: "tenant-zenith-local",
+            role: "tenant_admin"
+          }
+        ]
+      })
+    ).toEqual({
+      ok: false,
+      reason: "multiple_tenant_memberships"
     });
   });
 

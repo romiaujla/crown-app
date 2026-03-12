@@ -1,7 +1,19 @@
 import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
 import type { JwtClaims, Role } from "./claims.js";
+import { AuthErrorCodeEnum } from "./claims.js";
 
 export type AuthTargetApp = "platform" | "tenant";
+
+export enum AuthRoutingStatusEnum {
+  ALLOWED = "allowed",
+  ACCESS_DENIED = "access_denied",
+  SELECTION_REQUIRED = "selection_required"
+}
+
+export enum AuthRoutingReasonCodeEnum {
+  MISSING_ACTIVE_TENANT_MEMBERSHIP = "missing_active_tenant_membership",
+  MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS = "multiple_active_tenant_memberships"
+}
 
 export type AuthPrincipal = {
   id: string;
@@ -19,6 +31,20 @@ export type AuthTenantContext = {
   role: Extract<Role, "tenant_admin" | "tenant_user">;
 };
 
+export type AllowedAuthRouting = {
+  status: AuthRoutingStatusEnum.ALLOWED;
+  targetApp: AuthTargetApp;
+  reasonCode: null;
+};
+
+export type BlockedAuthRouting = {
+  status: AuthRoutingStatusEnum.ACCESS_DENIED | AuthRoutingStatusEnum.SELECTION_REQUIRED;
+  targetApp: null;
+  reasonCode: AuthRoutingReasonCodeEnum;
+};
+
+export type AuthRouting = AllowedAuthRouting | BlockedAuthRouting;
+
 export type CurrentUserContext = {
   principal: AuthPrincipal;
   roleContext: {
@@ -27,6 +53,7 @@ export type CurrentUserContext = {
   };
   tenant: AuthTenantContext | null;
   targetApp: AuthTargetApp;
+  routing: AllowedAuthRouting;
 };
 
 export type LoginSuccess = {
@@ -37,15 +64,35 @@ export type LoginSuccess = {
 
 export type LoginFailure = {
   ok: false;
-  reason: "invalid_credentials" | "disabled_account";
+  status: 401 | 403;
+  errorCode:
+    | AuthErrorCodeEnum.INVALID_CREDENTIALS
+    | AuthErrorCodeEnum.DISABLED_ACCOUNT
+    | AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED
+    | AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED;
+  message: string;
+  routing?: BlockedAuthRouting;
 };
 
-export type ResolveClaimsFailure = {
+export type ResolveCurrentUserFailure = {
   ok: false;
-  reason: "invalid_claims";
+  status: 401 | 403;
+  errorCode:
+    | AuthErrorCodeEnum.INVALID_CLAIMS
+    | AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED
+    | AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED;
+  message: string;
+  routing?: BlockedAuthRouting;
 };
+
+export type ResolveCurrentUserSuccess = {
+  ok: true;
+  currentUser: CurrentUserContext;
+};
+
+export type ResolveCurrentUserResult = ResolveCurrentUserSuccess | ResolveCurrentUserFailure;
 
 export type AuthService = {
   login(identifier: string, password: string): Promise<LoginSuccess | LoginFailure>;
-  resolveCurrentUser(claims: JwtClaims): Promise<CurrentUserContext | null>;
+  resolveCurrentUser(claims: JwtClaims): Promise<ResolveCurrentUserResult>;
 };

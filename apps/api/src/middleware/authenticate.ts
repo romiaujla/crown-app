@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+import { AuthErrorCodeEnum } from "../auth/claims.js";
 import { defaultAuthService } from "../auth/default-auth-service.js";
 import { JwtClaimsSchema } from "../auth/claims.js";
 
@@ -24,22 +25,30 @@ const decodeTokenPayload = (rawToken: string): unknown => {
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.header("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return sendAuthError(res, 401, "unauthenticated", "Missing bearer token");
+    return sendAuthError(res, 401, AuthErrorCodeEnum.UNAUTHENTICATED, "Missing bearer token");
   }
 
   const token = authHeader.slice("Bearer ".length);
   try {
     const claims = JwtClaimsSchema.parse(decodeTokenPayload(token));
     req.auth = claims;
-    return defaultAuthService.resolveCurrentUser(claims).then((currentUser) => {
-      if (!currentUser) return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
+    return defaultAuthService.resolveCurrentUser(claims).then((currentUserResult) => {
+      if (!currentUserResult.ok) {
+        return sendAuthError(
+          res,
+          currentUserResult.status,
+          currentUserResult.errorCode,
+          currentUserResult.message,
+          currentUserResult.routing
+        );
+      }
       req.authContext = {
         claims,
-        currentUser
+        currentUser: currentUserResult.currentUser
       };
       return next();
     });
   } catch {
-    return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
+    return sendAuthError(res, 401, AuthErrorCodeEnum.INVALID_CLAIMS, "Invalid authentication claims");
   }
 };

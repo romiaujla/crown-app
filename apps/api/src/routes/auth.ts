@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-import type { JwtClaims } from "../auth/claims.js";
+import { AuthErrorCodeEnum, type JwtClaims } from "../auth/claims.js";
 import { CurrentUserResponseSchema } from "../auth/contracts.js";
 import { defaultAuthService } from "../auth/default-auth-service.js";
-import type { AuthService } from "../auth/service.js";
+import type { AuthService, CurrentUserContext } from "../auth/service.js";
 import { authenticate } from "../middleware/authenticate.js";
 
 import {
@@ -23,21 +23,21 @@ type AuthRouterOptions = {
   authService?: AuthService;
 };
 
-const toCurrentUserResponse = (currentUser: Awaited<ReturnType<AuthService["resolveCurrentUser"]>>) =>
+const toCurrentUserResponse = (currentUser: CurrentUserContext) =>
   CurrentUserResponseSchema.parse({
     principal: {
-      id: currentUser?.principal.id,
-      email: currentUser?.principal.email,
-      username: currentUser?.principal.username ?? null,
-      display_name: currentUser?.principal.displayName,
-      role: currentUser?.principal.role,
-      account_status: currentUser?.principal.accountStatus
+      id: currentUser.principal.id,
+      email: currentUser.principal.email,
+      username: currentUser.principal.username ?? null,
+      display_name: currentUser.principal.displayName,
+      role: currentUser.principal.role,
+      account_status: currentUser.principal.accountStatus
     },
     role_context: {
-      role: currentUser?.roleContext.role,
-      tenant_id: currentUser?.roleContext.tenantId ?? null
+      role: currentUser.roleContext.role,
+      tenant_id: currentUser.roleContext.tenantId ?? null
     },
-    tenant: currentUser?.tenant
+    tenant: currentUser.tenant
       ? {
           id: currentUser.tenant.id,
           slug: currentUser.tenant.slug,
@@ -45,7 +45,12 @@ const toCurrentUserResponse = (currentUser: Awaited<ReturnType<AuthService["reso
           role: currentUser.tenant.role
         }
       : null,
-    target_app: currentUser?.targetApp
+    target_app: currentUser.targetApp,
+    routing: {
+      status: currentUser.routing.status,
+      target_app: currentUser.routing.targetApp,
+      reason_code: currentUser.routing.reasonCode
+    }
   });
 
 export const createAuthRouter = (options: AuthRouterOptions = {}) => {
@@ -54,14 +59,11 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
 
   router.post("/login", async (req, res) => {
     const parsed = LoginRequestSchema.safeParse(req.body);
-    if (!parsed.success) return sendAuthError(res, 400, "validation_error", "Invalid login payload");
+    if (!parsed.success) return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid login payload");
 
     const result = await authService.login(parsed.data.identifier, parsed.data.password);
     if (!result.ok) {
-      if (result.reason === "disabled_account") {
-        return sendAuthError(res, 403, "disabled_account", "Account is disabled");
-      }
-      return sendAuthError(res, 401, "invalid_credentials", "Invalid credentials");
+      return sendAuthError(res, result.status, result.errorCode, result.message, result.routing);
     }
 
     const response = AccessTokenResponseSchema.parse({
@@ -74,16 +76,22 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
   });
 
   router.get("/me", authenticate, async (req, res) => {
-    if (!req.auth) return sendAuthError(res, 401, "unauthenticated", "Missing bearer token");
-    const currentUser = req.authContext?.currentUser ?? (await authService.resolveCurrentUser(req.auth));
-    if (!currentUser) return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
-    return res.status(200).json(toCurrentUserResponse(currentUser));
+    if (!req.auth) return sendAuthError(res, 401, AuthErrorCodeEnum.UNAUTHENTICATED, "Missing bearer token");
+    const currentUser = req.authContext
+      ? { ok: true as const, currentUser: req.authContext.currentUser }
+      : await authService.resolveCurrentUser(req.auth);
+
+    if (!currentUser.ok) {
+      return sendAuthError(res, currentUser.status, currentUser.errorCode, currentUser.message, currentUser.routing);
+    }
+
+    return res.status(200).json(toCurrentUserResponse(currentUser.currentUser));
   });
 
   router.post("/logout", (req, res) => {
     const parsed = LogoutRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return sendAuthError(res, 400, "validation_error", "Invalid logout payload");
+      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid logout payload");
     }
     return res.status(204).send();
   });

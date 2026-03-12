@@ -3,6 +3,20 @@ import { z } from "zod";
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
+export enum AuthErrorCodeEnum {
+  VALIDATION_ERROR = "validation_error",
+  UNAUTHENTICATED = "unauthenticated",
+  INVALID_CREDENTIALS = "invalid_credentials",
+  DISABLED_ACCOUNT = "disabled_account",
+  INVALID_CLAIMS = "invalid_claims",
+  TENANT_MEMBERSHIP_REQUIRED = "tenant_membership_required",
+  TENANT_SELECTION_REQUIRED = "tenant_selection_required",
+  FORBIDDEN_ROLE = "forbidden_role",
+  FORBIDDEN_TENANT = "forbidden_tenant",
+  CONFLICT = "conflict",
+  MIGRATION_FAILED = "migration_failed"
+}
+
 export const JwtClaimsSchema = z.object({
   sub: z.string(),
   role: RoleSchema,
@@ -18,15 +32,4 @@ export const JwtClaimsSchema = z.object({
 
 export type JwtClaims = z.infer<typeof JwtClaimsSchema>;
 
-export const AuthErrorCodeSchema = z.enum([
-  "validation_error",
-  "unauthenticated",
-  "invalid_credentials",
-  "disabled_account",
-  "invalid_claims",
-  "forbidden_role",
-  "forbidden_tenant",
-  "conflict",
-  "migration_failed"
-]);
-export type AuthErrorCode = z.infer<typeof AuthErrorCodeSchema>;
+export const AuthErrorCodeSchema = z.nativeEnum(AuthErrorCodeEnum);
