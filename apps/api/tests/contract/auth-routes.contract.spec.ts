@@ -2,6 +2,8 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import { buildApp } from "../../src/app.js";
+import { AuthErrorCodeEnum } from "../../src/auth/claims.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../../src/auth/service.js";
 import {
   createJwtToken,
   loginFixtures,
@@ -24,7 +26,7 @@ describe("auth routes contract", () => {
     expect(response.body.claims.role).toBe("super_admin");
     expect(response.body.current_user.target_app).toBe("platform");
     expect(response.body.current_user.routing).toEqual({
-      status: "allowed",
+      status: AuthRoutingStatusEnum.ALLOWED,
       target_app: "platform",
       reason_code: null
     });
@@ -46,7 +48,7 @@ describe("auth routes contract", () => {
       .send({ identifier: loginFixtures.tenantAdminByEmail.identifier, password: "WrongPassword123!" });
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe("invalid_credentials");
+    expect(response.body.error_code).toBe(AuthErrorCodeEnum.INVALID_CREDENTIALS);
   });
 
   it("returns disabled-account error for disabled users", async () => {
@@ -55,7 +57,7 @@ describe("auth routes contract", () => {
       .send(loginFixtures.disabledUser);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe("disabled_account");
+    expect(response.body.error_code).toBe(AuthErrorCodeEnum.DISABLED_ACCOUNT);
   });
 
   it("returns structured tenant-membership denial when login cannot resolve tenant context", async () => {
@@ -65,12 +67,12 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
-      error_code: "tenant_membership_required",
+      error_code: AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
       message: "An active tenant membership is required for this user",
       routing: {
-        status: "access_denied",
+        status: AuthRoutingStatusEnum.ACCESS_DENIED,
         target_app: null,
-        reason_code: "missing_active_tenant_membership"
+        reason_code: AuthRoutingReasonCodeEnum.MISSING_ACTIVE_TENANT_MEMBERSHIP
       }
     });
   });
@@ -82,12 +84,12 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
-      error_code: "tenant_selection_required",
+      error_code: AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
       message: "Tenant selection is required and is not yet supported",
       routing: {
-        status: "selection_required",
+        status: AuthRoutingStatusEnum.SELECTION_REQUIRED,
         target_app: null,
-        reason_code: "multiple_active_tenant_memberships"
+        reason_code: AuthRoutingReasonCodeEnum.MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS
       }
     });
   });
@@ -102,7 +104,7 @@ describe("auth routes contract", () => {
     expect(response.body.role_context.tenant_id).toBe("tenant-acme");
     expect(response.body.target_app).toBe("tenant");
     expect(response.body.routing).toEqual({
-      status: "allowed",
+      status: AuthRoutingStatusEnum.ALLOWED,
       target_app: "tenant",
       reason_code: null
     });
@@ -117,7 +119,7 @@ describe("auth routes contract", () => {
       );
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe("invalid_claims");
+    expect(response.body.error_code).toBe(AuthErrorCodeEnum.INVALID_CLAIMS);
   });
 
   it("returns structured 403 when an authenticated tenant user lacks active membership", async () => {
@@ -127,12 +129,12 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
-      error_code: "tenant_membership_required",
+      error_code: AuthErrorCodeEnum.TENANT_MEMBERSHIP_REQUIRED,
       message: "An active tenant membership is required for this user",
       routing: {
-        status: "access_denied",
+        status: AuthRoutingStatusEnum.ACCESS_DENIED,
         target_app: null,
-        reason_code: "missing_active_tenant_membership"
+        reason_code: AuthRoutingReasonCodeEnum.MISSING_ACTIVE_TENANT_MEMBERSHIP
       }
     });
   });
@@ -144,12 +146,12 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
-      error_code: "tenant_selection_required",
+      error_code: AuthErrorCodeEnum.TENANT_SELECTION_REQUIRED,
       message: "Tenant selection is required and is not yet supported",
       routing: {
-        status: "selection_required",
+        status: AuthRoutingStatusEnum.SELECTION_REQUIRED,
         target_app: null,
-        reason_code: "multiple_active_tenant_memberships"
+        reason_code: AuthRoutingReasonCodeEnum.MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS
       }
     });
   });

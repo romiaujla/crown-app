@@ -219,7 +219,7 @@ const buildLoginFailure = (
   routing?: BlockedAuthRouting
 ): LoginFailure => ({
   ok: false,
-  status: errorCode === "invalid_credentials" ? 401 : 403,
+  status: errorCode === AuthErrorCodeEnum.INVALID_CREDENTIALS ? 401 : 403,
   errorCode,
   message,
   routing
@@ -245,7 +245,7 @@ const buildResolveCurrentUserFailure = (
   routing?: BlockedAuthRouting
 ): ResolveCurrentUserFailure => ({
   ok: false,
-  status: errorCode === "invalid_claims" ? 401 : 403,
+  status: errorCode === AuthErrorCodeEnum.INVALID_CLAIMS ? 401 : 403,
   errorCode,
   message,
   routing
