@@ -1,14 +1,15 @@
 import { z } from "zod";
 
 import { PlatformUserAccountStatusSchema } from "../domain/status-enums.js";
-import { JwtClaimsSchema, RoleSchema } from "./claims.js";
-import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "./service.js";
+import { JwtClaimsSchema, RoleSchema, TenantRoleSchema } from "./claims.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, authTargetAppValues } from "./service.js";
 
 export const AuthRoutingReasonCodeSchema = z.nativeEnum(AuthRoutingReasonCodeEnum);
+export const AuthTargetAppSchema = z.enum(authTargetAppValues);
 
 export const AuthRoutingSchema = z.object({
   status: z.nativeEnum(AuthRoutingStatusEnum),
-  target_app: z.enum(["platform", "tenant"]).nullable(),
+  target_app: AuthTargetAppSchema.nullable(),
   reason_code: AuthRoutingReasonCodeSchema.nullable()
 });
 
@@ -56,7 +57,7 @@ export const CurrentUserTenantSchema = z
     id: z.string(),
     slug: z.string(),
     name: z.string(),
-    role: z.enum(["tenant_admin", "tenant_user"])
+    role: TenantRoleSchema
   })
   .nullable();
 
@@ -67,7 +68,7 @@ export const CurrentUserResponseSchema = z.object({
     tenant_id: z.string().nullable()
   }),
   tenant: CurrentUserTenantSchema,
-  target_app: z.enum(["platform", "tenant"]),
+  target_app: AuthTargetAppSchema,
   routing: AllowedAuthRoutingSchema
 });
 
