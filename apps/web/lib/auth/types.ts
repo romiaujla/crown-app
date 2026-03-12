@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export enum AuthStateStatusEnum {
+  BOOTSTRAPPING = "bootstrapping",
+  AUTHENTICATED = "authenticated",
+  UNAUTHENTICATED = "unauthenticated"
+}
+
+export enum AuthReasonEnum {
+  SESSION_EXPIRED = "session-expired"
+}
+
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export const TenantRoleSchema = z.enum(["tenant_admin", "tenant_user"]);
 export const AuthTargetAppSchema = z.enum(["platform", "tenant"]);

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { LogoutButton } from "../../components/auth/logout-button";
 import { useAuth } from "../../components/auth/auth-provider";
+import { AuthStateStatusEnum } from "../../lib/auth/types";
 import {
   buildLoginHref,
   buildUnauthorizedHref,
@@ -54,9 +55,9 @@ const TenantPage = () => {
   const { state } = useAuth();
 
   useEffect(() => {
-    if (state.status === "bootstrapping") return;
+    if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) return;
 
-    if (state.status === "unauthenticated") {
+    if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) {
       captureReturnPath(pathname);
       router.replace(buildLoginHref(state.reason));
       return;
@@ -73,7 +74,7 @@ const TenantPage = () => {
     }
   }, [pathname, router, state]);
 
-  if (state.status === "bootstrapping") {
+  if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
     return (
       <main className="auth-transition-shell">
         <section className="status-card" aria-labelledby="tenant-loading-title">
@@ -85,7 +86,7 @@ const TenantPage = () => {
     );
   }
 
-  if (state.status === "unauthenticated") return null;
+  if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) return null;
 
   const decision = resolveProtectedPath(pathname, state.currentUser);
   if (decision.kind !== "allow") {

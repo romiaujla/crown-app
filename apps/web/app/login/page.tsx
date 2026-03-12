@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { LoginForm } from "../../components/auth/login-form";
 import { useAuth } from "../../components/auth/auth-provider";
+import { AuthStateStatusEnum } from "../../lib/auth/types";
 import {
   buildUnauthorizedHref,
   consumeValidatedReturnPath,
@@ -17,7 +18,7 @@ const LoginPage = () => {
   const { state } = useAuth();
 
   useEffect(() => {
-    if (state.status !== "authenticated") return;
+    if (state.status !== AuthStateStatusEnum.AUTHENTICATED) return;
 
     const nextPath = consumeValidatedReturnPath(state.currentUser) ?? toRecommendedPath(state.currentUser);
     router.replace(nextPath);
@@ -27,11 +28,11 @@ const LoginPage = () => {
   const blockedReason = searchParams.get("blocked_reason");
 
   useEffect(() => {
-    if (!blockedReason || state.status !== "authenticated") return;
+    if (!blockedReason || state.status !== AuthStateStatusEnum.AUTHENTICATED) return;
     router.replace(buildUnauthorizedHref(blockedReason));
   }, [blockedReason, router, state]);
 
-  if (state.status === "bootstrapping") {
+  if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
     return (
       <main className="auth-transition-shell">
         <section className="status-card" aria-labelledby="login-loading-title">

@@ -9,23 +9,23 @@ import {
   getStoredAccessToken,
   storeAccessToken
 } from "../../lib/auth/storage";
-import type { CurrentUserResponse } from "../../lib/auth/types";
+import { AuthReasonEnum, AuthStateStatusEnum, type CurrentUserResponse } from "../../lib/auth/types";
 
-type AuthReason = "session-expired" | null;
+type AuthReason = AuthReasonEnum | null;
 
 type AuthState =
   | {
-      status: "bootstrapping";
+      status: AuthStateStatusEnum.BOOTSTRAPPING;
       currentUser: null;
       reason: null;
     }
   | {
-      status: "authenticated";
+      status: AuthStateStatusEnum.AUTHENTICATED;
       currentUser: CurrentUserResponse;
       reason: null;
     }
   | {
-      status: "unauthenticated";
+      status: AuthStateStatusEnum.UNAUTHENTICATED;
       currentUser: null;
       reason: AuthReason;
     };
@@ -55,7 +55,7 @@ const clearAuthStorage = () => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AuthState>({
-    status: "bootstrapping",
+    status: AuthStateStatusEnum.BOOTSTRAPPING,
     currentUser: null,
     reason: null
   });
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!accessToken) {
         if (!cancelled) {
           setState({
-            status: "unauthenticated",
+            status: AuthStateStatusEnum.UNAUTHENTICATED,
             currentUser: null,
             reason: null
           });
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const currentUser = await getCurrentUser(accessToken);
         if (!cancelled) {
           setState({
-            status: "authenticated",
+            status: AuthStateStatusEnum.AUTHENTICATED,
             currentUser,
             reason: null
           });
@@ -89,9 +89,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         clearAuthStorage();
         if (!cancelled) {
           setState({
-            status: "unauthenticated",
+            status: AuthStateStatusEnum.UNAUTHENTICATED,
             currentUser: null,
-            reason: "session-expired"
+            reason: AuthReasonEnum.SESSION_EXPIRED
           });
         }
       }
@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       storeAccessToken(result.accessToken);
       setState({
-        status: "authenticated",
+        status: AuthStateStatusEnum.AUTHENTICATED,
         currentUser: result.currentUser,
         reason: null
       });
@@ -129,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } finally {
         clearAuthStorage();
         setState({
-          status: "unauthenticated",
+          status: AuthStateStatusEnum.UNAUTHENTICATED,
           currentUser: null,
           reason: null
         });

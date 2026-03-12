@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "../components/auth/auth-provider";
+import { AuthStateStatusEnum } from "../lib/auth/types";
 import { buildLoginHref, toRecommendedPath } from "../lib/routing/auth-routing";
 
 const RootPage = () => {
@@ -11,9 +12,9 @@ const RootPage = () => {
   const { state } = useAuth();
 
   useEffect(() => {
-    if (state.status === "bootstrapping") return;
+    if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) return;
 
-    if (state.status === "authenticated") {
+    if (state.status === AuthStateStatusEnum.AUTHENTICATED) {
       router.replace(toRecommendedPath(state.currentUser));
       return;
     }
