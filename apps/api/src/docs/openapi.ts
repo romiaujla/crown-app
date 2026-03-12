@@ -220,7 +220,7 @@ export const authDocsDocument = {
       post: {
         tags: ["Auth"],
         summary: "Authenticate with username or email",
-        description: "Returns a local access token, decoded claims, and the current-user context.",
+        description: "Returns a signed JWT access token, decoded claims, and the current-user context.",
         requestBody: {
           required: true,
           content: {

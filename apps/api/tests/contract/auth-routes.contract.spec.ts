@@ -6,6 +6,7 @@ import { AuthErrorCodeEnum } from "../../src/auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../../src/auth/service.js";
 import {
   createJwtToken,
+  createTamperedJwtToken,
   loginFixtures,
   superAdminClaims,
   tenantAdminMultiTenantClaims,
@@ -23,6 +24,7 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("access_token");
+    expect(response.body.access_token.split(".")).toHaveLength(3);
     expect(response.body.claims.role).toBe("super_admin");
     expect(response.body.claims.exp).toEqual(expect.any(Number));
     expect(response.body.current_user.target_app).toBe("platform");
@@ -42,6 +44,15 @@ describe("auth routes contract", () => {
     expect(response.body.claims.role).toBe("super_admin");
     expect(response.body.claims.exp).toEqual(expect.any(Number));
     expect(response.body.current_user.principal.username).toBe(loginFixtures.superAdminByUsername.identifier);
+  });
+
+  it("rejects tampered signed tokens on current-user", async () => {
+    const response = await request(app)
+      .get("/api/v1/auth/me")
+      .set("Authorization", `Bearer ${createTamperedJwtToken(superAdminClaims)}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error_code).toBe(AuthErrorCodeEnum.INVALID_CLAIMS);
   });
 
   it("returns invalid credentials for bad passwords", async () => {
