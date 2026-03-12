@@ -48,6 +48,9 @@ Default local endpoints:
 - Web: `http://localhost:3000`
 - API health: `http://localhost:4000/api/v1/health`
 
+Local auth reference:
+- [Local Authentication Guide](docs/auth/local-authentication.md)
+
 ## Web UI Baseline
 - `apps/web` is configured for shadcn/ui component generation through `apps/web/components.json`.
 - Use the repo root or `apps/web` as your working directory when adding components with the CLI:
@@ -57,6 +60,10 @@ Default local endpoints:
 - The initial shared UI primitives live under `apps/web/components/ui/`.
 - Session-expiry UX is driven by the access-token `exp` claim and a shared web-auth warning flow.
 - The web app shows a top-right warning shortly before logout, then redirects to login with a session-expired message when expiry is reached.
+
+## Local Auth
+- Use the seeded local accounts and login journeys documented in [docs/auth/local-authentication.md](docs/auth/local-authentication.md).
+- The current phase uses tab-scoped `sessionStorage`, so local sessions are not shared automatically across browser tabs.
 
 ## Database Commands
 - Start Postgres and apply schema in one step:
