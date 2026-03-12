@@ -23,6 +23,8 @@ After initialization, generate and maintain these artifacts for `--speckit CROWN
 3. `/plan`
 4. `/tasks`
 
+Use `--help` to read the prompt registry in `docs/process/ai-agent-prompt-help.md` before starting work if you need a concise list of the supported repository AI-agent prompts.
+
 When work starts from `--speckit CROWN-<id>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation. When work starts from `--implement CROWN-<id>`, skip the Spec Kit phases and proceed directly to implementation under the same Jira and branch controls.
 
 ## Verification
@@ -34,6 +36,7 @@ pnpm specify.audit
 
 Expect:
 - policy files present,
+- help registry present and aligned with documented prompt commands,
 - hook enforcement present,
 - documentation linkage for Spec Kit guidance present.
 
