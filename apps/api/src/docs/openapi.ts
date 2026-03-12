@@ -1,4 +1,12 @@
+import { AuthErrorCodeEnum } from "../auth/claims.js";
+import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../auth/service.js";
+import { PlatformUserAccountStatus } from "../domain/status-enums.js";
+
 const bearerSecurity = [{ bearerAuth: [] }];
+const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
+const authRoutingStatusValues = Object.values(AuthRoutingStatusEnum);
+const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
+const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
@@ -45,7 +53,7 @@ export const authDocsDocument = {
       },
       PlatformUserAccountStatus: {
         type: "string",
-        enum: ["active", "disabled", "inactive"]
+        enum: platformUserAccountStatusValues
       },
       JwtClaims: {
         type: "object",
@@ -77,19 +85,7 @@ export const authDocsDocument = {
         properties: {
           error_code: {
             type: "string",
-            enum: [
-              "validation_error",
-              "unauthenticated",
-              "invalid_credentials",
-              "disabled_account",
-              "invalid_claims",
-              "tenant_membership_required",
-              "tenant_selection_required",
-              "forbidden_role",
-              "forbidden_tenant",
-              "conflict",
-              "migration_failed"
-            ]
+            enum: authErrorCodeValues
           },
           message: { type: "string" },
           routing: { $ref: "#/components/schemas/AuthRouting" }
@@ -101,7 +97,7 @@ export const authDocsDocument = {
         properties: {
           status: {
             type: "string",
-            enum: ["allowed", "access_denied", "selection_required"]
+            enum: authRoutingStatusValues
           },
           target_app: {
             type: "string",
@@ -111,7 +107,7 @@ export const authDocsDocument = {
           reason_code: {
             type: "string",
             nullable: true,
-            enum: ["missing_active_tenant_membership", "multiple_active_tenant_memberships"]
+            enum: authRoutingReasonCodeValues
           }
         }
       },
