@@ -24,6 +24,7 @@ describe("auth routes contract", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("access_token");
     expect(response.body.claims.role).toBe("super_admin");
+    expect(response.body.claims.exp).toEqual(expect.any(Number));
     expect(response.body.current_user.target_app).toBe("platform");
     expect(response.body.current_user.routing).toEqual({
       status: AuthRoutingStatusEnum.ALLOWED,
@@ -39,6 +40,7 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.claims.role).toBe("super_admin");
+    expect(response.body.claims.exp).toEqual(expect.any(Number));
     expect(response.body.current_user.principal.username).toBe(loginFixtures.superAdminByUsername.identifier);
   });
 
@@ -120,6 +122,15 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe(AuthErrorCodeEnum.INVALID_CLAIMS);
+  });
+
+  it("returns unauthenticated when current-user token is expired", async () => {
+    const response = await request(app)
+      .get("/api/v1/auth/me")
+      .set("Authorization", `Bearer ${createJwtToken({ ...superAdminClaims, exp: Math.floor(Date.now() / 1000) - 1 })}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error_code).toBe(AuthErrorCodeEnum.UNAUTHENTICATED);
   });
 
   it("returns structured 403 when an authenticated tenant user lacks active membership", async () => {

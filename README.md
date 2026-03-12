@@ -55,6 +55,8 @@ Default local endpoints:
   - or `pnpm dlx shadcn@latest add button --cwd apps/web`
 - The baseline utility lives at `apps/web/lib/utils.ts`.
 - The initial shared UI primitives live under `apps/web/components/ui/`.
+- Session-expiry UX is driven by the access-token `exp` claim and a shared web-auth warning flow.
+- The web app shows a top-right warning shortly before logout, then redirects to login with a session-expired message when expiry is reached.
 
 ## Database Commands
 - Start Postgres and apply schema in one step:

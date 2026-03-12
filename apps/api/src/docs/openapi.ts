@@ -60,11 +60,16 @@ export const authDocsDocument = {
       },
       JwtClaims: {
         type: "object",
-        required: ["sub", "role", "tenant_id"],
+        required: ["sub", "role", "tenant_id", "exp"],
         properties: {
           sub: { type: "string" },
           role: { $ref: "#/components/schemas/Role" },
-          tenant_id: { type: "string", nullable: true }
+          tenant_id: { type: "string", nullable: true },
+          exp: {
+            type: "integer",
+            format: "int64",
+            description: "Unix timestamp in seconds when the access token expires."
+          }
         }
       },
       LoginRequest: {

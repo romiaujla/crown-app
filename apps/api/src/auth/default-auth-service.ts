@@ -25,6 +25,8 @@ const DEFAULT_TENANT = {
   name: "Acme Local Logistics"
 } as const;
 
+const AUTH_ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
+
 export const AUTH_LOGIN_FIXTURES = {
   superAdminByEmail: {
     identifier: "super-admin@acme-local.test",
@@ -232,7 +234,8 @@ const buildLoginSuccess = (user: DirectoryUser, role: JwtClaims["role"], tenantI
   const claims: JwtClaims = {
     sub: user.id,
     role,
-    tenant_id: tenantId
+    tenant_id: tenantId,
+    exp: Math.floor(Date.now() / 1000) + AUTH_ACCESS_TOKEN_TTL_SECONDS
   };
 
   return {

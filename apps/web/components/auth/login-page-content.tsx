@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { LoginForm } from "@/components/auth/login-form";
 import { useAuth } from "@/components/auth/auth-provider";
-import { AuthStateStatusEnum } from "@/lib/auth/types";
-import { buildUnauthorizedHref, consumeValidatedReturnPath, toRecommendedPath } from "@/lib/routing/auth-routing";
+import { clearStoredLoginReason, getStoredLoginReason } from "@/lib/auth/storage";
+import { AuthReasonEnum, AuthStateStatusEnum } from "@/lib/auth/types";
+import { buildLoginHref, buildUnauthorizedHref, consumeValidatedReturnPath, toRecommendedPath } from "@/lib/routing/auth-routing";
 
 export const LoginPageContent = () => {
   const router = useRouter();
@@ -25,11 +26,25 @@ export const LoginPageContent = () => {
 
   const reason = searchParams.get("reason");
   const blockedReason = searchParams.get("blocked_reason");
+  const storedReason = getStoredLoginReason();
+  const resolvedReason =
+    reason ?? storedReason ?? (state.reason === AuthReasonEnum.SESSION_EXPIRED ? state.reason : null);
+
+  useEffect(() => {
+    if (state.status !== AuthStateStatusEnum.UNAUTHENTICATED) return;
+    if (state.reason !== AuthReasonEnum.SESSION_EXPIRED || reason === AuthReasonEnum.SESSION_EXPIRED) return;
+    router.replace(buildLoginHref(state.reason));
+  }, [reason, router, state]);
 
   useEffect(() => {
     if (!blockedReason || state.status !== AuthStateStatusEnum.AUTHENTICATED) return;
     router.replace(buildUnauthorizedHref(blockedReason));
   }, [blockedReason, router, state]);
+
+  useEffect(() => {
+    if (!resolvedReason) return;
+    clearStoredLoginReason();
+  }, [resolvedReason]);
 
   if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
     return (
@@ -74,7 +89,7 @@ export const LoginPageContent = () => {
               <CardContent>
                 <Card className="border-white/70 bg-white/90 shadow-sm">
                   <CardContent className="p-6">
-                    <LoginForm reason={reason} />
+                    <LoginForm reason={resolvedReason} />
                   </CardContent>
                 </Card>
               </CardContent>

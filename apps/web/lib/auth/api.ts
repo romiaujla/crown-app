@@ -1,4 +1,5 @@
 import {
+  type AccessTokenClaims,
   AccessTokenResponseSchema,
   AuthErrorResponseSchema,
   CurrentUserResponseSchema,
@@ -10,6 +11,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4
 type LoginSuccessResult = {
   ok: true;
   accessToken: string;
+  claims: AccessTokenClaims;
   currentUser: CurrentUserResponse;
 };
 
@@ -97,6 +99,7 @@ export const login = async (identifier: string, password: string): Promise<Login
     return {
       ok: true,
       accessToken: parsed.data.access_token,
+      claims: parsed.data.claims,
       currentUser: parsed.data.current_user
     };
   } catch (error) {

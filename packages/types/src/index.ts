@@ -6,7 +6,8 @@ export type Role = z.infer<typeof RoleSchema>;
 export const JwtClaimsSchema = z.object({
   sub: z.string(),
   role: RoleSchema,
-  tenant_id: z.string().nullable()
+  tenant_id: z.string().nullable(),
+  exp: z.number().int().positive()
 }).superRefine((claims, ctx) => {
   if ((claims.role === "tenant_admin" || claims.role === "tenant_user") && !claims.tenant_id) {
     ctx.addIssue({

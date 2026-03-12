@@ -31,6 +31,9 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   const token = authHeader.slice("Bearer ".length);
   try {
     const claims = JwtClaimsSchema.parse(decodeTokenPayload(token));
+    if (claims.exp <= Math.floor(Date.now() / 1000)) {
+      return sendAuthError(res, 401, AuthErrorCodeEnum.UNAUTHENTICATED, "Session is no longer valid.");
+    }
     req.auth = claims;
     return defaultAuthService.resolveCurrentUser(claims).then((currentUserResult) => {
       if (!currentUserResult.ok) {
