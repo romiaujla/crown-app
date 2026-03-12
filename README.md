@@ -120,3 +120,15 @@ Repository guidance:
 - Single canonical constitution: `docs/process/engineering-constitution.md`
 - Project-level Spec Kit installation and usage: `docs/process/spec-kit-installation.md`
 - Feature artifact/index guidance: `docs/features/README.md`
+
+Prompt-driven start example:
+
+```text
+Start implementing CROWN-79
+```
+
+Expected repository behavior for major features:
+- Resolve the Jira issue first and create or validate the Jira-linked branch.
+- Start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
+- Commit and push each completed phase before advancing when no unresolved clarification remains.
+- Pause for clarification instead of auto-advancing when scope, requirements, or repository state are ambiguous.

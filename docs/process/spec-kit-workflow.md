@@ -20,6 +20,40 @@ For major features, complete these artifacts before implementation:
 - Jira issue must link completed planning artifacts before implementation starts.
 - PR description must reference corresponding spec/plan/tasks artifacts.
 
+## Prompt-Driven Start Contract
+For prompts in the form `Start implementing <JIRA ISSUE>`:
+
+1. Resolve the Jira issue and determine the issue type before branch creation.
+2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
+3. Create or validate the Jira-linked branch and matching feature artifact location.
+4. Start major-feature execution with `/specify`.
+
+## Required Phase Sequence
+For major feature work started from a Jira prompt, advance in this order only:
+
+1. `/specify`
+2. `/plan`
+3. `/tasks`
+4. implementation
+5. pull request creation
+
+The workflow must not skip or reorder these phases unless the user explicitly changes scope or direction.
+
+## Phase Gate Rules
+- `/specify` may advance to `/plan` only after the specification is complete, no unresolved clarification remains, and the phase changes are committed and pushed.
+- `/plan` may advance to `/tasks` only after the planning artifacts are complete, no unresolved clarification remains, and the phase changes are committed and pushed.
+- `/tasks` may advance to implementation only after the task breakdown is complete, no unresolved clarification remains, and the phase changes are committed and pushed.
+- Implementation may advance to pull request creation only after the scoped work is complete, validation is captured, no unresolved clarification remains, and the phase changes are committed and pushed.
+
+## Clarification Stop Conditions
+- Ambiguous or conflicting issue scope
+- Missing or contradictory requirements
+- Dirty repository state that conflicts with the target issue
+- Branch, spec artifact, or PR metadata drift away from the Jira issue
+- Incomplete validation evidence required for a compliant pull request
+
+If any stop condition is active, pause for user clarification instead of auto-advancing.
+
 ### Required PR Checklist Gates (Major Features)
 - Jira key present in branch name.
 - PR title matches `<type>: CROWN-<id> - <message>` so squash merge produces a release-safe commit subject on `main`.
@@ -28,6 +62,7 @@ For major features, complete these artifacts before implementation:
 - Scope statement confirms changes map to Jira issue scope.
 - Validation evidence included (tests/lint/typecheck as applicable).
 - Documentation updates included for behavior/process changes.
+- Pull request is created only after implementation has been committed and pushed.
 - API route changes must keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned for created, materially changed, and deleted routes.
 
 ## Convention Source of Truth
