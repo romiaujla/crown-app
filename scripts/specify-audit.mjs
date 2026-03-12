@@ -10,6 +10,7 @@ const ROOT = process.cwd();
 const BRANCH_PATTERN = /^(chore|feat|fix|hotfix)\/CROWN-\d+(-[a-z0-9-]+)?$/;
 const REQUIRED_DOCS = [
   "docs/process/engineering-constitution.md",
+  "docs/process/ai-agent-prompt-help.md",
   "docs/process/spec-kit-workflow.md",
   "docs/process/spec-kit-installation.md"
 ];
@@ -93,6 +94,36 @@ const main = async () => {
     featureConstitutions.length === 0 ? "No duplicates found" : `Remove: ${featureConstitutions.join(", ")}`
   );
 
+  await ensureFileContains(
+    "docs/process/ai-agent-prompt-help.md",
+    /--help[\s\S]*--speckit CROWN-<id>[\s\S]*--implement CROWN-<id>/i,
+    "Prompt help registry lists the supported command patterns"
+  );
+  await ensureFileContains(
+    "docs/process/ai-agent-prompt-help.md",
+    /registry[\s\S]*future|future[\s\S]*registry/i,
+    "Prompt help registry defines how future commands are added"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /--help[\s\S]*prompt discovery|source-of-truth registry/i,
+    "AGENTS documents the --help discovery command"
+  );
+  await ensureFileContains(
+    "README.md",
+    /--help[\s\S]*prompt registry|ai-agent prompt help registry/i,
+    "README links to the prompt help registry"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /--help[\s\S]*ai-agent-prompt-help\.md/i,
+    "Spec workflow references the --help registry"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-installation.md",
+    /--help[\s\S]*ai-agent-prompt-help\.md/i,
+    "Spec installation guidance references the --help registry"
+  );
   await ensureFileContains(
     "docs/process/spec-kit-workflow.md",
     /single constitution|one constitution|canonical constitution|canonical policy/i,
