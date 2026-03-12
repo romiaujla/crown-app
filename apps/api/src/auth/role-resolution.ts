@@ -24,13 +24,29 @@ export type AuthTenantMembership = {
   role: RoleEnum;
 };
 
+export type SuperAdminAuthResolutionResult = {
+  ok: true;
+  platformUserId: string;
+  resolvedRole: RoleEnum.SUPER_ADMIN;
+  tenantId: null;
+};
+
+export type TenantAuthResolutionResult = {
+  ok: true;
+  platformUserId: string;
+  resolvedRole: RoleEnum.TENANT_ADMIN | RoleEnum.TENANT_USER;
+  tenantId: string;
+};
+
+export type AuthResolutionFailureResult = {
+  ok: false;
+  reason: AuthResolutionFailureReasonEnum;
+};
+
 export type AuthResolutionResult =
-  | { ok: true; platformUserId: string; resolvedRole: RoleEnum.SUPER_ADMIN; tenantId: null }
-  | { ok: true; platformUserId: string; resolvedRole: RoleEnum.TENANT_ADMIN | RoleEnum.TENANT_USER; tenantId: string }
-  | {
-      ok: false;
-      reason: AuthResolutionFailureReasonEnum;
-    };
+  | SuperAdminAuthResolutionResult
+  | TenantAuthResolutionResult
+  | AuthResolutionFailureResult;
 
 export const resolveAuthenticatedRoleContext = (
   platformUser: AuthPlatformUser & { tenantLinks: AuthTenantMembership[] }

@@ -93,9 +93,11 @@ export type ResolveCurrentUserSuccess = {
   currentUser: CurrentUserContext;
 };
 
+export type LoginResult = LoginSuccess | LoginFailure;
+
 export type ResolveCurrentUserResult = ResolveCurrentUserSuccess | ResolveCurrentUserFailure;
 
 export type AuthService = {
-  login(identifier: string, password: string): Promise<LoginSuccess | LoginFailure>;
+  login(identifier: string, password: string): Promise<LoginResult>;
   resolveCurrentUser(claims: JwtClaims): Promise<ResolveCurrentUserResult>;
 };
