@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "./auth-provider";
@@ -17,6 +17,8 @@ const reasonMessage: Record<string, string> = {
 export const LoginForm = ({ reason }: LoginFormProps) => {
   const router = useRouter();
   const { signIn } = useAuth();
+  const identifierInputRef = useRef<HTMLInputElement>(null);
+  const passwordInputRef = useRef<HTMLInputElement>(null);
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ identifier?: string; password?: string }>({});
@@ -39,7 +41,14 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
     setFieldErrors(nextFieldErrors);
     setFormError(null);
 
-    if (Object.keys(nextFieldErrors).length > 0) return;
+    if (Object.keys(nextFieldErrors).length > 0) {
+      if (nextFieldErrors.identifier) {
+        identifierInputRef.current?.focus();
+      } else if (nextFieldErrors.password) {
+        passwordInputRef.current?.focus();
+      }
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -67,9 +76,11 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
       <label className="form-field">
         <span className="field-label">Email or username</span>
         <input
+          aria-invalid={fieldErrors.identifier ? "true" : "false"}
           className="text-input"
           autoComplete="username"
           name="identifier"
+          ref={identifierInputRef}
           onChange={(event) => setIdentifier(event.target.value)}
           value={identifier}
         />
@@ -79,10 +90,12 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
       <label className="form-field">
         <span className="field-label">Password</span>
         <input
+          aria-invalid={fieldErrors.password ? "true" : "false"}
           className="text-input"
           autoComplete="current-password"
           name="password"
           onChange={(event) => setPassword(event.target.value)}
+          ref={passwordInputRef}
           type="password"
           value={password}
         />

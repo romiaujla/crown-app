@@ -73,7 +73,7 @@ const TenantPage = () => {
     }
   }, [pathname, router, state]);
 
-  if (state.status !== "authenticated") {
+  if (state.status === "bootstrapping") {
     return (
       <main className="auth-transition-shell">
         <section className="status-card" aria-labelledby="tenant-loading-title">
@@ -84,6 +84,8 @@ const TenantPage = () => {
       </main>
     );
   }
+
+  if (state.status === "unauthenticated") return null;
 
   const decision = resolveProtectedPath(pathname, state.currentUser);
   if (decision.kind !== "allow") {
