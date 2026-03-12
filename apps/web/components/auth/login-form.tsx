@@ -3,6 +3,10 @@
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { useAuth } from "./auth-provider";
 import { consumeValidatedReturnPath, toRecommendedPath } from "../../lib/routing/auth-routing";
 
@@ -66,44 +70,50 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit} noValidate>
+    <form className="space-y-5" onSubmit={handleSubmit} noValidate>
       {bannerMessage ? (
-        <p className="form-banner" role="alert">
+        <div
+          className="form-banner rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
           {bannerMessage}
-        </p>
+        </div>
       ) : null}
 
-      <label className="form-field">
-        <span className="field-label">Email or username</span>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="identifier">Email or username</Label>
+        <Input
+          id="identifier"
           aria-invalid={fieldErrors.identifier ? "true" : "false"}
-          className="text-input"
           autoComplete="username"
           name="identifier"
+          placeholder="name@crown.test"
           ref={identifierInputRef}
           onChange={(event) => setIdentifier(event.target.value)}
           value={identifier}
         />
-        {fieldErrors.identifier ? <span className="field-error">{fieldErrors.identifier}</span> : null}
-      </label>
+        {fieldErrors.identifier ? <p className="text-sm text-destructive">{fieldErrors.identifier}</p> : null}
+      </div>
 
-      <label className="form-field">
-        <span className="field-label">Password</span>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
           aria-invalid={fieldErrors.password ? "true" : "false"}
-          className="text-input"
           autoComplete="current-password"
           name="password"
           onChange={(event) => setPassword(event.target.value)}
+          placeholder="Enter your password"
           ref={passwordInputRef}
           type="password"
           value={password}
         />
-        {fieldErrors.password ? <span className="field-error">{fieldErrors.password}</span> : null}
-      </label>
-      <button className="form-submit" disabled={isSubmitting} type="submit">
+        {fieldErrors.password ? <p className="text-sm text-destructive">{fieldErrors.password}</p> : null}
+      </div>
+
+      <Button className="w-full" disabled={isSubmitting} type="submit">
         {isSubmitting ? "Signing in..." : "Sign in"}
-      </button>
+      </Button>
     </form>
   );
 };

@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { LogoutButton } from "../../components/auth/logout-button";
+import { StatusPanel } from "@/components/auth/status-panel";
+import { WorkspaceShell } from "@/components/auth/workspace-shell";
+
 import { useAuth } from "../../components/auth/auth-provider";
 import { AuthStateStatusEnum } from "../../lib/auth/types";
 import {
@@ -76,12 +78,13 @@ const PlatformPage = () => {
 
   if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
     return (
-      <main className="auth-transition-shell">
-        <section className="status-card" aria-labelledby="platform-loading-title">
-          <p className="eyebrow">Platform operator shell</p>
-          <h1 id="platform-loading-title">Preparing the control plane</h1>
-          <p>Resolving platform access before Crown renders protected content.</p>
-        </section>
+      <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+        <StatusPanel
+          description="Resolving platform access before Crown renders protected content."
+          eyebrow="Platform operator shell"
+          title="Preparing the control plane"
+          tone="platform"
+        />
       </main>
     );
   }
@@ -91,83 +94,36 @@ const PlatformPage = () => {
   const decision = resolveProtectedPath(pathname, state.currentUser);
   if (decision.kind !== "allow") {
     return (
-      <main className="auth-transition-shell">
-        <section className="status-card" aria-labelledby="platform-redirect-title">
-          <p className="eyebrow">Platform operator shell</p>
-          <h1 id="platform-redirect-title">Correcting your destination</h1>
-          <p>Crown is redirecting you to a safe route for your authenticated context.</p>
-        </section>
+      <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+        <StatusPanel
+          description="Crown is redirecting you to a safe route for your authenticated context."
+          eyebrow="Platform operator shell"
+          title="Correcting your destination"
+          tone="platform"
+        />
       </main>
     );
   }
 
   return (
-    <main className="app-shell">
-      <section className="shell-toolbar" aria-label="Platform shell toolbar">
-        <div>
-          <p className="eyebrow">Authenticated as</p>
-          <strong>{state.currentUser.principal.display_name}</strong>
-        </div>
-        <LogoutButton />
-      </section>
-
-      <section className="hero" aria-labelledby="control-plane-title">
-        <div>
-          <p className="eyebrow">Platform operator shell</p>
-          <h1 id="control-plane-title">Crown Control Plane</h1>
-          <p className="hero-copy">
-            Operate Crown as the platform for tenant management systems, with global navigation, overview context, and
-            clear separation from tenant workspaces.
-          </p>
-        </div>
-        <div className="hero-panel">
-          <p className="hero-panel-label">Operator context</p>
-          <p className="hero-panel-value">{state.currentUser.principal.role}</p>
-          <p className="hero-panel-note">No tenant needs to be selected before platform work begins.</p>
-        </div>
-      </section>
-
-      <section aria-labelledby="platform-navigation-title" className="section-block">
-        <div className="section-heading">
-          <p className="eyebrow">Primary navigation</p>
-          <h2 id="platform-navigation-title">Platform management areas</h2>
-        </div>
-        <div className="navigation-grid">
-          {platformNavigation.map((item) => (
-            <article className="navigation-card" key={item.title}>
-              <p className="card-eyebrow">{item.eyebrow}</p>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="overview-title" className="section-block">
-        <div className="section-heading">
-          <p className="eyebrow">Platform overview</p>
-          <h2 id="overview-title">Management-system overview</h2>
-        </div>
-        <div className="overview-grid">
-          {overviewCards.map((card) => (
-            <article className="overview-card" key={card.title}>
-              <p className="card-eyebrow">{card.title}</p>
-              <strong>{card.value}</strong>
-              <p>{card.detail}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="next-action-title" className="empty-state">
-        <p className="eyebrow">No-data guidance</p>
-        <h2 id="next-action-title">Start by preparing the first tenant management system</h2>
-        <p>
-          Crown is ready for platform setup even when no live tenant data exists yet. Use the tenant-management entry
-          points above to provision and oversee upcoming workspaces.
-        </p>
-      </section>
-    </main>
+    <WorkspaceShell
+      contextLabel="Operator context"
+      contextNote="No tenant needs to be selected before platform work begins."
+      contextValue={state.currentUser.principal.role}
+      description="Operate Crown as the platform for tenant management systems, with global navigation, overview context, and clear separation from tenant workspaces."
+      emptyDescription="Crown is ready for platform setup even when no live tenant data exists yet. Use the tenant-management entry points above to provision and oversee upcoming workspaces."
+      emptyEyebrow="No-data guidance"
+      emptyTitle="Start by preparing the first tenant management system"
+      navigationItems={platformNavigation}
+      navigationTitle="Platform management areas"
+      overviewCards={overviewCards}
+      overviewEyebrow="Platform overview"
+      overviewTitle="Management-system overview"
+      shellLabel="Platform operator shell"
+      title="Crown Control Plane"
+      tone="platform"
+      userDisplayName={state.currentUser.principal.display_name}
+    />
   );
 };
 

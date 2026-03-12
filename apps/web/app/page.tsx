@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { StatusPanel } from "@/components/auth/status-panel";
+
 import { useAuth } from "../components/auth/auth-provider";
 import { AuthStateStatusEnum } from "../lib/auth/types";
 import { buildLoginHref, toRecommendedPath } from "../lib/routing/auth-routing";
@@ -23,12 +25,12 @@ const RootPage = () => {
   }, [router, state]);
 
   return (
-    <main className="auth-transition-shell">
-      <section className="status-card" aria-labelledby="app-entry-title">
-        <p className="eyebrow">Crown access</p>
-        <h1 id="app-entry-title">Resolving your workspace</h1>
-        <p>Loading your Crown session and routing context.</p>
-      </section>
+    <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
+      <StatusPanel
+        description="Loading your Crown session and routing context."
+        eyebrow="Crown access"
+        title="Resolving your workspace"
+      />
     </main>
   );
 };
