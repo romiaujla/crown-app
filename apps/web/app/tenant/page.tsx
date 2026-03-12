@@ -1,19 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { StatusPanel } from "@/components/auth/status-panel";
+import { useProtectedShell } from "@/components/auth/use-protected-shell";
 import { WorkspaceShell } from "@/components/auth/workspace-shell";
-
-import { useAuth } from "../../components/auth/auth-provider";
-import { AuthStateStatusEnum } from "../../lib/auth/types";
-import {
-  buildLoginHref,
-  buildUnauthorizedHref,
-  captureReturnPath,
-  resolveProtectedPath
-} from "../../lib/routing/auth-routing";
 
 const tenantNavigation = [
   {
@@ -53,30 +44,9 @@ const tenantOverviewCards = [
 
 const TenantPage = () => {
   const pathname = usePathname();
-  const router = useRouter();
-  const { state } = useAuth();
+  const protectedShell = useProtectedShell(pathname);
 
-  useEffect(() => {
-    if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) return;
-
-    if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) {
-      captureReturnPath(pathname);
-      router.replace(buildLoginHref(state.reason));
-      return;
-    }
-
-    const decision = resolveProtectedPath(pathname, state.currentUser);
-    if (decision.kind === "redirect") {
-      router.replace(decision.path);
-      return;
-    }
-
-    if (decision.kind === "unauthorized") {
-      router.replace(buildUnauthorizedHref(decision.reason));
-    }
-  }, [pathname, router, state]);
-
-  if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
+  if (protectedShell.kind === "bootstrapping") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -89,10 +59,7 @@ const TenantPage = () => {
     );
   }
 
-  if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) return null;
-
-  const decision = resolveProtectedPath(pathname, state.currentUser);
-  if (decision.kind !== "allow") {
+  if (protectedShell.kind !== "ready") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -105,7 +72,8 @@ const TenantPage = () => {
     );
   }
 
-  const tenantName = state.currentUser.tenant?.name ?? "Tenant Workspace";
+  const { currentUser } = protectedShell;
+  const tenantName = currentUser.tenant?.name ?? "Tenant Workspace";
 
   return (
     <WorkspaceShell
@@ -124,7 +92,7 @@ const TenantPage = () => {
       shellLabel="Tenant workspace"
       title={tenantName}
       tone="tenant"
-      userDisplayName={state.currentUser.principal.display_name}
+      userDisplayName={currentUser.principal.display_name}
     />
   );
 };
