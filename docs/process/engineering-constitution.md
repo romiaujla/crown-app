@@ -19,6 +19,8 @@ Applies to all contributors (human and AI) across all repository directories.
 - TypeScript enum member keys must use `SNAKE_CASE`.
 - TypeScript enum type names must use the `Enum` suffix.
 - When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum rather than repeat the same inline string array.
+- For multi-branch discriminated unions, prefer composing the union from named branch type aliases instead of inlining multiple object-literal branches in a single declaration.
+- Use named result-branch aliases when the branches carry distinct meaning, are reused, or would otherwise make the union harder to scan in review.
 - Validate external input with Zod before business logic.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
