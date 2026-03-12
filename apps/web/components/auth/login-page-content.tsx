@@ -51,7 +51,11 @@ export const LoginPageContent = () => {
             <div className="flex h-full items-center">
               <div className="space-y-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Sign in to</p>
-                <h1 id="login-title" className="text-5xl font-semibold tracking-tight text-stone-950 sm:text-6xl">
+                <h1
+                  id="login-title"
+                  aria-label="Enter Crown"
+                  className="text-5xl font-semibold tracking-tight text-stone-950 sm:text-6xl"
+                >
                   Crown
                 </h1>
               </div>

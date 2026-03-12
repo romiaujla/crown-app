@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 type StatusPanelTone = "default" | "platform" | "tenant" | "access";
@@ -21,11 +21,11 @@ const toneStyles: Record<StatusPanelTone, string> = {
 };
 
 export const StatusPanel = ({ eyebrow, title, description, tone = "default", children }: StatusPanelProps) => (
-  <Card className={cn("w-full max-w-2xl border shadow-2xl shadow-stone-950/10 backdrop-blur", toneStyles[tone])}>
+    <Card className={cn("w-full max-w-2xl border shadow-2xl shadow-stone-950/10 backdrop-blur", toneStyles[tone])}>
     <CardHeader className="space-y-4">
       <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">{eyebrow}</p>
       <div className="space-y-2">
-        <CardTitle className="text-4xl leading-none tracking-tight text-stone-950 sm:text-5xl">{title}</CardTitle>
+        <h1 className="text-4xl leading-none tracking-tight text-stone-950 sm:text-5xl">{title}</h1>
         <CardDescription className="max-w-xl text-base leading-7 text-stone-600">{description}</CardDescription>
       </div>
     </CardHeader>
