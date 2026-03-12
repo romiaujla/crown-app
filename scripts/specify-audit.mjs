@@ -105,18 +105,33 @@ const main = async () => {
   );
   await ensureFileContains(
     "AGENTS.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*Begin with `?\/specify`?/i,
+    /Start implementing <JIRA ISSUE>[\s\S]*begin with `?\/specify`?/i,
     "AGENTS requires /specify for prompt-driven starts"
   );
   await ensureFileContains(
+    "AGENTS.md",
+    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "AGENTS documents the --skip-speckit override"
+  );
+  await ensureFileContains(
     "docs/process/spec-kit-workflow.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*Start the workflow with `?\/specify`?/i,
+    /Start implementing <JIRA ISSUE>[\s\S]*start the workflow with `?\/specify`?/i,
     "Spec workflow requires /specify for prompt-driven starts"
   );
   await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "Spec workflow documents the --skip-speckit override"
+  );
+  await ensureFileContains(
     "docs/process/spec-kit-installation.md",
-    /Start implementing <JIRA ISSUE>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
+    /Start implementing <JIRA ISSUE>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation unless the prompt explicitly includes `?--skip-speckit`?/i,
     "Spec installation guidance preserves prompt-driven /specify rule"
+  );
+  await ensureFileContains(
+    "README.md",
+    /--skip-speckit[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
+    "README documents the --skip-speckit override"
   );
   await ensureFileContains(
     ".husky/commit-msg",

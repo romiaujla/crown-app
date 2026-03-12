@@ -1,9 +1,9 @@
-# Spec Kit Workflow (Required for Prompt-Driven Starts)
+# Spec Kit Workflow (Default For Prompt-Driven Starts)
 
 Canonical governance policy lives in:
 - `docs/process/engineering-constitution.md`
 
-For prompts in the form `Start implementing <JIRA ISSUE>`, complete these artifacts before implementation:
+For prompts in the form `Start implementing <JIRA ISSUE>`, complete these artifacts before implementation unless the prompt explicitly includes `--skip-speckit`:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -26,10 +26,11 @@ For prompts in the form `Start implementing <JIRA ISSUE>`:
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
-4. Start the workflow with `/specify`.
+4. If the prompt includes `--skip-speckit`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+5. Otherwise, start the workflow with `/specify`.
 
 ## Required Phase Sequence
-For work started from a Jira prompt, advance in this order only:
+For work started from a Jira prompt without `--skip-speckit`, advance in this order only:
 
 1. `/specify`
 2. `/plan`
@@ -38,6 +39,8 @@ For work started from a Jira prompt, advance in this order only:
 5. pull request creation
 
 The workflow must not skip or reorder these phases unless the user explicitly changes scope or direction.
+
+When the prompt includes `--skip-speckit`, the workflow bypasses `/specify`, `/plan`, and `/tasks` and starts at implementation. This override applies only when the user includes the exact tag in the prompt.
 
 ## Phase Gate Rules
 - `/specify` may advance to `/plan` only after the specification is complete, no unresolved clarification remains, and the phase changes are committed and pushed.

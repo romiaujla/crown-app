@@ -17,13 +17,13 @@ uvx --from git+https://github.com/github/spec-kit.git specify init . --here --ai
 ```
 
 ## Required Artifact Flow for Prompt-Driven Starts
-After initialization, generate and maintain these artifacts for prompt-driven starts in the form `Start implementing <JIRA ISSUE>`:
+After initialization, generate and maintain these artifacts for prompt-driven starts in the form `Start implementing <JIRA ISSUE>` unless the prompt explicitly includes `--skip-speckit`:
 1. `/constitution`
 2. `/specify`
 3. `/plan`
 4. `/tasks`
 
-When work starts from a prompt such as `Start implementing <JIRA ISSUE>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation.
+When work starts from a prompt such as `Start implementing <JIRA ISSUE>`, follow the repository AI-agent workflow in `AGENTS.md` and the phase-gate rules in `docs/process/spec-kit-workflow.md`. Do not skip `/specify`, `/plan`, or `/tasks` before implementation unless the prompt explicitly includes `--skip-speckit`.
 
 ## Verification
 Run:
