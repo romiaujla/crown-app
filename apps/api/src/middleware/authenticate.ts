@@ -31,11 +31,19 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   try {
     const claims = JwtClaimsSchema.parse(decodeTokenPayload(token));
     req.auth = claims;
-    return defaultAuthService.resolveCurrentUser(claims).then((currentUser) => {
-      if (!currentUser) return sendAuthError(res, 401, "invalid_claims", "Invalid authentication claims");
+    return defaultAuthService.resolveCurrentUser(claims).then((currentUserResult) => {
+      if (!currentUserResult.ok) {
+        return sendAuthError(
+          res,
+          currentUserResult.status,
+          currentUserResult.errorCode,
+          currentUserResult.message,
+          currentUserResult.routing
+        );
+      }
       req.authContext = {
         claims,
-        currentUser
+        currentUser: currentUserResult.currentUser
       };
       return next();
     });

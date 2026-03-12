@@ -24,6 +24,8 @@ export const AuthErrorCodeSchema = z.enum([
   "invalid_credentials",
   "disabled_account",
   "invalid_claims",
+  "tenant_membership_required",
+  "tenant_selection_required",
   "forbidden_role",
   "forbidden_tenant",
   "conflict",

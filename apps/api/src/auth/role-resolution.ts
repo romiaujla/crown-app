@@ -19,11 +19,18 @@ export type AuthTenantMembership = {
 export type AuthResolutionResult =
   | { ok: true; platformUserId: string; resolvedRole: "super_admin"; tenantId: null }
   | { ok: true; platformUserId: string; resolvedRole: "tenant_admin" | "tenant_user"; tenantId: string }
-  | { ok: false; reason: "disabled_account" | "missing_password" | "missing_tenant_membership" | "role_mismatch" };
+  | {
+      ok: false;
+      reason:
+        | "disabled_account"
+        | "missing_password"
+        | "missing_tenant_membership"
+        | "multiple_tenant_memberships"
+        | "role_mismatch";
+    };
 
 export const resolveAuthenticatedRoleContext = (
-  platformUser: AuthPlatformUser,
-  tenantMembership: AuthTenantMembership | null
+  platformUser: AuthPlatformUser & { tenantLinks: AuthTenantMembership[] }
 ): AuthResolutionResult => {
   if (isDisabledAccountStatus(platformUser.accountStatus)) return { ok: false, reason: "disabled_account" };
   if (!platformUser.passwordHash) return { ok: false, reason: "missing_password" };
@@ -37,7 +44,12 @@ export const resolveAuthenticatedRoleContext = (
     };
   }
 
-  if (!tenantMembership) return { ok: false, reason: "missing_tenant_membership" };
+  const tenantMemberships = platformUser.tenantLinks.filter((tenantMembership) => tenantMembership.role === platformUser.role);
+
+  if (tenantMemberships.length === 0) return { ok: false, reason: "missing_tenant_membership" };
+  if (tenantMemberships.length > 1) return { ok: false, reason: "multiple_tenant_memberships" };
+
+  const [tenantMembership] = tenantMemberships;
   if (tenantMembership.role !== platformUser.role) return { ok: false, reason: "role_mismatch" };
 
   return {

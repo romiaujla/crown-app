@@ -23,8 +23,17 @@
 ## Denial semantics
 - `unauthenticated`: missing bearer token.
 - `invalid_claims`: malformed token payload or invalid claims shape.
+- `tenant_membership_required`: authenticated tenant-scoped user has no single active membership that can anchor routing.
+- `tenant_selection_required`: authenticated tenant-scoped user has multiple active memberships and tenant selection is not yet supported.
 - `forbidden_role`: authenticated user role does not match route policy.
 - `forbidden_tenant`: authenticated tenant role targeting non-matching tenant scope.
+
+## Post-login routing contract
+- `super_admin` resolves to `target_app=platform` with routing status `allowed`.
+- `tenant_admin` resolves to `target_app=tenant` with routing status `allowed` only when exactly one active tenant-admin membership exists.
+- `tenant_user` resolves to `target_app=tenant` with routing status `allowed` only when exactly one active tenant-user membership exists.
+- Authenticated non-super-admin users without a valid active tenant membership receive a structured `403` with `error_code=tenant_membership_required`.
+- Authenticated non-super-admin users with multiple active tenant memberships receive a structured `403` with `error_code=tenant_selection_required` until tenant selection exists.
 
 ## Implemented policy points
 - Platform route contract: `GET /api/v1/platform/ping` requires `super_admin`.

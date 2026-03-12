@@ -25,6 +25,18 @@ export const tenantUserClaims: JwtClaims = {
   tenant_id: "tenant-acme"
 };
 
+export const tenantUserWithoutMembershipClaims: JwtClaims = {
+  sub: "user-tenant-user-orphan",
+  role: "tenant_user",
+  tenant_id: "tenant-acme"
+};
+
+export const tenantAdminMultiTenantClaims: JwtClaims = {
+  sub: "user-tenant-admin-multi",
+  role: "tenant_admin",
+  tenant_id: "tenant-acme"
+};
+
 export const loginFixtures = {
   ...AUTH_LOGIN_FIXTURES,
   disabledUser: {
