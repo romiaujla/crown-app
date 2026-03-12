@@ -2,6 +2,7 @@
 
 Canonical governance policy lives in:
 - `docs/process/engineering-constitution.md`
+- `docs/process/ai-agent-prompt-help.md` is the canonical help registry for supported AI-agent prompt patterns.
 
 For prompts in the form `--speckit CROWN-<id>`, complete these artifacts before implementation:
 1. `/constitution`
@@ -23,11 +24,14 @@ For prompts in the form `--speckit CROWN-<id>`, complete these artifacts before 
 ## Prompt-Driven Start Contract
 For tagged workflow commands:
 
+0. If the prompt is `--help`, return the supported prompt patterns and behavior descriptions from `docs/process/ai-agent-prompt-help.md`.
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
 4. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 5. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
+
+Future prompt patterns should be added to the help registry first, then documented here only if they change workflow behavior.
 
 ## Required Phase Sequence
 For work started with `--speckit CROWN-<id>`, advance in this order only:

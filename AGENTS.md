@@ -10,8 +10,10 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - Use Jira-linked branches and commits per constitution.
 - Keep issue descriptions aligned with Lean Jira template.
 - Use tagged workflow commands to select delivery mode:
+  - `--help` for prompt discovery and supported command lookup
   - `--speckit CROWN-<id>` for full Spec Kit delivery
   - `--implement CROWN-<id>` for implementation-only delivery
+- Keep the prompt help registry in `docs/process/ai-agent-prompt-help.md` aligned with any documented prompt behavior changes.
 
 ## Prompt-Driven Start Workflow
 When a user prompt is in the form `--speckit CROWN-<id>` or `--implement CROWN-<id>`:
@@ -24,6 +26,12 @@ When a user prompt is in the form `--speckit CROWN-<id>` or `--implement CROWN-<
 6. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
 7. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
 8. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, and `tasks.md` when the Spec Kit phases were used, a scope statement, and validation notes in the PR description.
+
+When a user prompt is `--help`:
+
+1. Use `docs/process/ai-agent-prompt-help.md` as the source-of-truth registry for supported repository AI-agent prompt patterns.
+2. Return the documented prompt patterns with concise behavior descriptions.
+3. Keep the response limited to prompts that are actually documented in the repository.
 
 ## Operational Rules
 - Do not bypass repository hooks, CI checks, or branch protection requirements.

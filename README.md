@@ -111,6 +111,7 @@ Default local endpoints:
 
 ## Planning-First Workflow
 Use tagged workflow commands to choose the delivery path:
+- `--help` shows the repository AI-agent prompt registry in `docs/process/ai-agent-prompt-help.md`.
 - `--speckit CROWN-<id>` requires Spec Kit artifacts before implementation:
 1. `/constitution`
 2. `/specify`
@@ -120,18 +121,21 @@ Use tagged workflow commands to choose the delivery path:
 
 Repository guidance:
 - Single canonical constitution: `docs/process/engineering-constitution.md`
+- AI-agent prompt help registry: `docs/process/ai-agent-prompt-help.md`
 - Project-level Spec Kit installation and usage: `docs/process/spec-kit-installation.md`
 - Feature artifact/index guidance: `docs/features/README.md`
 
 Tagged workflow examples:
 
 ```text
+--help
 --speckit CROWN-79
 --implement CROWN-79
 ```
 
 Expected repository behavior for prompt-driven starts:
 - Resolve the Jira issue first and create or validate the Jira-linked branch.
+- Use `--help` to list the documented repository AI-agent prompt patterns and their behavior.
 - Use `--speckit CROWN-<id>` to start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
 - Use `--implement CROWN-<id>` to skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 - Commit and push each completed phase before advancing when no unresolved clarification remains.
