@@ -2,20 +2,18 @@ import { z } from "zod";
 
 import { PlatformUserAccountStatusSchema } from "../domain/status-enums.js";
 import { JwtClaimsSchema, RoleSchema } from "./claims.js";
+import { AuthRoutingReasonCode, AuthRoutingStatus } from "./service.js";
 
-export const AuthRoutingReasonCodeSchema = z.enum([
-  "missing_active_tenant_membership",
-  "multiple_active_tenant_memberships"
-]);
+export const AuthRoutingReasonCodeSchema = z.nativeEnum(AuthRoutingReasonCode);
 
 export const AuthRoutingSchema = z.object({
-  status: z.enum(["allowed", "access_denied", "selection_required"]),
+  status: z.nativeEnum(AuthRoutingStatus),
   target_app: z.enum(["platform", "tenant"]).nullable(),
   reason_code: AuthRoutingReasonCodeSchema.nullable()
 });
 
 export const AllowedAuthRoutingSchema = AuthRoutingSchema.superRefine((routing, ctx) => {
-  if (routing.status !== "allowed") {
+  if (routing.status !== AuthRoutingStatus.ALLOWED) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: "Allowed routing must use allowed status"

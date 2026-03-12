@@ -2,8 +2,17 @@ import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
 import type { AuthErrorCode, JwtClaims, Role } from "./claims.js";
 
 export type AuthTargetApp = "platform" | "tenant";
-export type AuthRoutingStatus = "allowed" | "access_denied" | "selection_required";
-export type AuthRoutingReasonCode = "missing_active_tenant_membership" | "multiple_active_tenant_memberships";
+
+export enum AuthRoutingStatus {
+  ALLOWED = "allowed",
+  ACCESS_DENIED = "access_denied",
+  SELECTION_REQUIRED = "selection_required"
+}
+
+export enum AuthRoutingReasonCode {
+  MISSING_ACTIVE_TENANT_MEMBERSHIP = "missing_active_tenant_membership",
+  MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS = "multiple_active_tenant_memberships"
+}
 
 export type AuthPrincipal = {
   id: string;
@@ -22,13 +31,13 @@ export type AuthTenantContext = {
 };
 
 export type AllowedAuthRouting = {
-  status: "allowed";
+  status: AuthRoutingStatus.ALLOWED;
   targetApp: AuthTargetApp;
   reasonCode: null;
 };
 
 export type BlockedAuthRouting = {
-  status: "access_denied" | "selection_required";
+  status: AuthRoutingStatus.ACCESS_DENIED | AuthRoutingStatus.SELECTION_REQUIRED;
   targetApp: null;
   reasonCode: AuthRoutingReasonCode;
 };
@@ -55,7 +64,11 @@ export type LoginSuccess = {
 export type LoginFailure = {
   ok: false;
   status: 401 | 403;
-  errorCode: Exclude<AuthErrorCode, "unauthenticated" | "invalid_claims" | "forbidden_role" | "forbidden_tenant" | "conflict" | "migration_failed">;
+  errorCode:
+    | AuthErrorCode.INVALID_CREDENTIALS
+    | AuthErrorCode.DISABLED_ACCOUNT
+    | AuthErrorCode.TENANT_MEMBERSHIP_REQUIRED
+    | AuthErrorCode.TENANT_SELECTION_REQUIRED;
   message: string;
   routing?: BlockedAuthRouting;
 };
@@ -63,7 +76,10 @@ export type LoginFailure = {
 export type ResolveCurrentUserFailure = {
   ok: false;
   status: 401 | 403;
-  errorCode: "invalid_claims" | "tenant_membership_required" | "tenant_selection_required";
+  errorCode:
+    | AuthErrorCode.INVALID_CLAIMS
+    | AuthErrorCode.TENANT_MEMBERSHIP_REQUIRED
+    | AuthErrorCode.TENANT_SELECTION_REQUIRED;
   message: string;
   routing?: BlockedAuthRouting;
 };

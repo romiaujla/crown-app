@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { AuthErrorCode } from "../auth/claims.js";
 import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
 import { sendAuthError } from "../types/errors.js";
@@ -18,7 +19,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
   router.post("/platform/tenants", authenticate, authorize({ namespace: "platform", allowedRoles: ["super_admin"] }), async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return sendAuthError(res, 400, "validation_error", "Invalid tenant provisioning payload");
+      return sendAuthError(res, 400, AuthErrorCode.VALIDATION_ERROR, "Invalid tenant provisioning payload");
     }
 
     const result = await provision({
@@ -27,11 +28,11 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     });
 
     if (result.status === "conflict") {
-      return sendAuthError(res, 409, "conflict", result.message);
+      return sendAuthError(res, 409, AuthErrorCode.CONFLICT, result.message);
     }
 
     if (result.status === "failed") {
-      return sendAuthError(res, 500, "migration_failed", result.message);
+      return sendAuthError(res, 500, AuthErrorCode.MIGRATION_FAILED, result.message);
     }
 
     const response = TenantProvisionResponseSchema.parse({
