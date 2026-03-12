@@ -20,12 +20,30 @@ type LoginFailureResult = {
 
 class AuthApiError extends Error {
   status: number;
+  code: string | null;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, code: string | null = null) {
     super(message);
     this.status = status;
+    this.code = code;
   }
 }
+
+const toUserFacingLoginMessage = (error: AuthApiError) => {
+  if (error.code === "validation_error" || error.status === 400) {
+    return "Enter a valid email or username and password.";
+  }
+
+  if (error.code === "invalid_credentials" || error.status === 401) {
+    return "Invalid username/email or password.";
+  }
+
+  if (error.code === "disabled_account" || error.status === 403) {
+    return "Your account cannot sign in right now.";
+  }
+
+  return "Sign in could not be completed. Try again.";
+};
 
 const parseJson = async (response: Response) => {
   if (response.status === 204) return null;
@@ -44,7 +62,11 @@ const request = async (path: string, init: RequestInit) => {
   if (!response.ok) {
     const rawError = await parseJson(response).catch(() => null);
     const error = AuthErrorResponseSchema.safeParse(rawError);
-    throw new AuthApiError(error.success ? error.data.message : "Authentication request failed.", response.status);
+    throw new AuthApiError(
+      error.success ? error.data.message : "Authentication request failed.",
+      response.status,
+      error.success ? error.data.error_code : null
+    );
   }
 
   return parseJson(response);
@@ -80,7 +102,7 @@ export const login = async (identifier: string, password: string): Promise<Login
   } catch (error) {
     return {
       ok: false,
-      message: error instanceof Error ? error.message : "Authentication request failed."
+      message: error instanceof AuthApiError ? toUserFacingLoginMessage(error) : "Sign in could not be completed. Try again."
     };
   }
 };
