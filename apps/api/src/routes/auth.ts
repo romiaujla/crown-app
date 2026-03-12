@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { AuthErrorCodeEnum, type JwtClaims } from "../auth/claims.js";
+import { AuthErrorCodeEnum } from "../auth/claims.js";
 import { CurrentUserResponseSchema } from "../auth/contracts.js";
 import { defaultAuthService } from "../auth/default-auth-service.js";
 import type { AuthService, CurrentUserContext } from "../auth/service.js";
+import { signAccessToken } from "../auth/tokens.js";
 import { authenticate } from "../middleware/authenticate.js";
 
 import {
@@ -12,12 +13,6 @@ import {
   AccessTokenResponseSchema
 } from "../auth/contracts.js";
 import { sendAuthError } from "../types/errors.js";
-
-const toToken = (claims: JwtClaims) => {
-  const header = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" }), "utf8").toString("base64url");
-  const payload = Buffer.from(JSON.stringify(claims), "utf8").toString("base64url");
-  return `${header}.${payload}.signature`;
-};
 
 type AuthRouterOptions = {
   authService?: AuthService;
@@ -67,7 +62,7 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
     }
 
     const response = AccessTokenResponseSchema.parse({
-      access_token: toToken(result.claims),
+      access_token: signAccessToken(result.claims),
       claims: result.claims,
       current_user: toCurrentUserResponse(result.currentUser)
     });

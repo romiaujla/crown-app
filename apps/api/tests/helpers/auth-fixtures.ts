@@ -1,12 +1,21 @@
 import { RoleEnum, type JwtClaims } from "../../src/auth/claims.js";
 import { AUTH_LOGIN_FIXTURES, DISABLED_AUTH_TEST_USER } from "../../src/auth/default-auth-service.js";
+import { signAccessToken } from "../../src/auth/tokens.js";
 
 const futureExpiry = () => Math.floor(Date.now() / 1000) + 15 * 60;
 
-export const createJwtToken = (claims: JwtClaims) => {
-  const header = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" }), "utf8").toString("base64url");
-  const payload = Buffer.from(JSON.stringify(claims), "utf8").toString("base64url");
-  return `${header}.${payload}.sig`;
+export const createJwtToken = (claims: JwtClaims, secret?: string) => signAccessToken(claims, secret);
+
+export const createTamperedJwtToken = (claims: JwtClaims) => {
+  const token = signAccessToken(claims);
+  const [header, , signature] = token.split(".");
+  const tamperedClaims = {
+    ...claims,
+    sub: `${claims.sub}-tampered`
+  };
+  const tamperedPayload = Buffer.from(JSON.stringify(tamperedClaims), "utf8").toString("base64url");
+
+  return `${header}.${tamperedPayload}.${signature}`;
 };
 
 export const superAdminClaims: JwtClaims = {
