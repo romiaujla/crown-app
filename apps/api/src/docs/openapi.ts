@@ -1,6 +1,6 @@
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
-import { PlatformUserAccountStatus } from "../domain/status-enums.js";
+import { PlatformUserAccountStatus, TenantStatus } from "../domain/status-enums.js";
 
 const bearerSecurity = [{ bearerAuth: [] }];
 const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
@@ -10,6 +10,7 @@ const authRoutingStatusValues = Object.values(AuthRoutingStatusEnum);
 const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
+const tenantStatusValues = Object.values(TenantStatus);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
@@ -39,6 +40,7 @@ export const authDocsDocument = {
   tags: [
     { name: "Auth", description: "Authentication and current-user endpoints." },
     { name: "Authorization", description: "Protected route examples for platform and tenant access." },
+    { name: "Platform Dashboard", description: "Super-admin dashboard overview widgets and summary data." },
     { name: "Platform Tenants", description: "Tenant provisioning route protected for super admins." }
   ],
   components: {
@@ -210,6 +212,51 @@ export const authDocsDocument = {
           status: {
             type: "string",
             enum: ["provisioned"]
+          }
+        }
+      },
+      TenantStatusCountEntry: {
+        type: "object",
+        required: ["status", "count"],
+        properties: {
+          status: {
+            type: "string",
+            enum: tenantStatusValues
+          },
+          count: {
+            type: "integer",
+            minimum: 0
+          }
+        }
+      },
+      TenantSummaryWidget: {
+        type: "object",
+        required: ["total_tenant_count", "tenant_user_count", "tenant_status_counts"],
+        properties: {
+          total_tenant_count: {
+            type: "integer",
+            minimum: 0
+          },
+          tenant_user_count: {
+            type: "integer",
+            minimum: 0
+          },
+          tenant_status_counts: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantStatusCountEntry" }
+          }
+        }
+      },
+      DashboardOverviewResponse: {
+        type: "object",
+        required: ["widgets"],
+        properties: {
+          widgets: {
+            type: "object",
+            required: ["tenant_summary"],
+            properties: {
+              tenant_summary: { $ref: "#/components/schemas/TenantSummaryWidget" }
+            }
           }
         }
       }
@@ -395,6 +442,27 @@ export const authDocsDocument = {
                     namespace: { type: "string", enum: ["platform"] }
                   }
                 }
+              }
+            }
+          },
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
+        }
+      }
+    },
+    "/api/v1/platform/dashboard/overview": {
+      get: {
+        tags: ["Platform Dashboard"],
+        summary: "Get super-admin dashboard overview widgets",
+        description:
+          "Protected super-admin route that returns the initial dashboard overview widgets contract, including tenant total and per-status counts.",
+        security: bearerSecurity,
+        responses: {
+          "200": {
+            description: "Dashboard overview widgets",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/DashboardOverviewResponse" }
               }
             }
           },
