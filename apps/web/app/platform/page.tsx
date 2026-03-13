@@ -97,18 +97,30 @@ const platformNavigation = [
   }
 ] as const;
 
+enum DashboardOverviewStatusEnum {
+  LOADING = "loading",
+  SUCCESS = "success",
+  ERROR = "error"
+}
+
+type DashboardOverviewLoadingState = {
+  status: DashboardOverviewStatusEnum.LOADING;
+};
+
+type DashboardOverviewSuccessState = {
+  status: DashboardOverviewStatusEnum.SUCCESS;
+  overview: DashboardOverviewResponse;
+};
+
+type DashboardOverviewErrorState = {
+  status: DashboardOverviewStatusEnum.ERROR;
+  message: string;
+};
+
 type DashboardOverviewState =
-  | {
-    status: "loading";
-  }
-  | {
-    status: "success";
-    overview: DashboardOverviewResponse;
-  }
-  | {
-    status: "error";
-    message: string;
-  };
+  | DashboardOverviewLoadingState
+  | DashboardOverviewSuccessState
+  | DashboardOverviewErrorState;
 
 const formatTenantStatusLabel = (status: TenantStatus) =>
   status
@@ -118,7 +130,9 @@ const formatTenantStatusLabel = (status: TenantStatus) =>
     .join(" ");
 
 const DashboardOverviewSection = () => {
-  const [overviewState, setOverviewState] = useState<DashboardOverviewState>({ status: "loading" });
+  const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
+    status: DashboardOverviewStatusEnum.LOADING
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -126,7 +140,7 @@ const DashboardOverviewSection = () => {
     const accessToken = getStoredAccessToken();
     if (!accessToken) {
       setOverviewState({
-        status: "error",
+        status: DashboardOverviewStatusEnum.ERROR,
         message: "Dashboard overview is unavailable because your platform session could not be confirmed."
       });
       return () => {
@@ -139,14 +153,14 @@ const DashboardOverviewSection = () => {
         const overview = await getPlatformDashboardOverview(accessToken);
         if (!cancelled) {
           setOverviewState({
-            status: "success",
+            status: DashboardOverviewStatusEnum.SUCCESS,
             overview
           });
         }
       } catch {
         if (!cancelled) {
           setOverviewState({
-            status: "error",
+            status: DashboardOverviewStatusEnum.ERROR,
             message: "Dashboard overview is unavailable right now. Try refreshing once the platform API is reachable."
           });
         }
@@ -160,7 +174,7 @@ const DashboardOverviewSection = () => {
     };
   }, []);
 
-  if (overviewState.status === "loading") {
+  if (overviewState.status === DashboardOverviewStatusEnum.LOADING) {
     return (
       <Card className="border-white/70 bg-white/92 shadow-sm">
         <CardHeader className="space-y-3">
@@ -181,7 +195,7 @@ const DashboardOverviewSection = () => {
     );
   }
 
-  if (overviewState.status === "error") {
+  if (overviewState.status === DashboardOverviewStatusEnum.ERROR) {
     return (
       <Card className="border-amber-200/80 bg-amber-50/85 shadow-sm">
         <CardHeader className="space-y-3">
