@@ -98,7 +98,7 @@
 - [X] T019 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
 - [X] T020 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
 - [X] T021 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md
-- [ ] T022 Create the PR for `feat/CROWN-93-ui-super-admin-dashboard-overview-widgets` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/tasks.md
+- [X] T022 Create the PR for `feat/CROWN-93-ui-super-admin-dashboard-overview-widgets` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/tasks.md
 
 ---
 
