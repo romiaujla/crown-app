@@ -1,8 +1,9 @@
-import { Router } from "express";
+import { Router, type RequestHandler } from "express";
 
 import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
 import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
+import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
 import { sendAuthError } from "../types/errors.js";
 
 import {
@@ -17,15 +18,23 @@ import type { SoftDeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
   provision?: typeof provisionTenant;
+  rateLimitMiddleware?: RequestHandler;
   softDeprovision?: (input: { tenantId: string }) => Promise<SoftDeprovisionTenantResult>;
 };
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
   const router = Router();
   const provision = options.provision ?? provisionTenant;
+  const rateLimitMiddleware =
+    options.rateLimitMiddleware ??
+    createRateLimitMiddleware({
+      windowMs: 60_000,
+      maxRequests: 10,
+      message: "Too many tenant mutation requests"
+    });
   const deprovision = options.softDeprovision ?? softDeprovisionTenant;
 
-  router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
+  router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), rateLimitMiddleware, async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant provisioning payload");
@@ -59,6 +68,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     "/platform/tenant/deprovision",
     authenticate,
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    rateLimitMiddleware,
     async (req, res) => {
       const parsed = SoftDeprovisionTenantRequestSchema.safeParse(req.body);
       if (!parsed.success) {

@@ -650,6 +650,7 @@ export const authDocsDocument = {
           ),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
+          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
           "409": errorResponse("Tenant slug conflict", "conflict", "tenant slug already exists")
         }
       }
@@ -681,6 +682,7 @@ export const authDocsDocument = {
           "400": errorResponse("Invalid tenant soft deprovision payload", "validation_error", "Invalid tenant soft deprovision payload"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
+          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
           "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),
           "409": errorResponse("Tenant already inactive", "conflict", "Tenant is already inactive")
         }

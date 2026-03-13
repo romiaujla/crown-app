@@ -1,5 +1,6 @@
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
+import type { RequestHandler } from "express";
 
 import { buildApp } from "../../src/app.js";
 import { TenantStatus } from "../../src/domain/status-enums.js";
@@ -87,5 +88,21 @@ describe("platform tenant provisioning contract", () => {
 
     expect(response.status).toBe(409);
     expect(response.body.error_code).toBe("conflict");
+  });
+
+  it("returns 429 when rate limited", async () => {
+    const provision = vi.fn(async () => createProvisioned());
+    const rateLimitMiddleware: RequestHandler = (_req, res) => {
+      res.status(429).json({ error_code: "rate_limited", message: "Too many tenant mutation requests" });
+    };
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision, rateLimitMiddleware }) });
+
+    const response = await request(app)
+      .post("/api/v1/platform/tenant")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: "Acme", slug: "acme" });
+
+    expect(response.status).toBe(429);
+    expect(response.body.error_code).toBe("rate_limited");
   });
 });
