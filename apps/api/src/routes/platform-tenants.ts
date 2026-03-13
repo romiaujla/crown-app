@@ -1,3 +1,4 @@
+import { DeprovisionTypeEnum } from "@crown/types";
 import { Router, type RequestHandler } from "express";
 
 import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
@@ -7,19 +8,20 @@ import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
 import { sendAuthError } from "../types/errors.js";
 
 import {
-  SoftDeprovisionTenantRequestSchema,
+  DeprovisionTenantRequestSchema,
+  HardDeprovisionTenantResponseSchema,
   SoftDeprovisionTenantResponseSchema,
   TenantProvisionRequestSchema,
   TenantProvisionResponseSchema
 } from "../tenant/contracts.js";
-import { softDeprovisionTenant } from "../tenant/lifecycle-service.js";
+import { deprovisionTenant } from "../tenant/lifecycle-service.js";
 import { provisionTenant } from "../tenant/provision-service.js";
-import type { SoftDeprovisionTenantResult } from "../tenant/types.js";
+import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
-  softDeprovision?: (input: { tenantId: string }) => Promise<SoftDeprovisionTenantResult>;
+  deprovision?: (input: { tenantId: string; deprovisionType: DeprovisionTypeEnum }) => Promise<DeprovisionTenantResult>;
 };
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
@@ -32,7 +34,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       maxRequests: 10,
       message: "Too many tenant mutation requests"
     });
-  const deprovision = options.softDeprovision ?? softDeprovisionTenant;
+  const deprovision = options.deprovision ?? deprovisionTenant;
 
   router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), rateLimitMiddleware, async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
@@ -70,12 +72,15 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     rateLimitMiddleware,
     async (req, res) => {
-      const parsed = SoftDeprovisionTenantRequestSchema.safeParse(req.body);
+      const parsed = DeprovisionTenantRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant soft deprovision payload");
+        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant deprovision payload");
       }
 
-      const result = await deprovision({ tenantId: parsed.data.tenant_id });
+      const result = await deprovision({
+        tenantId: parsed.data.tenant_id,
+        deprovisionType: parsed.data.deprovisionType ?? DeprovisionTypeEnum.SOFT
+      });
 
       if (result.status === "not_found") {
         return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, result.message);
@@ -85,14 +90,24 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
         return sendAuthError(res, 409, AuthErrorCodeEnum.CONFLICT, result.message);
       }
 
-      const response = SoftDeprovisionTenantResponseSchema.parse({
-        tenant_id: result.tenantId,
-        slug: result.slug,
-        schema_name: result.schemaName,
-        previous_status: result.previousStatus,
-        status: "inactive",
-        operation: "soft_deprovisioned"
-      });
+      const response =
+        result.status === "hard_deprovisioned"
+          ? HardDeprovisionTenantResponseSchema.parse({
+              tenant_id: result.tenantId,
+              slug: result.slug,
+              schema_name: result.schemaName,
+              previous_status: result.previousStatus,
+              status: "inactive",
+              operation: "hard_deprovisioned"
+            })
+          : SoftDeprovisionTenantResponseSchema.parse({
+              tenant_id: result.tenantId,
+              slug: result.slug,
+              schema_name: result.schemaName,
+              previous_status: result.previousStatus,
+              status: "inactive",
+              operation: "soft_deprovisioned"
+            });
 
       return res.status(200).json(response);
     }

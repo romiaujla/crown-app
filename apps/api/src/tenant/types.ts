@@ -1,3 +1,4 @@
+import type { DeprovisionType } from "@crown/types";
 import type { Tenant } from "../generated/prisma/client.js";
 import type { TenantStatus } from "../domain/status-enums.js";
 
@@ -64,8 +65,26 @@ export type SoftDeprovisionTenantInput = {
   tenantId: string;
 };
 
+export type HardDeprovisionTenantInput = {
+  tenantId: string;
+};
+
+export type DeprovisionTenantInput = {
+  tenantId: string;
+  deprovisionType: DeprovisionType;
+};
+
 export type SoftDeprovisionTenantSuccessResult = {
   status: "soft_deprovisioned";
+  tenantId: string;
+  slug: string;
+  schemaName: string;
+  previousStatus: TenantStatus;
+  tenant: Tenant;
+};
+
+export type HardDeprovisionTenantSuccessResult = {
+  status: "hard_deprovisioned";
   tenantId: string;
   slug: string;
   schemaName: string;
@@ -89,3 +108,10 @@ export type SoftDeprovisionTenantResult =
   | SoftDeprovisionTenantSuccessResult
   | SoftDeprovisionTenantConflictResult
   | SoftDeprovisionTenantNotFoundResult;
+
+export type HardDeprovisionTenantResult =
+  | HardDeprovisionTenantSuccessResult
+  | SoftDeprovisionTenantConflictResult
+  | SoftDeprovisionTenantNotFoundResult;
+
+export type DeprovisionTenantResult = SoftDeprovisionTenantResult | HardDeprovisionTenantResult;

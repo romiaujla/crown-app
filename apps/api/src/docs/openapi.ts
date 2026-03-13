@@ -1,4 +1,4 @@
-import { DashboardMetricWindowEnum, TenantStatusEnum } from "@crown/types";
+import { DashboardMetricWindowEnum, DeprovisionTypeEnum, TenantStatusEnum } from "@crown/types";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
@@ -12,6 +12,7 @@ const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 const tenantStatusValues = Object.values(TenantStatusEnum);
+const deprovisionTypeValues = Object.values(DeprovisionTypeEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
@@ -217,6 +218,19 @@ export const authDocsDocument = {
           }
         }
       },
+      DeprovisionType: {
+        type: "string",
+        enum: deprovisionTypeValues,
+        default: DeprovisionTypeEnum.SOFT
+      },
+      DeprovisionTenantRequest: {
+        type: "object",
+        required: ["tenant_id"],
+        properties: {
+          tenant_id: { type: "string" },
+          deprovisionType: { $ref: "#/components/schemas/DeprovisionType" }
+        }
+      },
       SoftDeprovisionTenantResponse: {
         type: "object",
         required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
@@ -238,11 +252,25 @@ export const authDocsDocument = {
           }
         }
       },
-      SoftDeprovisionTenantRequest: {
+      HardDeprovisionTenantResponse: {
         type: "object",
-        required: ["tenant_id"],
+        required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
         properties: {
-          tenant_id: { type: "string" }
+          tenant_id: { type: "string" },
+          slug: { type: "string" },
+          schema_name: { type: "string" },
+          previous_status: {
+            type: "string",
+            enum: tenantStatusValues
+          },
+          status: {
+            type: "string",
+            enum: ["inactive"]
+          },
+          operation: {
+            type: "string",
+            enum: ["hard_deprovisioned"]
+          }
         }
       },
       TenantStatusCountEntry: {
@@ -658,33 +686,38 @@ export const authDocsDocument = {
     "/api/v1/platform/tenant/deprovision": {
       post: {
         tags: ["Platform Tenants"],
-        summary: "Soft deprovision a tenant",
+        summary: "Soft or hard deprovision a tenant",
         description:
-          "Protected super-admin route used to mark a tenant inactive without deleting its schema or control-plane record. Existing tenant sessions are not invalidated by this story.",
+          "Protected super-admin route used to soft deprovision a tenant by default or hard deprovision it when `deprovisionType` is `hard`. Hard deprovision drops the tenant schema and tenant-scoped metadata but retains the tenant record in `inactive`.",
         security: bearerSecurity,
         requestBody: {
           required: true,
           content: {
             "application/json": {
-              schema: { $ref: "#/components/schemas/SoftDeprovisionTenantRequest" }
+              schema: { $ref: "#/components/schemas/DeprovisionTenantRequest" }
             }
           }
         },
         responses: {
           "200": {
-            description: "Tenant soft deprovisioned",
+            description: "Tenant deprovisioned",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/SoftDeprovisionTenantResponse" }
+                schema: {
+                  oneOf: [
+                    { $ref: "#/components/schemas/SoftDeprovisionTenantResponse" },
+                    { $ref: "#/components/schemas/HardDeprovisionTenantResponse" }
+                  ]
+                }
               }
             }
           },
-          "400": errorResponse("Invalid tenant soft deprovision payload", "validation_error", "Invalid tenant soft deprovision payload"),
+          "400": errorResponse("Invalid tenant deprovision payload", "validation_error", "Invalid tenant deprovision payload"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
           "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
           "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),
-          "409": errorResponse("Tenant already inactive", "conflict", "Tenant is already inactive")
+          "409": errorResponse("Tenant deprovision conflict", "conflict", "Tenant deprovision request conflicts with current tenant state")
         }
       }
     }
