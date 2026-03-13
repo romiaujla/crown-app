@@ -5,7 +5,12 @@ import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
 import { sendAuthError } from "../types/errors.js";
 
-import { SoftDeprovisionTenantResponseSchema, TenantProvisionRequestSchema, TenantProvisionResponseSchema } from "../tenant/contracts.js";
+import {
+  SoftDeprovisionTenantRequestSchema,
+  SoftDeprovisionTenantResponseSchema,
+  TenantProvisionRequestSchema,
+  TenantProvisionResponseSchema
+} from "../tenant/contracts.js";
 import { softDeprovisionTenant } from "../tenant/lifecycle-service.js";
 import { provisionTenant } from "../tenant/provision-service.js";
 import type { SoftDeprovisionTenantResult } from "../tenant/types.js";
@@ -51,11 +56,16 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
   });
 
   router.post(
-    "/platform/tenants/:tenantId/deprovision",
+    "/platform/tenants/deprovision",
     authenticate,
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     async (req, res) => {
-      const result = await deprovision({ tenantId: req.params.tenantId });
+      const parsed = SoftDeprovisionTenantRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant soft deprovision payload");
+      }
+
+      const result = await deprovision({ tenantId: parsed.data.tenant_id });
 
       if (result.status === "not_found") {
         return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, result.message);

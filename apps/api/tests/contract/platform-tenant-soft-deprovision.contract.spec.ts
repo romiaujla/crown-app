@@ -27,8 +27,9 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/tenant-acme/deprovision")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenants/deprovision")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ tenant_id: "tenant-acme" });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -44,7 +45,7 @@ describe("platform tenant soft deprovision contract", () => {
   it("returns 401 for missing token", async () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
 
-    const response = await request(app).post("/api/v1/platform/tenants/tenant-acme/deprovision");
+    const response = await request(app).post("/api/v1/platform/tenants/deprovision").send({ tenant_id: "tenant-acme" });
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("unauthenticated");
@@ -54,8 +55,9 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/tenant-acme/deprovision")
-      .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
+      .post("/api/v1/platform/tenants/deprovision")
+      .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
+      .send({ tenant_id: "tenant-acme" });
 
     expect(response.status).toBe(403);
     expect(response.body.error_code).toBe("forbidden_role");
@@ -70,11 +72,24 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/tenant-missing/deprovision")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenants/deprovision")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ tenant_id: "tenant-missing" });
 
     expect(response.status).toBe(404);
     expect(response.body.error_code).toBe("not_found");
+  });
+
+  it("returns 400 for invalid payload", async () => {
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
+
+    const response = await request(app)
+      .post("/api/v1/platform/tenants/deprovision")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({});
+
+    expect(response.status).toBe(400);
+    expect(response.body.error_code).toBe("validation_error");
   });
 
   it("returns 409 when the tenant is already inactive", async () => {
@@ -86,8 +101,9 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/tenant-acme/deprovision")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenants/deprovision")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ tenant_id: "tenant-acme" });
 
     expect(response.status).toBe(409);
     expect(response.body.error_code).toBe("conflict");

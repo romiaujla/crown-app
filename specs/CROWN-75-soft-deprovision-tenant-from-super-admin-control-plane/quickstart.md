@@ -13,7 +13,7 @@ Validate the soft deprovision API and confirm it updates tenant lifecycle state 
 ## Validation Flow
 
 1. Run focused API tests covering the soft deprovision route and tenant lifecycle behavior.
-2. Verify a `super_admin` request to `POST /api/v1/platform/tenants/:tenantId/deprovision` returns `200`.
+2. Verify a `super_admin` request to `POST /api/v1/platform/tenants/deprovision` with `tenant_id` in the body returns `200`.
 3. Verify the response contains:
    - `tenant_id`
    - `slug`

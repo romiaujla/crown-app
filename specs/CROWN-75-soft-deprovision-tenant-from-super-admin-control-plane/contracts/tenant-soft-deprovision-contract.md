@@ -3,9 +3,15 @@
 ## Route
 
 - **Method**: `POST`
-- **Path**: `/api/v1/platform/tenants/{tenantId}/deprovision`
+- **Path**: `/api/v1/platform/tenants/deprovision`
 - **Auth**: Bearer token required; caller must be `super_admin`
-- **Body**: none
+- **Body**:
+
+```json
+{
+  "tenant_id": "tenant-acme"
+}
+```
 
 ## Successful Response
 

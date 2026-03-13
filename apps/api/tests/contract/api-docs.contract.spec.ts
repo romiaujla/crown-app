@@ -26,7 +26,7 @@ describe("api docs contract", () => {
     expect(initResponse.headers["content-type"]).toContain("application/javascript");
     expect(initResponse.text).toContain("SwaggerUIBundle");
     expect(initResponse.text).toContain("swaggerDoc");
-    expect(initResponse.text).toContain("/api/v1/platform/tenants/{tenantId}/deprovision");
+    expect(initResponse.text).toContain("/api/v1/platform/tenants/deprovision");
   });
 
   it("does not expose a raw openapi json endpoint", async () => {

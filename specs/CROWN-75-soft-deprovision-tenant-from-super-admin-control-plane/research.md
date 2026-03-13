@@ -1,6 +1,6 @@
 # Research: CROWN-75 API Soft Deprovision Tenant From The Super-Admin Control Plane
 
-## Decision: Expose one protected `POST /api/v1/platform/tenants/:tenantId/deprovision` action route
+## Decision: Expose one protected `POST /api/v1/platform/tenants/deprovision` action route with `tenant_id` in the request body
 
 - **Why**: The repository already groups super-admin tenant management under `/api/v1/platform/tenants`, and soft deprovision is an action on one tenant rather than a separate resource collection.
 - **Alternatives considered**:

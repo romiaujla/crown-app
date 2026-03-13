@@ -238,6 +238,13 @@ export const authDocsDocument = {
           }
         }
       },
+      SoftDeprovisionTenantRequest: {
+        type: "object",
+        required: ["tenant_id"],
+        properties: {
+          tenant_id: { type: "string" }
+        }
+      },
       TenantStatusCountEntry: {
         type: "object",
         required: ["status", "count"],
@@ -647,21 +654,21 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/platform/tenants/{tenantId}/deprovision": {
+    "/api/v1/platform/tenants/deprovision": {
       post: {
         tags: ["Platform Tenants"],
         summary: "Soft deprovision a tenant",
         description:
           "Protected super-admin route used to mark a tenant inactive without deleting its schema or control-plane record. Existing tenant sessions are not invalidated by this story.",
         security: bearerSecurity,
-        parameters: [
-          {
-            name: "tenantId",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/SoftDeprovisionTenantRequest" }
+            }
           }
-        ],
+        },
         responses: {
           "200": {
             description: "Tenant soft deprovisioned",
@@ -671,6 +678,7 @@ export const authDocsDocument = {
               }
             }
           },
+          "400": errorResponse("Invalid tenant soft deprovision payload", "validation_error", "Invalid tenant soft deprovision payload"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
           "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),

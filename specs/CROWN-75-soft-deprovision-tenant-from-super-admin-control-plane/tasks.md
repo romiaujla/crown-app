@@ -45,7 +45,7 @@
 
 ### Tests for User Story 1
 
-- [ ] T009 [P] [US1] Add contract coverage for `POST /api/v1/platform/tenants/:tenantId/deprovision` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-soft-deprovision.contract.spec.ts`
+- [ ] T009 [P] [US1] Add contract coverage for `POST /api/v1/platform/tenants/deprovision` with `tenant_id` in the request body in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-soft-deprovision.contract.spec.ts`
 - [ ] T010 [P] [US1] Add service/integration coverage for tenant lifecycle state changes and preserved schema behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-soft-deprovision.spec.ts`
 
 ### Implementation for User Story 1
@@ -141,7 +141,7 @@
 
 ```bash
 # Validate soft deprovision behavior from both HTTP and service angles in parallel:
-Task: "Add contract coverage for POST /api/v1/platform/tenants/:tenantId/deprovision in apps/api/tests/contract/platform-tenant-soft-deprovision.contract.spec.ts"
+Task: "Add contract coverage for POST /api/v1/platform/tenants/deprovision with tenant_id in apps/api/tests/contract/platform-tenant-soft-deprovision.contract.spec.ts"
 Task: "Add service/integration coverage for tenant lifecycle state changes in apps/api/tests/integration/tenant-soft-deprovision.spec.ts"
 ```
 

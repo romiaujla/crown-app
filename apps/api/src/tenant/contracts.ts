@@ -31,8 +31,13 @@ export const SoftDeprovisionTenantResponseSchema = z.object({
   operation: z.literal("soft_deprovisioned")
 });
 
+export const SoftDeprovisionTenantRequestSchema = z.object({
+  tenant_id: z.string().trim().min(1)
+});
+
 export type TenantProvisionRequest = z.infer<typeof TenantProvisionRequestSchema>;
 export type TenantProvisionResponse = z.infer<typeof TenantProvisionResponseSchema>;
+export type SoftDeprovisionTenantRequest = z.infer<typeof SoftDeprovisionTenantRequestSchema>;
 export type SoftDeprovisionTenantResponse = z.infer<typeof SoftDeprovisionTenantResponseSchema>;
 
 export { SLUG_REGEX };
