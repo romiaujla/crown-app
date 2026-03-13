@@ -52,7 +52,7 @@ When a user prompt is `--clean-code-api` or `--clean-code-web`:
 2. Scope `--clean-code-api` to files under `apps/api` only.
 3. Scope `--clean-code-web` to files under `apps/web` only.
 4. Evaluate findings against `docs/process/engineering-constitution.md` and any relevant engineering/process guidance referenced by the repository workflow documents.
-5. Report actionable findings with concrete file references and clear coding-standard violations or maintainability risks.
+5. Report findings first, before summaries, with concrete file references and clear coding-standard violations or maintainability risks.
 6. Do not widen the audit into unrelated repository areas, feature design changes, or speculative implementation work.
 
 ## Operational Rules
