@@ -1,14 +1,7 @@
 import { z } from "zod";
+import { DashboardMetricWindowEnum, DashboardMetricWindowSchema } from "@crown/types";
 
 import { TenantStatusSchema } from "../../domain/status-enums.js";
-
-export enum DashboardMetricWindowEnum {
-  WEEK = "week",
-  MONTH = "month",
-  YEAR = "year"
-}
-
-export const DashboardMetricWindowSchema = z.enum(DashboardMetricWindowEnum);
 
 export const TenantStatusCountEntrySchema = z.object({
   status: TenantStatusSchema,
@@ -47,3 +40,4 @@ export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;
+export { DashboardMetricWindowEnum };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DashboardMetricWindowEnum, DashboardMetricWindowSchema } from "@crown/types";
 
 export enum AuthStateStatusEnum {
   BOOTSTRAPPING = "bootstrapping",
@@ -8,12 +9,6 @@ export enum AuthStateStatusEnum {
 
 export enum AuthReasonEnum {
   SESSION_EXPIRED = "session-expired"
-}
-
-export enum DashboardMetricWindowEnum {
-  WEEK = "week",
-  MONTH = "month",
-  YEAR = "year"
 }
 
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
@@ -82,8 +77,6 @@ export const TenantStatusCountEntrySchema = z.object({
   count: z.number().int().nonnegative()
 });
 
-export const DashboardMetricWindowSchema = z.enum(DashboardMetricWindowEnum);
-
 export const NewTenantCountMetricSchema = z.object({
   window: DashboardMetricWindowSchema,
   count: z.number().int().nonnegative()
@@ -126,3 +119,4 @@ export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;
+export { DashboardMetricWindowEnum };
