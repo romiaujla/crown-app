@@ -187,7 +187,7 @@ export const WorkspaceShell = ({
         )}
 
         {layoutProps.layout === "sidebar" ? (
-          <div className="platform-shell-grid grid gap-6 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)]">
+          <div className="platform-shell-grid grid gap-6">
             <Card className={cn("sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
               <CardContent className="sidebar-shell-card__content px-3 pb-3 pt-5">
                 <nav aria-label={layoutProps.navigationTitle}>

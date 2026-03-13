@@ -207,6 +207,7 @@ h3 {
 
 .platform-shell-grid {
   align-items: start;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
 }
 
 .sidebar-shell-card {
