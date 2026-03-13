@@ -100,7 +100,7 @@
 - [X] T021 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
 - [X] T022 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
 - [X] T023 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md
-- [ ] T024 Create the PR for `feat/CROWN-98-super-admin-dashboard-key-metric-cards` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/tasks.md
+- [X] T024 Create the PR for `feat/CROWN-98-super-admin-dashboard-key-metric-cards` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/tasks.md
 
 ---
 
