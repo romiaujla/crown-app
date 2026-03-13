@@ -34,7 +34,7 @@
 
 **Goal**: Expose the initial dashboard overview widget contract with total tenant count and per-status tenant counts.
 
-**Independent Test**: Call `GET /api/v1/platform/dashboard/overview` as a super admin and confirm the response contains `widgets.tenant_summary.total_tenant_count` plus deterministic `tenant_status_counts` entries for every current `TenantStatus`.
+**Independent Test**: Call `GET /api/v1/platform/dashboard/overview` as a super admin and confirm the response contains `widgets.tenant_summary.total_tenant_count`, `widgets.tenant_summary.tenant_user_count`, and deterministic `tenant_status_counts` entries for every current `TenantStatus`.
 
 ### Tests for User Story 1
 

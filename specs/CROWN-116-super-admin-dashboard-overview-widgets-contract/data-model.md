@@ -39,9 +39,11 @@
 
 - **Fields**:
   - `total_tenant_count`
+  - `tenant_user_count`
   - `tenant_status_counts`
 - **Rules**:
   - `total_tenant_count` is the total number of tenants across all statuses.
+  - `tenant_user_count` is the total number of `tenant_user` identities in the current platform model.
   - `tenant_status_counts` must include one `TenantStatusCountEntry` for every current status.
 
 ### DashboardOverviewWidgets

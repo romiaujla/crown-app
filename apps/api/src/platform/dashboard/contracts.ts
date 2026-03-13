@@ -9,6 +9,7 @@ export const TenantStatusCountEntrySchema = z.object({
 
 export const TenantSummaryWidgetSchema = z.object({
   total_tenant_count: z.number().int().nonnegative(),
+  tenant_user_count: z.number().int().nonnegative(),
   tenant_status_counts: z.array(TenantStatusCountEntrySchema)
 });
 

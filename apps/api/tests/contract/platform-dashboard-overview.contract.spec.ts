@@ -10,6 +10,7 @@ const createOverviewPayload = (): DashboardOverviewResponse => ({
   widgets: {
     tenant_summary: {
       total_tenant_count: 3,
+      tenant_user_count: 12,
       tenant_status_counts: [
         { status: "active", count: 1 },
         { status: "inactive", count: 1 },
@@ -33,6 +34,7 @@ describe("platform dashboard overview contract", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.widgets.tenant_summary.total_tenant_count).toBe(3);
+    expect(response.body.widgets.tenant_summary.tenant_user_count).toBe(12);
     expect(response.body.widgets.tenant_summary.tenant_status_counts).toEqual([
       { status: "active", count: 1 },
       { status: "inactive", count: 1 },

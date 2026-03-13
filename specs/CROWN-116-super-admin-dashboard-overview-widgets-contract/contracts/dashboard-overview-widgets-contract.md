@@ -16,6 +16,7 @@ Define the first super-admin dashboard overview API contract that supplies the i
 
 - Returns a top-level `widgets` object.
 - Includes `widgets.tenant_summary.total_tenant_count` as the platform-wide tenant total.
+- Includes `widgets.tenant_summary.tenant_user_count` as the current total of `tenant_user` identities.
 - Includes `widgets.tenant_summary.tenant_status_counts` as a deterministic list of status/count entries for every current `TenantStatus`.
 - Uses explicit zero-count entries when a current status has no matching tenants.
 - Leaves room for future widgets by allowing new sibling keys to be added under `widgets` without changing the `tenant_summary` fields.

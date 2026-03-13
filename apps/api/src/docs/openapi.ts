@@ -231,9 +231,13 @@ export const authDocsDocument = {
       },
       TenantSummaryWidget: {
         type: "object",
-        required: ["total_tenant_count", "tenant_status_counts"],
+        required: ["total_tenant_count", "tenant_user_count", "tenant_status_counts"],
         properties: {
           total_tenant_count: {
+            type: "integer",
+            minimum: 0
+          },
+          tenant_user_count: {
             type: "integer",
             minimum: 0
           },

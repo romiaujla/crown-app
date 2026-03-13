@@ -9,17 +9,18 @@
 
 ### User Story 1 - Retrieve Tenant Summary Overview Data (Priority: P1)
 
-As a super-admin dashboard client, I want one overview response that returns the tenant total and tenant-status breakdown so the dashboard can render its initial overview widgets from a stable API contract.
+As a super-admin dashboard client, I want one overview response that returns the tenant total, tenant user count, and tenant-status breakdown so the dashboard can render its initial overview widgets from a stable API contract.
 
 **Why this priority**: This is the core Jira outcome. Without a contract for the first dashboard widget data, `CROWN-93` cannot move from static assumptions to live platform data.
 
-**Independent Test**: Call the overview endpoint as a super admin and verify the response includes one stable overview-widgets payload containing the total tenant count and counts for every current tenant status.
+**Independent Test**: Call the overview endpoint as a super admin and verify the response includes one stable overview-widgets payload containing the total tenant count, tenant user count, and counts for every current tenant status.
 
 **Acceptance Scenarios**:
 
 1. **Given** a valid `super_admin` request reaches the overview endpoint, **When** the API returns the overview payload, **Then** the response includes the total number of tenants in the platform model.
-2. **Given** the platform has tenants across different statuses, **When** the overview payload is returned, **Then** the response includes counts grouped by the statuses that currently exist in the platform data model.
-3. **Given** the platform currently has no tenants for one or more statuses, **When** the overview payload is returned, **Then** the response still includes those statuses with deterministic zero counts instead of omitting them.
+2. **Given** the platform has tenant-scoped end users in the current identity model, **When** the overview payload is returned, **Then** the response includes the total number of `tenant_user` identities.
+3. **Given** the platform has tenants across different statuses, **When** the overview payload is returned, **Then** the response includes counts grouped by the statuses that currently exist in the platform data model.
+4. **Given** the platform currently has no tenants for one or more statuses, **When** the overview payload is returned, **Then** the response still includes those statuses with deterministic zero counts instead of omitting them.
 
 ---
 
@@ -67,19 +68,20 @@ As a future dashboard maintainer, I want the overview response structured so new
 
 - **FR-001**: The system MUST expose one super-admin-only API endpoint for the dashboard overview widget contract.
 - **FR-002**: The successful response MUST include the total number of tenants in the current platform model.
-- **FR-003**: The successful response MUST include counts for every tenant status currently defined by the platform model.
-- **FR-004**: The successful response MUST represent statuses with no tenants as explicit zero-count entries.
-- **FR-005**: The successful response MUST place the initial tenant-summary widget inside an extensible overview-widgets envelope so future widgets can be added without changing the initial widget fields.
-- **FR-006**: The endpoint MUST remain limited to authenticated `super_admin` users.
-- **FR-007**: The endpoint MUST reuse the repository’s existing unauthenticated and forbidden-role error contracts for rejected requests.
-- **FR-008**: The endpoint MUST keep recent tenant changes and activity-feed data out of scope for this story.
-- **FR-009**: The API contract MUST be documented in the repository’s manual OpenAPI source.
-- **FR-010**: The implementation MUST stay scoped to the dashboard overview contract and supporting endpoint behavior rather than unrelated platform APIs.
+- **FR-003**: The successful response MUST include the total number of `tenant_user` identities in the current platform model.
+- **FR-004**: The successful response MUST include counts for every tenant status currently defined by the platform model.
+- **FR-005**: The successful response MUST represent statuses with no tenants as explicit zero-count entries.
+- **FR-006**: The successful response MUST place the initial tenant-summary widget inside an extensible overview-widgets envelope so future widgets can be added without changing the initial widget fields.
+- **FR-007**: The endpoint MUST remain limited to authenticated `super_admin` users.
+- **FR-008**: The endpoint MUST reuse the repository’s existing unauthenticated and forbidden-role error contracts for rejected requests.
+- **FR-009**: The endpoint MUST keep recent tenant changes and activity-feed data out of scope for this story.
+- **FR-010**: The API contract MUST be documented in the repository’s manual OpenAPI source.
+- **FR-011**: The implementation MUST stay scoped to the dashboard overview contract and supporting endpoint behavior rather than unrelated platform APIs.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Dashboard Overview Response**: The top-level API payload returned for the super-admin dashboard overview route.
-- **Tenant Summary Widget**: The initial overview widget that contains total tenant count and per-status tenant counts.
+- **Tenant Summary Widget**: The initial overview widget that contains total tenant count, tenant user count, and per-status tenant counts.
 - **Tenant Status Count Entry**: One status/count pair representing a current `TenantStatus` value and the number of tenants in that status.
 - **Widgets Envelope**: The response container that allows future overview widgets to be added as siblings without changing the first widget contract.
 
@@ -101,7 +103,7 @@ As a future dashboard maintainer, I want the overview response structured so new
 
 ### Measurable Outcomes
 
-- **SC-001**: Reviewers can verify that 100% of successful overview responses include the total tenant count and explicit counts for every current tenant status.
+- **SC-001**: Reviewers can verify that 100% of successful overview responses include the total tenant count, tenant user count, and explicit counts for every current tenant status.
 - **SC-002**: Reviewers can verify that 100% of tested empty-status cases return zero-count entries instead of omitting status buckets.
 - **SC-003**: Reviewers can verify that 100% of tested unauthenticated or non-super-admin requests are rejected with the existing protected-route error behavior.
 - **SC-004**: Reviewers can verify from the response contract and OpenAPI docs that new widgets can be added as siblings in the overview envelope without changing the initial tenant-summary widget fields.

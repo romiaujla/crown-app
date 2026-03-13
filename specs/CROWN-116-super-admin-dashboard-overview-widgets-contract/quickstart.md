@@ -17,6 +17,7 @@ Validate the super-admin dashboard overview endpoint and confirm it returns the 
 3. Verify the response contains:
    - `widgets`
    - `widgets.tenant_summary.total_tenant_count`
+   - `widgets.tenant_summary.tenant_user_count`
    - `widgets.tenant_summary.tenant_status_counts`
 4. Verify `tenant_status_counts` includes every current `TenantStatus` value, even when some counts are `0`.
 5. Verify missing authentication returns the existing unauthenticated error contract.

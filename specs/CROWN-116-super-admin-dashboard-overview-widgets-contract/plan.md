@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add a super-admin-only dashboard overview endpoint in `apps/api` that returns an extensible widgets envelope for `CROWN-93`. The initial widget contract will provide total tenant count plus deterministic per-status tenant counts for every current `TenantStatus`, and the manual OpenAPI document will be updated to describe the route and response shape.
+Add a super-admin-only dashboard overview endpoint in `apps/api` that returns an extensible widgets envelope for `CROWN-93`. The initial widget contract will provide total tenant count, tenant user count, and deterministic per-status tenant counts for every current `TenantStatus`, and the manual OpenAPI document will be updated to describe the route and response shape.
 
 ## Technical Context
 
@@ -23,7 +23,7 @@ Add a super-admin-only dashboard overview endpoint in `apps/api` that returns an
 
 - Add `GET /api/v1/platform/dashboard/overview` as the API surface for the super-admin dashboard overview widgets.
 - Return the payload inside a top-level `widgets` object so later widgets can be added as sibling keys.
-- Define the first widget as `tenant_summary`, with `total_tenant_count` plus `tenant_status_counts`.
+- Define the first widget as `tenant_summary`, with `total_tenant_count`, `tenant_user_count`, and `tenant_status_counts`.
 - Populate `tenant_status_counts` for every current `TenantStatus` value, including explicit zeroes for statuses absent from current data.
 - Reuse existing authentication and authorization middleware so only `super_admin` can access the route.
 - Extend `apps/api/src/docs/openapi.ts` with the new route, schemas, and tag metadata.
