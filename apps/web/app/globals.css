@@ -463,4 +463,12 @@ h3 {
   .platform-shell-grid {
     grid-template-columns: 4.75rem minmax(0, 1fr);
   }
+
+  .sidebar-profile__menu {
+    bottom: calc(100% + 0.75rem);
+    left: 0;
+    min-width: 14rem;
+    right: auto;
+    top: auto;
+  }
 }
