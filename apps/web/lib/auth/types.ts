@@ -10,6 +10,12 @@ export enum AuthReasonEnum {
   SESSION_EXPIRED = "session-expired"
 }
 
+export enum DashboardMetricWindowEnum {
+  WEEK = "week",
+  MONTH = "month",
+  YEAR = "year"
+}
+
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export const TenantRoleSchema = z.enum(["tenant_admin", "tenant_user"]);
 export const AuthTargetAppSchema = z.enum(["platform", "tenant"]);
@@ -76,10 +82,24 @@ export const TenantStatusCountEntrySchema = z.object({
   count: z.number().int().nonnegative()
 });
 
+export const DashboardMetricWindowSchema = z.enum(DashboardMetricWindowEnum);
+
+export const NewTenantCountMetricSchema = z.object({
+  window: DashboardMetricWindowSchema,
+  count: z.number().int().nonnegative()
+});
+
+export const TenantGrowthRateMetricSchema = z.object({
+  window: DashboardMetricWindowSchema,
+  growth_rate_percentage: z.number()
+});
+
 export const TenantSummaryWidgetSchema = z.object({
   total_tenant_count: z.number().int().nonnegative(),
   tenant_user_count: z.number().int().nonnegative(),
-  tenant_status_counts: z.array(TenantStatusCountEntrySchema)
+  tenant_status_counts: z.array(TenantStatusCountEntrySchema),
+  new_tenant_counts: z.array(NewTenantCountMetricSchema),
+  tenant_growth_rates: z.array(TenantGrowthRateMetricSchema)
 });
 
 export const DashboardOverviewWidgetsSchema = z.object({
@@ -101,6 +121,8 @@ export type AccessTokenResponse = z.infer<typeof AccessTokenResponseSchema>;
 export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
 export type TenantStatus = z.infer<typeof TenantStatusSchema>;
 export type TenantStatusCountEntry = z.infer<typeof TenantStatusCountEntrySchema>;
+export type NewTenantCountMetric = z.infer<typeof NewTenantCountMetricSchema>;
+export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema>;
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;

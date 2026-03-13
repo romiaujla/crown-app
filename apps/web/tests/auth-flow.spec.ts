@@ -29,6 +29,14 @@ type DashboardOverviewFixture = {
         status: "active" | "inactive" | "provisioning" | "provisioning_failed";
         count: number;
       }>;
+      new_tenant_counts: Array<{
+        window: "week" | "month" | "year";
+        count: number;
+      }>;
+      tenant_growth_rates: Array<{
+        window: "week" | "month" | "year";
+        growth_rate_percentage: number;
+      }>;
     };
   };
 };
@@ -43,6 +51,16 @@ const buildDashboardOverview = (): DashboardOverviewFixture => ({
         { status: "inactive", count: 1 },
         { status: "provisioning", count: 0 },
         { status: "provisioning_failed", count: 0 }
+      ],
+      new_tenant_counts: [
+        { window: "week", count: 1 },
+        { window: "month", count: 2 },
+        { window: "year", count: 4 }
+      ],
+      tenant_growth_rates: [
+        { window: "week", growth_rate_percentage: 100 },
+        { window: "month", growth_rate_percentage: 33.33 },
+        { window: "year", growth_rate_percentage: 50 }
       ]
     }
   }
