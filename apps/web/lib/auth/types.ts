@@ -69,6 +69,27 @@ export const AuthErrorResponseSchema = z.object({
   routing: AuthRoutingSchema.optional()
 });
 
+export const TenantStatusSchema = z.enum(["active", "inactive", "provisioning", "provisioning_failed"]);
+
+export const TenantStatusCountEntrySchema = z.object({
+  status: TenantStatusSchema,
+  count: z.number().int().nonnegative()
+});
+
+export const TenantSummaryWidgetSchema = z.object({
+  total_tenant_count: z.number().int().nonnegative(),
+  tenant_user_count: z.number().int().nonnegative(),
+  tenant_status_counts: z.array(TenantStatusCountEntrySchema)
+});
+
+export const DashboardOverviewWidgetsSchema = z.object({
+  tenant_summary: TenantSummaryWidgetSchema
+});
+
+export const DashboardOverviewResponseSchema = z.object({
+  widgets: DashboardOverviewWidgetsSchema
+});
+
 export type Role = z.infer<typeof RoleSchema>;
 export type TenantRole = z.infer<typeof TenantRoleSchema>;
 export type AuthTargetApp = z.infer<typeof AuthTargetAppSchema>;
@@ -78,3 +99,8 @@ export type CurrentUserResponse = z.infer<typeof CurrentUserResponseSchema>;
 export type AccessTokenClaims = z.infer<typeof AccessTokenClaimsSchema>;
 export type AccessTokenResponse = z.infer<typeof AccessTokenResponseSchema>;
 export type AuthErrorResponse = z.infer<typeof AuthErrorResponseSchema>;
+export type TenantStatus = z.infer<typeof TenantStatusSchema>;
+export type TenantStatusCountEntry = z.infer<typeof TenantStatusCountEntrySchema>;
+export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
+export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
+export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;

@@ -20,6 +20,33 @@ const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
 };
 
 type Persona = "super_admin" | "tenant_admin" | "tenant_user";
+type DashboardOverviewFixture = {
+  widgets: {
+    tenant_summary: {
+      total_tenant_count: number;
+      tenant_user_count: number;
+      tenant_status_counts: Array<{
+        status: "active" | "inactive" | "provisioning" | "provisioning_failed";
+        count: number;
+      }>;
+    };
+  };
+};
+
+const buildDashboardOverview = (): DashboardOverviewFixture => ({
+  widgets: {
+    tenant_summary: {
+      total_tenant_count: 4,
+      tenant_user_count: 12,
+      tenant_status_counts: [
+        { status: "active", count: 3 },
+        { status: "inactive", count: 1 },
+        { status: "provisioning", count: 0 },
+        { status: "provisioning_failed", count: 0 }
+      ]
+    }
+  }
+});
 
 const buildCurrentUser = (persona: Persona) => {
   const tenant =
@@ -62,11 +89,28 @@ const setupAuthRoutes = async (
     mePersona?: Persona | null;
     meStatus?: number;
     logoutStatus?: number;
+    overviewStatus?: number;
+    overviewResponse?: DashboardOverviewFixture;
   } = {}
 ) => {
-  await page.route(`${API_BASE_URL}/api/v1/auth/**`, async (route) => {
+  await page.route(`${API_BASE_URL}/api/v1/**`, async (route) => {
     const request = route.request();
     const url = request.url();
+
+    if (url.endsWith("/platform/dashboard/overview")) {
+      await route.fulfill({
+        body:
+          options.overviewStatus && options.overviewStatus !== 200
+            ? JSON.stringify({
+                error_code: "overview_unavailable",
+                message: "Dashboard overview is unavailable."
+              })
+            : JSON.stringify(options.overviewResponse ?? buildDashboardOverview()),
+        contentType: "application/json",
+        status: options.overviewStatus ?? 200
+      });
+      return;
+    }
 
     if (url.endsWith("/login")) {
       if (!options.loginPersona) {
@@ -278,6 +322,7 @@ test("super-admin shell renders the required control-plane navigation inventory"
   await expect(page.locator(".sidebar-profile__avatar", { hasText: "PO" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { name: "Dashboard", level: 3 })).toBeVisible();
+  await expect(page.getByText("4 tenants")).toBeVisible();
 });
 
 test("platform navigation switches the active section and renders coming-soon placeholders", async ({ page }) => {
@@ -292,6 +337,29 @@ test("platform navigation switches the active section and renders coming-soon pl
   await expect(
     page.getByText("Billing workflows and platform-wide commercial administration will appear here").last()
   ).toBeVisible();
+});
+
+test("platform dashboard renders the live tenant-summary overview widget", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+
+  await expect(page.getByText("4 tenants")).toBeVisible();
+  await expect(page.getByText("Review the current tenant count and status distribution for the platform at a glance.")).toBeVisible();
+  await expect(page.getByText("Active", { exact: true })).toBeVisible();
+  await expect(page.getByText("Inactive", { exact: true })).toBeVisible();
+  await expect(page.getByText("Provisioning", { exact: true })).toBeVisible();
+  await expect(page.getByText("Provisioning Failed", { exact: true })).toBeVisible();
+});
+
+test("platform dashboard overview stays scoped to tenant summary content", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+
+  await expect(page.getByText("Reserved for future widgets")).toBeVisible();
+  await expect(page.getByText("No pending actions")).toHaveCount(0);
+  await expect(page.getByText("Recent platform activity")).toHaveCount(0);
 });
 
 test("platform profile entry opens a compact menu with identity details", async ({ page }) => {
@@ -318,11 +386,30 @@ test("platform shell collapses to icon-only navigation on iPad-sized layouts and
 
   await expect(page.locator(".sidebar-nav__label", { hasText: "Dashboard" })).toBeHidden();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("title", "Dashboard");
+  await expect(page.getByText("4 tenants")).toBeVisible();
 
   const billingLink = page.getByRole("link", { name: "Billing" });
   await billingLink.hover();
 
   await expect(page.locator('[role="tooltip"]', { hasText: "Billing" }).first()).toBeVisible();
+});
+
+test("platform dashboard shows a contained error state when overview data fails to load", async ({ page }) => {
+  await setupAuthRoutes(page, { mePersona: "super_admin", overviewStatus: 500 });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("super_admin") }
+  );
+
+  await page.goto("/platform");
+
+  await expect(page.getByText("Dashboard overview unavailable")).toBeVisible();
+  await expect(
+    page.getByText("Dashboard overview is unavailable right now. Try refreshing once the platform API is reachable.")
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
 });
 
 test("logout clears the browser token and returns to the login page", async ({ page }) => {

@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story task set and confirm the current dashboard UI and API-consumer baseline.
 
-- [ ] T001 Create the `CROWN-93` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/tasks.md
-- [ ] T002 [P] Review the existing platform dashboard page and the `CROWN-116` overview API contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
+- [X] T001 Create the `CROWN-93` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/tasks.md
+- [X] T002 [P] Review the existing platform dashboard page and the `CROWN-116` overview API contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Create the web-side dashboard overview schemas and types in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts
-- [ ] T004 [P] Add a dashboard overview API fetch helper that uses the authenticated bearer token in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts
-- [ ] T005 [P] Confirm the current protected-shell flow supplies the session information needed for overview requests in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts
+- [X] T003 Create the web-side dashboard overview schemas and types in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts
+- [X] T004 [P] Add a dashboard overview API fetch helper that uses the authenticated bearer token in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts
+- [X] T005 [P] Confirm the current protected-shell flow supplies the session information needed for overview requests in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts
 
 **Checkpoint**: The web app has one reusable dashboard overview fetch path with validated response types.
 
@@ -38,13 +38,13 @@
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] Add Playwright coverage for the successful dashboard overview widget render in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T006 [P] [US1] Add Playwright coverage for the successful dashboard overview widget render in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Replace the static dashboard overview cards with live overview widget rendering in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T008 [US1] Render the total tenant count prominently in the tenant-summary widget in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T009 [US1] Render the per-status tenant counts, including explicit zero values returned by the API, in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T007 [US1] Replace the static dashboard overview cards with live overview widget rendering in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T008 [US1] Render the total tenant count prominently in the tenant-summary widget in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T009 [US1] Render the per-status tenant counts, including explicit zero values returned by the API, in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 **Checkpoint**: The dashboard home shows live tenant-summary data instead of static placeholder overview cards.
 
@@ -58,12 +58,12 @@
 
 ### Tests for User Story 2
 
-- [ ] T010 [P] [US2] Extend Playwright assertions to confirm the overview area stays limited to tenant-summary content in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T010 [P] [US2] Extend Playwright assertions to confirm the overview area stays limited to tenant-summary content in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Remove or replace static non-summary dashboard copy that widens beyond the tenant-summary scope in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T012 [US2] Keep the dashboard layout structured for the first overview widget without introducing activity-feed or recent-change UI in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T011 [US2] Remove or replace static non-summary dashboard copy that widens beyond the tenant-summary scope in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T012 [US2] Keep the dashboard layout structured for the first overview widget without introducing activity-feed or recent-change UI in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 **Checkpoint**: The delivered dashboard remains intentionally narrow and aligned with Jira scope.
 
@@ -77,14 +77,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T013 [P] [US3] Add Playwright coverage for dashboard overview error handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [ ] T014 [P] [US3] Extend viewport assertions to confirm the tenant-summary widget remains readable in the existing responsive shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T013 [P] [US3] Add Playwright coverage for dashboard overview error handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T014 [P] [US3] Extend viewport assertions to confirm the tenant-summary widget remains readable in the existing responsive shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Add a non-empty loading state for the overview request in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T016 [US3] Add a contained error state that preserves the platform shell when overview data fails to load in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T017 [US3] Refine the dashboard widget layout so future overview widgets can be added without redesigning the tenant-summary section in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T015 [US3] Add a non-empty loading state for the overview request in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T016 [US3] Add a contained error state that preserves the platform shell when overview data fails to load in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T017 [US3] Refine the dashboard widget layout so future overview widgets can be added without redesigning the tenant-summary section in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 **Checkpoint**: The overview area is resilient, readable, and ready for future widget expansion.
 
@@ -94,10 +94,10 @@
 
 **Purpose**: Validate the final web behavior, keep planning artifacts aligned, and prepare the branch for PR creation.
 
-- [ ] T018 [P] Run web Playwright coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [ ] T019 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [ ] T020 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [ ] T021 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md
+- [X] T018 [P] Run web Playwright coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [X] T019 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [X] T020 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [X] T021 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md
 - [ ] T022 Create the PR for `feat/CROWN-93-ui-super-admin-dashboard-overview-widgets` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-93-super-admin-dashboard-overview-widgets/tasks.md
 
 ---
