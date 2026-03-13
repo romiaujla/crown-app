@@ -281,6 +281,7 @@ const PlatformPage = () => {
       title="Crown Control Plane"
       tone="platform"
       userDisplayName={currentUser.principal.display_name}
+      userRole={currentUser.principal.role}
     />
   );
 };

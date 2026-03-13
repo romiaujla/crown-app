@@ -207,6 +207,7 @@ h3 {
 
 .platform-shell-grid {
   align-items: start;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
 }
 
 .sidebar-shell-card {
@@ -215,9 +216,19 @@ h3 {
   z-index: 20;
 }
 
+.sidebar-shell-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .sidebar-nav__item {
   min-height: 4rem;
   text-decoration: none;
+}
+
+.sidebar-nav>li {
+  width: 100%;
 }
 
 .sidebar-nav__label {
@@ -227,6 +238,123 @@ h3 {
 
 .sidebar-nav__tooltip {
   display: none;
+}
+
+.sidebar-profile {
+  border-top: 1px solid rgba(83, 53, 25, 0.1);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  position: relative;
+}
+
+.sidebar-profile__trigger {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(83, 53, 25, 0.1);
+  border-radius: 1.25rem;
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.85rem 0.95rem;
+  text-align: left;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+  width: 100%;
+}
+
+.sidebar-profile__trigger:hover,
+.sidebar-profile__trigger:focus-visible {
+  border-color: rgba(159, 79, 43, 0.28);
+  box-shadow: 0 12px 30px rgba(58, 38, 20, 0.08);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.sidebar-profile__avatar {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(159, 79, 43, 0.18), rgba(255, 255, 255, 0.92));
+  border: 1px solid rgba(159, 79, 43, 0.16);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  height: 2.75rem;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  width: 2.75rem;
+}
+
+.sidebar-profile__summary {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.sidebar-profile__name,
+.sidebar-profile__menu-name {
+  color: var(--ink);
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+.sidebar-profile__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-profile__role,
+.sidebar-profile__menu-role,
+.sidebar-profile__menu-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.sidebar-profile__menu-label {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sidebar-profile__chevron {
+  color: var(--muted);
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.sidebar-profile__menu {
+  background: rgba(255, 252, 247, 0.98);
+  border: 1px solid rgba(83, 53, 25, 0.12);
+  border-radius: 1.25rem;
+  bottom: calc(100% + 0.75rem);
+  box-shadow: 0 18px 40px rgba(58, 38, 20, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  left: 0;
+  min-width: 100%;
+  padding: 0.95rem;
+  position: absolute;
+  right: 0;
+  z-index: 45;
+}
+
+.sidebar-profile__menu-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sidebar-profile__logout {
+  justify-content: center;
+  width: 100%;
 }
 
 @media (max-width: 900px) {
@@ -258,15 +386,11 @@ h3 {
     top: 1.5rem;
   }
 
-  .sidebar-nav {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-
   .sidebar-nav__item {
     justify-content: center;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+    width: 100%;
   }
 
   .sidebar-nav__label {
@@ -292,6 +416,31 @@ h3 {
   .sidebar-nav__item:focus-visible .sidebar-nav__tooltip {
     opacity: 1;
     transform: translateY(-50%) translateX(0);
+  }
+
+  .sidebar-profile__trigger {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .sidebar-profile__summary,
+  .sidebar-profile__chevron {
+    display: none;
+  }
+
+  .sidebar-profile__avatar {
+    font-size: 0.78rem;
+    height: 2.3rem;
+    width: 2.3rem;
+  }
+
+  .sidebar-profile__menu {
+    bottom: calc(100% + 0.75rem);
+    left: 0;
+    min-width: 14rem;
+    right: auto;
+    top: auto;
   }
 }
 
@@ -320,5 +469,19 @@ h3 {
 
   .platform-shell-grid {
     grid-template-columns: 4.75rem minmax(0, 1fr);
+  }
+
+  .sidebar-profile__avatar {
+    font-size: 0.72rem;
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .sidebar-profile__menu {
+    bottom: calc(100% + 0.75rem);
+    left: 0;
+    min-width: 14rem;
+    right: auto;
+    top: auto;
   }
 }
