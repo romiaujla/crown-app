@@ -21,7 +21,7 @@ Add a super-admin-only soft deprovision action to the platform tenant API so an 
 
 ## CROWN-75 Implementation Outline
 
-- Add a super-admin-only action route under the existing `/api/v1/platform/tenants` namespace for soft deprovisioning a tenant by ID.
+- Add a super-admin-only action route under the existing `/api/v1/platform/tenant` namespace for soft deprovisioning a tenant by ID.
 - Reuse the existing `Tenant.status` field as the lifecycle source of truth and transition the tenant to `inactive` without dropping schemas or deleting records.
 - Return a response that makes the non-destructive operation explicit by echoing the tenant identity and resulting inactive status.
 - Preserve existing platform-only super-admin access and unrelated protected-route behavior.

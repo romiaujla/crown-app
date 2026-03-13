@@ -620,7 +620,7 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/platform/tenants": {
+    "/api/v1/platform/tenant": {
       post: {
         tags: ["Platform Tenants"],
         summary: "Provision a tenant",

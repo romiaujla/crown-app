@@ -2,10 +2,10 @@
 
 ## Decision: Expose one protected `POST /api/v1/platform/tenant/deprovision` action route with `tenant_id` in the request body
 
-- **Why**: The repository already groups super-admin tenant management under `/api/v1/platform/tenants`, and soft deprovision is an action on one tenant rather than a separate resource collection.
+- **Why**: The repository groups super-admin tenant management under the singular `/api/v1/platform/tenant` surface, and soft deprovision is an action on that resource rather than a separate collection.
 - **Alternatives considered**:
-  - `PATCH /api/v1/platform/tenants/:tenantId`: rejected because the current route surface does not expose a general tenant update contract, and a targeted action route keeps scope narrow.
-  - `DELETE /api/v1/platform/tenants/:tenantId`: rejected because the story explicitly requires non-destructive behavior and should not imply hard deletion semantics.
+  - `PATCH /api/v1/platform/tenant`: rejected because the current route surface does not expose a general tenant update contract, and a targeted action route keeps scope narrow.
+  - `DELETE /api/v1/platform/tenant`: rejected because the story explicitly requires non-destructive behavior and should not imply hard deletion semantics.
 
 ## Decision: Reuse `Tenant.status` as the lifecycle source of truth and transition any existing non-inactive tenant to `inactive`
 

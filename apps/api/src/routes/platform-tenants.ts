@@ -25,7 +25,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
   const provision = options.provision ?? provisionTenant;
   const deprovision = options.softDeprovision ?? softDeprovisionTenant;
 
-  router.post("/platform/tenants", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
+  router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
     if (!parsed.success) {
       return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant provisioning payload");

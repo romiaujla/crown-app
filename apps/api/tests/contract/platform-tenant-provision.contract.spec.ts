@@ -31,7 +31,7 @@ describe("platform tenant provisioning contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants")
+      .post("/api/v1/platform/tenant")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ name: "Acme", slug: "acme" });
 
@@ -45,7 +45,7 @@ describe("platform tenant provisioning contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants")
+      .post("/api/v1/platform/tenant")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ name: "A", slug: "INVALID" });
 
@@ -57,7 +57,7 @@ describe("platform tenant provisioning contract", () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
-    const response = await request(app).post("/api/v1/platform/tenants").send({ name: "Acme", slug: "acme" });
+    const response = await request(app).post("/api/v1/platform/tenant").send({ name: "Acme", slug: "acme" });
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("unauthenticated");
@@ -68,7 +68,7 @@ describe("platform tenant provisioning contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants")
+      .post("/api/v1/platform/tenant")
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
       .send({ name: "Acme", slug: "acme" });
 
@@ -81,7 +81,7 @@ describe("platform tenant provisioning contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants")
+      .post("/api/v1/platform/tenant")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ name: "Acme", slug: "acme" });
 
