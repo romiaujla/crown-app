@@ -54,7 +54,7 @@ export const WindowMetricCard = ({
 }: WindowMetricCardProps) => (
   <Card className="rounded-3xl border-stone-200 bg-stone-50/90 shadow-sm">
     <CardContent className="p-5">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-nowrap gap-1.5 xl:gap-2">
         {[DashboardMetricWindowEnum.WEEK, DashboardMetricWindowEnum.MONTH, DashboardMetricWindowEnum.YEAR].map((window) => {
           const isSelected = selectedWindow === window;
 
@@ -62,7 +62,7 @@ export const WindowMetricCard = ({
             <Button
               key={window}
               aria-pressed={isSelected}
-              className="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em]"
+              className="min-w-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] xl:px-3"
               onClick={() => onSelectWindow(window)}
               size="sm"
               type="button"
