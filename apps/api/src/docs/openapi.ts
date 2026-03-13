@@ -1,6 +1,7 @@
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../domain/status-enums.js";
+import { DashboardMetricWindowEnum } from "@crown/types";
 
 const bearerSecurity = [{ bearerAuth: [] }];
 const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
@@ -11,6 +12,7 @@ const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 const tenantStatusValues = Object.values(TenantStatus);
+const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
@@ -229,9 +231,47 @@ export const authDocsDocument = {
           }
         }
       },
+      DashboardMetricWindow: {
+        type: "string",
+        enum: dashboardMetricWindowValues
+      },
+      NewTenantCountMetric: {
+        type: "object",
+        required: ["window", "count"],
+        properties: {
+          window: {
+            $ref: "#/components/schemas/DashboardMetricWindow"
+          },
+          count: {
+            type: "integer",
+            minimum: 0,
+            description: "Count of tenants created inside the current trailing window ending at request time."
+          }
+        }
+      },
+      TenantGrowthRateMetric: {
+        type: "object",
+        required: ["window", "growth_rate_percentage"],
+        properties: {
+          window: {
+            $ref: "#/components/schemas/DashboardMetricWindow"
+          },
+          growth_rate_percentage: {
+            type: "number",
+            description:
+              "Percentage change between the current trailing window and the immediately preceding equal-length window, rounded to two decimals."
+          }
+        }
+      },
       TenantSummaryWidget: {
         type: "object",
-        required: ["total_tenant_count", "tenant_user_count", "tenant_status_counts"],
+        required: [
+          "total_tenant_count",
+          "tenant_user_count",
+          "tenant_status_counts",
+          "new_tenant_counts",
+          "tenant_growth_rates"
+        ],
         properties: {
           total_tenant_count: {
             type: "integer",
@@ -244,6 +284,17 @@ export const authDocsDocument = {
           tenant_status_counts: {
             type: "array",
             items: { $ref: "#/components/schemas/TenantStatusCountEntry" }
+          },
+          new_tenant_counts: {
+            type: "array",
+            description: "Ordered `week`, `month`, and `year` trailing-window tenant creation counts.",
+            items: { $ref: "#/components/schemas/NewTenantCountMetric" }
+          },
+          tenant_growth_rates: {
+            type: "array",
+            description:
+              "Ordered `week`, `month`, and `year` percentage changes comparing the current trailing window to the immediately preceding equal-length window.",
+            items: { $ref: "#/components/schemas/TenantGrowthRateMetric" }
           }
         }
       },
@@ -455,7 +506,7 @@ export const authDocsDocument = {
         tags: ["Platform Dashboard"],
         summary: "Get super-admin dashboard overview widgets",
         description:
-          "Protected super-admin route that returns the initial dashboard overview widgets contract, including tenant total and per-status counts.",
+          "Protected super-admin route that returns dashboard summary metrics, including tenant totals, tenant-status counts, trailing new-tenant windows, and trailing growth-rate windows.",
         security: bearerSecurity,
         responses: {
           "200": {

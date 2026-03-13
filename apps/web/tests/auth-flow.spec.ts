@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { DashboardMetricWindowEnum } from "@crown/types";
 
 const API_BASE_URL = "http://localhost:4000";
 const ACCESS_TOKEN_STORAGE_KEY = "crown.auth.access_token";
@@ -29,6 +30,14 @@ type DashboardOverviewFixture = {
         status: "active" | "inactive" | "provisioning" | "provisioning_failed";
         count: number;
       }>;
+      new_tenant_counts: Array<{
+        window: DashboardMetricWindowEnum;
+        count: number;
+      }>;
+      tenant_growth_rates: Array<{
+        window: DashboardMetricWindowEnum;
+        growth_rate_percentage: number;
+      }>;
     };
   };
 };
@@ -43,6 +52,16 @@ const buildDashboardOverview = (): DashboardOverviewFixture => ({
         { status: "inactive", count: 1 },
         { status: "provisioning", count: 0 },
         { status: "provisioning_failed", count: 0 }
+      ],
+      new_tenant_counts: [
+        { window: DashboardMetricWindowEnum.WEEK, count: 1 },
+        { window: DashboardMetricWindowEnum.MONTH, count: 2 },
+        { window: DashboardMetricWindowEnum.YEAR, count: 4 }
+      ],
+      tenant_growth_rates: [
+        { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
+        { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
+        { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 }
       ]
     }
   }

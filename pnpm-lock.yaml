@@ -41,6 +41,9 @@ importers:
       '@asteasolutions/zod-to-openapi':
         specifier: ^8.4.3
         version: 8.4.3(zod@4.3.6)
+      '@crown/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@prisma/adapter-pg':
         specifier: '7'
         version: 7.4.2
@@ -114,6 +117,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@crown/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@radix-ui/react-label':
         specifier: ^2.1.7
         version: 2.1.8(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -178,7 +184,11 @@ importers:
 
   packages/config: {}
 
-  packages/types: {}
+  packages/types:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
 
   packages/ui: {}
 

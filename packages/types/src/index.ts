@@ -3,6 +3,15 @@ import { z } from "zod";
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
+export enum DashboardMetricWindowEnum {
+  WEEK = "week",
+  MONTH = "month",
+  YEAR = "year"
+}
+
+export const DashboardMetricWindowSchema = z.enum(DashboardMetricWindowEnum);
+export type DashboardMetricWindow = z.infer<typeof DashboardMetricWindowSchema>;
+
 export const JwtClaimsSchema = z.object({
   sub: z.string(),
   role: RoleSchema,
