@@ -99,7 +99,7 @@
 - [X] T020 [P] Run focused Playwright coverage for the profile-menu and logout flows in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 - [X] T021 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
 - [X] T022 Review the final shell behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md
-- [ ] T023 Create the PR for `feat/CROWN-115-dashboard-profile-menu` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
+- [X] T023 Create the PR for `feat/CROWN-115-dashboard-profile-menu` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
 
 ---
 
