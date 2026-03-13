@@ -13,6 +13,8 @@ const PROMPT_PATTERNS = [
   "--speckit CROWN-<id>",
   "--implement CROWN-<id>",
   "--audit CROWN-<id>",
+  "--clean-code-api",
+  "--clean-code-web",
   "--sync-to-jira CROWN-<id>",
   "--sync-from-jira CROWN-<id>",
   "--resolve-pr-comments [PR-NUMBER]",
@@ -127,7 +129,7 @@ const main = async () => {
   );
   await ensureFileContains(
     "docs/process/spec-kit-workflow.md",
-    /--audit CROWN-<id>[\s\S]*--sync-to-jira CROWN-<id>[\s\S]*--sync-from-jira CROWN-<id>[\s\S]*--resolve-pr-comments \[PR-NUMBER\]/i,
+    /--audit CROWN-<id>[\s\S]*--clean-code-api[\s\S]*--clean-code-web[\s\S]*--sync-to-jira CROWN-<id>[\s\S]*--sync-from-jira CROWN-<id>[\s\S]*--resolve-pr-comments \[PR-NUMBER\]/i,
     "Spec workflow documents the workflow-helper prompt contract"
   );
   await ensureFileContains(
@@ -194,6 +196,31 @@ const main = async () => {
     "README.md",
     /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
     "README documents the --implement command"
+  );
+  await ensureFileContains(
+    "docs/process/ai-agent-prompt-help.md",
+    /--clean-code-api[\s\S]*apps\/api[\s\S]*(concrete file references|actionable findings)/i,
+    "Prompt help registry documents the --clean-code-api contract"
+  );
+  await ensureFileContains(
+    "docs/process/ai-agent-prompt-help.md",
+    /--clean-code-web[\s\S]*apps\/web[\s\S]*(concrete file references|actionable findings)/i,
+    "Prompt help registry documents the --clean-code-web contract"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /--clean-code-api[\s\S]*apps\/api[\s\S]*(review-only|implementation)/i,
+    "AGENTS documents the --clean-code-api scope and review-only behavior"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /--clean-code-web[\s\S]*apps\/web[\s\S]*(review-only|implementation)/i,
+    "AGENTS documents the --clean-code-web scope and review-only behavior"
+  );
+  await ensureFileContains(
+    "README.md",
+    /--clean-code-api[\s\S]*apps\/api[\s\S]*--clean-code-web[\s\S]*apps\/web/i,
+    "README documents the clean-code audit prompts"
   );
   await ensureFileContains(
     "README.md",
