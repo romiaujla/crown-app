@@ -428,6 +428,12 @@ h3 {
     display: none;
   }
 
+  .sidebar-profile__avatar {
+    font-size: 0.78rem;
+    height: 2.3rem;
+    width: 2.3rem;
+  }
+
   .sidebar-profile__menu {
     bottom: auto;
     left: calc(100% + 12px);
@@ -462,6 +468,12 @@ h3 {
 
   .platform-shell-grid {
     grid-template-columns: 4.75rem minmax(0, 1fr);
+  }
+
+  .sidebar-profile__avatar {
+    font-size: 0.72rem;
+    height: 2rem;
+    width: 2rem;
   }
 
   .sidebar-profile__menu {
