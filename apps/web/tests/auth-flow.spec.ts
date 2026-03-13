@@ -372,6 +372,7 @@ test("platform dashboard renders the live metric cards from the overview widget"
   await expect(page.getByText("12", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Week" }).first()).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("heading", { name: "New tenants" }).locator("..").getByText("1", { exact: true })).toBeVisible();
+  await expect(page.getByText("Trailing window count based on the past 7 days.")).toBeVisible();
   await expect(page.getByText("100%", { exact: true })).toBeVisible();
   await expect(page.getByText("Active", { exact: true })).toBeVisible();
   await expect(page.getByText("Inactive", { exact: true })).toBeVisible();
@@ -389,10 +390,14 @@ test("platform dashboard window chips switch one selected value at a time", asyn
   await chipButtons.nth(0).click();
   await expect(chipButtons.nth(0)).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("2", { exact: true })).toBeVisible();
+  await expect(page.getByText("Trailing window count based on the past 30 days.")).toBeVisible();
 
   await chipButtons.nth(1).click();
   await expect(chipButtons.nth(1)).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText("33.33%", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Tenant growth across the past 30 days compared with the previous window of the same length.")
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Week" }).nth(1)).toHaveAttribute("aria-pressed", "false");
 });
 

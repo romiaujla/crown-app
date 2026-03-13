@@ -18,6 +18,13 @@ import { useEffect, useState } from "react";
 import { StatusPanel } from "@/components/auth/status-panel";
 import { useProtectedShell } from "@/components/auth/use-protected-shell";
 import { WorkspaceShell } from "@/components/auth/workspace-shell";
+import {
+  formatGrowthRateValue,
+  getGrowthRateDescription,
+  getNewTenantDescription,
+  SummaryMetricCard,
+  WindowMetricCard
+} from "@/components/platform/dashboard-metric-cards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
@@ -131,67 +138,6 @@ const formatTenantStatusLabel = (status: TenantStatus) =>
     .filter(Boolean)
     .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
     .join(" ");
-
-const formatMetricWindowLabel = (window: string) => window.slice(0, 1).toUpperCase() + window.slice(1);
-
-const formatGrowthRateValue = (value: number) => `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
-
-type SummaryMetricCardProps = {
-  title: string;
-  value: string;
-  description: string;
-};
-
-type WindowMetricCardProps = {
-  title: string;
-  description: string;
-  selectedWindow: MetricWindow;
-  onSelectWindow: (window: MetricWindow) => void;
-  value: string;
-};
-
-const SummaryMetricCard = ({ title, value, description }: SummaryMetricCardProps) => (
-  <div className="rounded-3xl border border-stone-200 bg-stone-50/90 p-5 shadow-sm">
-    <h4 className="mt-3 text-lg font-semibold text-stone-950">{title}</h4>
-    <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
-    <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
-  </div>
-);
-
-const WindowMetricCard = ({
-  title,
-  description,
-  selectedWindow,
-  onSelectWindow,
-  value
-}: WindowMetricCardProps) => (
-  <div className="rounded-3xl border border-stone-200 bg-stone-50/90 p-5 shadow-sm">
-    <div className="flex flex-wrap gap-2">
-      {([DashboardMetricWindowEnum.WEEK, DashboardMetricWindowEnum.MONTH, DashboardMetricWindowEnum.YEAR] as MetricWindow[]).map((window) => {
-        const isSelected = selectedWindow === window;
-
-        return (
-          <button
-            key={window}
-            aria-pressed={isSelected}
-            className={
-              isSelected
-                ? "rounded-full border border-stone-950 bg-stone-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white"
-                : "rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600"
-            }
-            onClick={() => onSelectWindow(window)}
-            type="button"
-          >
-            {formatMetricWindowLabel(window)}
-          </button>
-        );
-      })}
-    </div>
-    <h4 className="mt-4 text-lg font-semibold text-stone-950">{title}</h4>
-    <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
-    <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
-  </div>
-);
 
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
@@ -329,14 +275,14 @@ const DashboardOverviewSection = () => {
             value={tenantSummary.tenant_user_count.toString()}
           />
           <WindowMetricCard
-            description="Trailing window count based on the selected week, month, or year view."
+            description={getNewTenantDescription(selectedNewTenantMetric.window)}
             onSelectWindow={setSelectedNewTenantWindow}
             selectedWindow={selectedNewTenantMetric.window}
             title="New tenants"
             value={selectedNewTenantMetric.count.toString()}
           />
           <WindowMetricCard
-            description="Percentage change versus the immediately preceding trailing window of the same length."
+            description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
             onSelectWindow={setSelectedGrowthRateWindow}
             selectedWindow={selectedGrowthRateMetric.window}
             title="Tenant growth rate"
