@@ -217,6 +217,34 @@ export const authDocsDocument = {
           }
         }
       },
+      SoftDeprovisionTenantResponse: {
+        type: "object",
+        required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
+        properties: {
+          tenant_id: { type: "string" },
+          slug: { type: "string" },
+          schema_name: { type: "string" },
+          previous_status: {
+            type: "string",
+            enum: tenantStatusValues
+          },
+          status: {
+            type: "string",
+            enum: ["inactive"]
+          },
+          operation: {
+            type: "string",
+            enum: ["soft_deprovisioned"]
+          }
+        }
+      },
+      SoftDeprovisionTenantRequest: {
+        type: "object",
+        required: ["tenant_id"],
+        properties: {
+          tenant_id: { type: "string" }
+        }
+      },
       TenantStatusCountEntry: {
         type: "object",
         required: ["status", "count"],
@@ -592,7 +620,7 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/platform/tenants": {
+    "/api/v1/platform/tenant": {
       post: {
         tags: ["Platform Tenants"],
         summary: "Provision a tenant",
@@ -622,7 +650,41 @@ export const authDocsDocument = {
           ),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
+          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
           "409": errorResponse("Tenant slug conflict", "conflict", "tenant slug already exists")
+        }
+      }
+    },
+    "/api/v1/platform/tenant/deprovision": {
+      post: {
+        tags: ["Platform Tenants"],
+        summary: "Soft deprovision a tenant",
+        description:
+          "Protected super-admin route used to mark a tenant inactive without deleting its schema or control-plane record. Existing tenant sessions are not invalidated by this story.",
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/SoftDeprovisionTenantRequest" }
+            }
+          }
+        },
+        responses: {
+          "200": {
+            description: "Tenant soft deprovisioned",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/SoftDeprovisionTenantResponse" }
+              }
+            }
+          },
+          "400": errorResponse("Invalid tenant soft deprovision payload", "validation_error", "Invalid tenant soft deprovision payload"),
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
+          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
+          "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),
+          "409": errorResponse("Tenant already inactive", "conflict", "Tenant is already inactive")
         }
       }
     }

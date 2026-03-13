@@ -12,7 +12,7 @@ describe("api docs openapi document", () => {
         "/api/v1/platform/ping",
         "/api/v1/tenant/admin/{tenantId}",
         "/api/v1/tenant/user/{tenantId}",
-        "/api/v1/platform/tenants"
+        "/api/v1/platform/tenant"
       ])
     );
   });
@@ -22,7 +22,7 @@ describe("api docs openapi document", () => {
     expect(authDocsDocument.paths["/api/v1/platform/ping"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/admin/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/user/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
-    expect(authDocsDocument.paths["/api/v1/platform/tenants"].post.security).toEqual([{ bearerAuth: [] }]);
+    expect(authDocsDocument.paths["/api/v1/platform/tenant"].post.security).toEqual([{ bearerAuth: [] }]);
   });
 
   it("documents the login request payload and current-user response", () => {
