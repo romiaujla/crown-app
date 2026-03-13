@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardMetricWindowEnum } from "@crown/types";
 import {
   Activity,
   BadgeDollarSign,
@@ -122,6 +123,8 @@ type DashboardOverviewState =
   | DashboardOverviewSuccessState
   | DashboardOverviewErrorState;
 
+type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
+
 const formatTenantStatusLabel = (status: TenantStatus) =>
   status
     .split("_")
@@ -133,32 +136,59 @@ const formatMetricWindowLabel = (window: string) => window.slice(0, 1).toUpperCa
 
 const formatGrowthRateValue = (value: number) => `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
 
-type MetricCardProps = {
-  eyebrow: string;
+type SummaryMetricCardProps = {
   title: string;
-  value?: string;
+  value: string;
   description: string;
-  entries?: Array<{
-    label: string;
-    value: string;
-  }>;
 };
 
-const MetricCard = ({ eyebrow, title, value, description, entries }: MetricCardProps) => (
+type WindowMetricCardProps = {
+  title: string;
+  description: string;
+  selectedWindow: MetricWindow;
+  onSelectWindow: (window: MetricWindow) => void;
+  value: string;
+};
+
+const SummaryMetricCard = ({ title, value, description }: SummaryMetricCardProps) => (
   <div className="rounded-3xl border border-stone-200 bg-stone-50/90 p-5 shadow-sm">
-    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">{eyebrow}</p>
     <h4 className="mt-3 text-lg font-semibold text-stone-950">{title}</h4>
-    {value ? <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p> : null}
-    {entries ? (
-      <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-        {entries.map((entry) => (
-          <div key={entry.label} className="rounded-2xl border border-white/80 bg-white/90 px-3 py-4">
-            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">{entry.label}</dt>
-            <dd className="mt-2 text-2xl font-semibold text-stone-950">{entry.value}</dd>
-          </div>
-        ))}
-      </dl>
-    ) : null}
+    <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
+    <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
+  </div>
+);
+
+const WindowMetricCard = ({
+  title,
+  description,
+  selectedWindow,
+  onSelectWindow,
+  value
+}: WindowMetricCardProps) => (
+  <div className="rounded-3xl border border-stone-200 bg-stone-50/90 p-5 shadow-sm">
+    <div className="flex flex-wrap gap-2">
+      {([DashboardMetricWindowEnum.WEEK, DashboardMetricWindowEnum.MONTH, DashboardMetricWindowEnum.YEAR] as MetricWindow[]).map((window) => {
+        const isSelected = selectedWindow === window;
+
+        return (
+          <button
+            key={window}
+            aria-pressed={isSelected}
+            className={
+              isSelected
+                ? "rounded-full border border-stone-950 bg-stone-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white"
+                : "rounded-full border border-stone-300 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-stone-600"
+            }
+            onClick={() => onSelectWindow(window)}
+            type="button"
+          >
+            {formatMetricWindowLabel(window)}
+          </button>
+        );
+      })}
+    </div>
+    <h4 className="mt-4 text-lg font-semibold text-stone-950">{title}</h4>
+    <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
     <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
   </div>
 );
@@ -167,6 +197,8 @@ const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
     status: DashboardOverviewStatusEnum.LOADING
   });
+  const [selectedNewTenantWindow, setSelectedNewTenantWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
+  const [selectedGrowthRateWindow, setSelectedGrowthRateWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
 
   useEffect(() => {
     let cancelled = false;
@@ -244,75 +276,75 @@ const DashboardOverviewSection = () => {
   }
 
   const tenantSummary = overviewState.overview.widgets.tenant_summary;
-  const newTenantEntries = tenantSummary.new_tenant_counts.map((entry) => ({
-    label: formatMetricWindowLabel(entry.window),
-    value: entry.count.toString()
-  }));
-  const growthRateEntries = tenantSummary.tenant_growth_rates.map((entry) => ({
-    label: formatMetricWindowLabel(entry.window),
-    value: formatGrowthRateValue(entry.growth_rate_percentage)
-  }));
+  const selectedNewTenantMetric =
+    tenantSummary.new_tenant_counts.find((entry) => entry.window === selectedNewTenantWindow) ??
+    tenantSummary.new_tenant_counts[0];
+  const selectedGrowthRateMetric =
+    tenantSummary.tenant_growth_rates.find((entry) => entry.window === selectedGrowthRateWindow) ??
+    tenantSummary.tenant_growth_rates[0];
 
   return (
-    <Card className="border-white/70 bg-white/92 shadow-sm">
-      <CardHeader className="space-y-3">
-        <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-          Platform footprint
-        </CardDescription>
-        <div className="space-y-2">
-          <CardTitle className="text-3xl text-stone-950">Super-admin overview</CardTitle>
-          <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-            Review current platform scale plus trailing week, month, and year tenant momentum from one protected dashboard view.
+    <div className="space-y-6">
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Platform footprint
           </CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6 pt-0">
-        <div className="grid gap-4 xl:grid-cols-2">
-          <MetricCard
-            description="Current number of tenants provisioned across the platform."
-            eyebrow="Current scale"
-            title="Total tenants"
-            value={tenantSummary.total_tenant_count.toString()}
-          />
-          <MetricCard
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Current tenant count with lifecycle status KPIs for the platform.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {tenantSummary.tenant_status_counts.map((entry) => (
+              <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  {formatTenantStatusLabel(entry.status)}
+                </p>
+                <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Current scale
+          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
+          <SummaryMetricCard
             description="Current number of tenant users across all tenant workspaces."
-            eyebrow="Current scale"
             title="Total users"
             value={tenantSummary.tenant_user_count.toString()}
           />
-          <MetricCard
-            description="Trailing windows counted from request time using the overview contract definitions."
-            entries={newTenantEntries}
-            eyebrow="Momentum"
+          <WindowMetricCard
+            description="Trailing window count based on the selected week, month, or year view."
+            onSelectWindow={setSelectedNewTenantWindow}
+            selectedWindow={selectedNewTenantMetric.window}
             title="New tenants"
+            value={selectedNewTenantMetric.count.toString()}
           />
-          <MetricCard
+          <WindowMetricCard
             description="Percentage change versus the immediately preceding trailing window of the same length."
-            entries={growthRateEntries}
-            eyebrow="Momentum"
+            onSelectWindow={setSelectedGrowthRateWindow}
+            selectedWindow={selectedGrowthRateMetric.window}
             title="Tenant growth rate"
+            value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
           />
-        </div>
-        <div className="space-y-3">
-          <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Status breakdown</p>
-            <p className="text-sm leading-6 text-stone-600">
-              Supporting tenant lifecycle context for the current platform footprint.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {tenantSummary.tenant_status_counts.map((entry) => (
-            <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                {formatTenantStatusLabel(entry.status)}
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
-            </div>
-          ))}
-        </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
