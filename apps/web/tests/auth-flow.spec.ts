@@ -341,7 +341,7 @@ test("super-admin shell renders the required control-plane navigation inventory"
   await expect(page.locator(".sidebar-profile__avatar", { hasText: "PO" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { name: "Dashboard", level: 3 })).toBeVisible();
-  await expect(page.getByText("4 tenants")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Super-admin overview" })).toBeVisible();
 });
 
 test("platform navigation switches the active section and renders coming-soon placeholders", async ({ page }) => {
@@ -358,26 +358,34 @@ test("platform navigation switches the active section and renders coming-soon pl
   ).toBeVisible();
 });
 
-test("platform dashboard renders the live tenant-summary overview widget", async ({ page }) => {
+test("platform dashboard renders the live metric cards from the overview widget", async ({ page }) => {
   await primeAuthenticatedSession(page, "super_admin");
 
   await page.goto("/platform");
 
-  await expect(page.getByText("4 tenants")).toBeVisible();
-  await expect(page.getByText("Review the current tenant count and status distribution for the platform at a glance.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Super-admin overview" })).toBeVisible();
+  await expect(page.getByText("Review current platform scale plus trailing week, month, and year tenant momentum")).toBeVisible();
+  await expect(page.getByText("Total tenants")).toBeVisible();
+  await expect(page.getByText("Total users")).toBeVisible();
+  await expect(page.getByText("New tenants")).toBeVisible();
+  await expect(page.getByText("Tenant growth rate")).toBeVisible();
+  await expect(page.getByText("12")).toBeVisible();
+  await expect(page.getByText("33.33%")).toBeVisible();
+  await expect(page.getByText("50%")).toBeVisible();
   await expect(page.getByText("Active", { exact: true })).toBeVisible();
   await expect(page.getByText("Inactive", { exact: true })).toBeVisible();
   await expect(page.getByText("Provisioning", { exact: true })).toBeVisible();
   await expect(page.getByText("Provisioning Failed", { exact: true })).toBeVisible();
 });
 
-test("platform dashboard overview stays scoped to tenant summary content", async ({ page }) => {
+test("platform dashboard overview stays scoped to metric cards and supporting status content", async ({ page }) => {
   await primeAuthenticatedSession(page, "super_admin");
 
   await page.goto("/platform");
 
   await expect(page.getByText("No pending actions")).toHaveCount(0);
   await expect(page.getByText("Recent platform activity")).toHaveCount(0);
+  await expect(page.getByText("Status breakdown")).toBeVisible();
   await expect(
     page.getByText("Operate Crown as the platform for tenant management systems, with a stable navigation shell and a clear starting point for global oversight.")
   ).toHaveCount(0);
@@ -407,7 +415,8 @@ test("platform shell collapses to icon-only navigation on iPad-sized layouts and
 
   await expect(page.locator(".sidebar-nav__label", { hasText: "Dashboard" })).toBeHidden();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("title", "Dashboard");
-  await expect(page.getByText("4 tenants")).toBeVisible();
+  await expect(page.getByText("Total tenants")).toBeVisible();
+  await expect(page.getByText("Total users")).toBeVisible();
 
   const billingLink = page.getByRole("link", { name: "Billing" });
   await billingLink.hover();

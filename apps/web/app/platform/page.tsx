@@ -129,6 +129,40 @@ const formatTenantStatusLabel = (status: TenantStatus) =>
     .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
     .join(" ");
 
+const formatMetricWindowLabel = (window: string) => window.slice(0, 1).toUpperCase() + window.slice(1);
+
+const formatGrowthRateValue = (value: number) => `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
+
+type MetricCardProps = {
+  eyebrow: string;
+  title: string;
+  value?: string;
+  description: string;
+  entries?: Array<{
+    label: string;
+    value: string;
+  }>;
+};
+
+const MetricCard = ({ eyebrow, title, value, description, entries }: MetricCardProps) => (
+  <div className="rounded-3xl border border-stone-200 bg-stone-50/90 p-5 shadow-sm">
+    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">{eyebrow}</p>
+    <h4 className="mt-3 text-lg font-semibold text-stone-950">{title}</h4>
+    {value ? <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p> : null}
+    {entries ? (
+      <dl className="mt-4 grid gap-3 sm:grid-cols-3">
+        {entries.map((entry) => (
+          <div key={entry.label} className="rounded-2xl border border-white/80 bg-white/90 px-3 py-4">
+            <dt className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">{entry.label}</dt>
+            <dd className="mt-2 text-2xl font-semibold text-stone-950">{entry.value}</dd>
+          </div>
+        ))}
+      </dl>
+    ) : null}
+    <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
+  </div>
+);
+
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
     status: DashboardOverviewStatusEnum.LOADING
@@ -210,6 +244,14 @@ const DashboardOverviewSection = () => {
   }
 
   const tenantSummary = overviewState.overview.widgets.tenant_summary;
+  const newTenantEntries = tenantSummary.new_tenant_counts.map((entry) => ({
+    label: formatMetricWindowLabel(entry.window),
+    value: entry.count.toString()
+  }));
+  const growthRateEntries = tenantSummary.tenant_growth_rates.map((entry) => ({
+    label: formatMetricWindowLabel(entry.window),
+    value: formatGrowthRateValue(entry.growth_rate_percentage)
+  }));
 
   return (
     <Card className="border-white/70 bg-white/92 shadow-sm">
@@ -218,14 +260,47 @@ const DashboardOverviewSection = () => {
           Platform footprint
         </CardDescription>
         <div className="space-y-2">
-          <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} Tenants</CardTitle>
+          <CardTitle className="text-3xl text-stone-950">Super-admin overview</CardTitle>
           <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-            Current tenant count and status distribution in the platform.
+            Review current platform scale plus trailing week, month, and year tenant momentum from one protected dashboard view.
           </CardDescription>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 pt-0">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <CardContent className="space-y-6 pt-0">
+        <div className="grid gap-4 xl:grid-cols-2">
+          <MetricCard
+            description="Current number of tenants provisioned across the platform."
+            eyebrow="Current scale"
+            title="Total tenants"
+            value={tenantSummary.total_tenant_count.toString()}
+          />
+          <MetricCard
+            description="Current number of tenant users across all tenant workspaces."
+            eyebrow="Current scale"
+            title="Total users"
+            value={tenantSummary.tenant_user_count.toString()}
+          />
+          <MetricCard
+            description="Trailing windows counted from request time using the overview contract definitions."
+            entries={newTenantEntries}
+            eyebrow="Momentum"
+            title="New tenants"
+          />
+          <MetricCard
+            description="Percentage change versus the immediately preceding trailing window of the same length."
+            entries={growthRateEntries}
+            eyebrow="Momentum"
+            title="Tenant growth rate"
+          />
+        </div>
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">Status breakdown</p>
+            <p className="text-sm leading-6 text-stone-600">
+              Supporting tenant lifecycle context for the current platform footprint.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {tenantSummary.tenant_status_counts.map((entry) => (
             <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
@@ -234,6 +309,7 @@ const DashboardOverviewSection = () => {
               <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
             </div>
           ))}
+        </div>
         </div>
       </CardContent>
     </Card>
