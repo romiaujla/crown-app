@@ -28,8 +28,9 @@ For tagged workflow commands:
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
 3. Create or validate the Jira-linked branch and matching feature artifact location.
-4. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
-5. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
+4. When a Jira-linked branch is created for the issue, transition that issue to `In Progress`.
+5. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
+6. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
 
 Future prompt patterns should be added to the help registry first, then documented here only if they change workflow behavior.
 
@@ -86,6 +87,7 @@ If any stop condition is active, pause for user clarification instead of auto-ad
 - Validation evidence included (tests/lint/typecheck as applicable).
 - Documentation updates included for behavior/process changes.
 - Pull request is created only after implementation has been committed and pushed.
+- Creating a Jira-linked pull request transitions the issue to `In Review`.
 - API route changes must keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned for created, materially changed, and deleted routes.
 
 ## Convention Source of Truth
