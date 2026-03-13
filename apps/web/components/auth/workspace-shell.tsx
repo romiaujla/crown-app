@@ -1,6 +1,9 @@
+"use client";
+
 import type { LucideIcon } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +37,7 @@ type SharedWorkspaceShellProps = {
   contextValue: string;
   contextNote: string;
   userDisplayName: string;
+  userRole: string;
   hideHero?: boolean;
 };
 
@@ -79,6 +83,25 @@ const toneClasses = {
   }
 } as const;
 
+const buildInitials = (displayName: string) => {
+  const words = displayName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (words.length === 0) return "U";
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+
+  return `${words[0][0] ?? ""}${words.at(-1)?.[0] ?? ""}`.toUpperCase();
+};
+
+const formatRoleLabel = (role: string) =>
+  role
+    .split("_")
+    .filter(Boolean)
+    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+    .join(" ");
+
 export const WorkspaceShell = ({
   tone,
   shellLabel,
@@ -88,23 +111,55 @@ export const WorkspaceShell = ({
   contextValue,
   contextNote,
   userDisplayName,
+  userRole,
   hideHero = false,
   ...layoutProps
 }: WorkspaceShellProps) => {
   const style = toneClasses[tone];
+  const profileMenuId = useId();
+  const profileContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileInitials = useMemo(() => buildInitials(userDisplayName), [userDisplayName]);
+  const roleLabel = useMemo(() => formatRoleLabel(userRole), [userRole]);
+
+  useEffect(() => {
+    if (!isProfileMenuOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!profileContainerRef.current?.contains(event.target as Node)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isProfileMenuOpen]);
 
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex w-full flex-col gap-6">
-        <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
-          <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Authenticated as</p>
-              <p className="text-lg font-semibold text-stone-950">{userDisplayName}</p>
-            </div>
-            <LogoutButton />
-          </CardContent>
-        </Card>
+        {layoutProps.layout === "sidebar" ? null : (
+          <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
+            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Authenticated as</p>
+                <p className="text-lg font-semibold text-stone-950">{userDisplayName}</p>
+              </div>
+              <LogoutButton />
+            </CardContent>
+          </Card>
+        )}
 
         {hideHero ? null : (
           <Card className={cn("border shadow-2xl shadow-stone-950/10 backdrop-blur", style.hero)}>
@@ -134,9 +189,9 @@ export const WorkspaceShell = ({
         {layoutProps.layout === "sidebar" ? (
           <div className="platform-shell-grid grid gap-6 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)]">
             <Card className={cn("sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
-              <CardContent className="sidebar-nav px-3 pb-3 pt-5">
+              <CardContent className="sidebar-shell-card__content px-3 pb-3 pt-5">
                 <nav aria-label={layoutProps.navigationTitle}>
-                  <ul className="m-0 flex list-none flex-col gap-2 p-0">
+                  <ul className="sidebar-nav m-0 flex list-none flex-col gap-2 p-0">
                     {layoutProps.navigationItems.map((item) => {
                       const Icon = item.icon;
                       const isActive = item.key === layoutProps.activeNavigationKey;
@@ -179,6 +234,43 @@ export const WorkspaceShell = ({
                     })}
                   </ul>
                 </nav>
+
+                <div className="sidebar-profile" ref={profileContainerRef}>
+                  <button
+                    aria-controls={profileMenuId}
+                    aria-expanded={isProfileMenuOpen}
+                    aria-haspopup="menu"
+                    aria-label={`Open profile menu for ${userDisplayName}`}
+                    className="sidebar-profile__trigger"
+                    onClick={() => {
+                      setIsProfileMenuOpen((currentValue) => !currentValue);
+                    }}
+                    title={userDisplayName}
+                    type="button"
+                  >
+                    <span aria-hidden="true" className="sidebar-profile__avatar">
+                      {profileInitials}
+                    </span>
+                    <span className="sidebar-profile__summary">
+                      <span className="sidebar-profile__name">{userDisplayName}</span>
+                      <span className="sidebar-profile__role">{roleLabel}</span>
+                    </span>
+                    <span aria-hidden="true" className="sidebar-profile__chevron">
+                      {isProfileMenuOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </span>
+                  </button>
+
+                  {isProfileMenuOpen ? (
+                    <div className="sidebar-profile__menu" id={profileMenuId} role="menu">
+                      <div className="sidebar-profile__menu-copy">
+                        <p className="sidebar-profile__menu-label">Signed in as</p>
+                        <p className="sidebar-profile__menu-name">{userDisplayName}</p>
+                        <p className="sidebar-profile__menu-role">{roleLabel}</p>
+                      </div>
+                      <LogoutButton className="sidebar-profile__logout" size="sm" />
+                    </div>
+                  ) : null}
+                </div>
               </CardContent>
             </Card>
 

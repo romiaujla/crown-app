@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 
 import { useAuth } from "./auth-provider";
 
-export const LogoutButton = () => {
+type LogoutButtonProps = Pick<ButtonProps, "className" | "size" | "variant">;
+
+export const LogoutButton = ({ className, size, variant = "outline" }: LogoutButtonProps = {}) => {
   const router = useRouter();
   const { signOut } = useAuth();
   const [isPending, setIsPending] = useState(false);
@@ -23,7 +25,7 @@ export const LogoutButton = () => {
   };
 
   return (
-    <Button disabled={isPending} onClick={() => void handleClick()} type="button" variant="outline">
+    <Button className={className} disabled={isPending} onClick={() => void handleClick()} size={size} type="button" variant={variant}>
       {isPending ? "Signing out..." : "Log out"}
     </Button>
   );

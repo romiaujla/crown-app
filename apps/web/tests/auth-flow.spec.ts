@@ -273,6 +273,9 @@ test("super-admin shell renders the required control-plane navigation inventory"
     await expect(page.getByRole("link", { name: item })).toBeVisible();
   }
 
+  await expect(page.getByText("Authenticated as")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Open profile menu for Platform Operator" })).toBeVisible();
+  await expect(page.locator(".sidebar-profile__avatar", { hasText: "PO" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { name: "Dashboard", level: 3 })).toBeVisible();
 });
@@ -289,6 +292,22 @@ test("platform navigation switches the active section and renders coming-soon pl
   await expect(
     page.getByText("Billing workflows and platform-wide commercial administration will appear here").last()
   ).toBeVisible();
+});
+
+test("platform profile entry opens a compact menu with identity details", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+  await page.getByRole("button", { name: "Open profile menu for Platform Operator" }).click();
+
+  const profileMenu = page.getByRole("menu");
+
+  await expect(profileMenu.getByText("Signed in as")).toBeVisible();
+  await expect(profileMenu.getByText("Platform Operator")).toBeVisible();
+  await expect(profileMenu.getByText("Super Admin")).toBeVisible();
+
+  await page.getByRole("button", { name: "Open profile menu for Platform Operator" }).click();
+  await expect(page.getByText("Signed in as")).toHaveCount(0);
 });
 
 test("platform shell collapses to icon-only navigation on iPad-sized layouts and exposes tooltips", async ({ page }) => {
@@ -310,6 +329,7 @@ test("logout clears the browser token and returns to the login page", async ({ p
   await primeAuthenticatedSession(page, "super_admin");
 
   await page.goto("/platform");
+  await page.getByRole("button", { name: "Open profile menu for Platform Operator" }).click();
   await page.getByRole("button", { name: "Log out" }).click();
 
   await expect(page).toHaveURL(/\/login$/);

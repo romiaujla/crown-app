@@ -93,6 +93,7 @@ const TenantPage = () => {
       title={tenantName}
       tone="tenant"
       userDisplayName={currentUser.principal.display_name}
+      userRole={currentUser.principal.role}
     />
   );
 };
