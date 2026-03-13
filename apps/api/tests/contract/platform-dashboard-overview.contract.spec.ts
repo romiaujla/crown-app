@@ -1,8 +1,8 @@
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 
+import { DashboardMetricWindowEnum } from "@crown/types";
 import { buildApp } from "../../src/app.js";
-import type { DashboardMetricWindowEnum } from "@crown/types";
 import type { DashboardOverviewResponse } from "../../src/platform/dashboard/contracts.js";
 import { createPlatformDashboardOverviewRouter } from "../../src/routes/platform-dashboard-overview.js";
 import { createJwtToken, superAdminClaims, tenantAdminClaims, tenantUserClaims } from "../helpers/auth-fixtures.js";
@@ -19,14 +19,14 @@ const createOverviewPayload = (): DashboardOverviewResponse => ({
         { status: "provisioning_failed", count: 0 }
       ],
       new_tenant_counts: [
-        { window: "week" as DashboardMetricWindowEnum, count: 1 },
-        { window: "month" as DashboardMetricWindowEnum, count: 2 },
-        { window: "year" as DashboardMetricWindowEnum, count: 3 }
+        { window: DashboardMetricWindowEnum.WEEK, count: 1 },
+        { window: DashboardMetricWindowEnum.MONTH, count: 2 },
+        { window: DashboardMetricWindowEnum.YEAR, count: 3 }
       ],
       tenant_growth_rates: [
-        { window: "week" as DashboardMetricWindowEnum, growth_rate_percentage: 100 },
-        { window: "month" as DashboardMetricWindowEnum, growth_rate_percentage: 33.33 },
-        { window: "year" as DashboardMetricWindowEnum, growth_rate_percentage: 50 }
+        { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
+        { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
+        { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 }
       ]
     }
   }
@@ -53,14 +53,14 @@ describe("platform dashboard overview contract", () => {
       { status: "provisioning_failed", count: 0 }
     ]);
     expect(response.body.widgets.tenant_summary.new_tenant_counts).toEqual([
-      { window: "week", count: 1 },
-      { window: "month", count: 2 },
-      { window: "year", count: 3 }
+      { window: DashboardMetricWindowEnum.WEEK, count: 1 },
+      { window: DashboardMetricWindowEnum.MONTH, count: 2 },
+      { window: DashboardMetricWindowEnum.YEAR, count: 3 }
     ]);
     expect(response.body.widgets.tenant_summary.tenant_growth_rates).toEqual([
-      { window: "week", growth_rate_percentage: 100 },
-      { window: "month", growth_rate_percentage: 33.33 },
-      { window: "year", growth_rate_percentage: 50 }
+      { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
+      { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
+      { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 }
     ]);
     expect(response.body.widgets.tenant_summary.recent_activity).toBeUndefined();
   });
