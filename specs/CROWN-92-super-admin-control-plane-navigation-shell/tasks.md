@@ -100,7 +100,7 @@
 - [X] T021 [P] Run focused Playwright coverage for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 - [X] T022 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
 - [X] T023 Review the final shell against the Jira acceptance criteria and feature docs in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md
-- [ ] T024 Create the PR for `feat/CROWN-92-super-admin-control-plane-navigation-shell` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/tasks.md`
+- [X] T024 Create the PR for `feat/CROWN-92-super-admin-control-plane-navigation-shell` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/tasks.md`
 
 ---
 
