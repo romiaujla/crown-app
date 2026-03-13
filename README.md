@@ -158,10 +158,12 @@ Tagged workflow examples:
 
 Expected repository behavior for prompt-driven starts:
 - Resolve the Jira issue first and create or validate the Jira-linked branch.
+- When a Jira-linked branch is created, transition that issue to `In Progress`.
 - Use `--help` to list the documented repository AI-agent prompt patterns and their behavior.
 - Use `--speckit CROWN-<id>` to start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.
 - Use `--implement CROWN-<id>` to skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 - Use `--clean-code-api` and `--clean-code-web` to run workspace-scoped review-only coding-standard audits against the engineering constitution and related process guidance, with findings-first output and concrete file references.
 - Use the workflow-helper prompts from `docs/process/ai-agent-prompt-help.md` for Jira coverage audits, Jira sync, PR comment resolution, PR refresh, delivery status, handoff, reconciliation, targeted test fixing, OpenAPI alignment audits, review, and scope-drift checks.
 - Commit and push each completed phase before advancing when no unresolved clarification remains.
+- When a Jira-linked pull request is created, transition that issue to `In Review`.
 - Pause for clarification instead of auto-advancing when scope, requirements, or repository state are ambiguous.

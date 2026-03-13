@@ -174,6 +174,11 @@ const main = async () => {
   );
   await ensureFileContains(
     "AGENTS.md",
+    /Create or validate the Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
+    "AGENTS requires transitioning Jira to In Progress on branch creation"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
     /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
     "AGENTS documents the --implement command"
   );
@@ -188,6 +193,11 @@ const main = async () => {
     "Spec workflow documents the --implement command"
   );
   await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /Create or validate the Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
+    "Spec workflow requires transitioning Jira to In Progress on branch creation"
+  );
+  await ensureFileContains(
     "docs/process/spec-kit-installation.md",
     /--speckit CROWN-<id>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
     "Spec installation guidance preserves --speckit /specify rule"
@@ -196,6 +206,11 @@ const main = async () => {
     "README.md",
     /--implement CROWN-<id>[\s\S]*skip `?\/specify`?, `?\/plan`?, and `?\/tasks`?/i,
     "README documents the --implement command"
+  );
+  await ensureFileContains(
+    "README.md",
+    /Jira-linked branch[\s\S]*`In Progress`[\s\S]*Jira-linked pull request[\s\S]*`In Review`/i,
+    "README documents Jira status transitions for branch and PR creation"
   );
   await ensureFileContains(
     "docs/process/ai-agent-prompt-help.md",
@@ -226,6 +241,16 @@ const main = async () => {
     "README.md",
     /--audit CROWN-<id>[\s\S]*--resolve-pr-comments|workflow-helper prompts/i,
     "README links the workflow-helper prompt catalog"
+  );
+  await ensureFileContains(
+    "AGENTS.md",
+    /pull request[\s\S]*transition that issue to `In Review`/i,
+    "AGENTS requires transitioning Jira to In Review on PR creation"
+  );
+  await ensureFileContains(
+    "docs/process/spec-kit-workflow.md",
+    /pull request[\s\S]*transitions the issue to `In Review`/i,
+    "Spec workflow requires transitioning Jira to In Review on PR creation"
   );
   await ensureFileContains(
     ".husky/commit-msg",
