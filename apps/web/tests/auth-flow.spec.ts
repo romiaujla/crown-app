@@ -143,6 +143,16 @@ const setupAuthRoutes = async (
   });
 };
 
+const primeAuthenticatedSession = async (page: Page, persona: Persona) => {
+  await setupAuthRoutes(page, { mePersona: persona });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken(persona) }
+  );
+};
+
 test("login page rejects empty submissions before calling the API", async ({ page }) => {
   await page.goto("/login");
   await page.getByRole("button", { name: "Sign in" }).click();
@@ -237,27 +247,69 @@ test("invalid return paths fall back to the safe recommended shell", async ({ pa
 });
 
 test("manual wrong-shell navigation is corrected for authenticated users", async ({ page }) => {
-  await setupAuthRoutes(page, { mePersona: "tenant_user" });
-  await page.addInitScript(
-    ({ key, value }: { key: string; value: string }) => {
-      window.sessionStorage.setItem(key, value);
-    },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_user") }
-  );
+  await primeAuthenticatedSession(page, "tenant_user");
 
   await page.goto("/platform");
   await expect(page).toHaveURL(/\/tenant$/);
   await expect(page.getByRole("heading", { name: "Northwind Operations Workspace", level: 1 })).toBeVisible();
 });
 
+test("super-admin shell renders the required control-plane navigation inventory", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+
+  await expect(page.getByRole("heading", { name: "Crown Control Plane", level: 1 })).toBeVisible();
+
+  for (const item of [
+    "Dashboard",
+    "Tenants",
+    "Users",
+    "Activity",
+    "Settings",
+    "System Health",
+    "Security",
+    "Billing",
+    "Audit Log"
+  ]) {
+    await expect(page.getByRole("link", { name: item })).toBeVisible();
+  }
+
+  await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("heading", { name: "Dashboard", level: 3 })).toBeVisible();
+});
+
+test("platform navigation switches the active section and renders coming-soon placeholders", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+  await page.getByRole("link", { name: "Billing" }).click();
+
+  await expect(page).toHaveURL(/\/platform\?section=billing$/);
+  await expect(page.getByRole("link", { name: "Billing" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("heading", { name: "Billing Coming Soon", level: 3 })).toBeVisible();
+  await expect(
+    page.getByText("Billing workflows and platform-wide commercial administration will appear here").last()
+  ).toBeVisible();
+});
+
+test("platform shell collapses to icon-only navigation on iPad-sized layouts and exposes tooltips", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+  await page.setViewportSize({ width: 1024, height: 900 });
+
+  await page.goto("/platform");
+
+  await expect(page.locator(".sidebar-nav__label", { hasText: "Dashboard" })).toBeHidden();
+  await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("title", "Dashboard");
+
+  const billingLink = page.getByRole("link", { name: "Billing" });
+  await billingLink.hover();
+
+  await expect(page.locator('[role="tooltip"]', { hasText: "Billing" }).first()).toBeVisible();
+});
+
 test("logout clears the browser token and returns to the login page", async ({ page }) => {
-  await setupAuthRoutes(page, { mePersona: "super_admin" });
-  await page.addInitScript(
-    ({ key, value }: { key: string; value: string }) => {
-      window.sessionStorage.setItem(key, value);
-    },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("super_admin") }
-  );
+  await primeAuthenticatedSession(page, "super_admin");
 
   await page.goto("/platform");
   await page.getByRole("button", { name: "Log out" }).click();
@@ -267,13 +319,7 @@ test("logout clears the browser token and returns to the login page", async ({ p
 });
 
 test("tenant admin logout clears the browser token and returns to the login page", async ({ page }) => {
-  await setupAuthRoutes(page, { mePersona: "tenant_admin" });
-  await page.addInitScript(
-    ({ key, value }: { key: string; value: string }) => {
-      window.sessionStorage.setItem(key, value);
-    },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_admin") }
-  );
+  await primeAuthenticatedSession(page, "tenant_admin");
 
   await page.goto("/tenant");
   await page.getByRole("button", { name: "Log out" }).click();
@@ -283,13 +329,7 @@ test("tenant admin logout clears the browser token and returns to the login page
 });
 
 test("tenant user logout clears the browser token and returns to the login page", async ({ page }) => {
-  await setupAuthRoutes(page, { mePersona: "tenant_user" });
-  await page.addInitScript(
-    ({ key, value }: { key: string; value: string }) => {
-      window.sessionStorage.setItem(key, value);
-    },
-    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("tenant_user") }
-  );
+  await primeAuthenticatedSession(page, "tenant_user");
 
   await page.goto("/tenant");
   await page.getByRole("button", { name: "Log out" }).click();

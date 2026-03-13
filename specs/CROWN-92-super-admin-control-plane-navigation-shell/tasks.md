@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story artifact set and establish the shared navigation model before route-specific behavior is added.
 
-- [ ] T001 Create the `CROWN-92` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/tasks.md
-- [ ] T002 [P] Define the control-plane navigation inventory and section metadata in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T001 Create the `CROWN-92` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/tasks.md
+- [X] T002 [P] Define the control-plane navigation inventory and section metadata in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Refactor /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx to support a left navigation rail, active state, and section content panel
-- [ ] T004 [P] Add shell layout, active-state, collapsed-rail, and tooltip styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [ ] T005 [P] Add or update any lightweight UI helpers needed for icon-label and tooltip presentation under /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/ui
+- [X] T003 Refactor /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx to support a left navigation rail, active state, and section content panel
+- [X] T004 [P] Add shell layout, active-state, collapsed-rail, and tooltip styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [X] T005 [P] Implement lightweight in-shell tooltip presentation for icon-only navigation items in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
 
 **Checkpoint**: The shared shell supports platform navigation rendering and responsive rail behavior.
 
@@ -38,14 +38,14 @@
 
 ### Tests for User Story 1
 
-- [ ] T006 [P] [US1] Expand protected shell/browser coverage for the required platform navigation inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [ ] T007 [P] [US1] Add active-navigation and section-switching assertions for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T006 [P] [US1] Expand protected shell/browser coverage for the required platform navigation inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T007 [P] [US1] Add active-navigation and section-switching assertions for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Populate the platform route with the nine required super-admin destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T009 [US1] Wire the active destination and right-side section content into /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [ ] T010 [US1] Preserve super-admin-only access behavior while rendering the navigation shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T008 [US1] Populate the platform route with the nine required super-admin destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T009 [US1] Wire the active destination and right-side section content into /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [X] T010 [US1] Preserve super-admin-only access behavior while rendering the navigation shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 **Checkpoint**: The super-admin shell is navigable and the main control-plane information architecture is visible.
 
@@ -59,13 +59,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Add placeholder-section assertions for unfinished platform destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T011 [P] [US2] Add placeholder-section assertions for unfinished platform destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Implement the shared placeholder content model for unfinished platform sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [ ] T013 [US2] Render `<Menu title> Coming Soon` states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [ ] T014 [US2] Align the shell contract and quickstart notes with the implemented placeholder behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/contracts/control-plane-navigation-shell-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/quickstart.md
+- [X] T012 [US2] Implement the shared placeholder content model for unfinished platform sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T013 [US2] Render `<Menu title> Coming Soon` states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [X] T014 [US2] Align the shell contract and quickstart notes with the implemented placeholder behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/contracts/control-plane-navigation-shell-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/quickstart.md
 
 **Checkpoint**: Placeholder destinations behave consistently without leaving the shell.
 
@@ -79,14 +79,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T015 [P] [US3] Add responsive shell assertions for expanded and collapsed platform navigation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [ ] T016 [P] [US3] Add tooltip-visibility assertions for collapsed navigation items in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T015 [P] [US3] Add responsive shell assertions for expanded and collapsed platform navigation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T016 [P] [US3] Add tooltip-visibility assertions for collapsed navigation items in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Implement desktop label visibility and tablet collapsed-rail behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [ ] T018 [US3] Implement tooltip labeling for collapsed platform navigation items in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [ ] T019 [US3] Verify the shell remains extensible for future sections by keeping navigation additions data-driven in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [X] T017 [US3] Implement desktop label visibility and tablet collapsed-rail behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [X] T018 [US3] Implement tooltip labeling for collapsed platform navigation items in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [X] T019 [US3] Verify the shell remains extensible for future sections by keeping navigation additions data-driven in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 **Checkpoint**: Responsive navigation behavior matches the Jira acceptance criteria.
 
@@ -96,10 +96,10 @@
 
 **Purpose**: Run the required validation, finalize docs, and prepare the branch for PR creation.
 
-- [ ] T020 [P] Run app-level typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [ ] T021 [P] Run focused Playwright coverage for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [ ] T022 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [ ] T023 Review the final shell against the Jira acceptance criteria and feature docs in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md
+- [X] T020 [P] Run app-level typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [X] T021 [P] Run focused Playwright coverage for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [X] T022 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [X] T023 Review the final shell against the Jira acceptance criteria and feature docs in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md
 - [ ] T024 Create the PR for `feat/CROWN-92-super-admin-control-plane-navigation-shell` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-92-super-admin-control-plane-navigation-shell/tasks.md`
 
 ---
