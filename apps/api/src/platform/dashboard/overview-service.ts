@@ -1,12 +1,9 @@
 import { RoleEnum } from "../../auth/claims.js";
 import { prisma } from "../../db/prisma.js";
 import { TenantStatus } from "../../domain/status-enums.js";
+import { DashboardMetricWindowEnum } from "@crown/types";
 
-import {
-  DashboardMetricWindowEnum,
-  DashboardOverviewResponseSchema,
-  type DashboardOverviewResponse
-} from "./contracts.js";
+import { DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "./contracts.js";
 
 type DashboardOverviewPrismaClient = {
   platformUser: {

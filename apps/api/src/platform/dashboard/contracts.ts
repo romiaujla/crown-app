@@ -40,4 +40,3 @@ export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;
-export { DashboardMetricWindowEnum };
