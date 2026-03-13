@@ -226,7 +226,7 @@ h3 {
   text-decoration: none;
 }
 
-.sidebar-nav > li {
+.sidebar-nav>li {
   width: 100%;
 }
 
@@ -383,11 +383,6 @@ h3 {
 
   .sidebar-shell-card {
     top: 1.5rem;
-  }
-
-  .sidebar-nav {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
   }
 
   .sidebar-nav__item {
