@@ -1,10 +1,9 @@
+import { DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "@crown/types";
 import {
   type AccessTokenClaims,
   AccessTokenResponseSchema,
   AuthErrorResponseSchema,
   CurrentUserResponseSchema,
-  DashboardOverviewResponseSchema,
-  type DashboardOverviewResponse,
   type CurrentUserResponse
 } from "./types";
 

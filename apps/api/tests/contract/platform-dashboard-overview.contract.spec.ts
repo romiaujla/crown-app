@@ -1,9 +1,8 @@
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 
-import { DashboardMetricWindowEnum } from "@crown/types";
+import { DashboardMetricWindowEnum, TenantStatusEnum, type DashboardOverviewResponse } from "@crown/types";
 import { buildApp } from "../../src/app.js";
-import type { DashboardOverviewResponse } from "../../src/platform/dashboard/contracts.js";
 import { createPlatformDashboardOverviewRouter } from "../../src/routes/platform-dashboard-overview.js";
 import { createJwtToken, superAdminClaims, tenantAdminClaims, tenantUserClaims } from "../helpers/auth-fixtures.js";
 
@@ -13,10 +12,10 @@ const createOverviewPayload = (): DashboardOverviewResponse => ({
       total_tenant_count: 3,
       tenant_user_count: 12,
       tenant_status_counts: [
-        { status: "active", count: 1 },
-        { status: "inactive", count: 1 },
-        { status: "provisioning", count: 1 },
-        { status: "provisioning_failed", count: 0 }
+        { status: TenantStatusEnum.ACTIVE, count: 1 },
+        { status: TenantStatusEnum.INACTIVE, count: 1 },
+        { status: TenantStatusEnum.PROVISIONING, count: 1 },
+        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 }
       ],
       new_tenant_counts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },

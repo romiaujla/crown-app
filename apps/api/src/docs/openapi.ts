@@ -1,7 +1,7 @@
+import { DashboardMetricWindowEnum, TenantStatusEnum } from "@crown/types";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
-import { PlatformUserAccountStatus, TenantStatus } from "../domain/status-enums.js";
-import { DashboardMetricWindowEnum } from "@crown/types";
+import { PlatformUserAccountStatus } from "../domain/status-enums.js";
 
 const bearerSecurity = [{ bearerAuth: [] }];
 const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
@@ -11,7 +11,7 @@ const authRoutingStatusValues = Object.values(AuthRoutingStatusEnum);
 const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
-const tenantStatusValues = Object.values(TenantStatus);
+const tenantStatusValues = Object.values(TenantStatusEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({

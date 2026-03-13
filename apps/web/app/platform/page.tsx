@@ -1,6 +1,6 @@
 "use client";
 
-import { DashboardMetricWindowEnum } from "@crown/types";
+import { DashboardMetricWindowEnum, type DashboardOverviewResponse, type TenantStatus } from "@crown/types";
 import {
   Activity,
   BadgeDollarSign,
@@ -28,7 +28,6 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
-import type { DashboardOverviewResponse, TenantStatus } from "@/lib/auth/types";
 
 const platformNavigation = [
   {
