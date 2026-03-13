@@ -3,7 +3,7 @@ import { Router } from "express";
 import { RoleEnum } from "../auth/claims.js";
 import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
-import { DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "../platform/dashboard/contracts.js";
+import { DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "@crown/types";
 import { getPlatformDashboardOverview } from "../platform/dashboard/overview-service.js";
 
 type PlatformDashboardOverviewRouterOptions = {

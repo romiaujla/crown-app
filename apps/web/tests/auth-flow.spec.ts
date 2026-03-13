@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { DashboardMetricWindowEnum } from "@crown/types";
+import { DashboardMetricWindowEnum, TenantStatusEnum, type DashboardOverviewResponse } from "@crown/types";
 
 const API_BASE_URL = "http://localhost:4000";
 const ACCESS_TOKEN_STORAGE_KEY = "crown.auth.access_token";
@@ -21,26 +21,7 @@ const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
 };
 
 type Persona = "super_admin" | "tenant_admin" | "tenant_user";
-type DashboardOverviewFixture = {
-  widgets: {
-    tenant_summary: {
-      total_tenant_count: number;
-      tenant_user_count: number;
-      tenant_status_counts: Array<{
-        status: "active" | "inactive" | "provisioning" | "provisioning_failed";
-        count: number;
-      }>;
-      new_tenant_counts: Array<{
-        window: DashboardMetricWindowEnum;
-        count: number;
-      }>;
-      tenant_growth_rates: Array<{
-        window: DashboardMetricWindowEnum;
-        growth_rate_percentage: number;
-      }>;
-    };
-  };
-};
+type DashboardOverviewFixture = DashboardOverviewResponse;
 
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
   widgets: {
@@ -48,10 +29,10 @@ const buildDashboardOverview = (): DashboardOverviewFixture => ({
       total_tenant_count: 4,
       tenant_user_count: 12,
       tenant_status_counts: [
-        { status: "active", count: 3 },
-        { status: "inactive", count: 1 },
-        { status: "provisioning", count: 0 },
-        { status: "provisioning_failed", count: 0 }
+        { status: TenantStatusEnum.ACTIVE, count: 3 },
+        { status: TenantStatusEnum.INACTIVE, count: 1 },
+        { status: TenantStatusEnum.PROVISIONING, count: 0 },
+        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 }
       ],
       new_tenant_counts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },

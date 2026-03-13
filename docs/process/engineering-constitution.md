@@ -21,6 +21,7 @@ Applies to all contributors (human and AI) across all repository directories.
 - When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum directly, using `z.enum(SharedEnum)` on the repository's Zod 4 baseline rather than repeating inline string arrays.
 - For multi-branch discriminated unions, prefer composing the union from named branch type aliases instead of inlining multiple object-literal branches in a single declaration.
 - Use named result-branch aliases when the branches carry distinct meaning, are reused, or would otherwise make the union harder to scan in review.
+- When API and web packages share the same contract shapes, schemas, enums, or inferred types, define that shared contract once in `@crown/types` instead of duplicating it across app-local modules.
 - Validate external input with Zod before business logic.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
