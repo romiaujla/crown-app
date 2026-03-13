@@ -2,6 +2,7 @@
 
 ## Token model
 - Access-token-only JWT foundation for the current phase.
+- Default access-token lifetime is 2 hours unless overridden through API environment configuration.
 - Claims:
   - `sub`
   - `role` (`super_admin`, `tenant_admin`, `tenant_user`)

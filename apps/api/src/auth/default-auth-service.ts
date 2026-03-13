@@ -1,8 +1,10 @@
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
+import { env } from "../config/env.js";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum, type JwtClaims } from "./claims.js";
 import { findAuthIdentityByIdentifier, type AuthIdentityRecord } from "./identity.js";
 import { hashPassword, verifyPassword } from "./passwords.js";
 import { AuthResolutionFailureReasonEnum, resolveAuthenticatedRoleContext } from "./role-resolution.js";
+import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "./seeded-credentials.js";
 import type {
   AuthService,
   BlockedAuthRouting,
@@ -25,28 +27,28 @@ const DEFAULT_TENANT = {
   name: "Acme Local Logistics"
 } as const;
 
-const AUTH_ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
+export const AUTH_ACCESS_TOKEN_TTL_SECONDS = env.JWT_ACCESS_TTL_SECONDS;
 
 export const AUTH_LOGIN_FIXTURES = {
   superAdminByEmail: {
     identifier: "super-admin@acme-local.test",
-    password: "Password123!"
+    password: SEEDED_AUTH_PASSWORDS.superAdmin
   },
   superAdminByUsername: {
     identifier: "super.admin",
-    password: "Password123!"
+    password: SEEDED_AUTH_PASSWORDS.superAdmin
   },
   tenantAdminByEmail: {
     identifier: "tenant-admin@acme-local.test",
-    password: "Password123!"
+    password: SEEDED_AUTH_PASSWORDS.tenantAdmin
   },
   tenantUserWithoutMembership: {
     identifier: "tenant-user-orphan@acme-local.test",
-    password: "Password123!"
+    password: SEEDED_AUTH_PASSWORDS.tenantUserWithoutMembership
   },
   tenantAdminMultiTenant: {
     identifier: "tenant-admin-multi@acme-local.test",
-    password: "Password123!"
+    password: SEEDED_AUTH_PASSWORDS.tenantAdminMultiTenant
   }
 } as const;
 
@@ -57,7 +59,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-super-admin",
     email: "super-admin@acme-local.test",
     username: "super.admin",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.superAdmin,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
@@ -68,7 +70,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-tenant-admin",
     email: "tenant-admin@acme-local.test",
     username: "tenant.admin",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantAdmin,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin",
@@ -79,7 +81,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-tenant-user",
     email: "tenant-user@acme-local.test",
     username: "tenant.user",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantUser,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
@@ -90,7 +92,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-disabled",
     email: "disabled-user@acme-local.test",
     username: "disabled.user",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.disabledUser,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.disabled,
     displayName: "Disabled User",
@@ -101,7 +103,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-tenant-user-orphan",
     email: "tenant-user-orphan@acme-local.test",
     username: "tenant.user.orphan",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantUserWithoutMembership,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User Orphan",
@@ -112,7 +114,7 @@ const directorySeed: DirectorySeedUser[] = [
     id: "user-tenant-admin-multi",
     email: "tenant-admin-multi@acme-local.test",
     username: "tenant.admin.multi",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantAdminMultiTenant,
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin Multi",
@@ -127,7 +129,7 @@ const directorySeed: DirectorySeedUser[] = [
 export const DISABLED_AUTH_TEST_USER = {
   email: "disabled-user@acme-local.test",
   username: "disabled.user",
-  password: "Password123!"
+  password: DEFAULT_SEEDED_PASSWORD
 } as const;
 
 const directoryPromise = Promise.all(

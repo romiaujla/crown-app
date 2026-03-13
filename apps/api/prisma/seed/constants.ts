@@ -1,5 +1,6 @@
 import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import { SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 
 export const LOCAL_SEED_TENANT = {
   name: "Acme Local Logistics",
@@ -12,7 +13,7 @@ export const LOCAL_SEED_USERS = {
   superAdmin: {
     email: "super-admin@acme-local.test",
     username: "super.admin",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.superAdmin,
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
     role: "super_admin"
@@ -20,7 +21,7 @@ export const LOCAL_SEED_USERS = {
   tenantAdmin: {
     email: "tenant-admin@acme-local.test",
     username: "tenant.admin",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantAdmin,
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin",
     role: "tenant_admin"
@@ -28,7 +29,7 @@ export const LOCAL_SEED_USERS = {
   tenantUser: {
     email: "tenant-user@acme-local.test",
     username: "tenant.user",
-    password: "Password123!",
+    password: SEEDED_AUTH_PASSWORDS.tenantUser,
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
     role: "tenant_user"

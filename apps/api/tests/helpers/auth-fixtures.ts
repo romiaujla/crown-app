@@ -1,8 +1,12 @@
 import { RoleEnum, type JwtClaims } from "../../src/auth/claims.js";
-import { AUTH_LOGIN_FIXTURES, DISABLED_AUTH_TEST_USER } from "../../src/auth/default-auth-service.js";
+import {
+  AUTH_ACCESS_TOKEN_TTL_SECONDS,
+  AUTH_LOGIN_FIXTURES,
+  DISABLED_AUTH_TEST_USER
+} from "../../src/auth/default-auth-service.js";
 import { signAccessToken } from "../../src/auth/tokens.js";
 
-const futureExpiry = () => Math.floor(Date.now() / 1000) + 15 * 60;
+const futureExpiry = () => Math.floor(Date.now() / 1000) + AUTH_ACCESS_TOKEN_TTL_SECONDS;
 
 export const createJwtToken = (claims: JwtClaims, secret?: string) => signAccessToken(claims, secret);
 

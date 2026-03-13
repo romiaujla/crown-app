@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { buildApp } from "../../src/app.js";
 import { AuthErrorCodeEnum } from "../../src/auth/claims.js";
+import { AUTH_ACCESS_TOKEN_TTL_SECONDS } from "../../src/auth/default-auth-service.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum } from "../../src/auth/service.js";
 import {
   createJwtToken,
@@ -18,6 +19,7 @@ describe("auth routes contract", () => {
   const app = buildApp();
 
   it("issues an access token for email login", async () => {
+    const startedAt = Math.floor(Date.now() / 1000);
     const response = await request(app)
       .post("/api/v1/auth/login")
       .send(loginFixtures.superAdminByEmail);
@@ -27,6 +29,8 @@ describe("auth routes contract", () => {
     expect(response.body.access_token.split(".")).toHaveLength(3);
     expect(response.body.claims.role).toBe("super_admin");
     expect(response.body.claims.exp).toEqual(expect.any(Number));
+    expect(response.body.claims.exp - startedAt).toBeGreaterThanOrEqual(AUTH_ACCESS_TOKEN_TTL_SECONDS - 5);
+    expect(response.body.claims.exp - startedAt).toBeLessThanOrEqual(AUTH_ACCESS_TOKEN_TTL_SECONDS + 5);
     expect(response.body.current_user.target_app).toBe("platform");
     expect(response.body.current_user.routing).toEqual({
       status: AuthRoutingStatusEnum.ALLOWED,
