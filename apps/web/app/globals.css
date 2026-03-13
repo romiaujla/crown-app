@@ -435,11 +435,11 @@ h3 {
   }
 
   .sidebar-profile__menu {
-    bottom: auto;
-    left: calc(100% + 12px);
+    bottom: calc(100% + 0.75rem);
+    left: 0;
     min-width: 14rem;
     right: auto;
-    top: 0;
+    top: auto;
   }
 }
 
