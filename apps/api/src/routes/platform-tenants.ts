@@ -56,7 +56,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
   });
 
   router.post(
-    "/platform/tenants/deprovision",
+    "/platform/tenant/deprovision",
     authenticate,
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     async (req, res) => {

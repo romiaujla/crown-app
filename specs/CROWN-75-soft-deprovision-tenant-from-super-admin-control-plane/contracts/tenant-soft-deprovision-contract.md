@@ -3,7 +3,7 @@
 ## Route
 
 - **Method**: `POST`
-- **Path**: `/api/v1/platform/tenants/deprovision`
+- **Path**: `/api/v1/platform/tenant/deprovision`
 - **Auth**: Bearer token required; caller must be `super_admin`
 - **Body**:
 

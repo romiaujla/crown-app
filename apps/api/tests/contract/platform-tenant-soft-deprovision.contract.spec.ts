@@ -27,7 +27,7 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/deprovision")
+      .post("/api/v1/platform/tenant/deprovision")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ tenant_id: "tenant-acme" });
 
@@ -45,7 +45,7 @@ describe("platform tenant soft deprovision contract", () => {
   it("returns 401 for missing token", async () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
 
-    const response = await request(app).post("/api/v1/platform/tenants/deprovision").send({ tenant_id: "tenant-acme" });
+    const response = await request(app).post("/api/v1/platform/tenant/deprovision").send({ tenant_id: "tenant-acme" });
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("unauthenticated");
@@ -55,7 +55,7 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/deprovision")
+      .post("/api/v1/platform/tenant/deprovision")
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
       .send({ tenant_id: "tenant-acme" });
 
@@ -72,7 +72,7 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/deprovision")
+      .post("/api/v1/platform/tenant/deprovision")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ tenant_id: "tenant-missing" });
 
@@ -84,7 +84,7 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision: vi.fn() }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/deprovision")
+      .post("/api/v1/platform/tenant/deprovision")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({});
 
@@ -101,7 +101,7 @@ describe("platform tenant soft deprovision contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ softDeprovision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenants/deprovision")
+      .post("/api/v1/platform/tenant/deprovision")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
       .send({ tenant_id: "tenant-acme" });
 

@@ -654,7 +654,7 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/platform/tenants/deprovision": {
+    "/api/v1/platform/tenant/deprovision": {
       post: {
         tags: ["Platform Tenants"],
         summary: "Soft deprovision a tenant",
