@@ -9,6 +9,13 @@ Use this guide when you want to exercise the seeded Crown login flows locally.
 - Run the canonical bootstrap workflow: `pnpm db:bootstrap:local`
 - Start the applications: `pnpm dev`
 
+The copied API env file provides the default seeded auth password values and access-token lifetime used by local login flows:
+- `JWT_ACCESS_TTL_SECONDS=7200`
+- `SEED_SUPER_ADMIN_PASSWORD=SeedSuperAdmin123!`
+- `SEED_TENANT_ADMIN_PASSWORD=SeedTenantAdmin123!`
+- `SEED_TENANT_USER_PASSWORD=SeedTenantUser123!`
+- `SEED_DEFAULT_PASSWORD=Password123!` remains the fallback for seeded records that do not have a role-specific override.
+
 Default local endpoints:
 - Web: `http://localhost:3000`
 - API: `http://localhost:4000`
@@ -28,9 +35,9 @@ Primary seeded accounts for local login:
 
 | Role | Identifier | Alternate Identifier | Password | Expected Destination |
 | --- | --- | --- | --- | --- |
-| `super_admin` | `super-admin@acme-local.test` | `super.admin` | `Password123!` | `/platform` |
-| `tenant_admin` | `tenant-admin@acme-local.test` | `tenant.admin` | `Password123!` | `/tenant` |
-| `tenant_user` | `tenant-user@acme-local.test` | `tenant.user` | `Password123!` | `/tenant` |
+| `super_admin` | `super-admin@acme-local.test` | `super.admin` | `SeedSuperAdmin123!` | `/platform` |
+| `tenant_admin` | `tenant-admin@acme-local.test` | `tenant.admin` | `SeedTenantAdmin123!` | `/tenant` |
+| `tenant_user` | `tenant-user@acme-local.test` | `tenant.user` | `SeedTenantUser123!` | `/tenant` |
 
 Additional seeded auth records used for negative-path validation:
 
@@ -72,6 +79,7 @@ That means:
 
 Session expiry behavior:
 - the access token includes an `exp` claim
+- the default local access-token lifetime is 2 hours
 - Crown shows a top-right warning shortly before expiry
 - when expiry is reached, Crown logs the user out and returns them to `/login`
 - the login screen shows the session-expired message so the re-authentication reason is clear
