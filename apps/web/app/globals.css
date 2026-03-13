@@ -226,6 +226,10 @@ h3 {
   text-decoration: none;
 }
 
+.sidebar-nav > li {
+  width: 100%;
+}
+
 .sidebar-nav__label {
   font-size: 0.98rem;
   line-height: 1.35;
