@@ -95,7 +95,7 @@ export const WorkspaceShell = ({
 
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+      <div className="flex w-full flex-col gap-6">
         <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
           <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
@@ -132,7 +132,7 @@ export const WorkspaceShell = ({
         )}
 
         {layoutProps.layout === "sidebar" ? (
-          <div className="platform-shell-grid grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
+          <div className="platform-shell-grid grid gap-6 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)]">
             <Card className={cn("sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
               <CardContent className="sidebar-nav px-3 pb-3 pt-5">
                 <nav aria-label={layoutProps.navigationTitle}>
