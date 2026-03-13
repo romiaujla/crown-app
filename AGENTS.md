@@ -14,6 +14,7 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
   - `--speckit CROWN-<id>` for full Spec Kit delivery
   - `--implement CROWN-<id>` for implementation-only delivery
 - Use documented workflow-helper prompts from `docs/process/ai-agent-prompt-help.md` for audit, Jira sync, PR comment resolution, PR refresh, status, handoff, reconcile, test-fix, OpenAPI audit, review, and scope-drift loops.
+- Use `--clean-code-api` and `--clean-code-web` for workspace-scoped clean-code audits only; these prompts do not authorize implementation changes unless the user explicitly asks for them.
 - Keep the prompt help registry in `docs/process/ai-agent-prompt-help.md` aligned with any documented prompt behavior changes.
 
 ## Prompt-Driven Start Workflow
@@ -44,6 +45,15 @@ When a user prompt matches a documented workflow-helper command such as `--audit
 6. Use `--resolve-pr-comments` to inspect the current branch PR or a specified PR, make safe straightforward fixes, reply when automation should not change behavior, and resolve completed conversations when supported.
 7. Use `--review`, `--refresh-pr`, `--status`, `--handoff`, `--reconcile`, `--test-fix`, `--openapi-audit`, and `--scope-drift` only for delivery-maintenance work that stays aligned with the Jira-linked branch and PR.
 8. Pause for clarification or create a follow-up issue when a helper command reveals scope drift that should not be merged under the current Jira issue.
+
+When a user prompt is `--clean-code-api` or `--clean-code-web`:
+
+1. Treat the request as a review-only coding-standards audit, not an implementation task, unless the user explicitly asks for code changes.
+2. Scope `--clean-code-api` to files under `apps/api` only.
+3. Scope `--clean-code-web` to files under `apps/web` only.
+4. Evaluate findings against `docs/process/engineering-constitution.md` and any relevant engineering/process guidance referenced by the repository workflow documents.
+5. Report actionable findings with concrete file references and clear coding-standard violations or maintainability risks.
+6. Do not widen the audit into unrelated repository areas, feature design changes, or speculative implementation work.
 
 ## Operational Rules
 - Do not bypass repository hooks, CI checks, or branch protection requirements.
