@@ -199,22 +199,22 @@ const main = async () => {
   );
   await ensureFileContains(
     "docs/process/ai-agent-prompt-help.md",
-    /--clean-code-api[\s\S]*apps\/api[\s\S]*(concrete file references|actionable findings)/i,
+    /--clean-code-api[\s\S]*apps\/api[\s\S]*findings first[\s\S]*concrete file references/i,
     "Prompt help registry documents the --clean-code-api contract"
   );
   await ensureFileContains(
     "docs/process/ai-agent-prompt-help.md",
-    /--clean-code-web[\s\S]*apps\/web[\s\S]*(concrete file references|actionable findings)/i,
+    /--clean-code-web[\s\S]*apps\/web[\s\S]*findings first[\s\S]*concrete file references/i,
     "Prompt help registry documents the --clean-code-web contract"
   );
   await ensureFileContains(
     "AGENTS.md",
-    /--clean-code-api[\s\S]*apps\/api[\s\S]*(review-only|implementation)/i,
+    /--clean-code-api[\s\S]*apps\/api[\s\S]*findings first[\s\S]*(review-only|implementation)/i,
     "AGENTS documents the --clean-code-api scope and review-only behavior"
   );
   await ensureFileContains(
     "AGENTS.md",
-    /--clean-code-web[\s\S]*apps\/web[\s\S]*(review-only|implementation)/i,
+    /--clean-code-web[\s\S]*apps\/web[\s\S]*findings first[\s\S]*(review-only|implementation)/i,
     "AGENTS documents the --clean-code-web scope and review-only behavior"
   );
   await ensureFileContains(

@@ -35,8 +35,8 @@ Future prompt patterns should be added to the help registry first, then document
 
 ## Workflow Helper Prompt Contract
 - `--audit CROWN-<id>` audits the active implementation against Jira scope, acceptance criteria, validation evidence, and out-of-scope changes before merge or handoff.
-- `--clean-code-api` runs a review-only clean-code audit scoped to `apps/api`, evaluates code against `docs/process/engineering-constitution.md` and related engineering/process guidance, and returns actionable findings with concrete file references.
-- `--clean-code-web` runs a review-only clean-code audit scoped to `apps/web`, evaluates code against `docs/process/engineering-constitution.md` and related engineering/process guidance, and returns actionable findings with concrete file references.
+- `--clean-code-api` runs a review-only clean-code audit scoped to `apps/api`, evaluates code against `docs/process/engineering-constitution.md` and related engineering/process guidance, and returns findings first with concrete file references and actionable violations or risks.
+- `--clean-code-web` runs a review-only clean-code audit scoped to `apps/web`, evaluates code against `docs/process/engineering-constitution.md` and related engineering/process guidance, and returns findings first with concrete file references and actionable violations or risks.
 - `--sync-to-jira CROWN-<id>` pushes branch-derived implementation notes, validation evidence, and accepted scope changes back into Jira without rewriting unrelated issue sections.
 - `--sync-from-jira CROWN-<id>` pulls Jira changes into an active branch only while that branch remains in flight; if the prior Jira-linked branch already merged to `main`, create a follow-up Jira issue instead of reopening the merged branch scope.
 - `--resolve-pr-comments [PR-NUMBER]` reviews the current branch PR or the specified PR, applies safe straightforward fixes, responds where automation should not change behavior, and resolves completed conversations when the platform supports it.
@@ -47,6 +47,7 @@ For clean-code audit prompts:
 - `--clean-code-api` must not inspect or report on files outside `apps/api`.
 - `--clean-code-web` must not inspect or report on files outside `apps/web`.
 - Both prompts stay in review mode and should not produce implementation changes unless the user explicitly asks for them.
+- Both prompts should follow the repository's findings-first review style rather than leading with summaries or implementation proposals.
 
 ## Required Phase Sequence
 For work started with `--speckit CROWN-<id>`, advance in this order only:
