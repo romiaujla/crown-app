@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardMetricWindowEnum } from "@crown/types";
 import {
   Activity,
   BadgeDollarSign,
@@ -17,6 +18,13 @@ import { useEffect, useState } from "react";
 import { StatusPanel } from "@/components/auth/status-panel";
 import { useProtectedShell } from "@/components/auth/use-protected-shell";
 import { WorkspaceShell } from "@/components/auth/workspace-shell";
+import {
+  formatGrowthRateValue,
+  getGrowthRateDescription,
+  getNewTenantDescription,
+  SummaryMetricCard,
+  WindowMetricCard
+} from "@/components/platform/dashboard-metric-cards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
@@ -122,6 +130,8 @@ type DashboardOverviewState =
   | DashboardOverviewSuccessState
   | DashboardOverviewErrorState;
 
+type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
+
 const formatTenantStatusLabel = (status: TenantStatus) =>
   status
     .split("_")
@@ -133,6 +143,8 @@ const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
     status: DashboardOverviewStatusEnum.LOADING
   });
+  const [selectedNewTenantWindow, setSelectedNewTenantWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
+  const [selectedGrowthRateWindow, setSelectedGrowthRateWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
 
   useEffect(() => {
     let cancelled = false;
@@ -210,33 +222,75 @@ const DashboardOverviewSection = () => {
   }
 
   const tenantSummary = overviewState.overview.widgets.tenant_summary;
+  const selectedNewTenantMetric =
+    tenantSummary.new_tenant_counts.find((entry) => entry.window === selectedNewTenantWindow) ??
+    tenantSummary.new_tenant_counts[0];
+  const selectedGrowthRateMetric =
+    tenantSummary.tenant_growth_rates.find((entry) => entry.window === selectedGrowthRateWindow) ??
+    tenantSummary.tenant_growth_rates[0];
 
   return (
-    <Card className="border-white/70 bg-white/92 shadow-sm">
-      <CardHeader className="space-y-3">
-        <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-          Platform footprint
-        </CardDescription>
-        <div className="space-y-2">
-          <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} Tenants</CardTitle>
-          <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-            Current tenant count and status distribution in the platform.
+    <div className="space-y-6">
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Platform footprint
           </CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-0">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {tenantSummary.tenant_status_counts.map((entry) => (
-            <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                {formatTenantStatusLabel(entry.status)}
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Current tenant count with lifecycle status KPIs for the platform.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {tenantSummary.tenant_status_counts.map((entry) => (
+              <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  {formatTenantStatusLabel(entry.status)}
+                </p>
+                <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Current scale
+          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
+          <SummaryMetricCard
+            description="Current number of tenant users across all tenant workspaces."
+            title="Total users"
+            value={tenantSummary.tenant_user_count.toString()}
+          />
+          <WindowMetricCard
+            description={getNewTenantDescription(selectedNewTenantMetric.window)}
+            onSelectWindow={setSelectedNewTenantWindow}
+            selectedWindow={selectedNewTenantMetric.window}
+            title="New tenants"
+            value={selectedNewTenantMetric.count.toString()}
+          />
+          <WindowMetricCard
+            description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
+            onSelectWindow={setSelectedGrowthRateWindow}
+            selectedWindow={selectedGrowthRateMetric.window}
+            title="Tenant growth rate"
+            value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
