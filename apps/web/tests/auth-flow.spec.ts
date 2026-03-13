@@ -357,9 +357,11 @@ test("platform dashboard overview stays scoped to tenant summary content", async
 
   await page.goto("/platform");
 
-  await expect(page.getByText("Reserved for future widgets")).toBeVisible();
   await expect(page.getByText("No pending actions")).toHaveCount(0);
   await expect(page.getByText("Recent platform activity")).toHaveCount(0);
+  await expect(
+    page.getByText("Operate Crown as the platform for tenant management systems, with a stable navigation shell and a clear starting point for global oversight.")
+  ).toHaveCount(0);
 });
 
 test("platform profile entry opens a compact menu with identity details", async ({ page }) => {

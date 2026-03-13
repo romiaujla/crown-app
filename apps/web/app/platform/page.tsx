@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Activity,
   BadgeDollarSign,
@@ -13,6 +12,7 @@ import {
   Users
 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { StatusPanel } from "@/components/auth/status-panel";
 import { useProtectedShell } from "@/components/auth/use-protected-shell";
@@ -99,16 +99,16 @@ const platformNavigation = [
 
 type DashboardOverviewState =
   | {
-      status: "loading";
-    }
+    status: "loading";
+  }
   | {
-      status: "success";
-      overview: DashboardOverviewResponse;
-    }
+    status: "success";
+    overview: DashboardOverviewResponse;
+  }
   | {
-      status: "error";
-      message: string;
-    };
+    status: "error";
+    message: string;
+  };
 
 const formatTenantStatusLabel = (status: TenantStatus) =>
   status
@@ -198,47 +198,31 @@ const DashboardOverviewSection = () => {
   const tenantSummary = overviewState.overview.widgets.tenant_summary;
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.6fr)]">
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Platform footprint
+    <Card className="border-white/70 bg-white/92 shadow-sm">
+      <CardHeader className="space-y-3">
+        <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Platform footprint
+        </CardDescription>
+        <div className="space-y-2">
+          <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} Tenants</CardTitle>
+          <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+            Current tenant count and status distribution in the platform.
           </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-              Review the current tenant count and status distribution for the platform at a glance.
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {tenantSummary.tenant_status_counts.map((entry) => (
-              <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  {formatTenantStatusLabel(entry.status)}
-                </p>
-                <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
-                <p className="mt-2 text-sm text-stone-600">tenants in this status</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Overview scope
-          </CardDescription>
-          <CardTitle className="text-2xl text-stone-950">Reserved for future widgets</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 pt-0 text-sm leading-7 text-stone-600">
-          <p>This first dashboard section stays focused on tenant-summary visibility for the control plane.</p>
-          <p>Future platform widgets can land beside this summary without replacing the initial footprint view.</p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-0">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {tenantSummary.tenant_status_counts.map((entry) => (
+            <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                {formatTenantStatusLabel(entry.status)}
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -246,8 +230,7 @@ const platformSections = {
   dashboard: {
     eyebrow: "Platform overview",
     title: "Dashboard",
-    description:
-      "Operate Crown as the platform for tenant management systems, with a stable navigation shell and a clear starting point for global oversight.",
+    description: "",
     renderContent: () => <DashboardOverviewSection />
   },
   tenants: {
