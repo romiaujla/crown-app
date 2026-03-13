@@ -1,4 +1,5 @@
 import type { Tenant } from "../generated/prisma/client.js";
+import type { TenantStatus } from "../domain/status-enums.js";
 
 export type TenantMigrationDefinition = {
   version: string;
@@ -58,3 +59,33 @@ export type ProvisionTenantResult =
   | ProvisionTenantSuccessResult
   | ProvisionTenantConflictResult
   | ProvisionTenantFailureResult;
+
+export type SoftDeprovisionTenantInput = {
+  tenantId: string;
+};
+
+export type SoftDeprovisionTenantSuccessResult = {
+  status: "soft_deprovisioned";
+  tenantId: string;
+  slug: string;
+  schemaName: string;
+  previousStatus: TenantStatus;
+  tenant: Tenant;
+};
+
+export type SoftDeprovisionTenantConflictResult = {
+  status: "conflict";
+  message: string;
+  tenantId: string;
+};
+
+export type SoftDeprovisionTenantNotFoundResult = {
+  status: "not_found";
+  message: string;
+  tenantId: string;
+};
+
+export type SoftDeprovisionTenantResult =
+  | SoftDeprovisionTenantSuccessResult
+  | SoftDeprovisionTenantConflictResult
+  | SoftDeprovisionTenantNotFoundResult;

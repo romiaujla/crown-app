@@ -23,18 +23,18 @@ As a super admin, I want an API capability that marks a tenant inactive so I can
 
 ---
 
-### User Story 2 - Block Tenant Access After Soft Deprovision (Priority: P2)
+### User Story 2 - Keep Session Invalidation Out Of Scope For This Story (Priority: P2)
 
-As a platform operator, I want inactive tenants blocked from normal tenant access flows so deprovisioned tenants cannot continue using the tenant application as if they were still active.
+As a maintainer, I want soft deprovision scoped to the tenant lifecycle transition only so this story does not widen into forced logout or token invalidation behavior.
 
-**Why this priority**: Marking a tenant inactive has limited value if existing tenant-scoped login and request flows still treat that tenant as active.
+**Why this priority**: The requested clarification keeps `CROWN-75` limited to tenant-management backend behavior and defers active-session logout to follow-up scope.
 
-**Independent Test**: Soft deprovision a tenant with tenant-scoped users, then verify tenant-auth resolution and protected tenant access flows deny that tenant context while unrelated platform access rules remain unchanged.
+**Independent Test**: Review the route behavior and confirm the delivered scope is limited to the lifecycle state transition without adding forced logout or token invalidation behavior.
 
 **Acceptance Scenarios**:
 
-1. **Given** a tenant has been soft deprovisioned, **When** a tenant-scoped user tied to that tenant tries to authenticate or resolve their current-user context, **Then** the request is denied because the tenant is inactive.
-2. **Given** a tenant has been soft deprovisioned, **When** tenant-scoped protected flows are evaluated for that tenant context, **Then** the inactive tenant is not treated as an active membership.
+1. **Given** a tenant has been soft deprovisioned, **When** the implementation is reviewed, **Then** the delivered behavior is limited to the lifecycle state transition and preserved data.
+2. **Given** a tenant already has a valid auth token when deprovision occurs, **When** this story is reviewed, **Then** no forced logout or token invalidation behavior is introduced here.
 3. **Given** a super admin accesses platform-only APIs after a tenant is soft deprovisioned, **When** authorization is evaluated, **Then** the existing super-admin platform access behavior still works.
 
 ---
@@ -58,7 +58,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 - The tenant identifier does not match any platform tenant record.
 - The target tenant is already `inactive`.
 - The target tenant is still `provisioning` or `provisioning_failed`, and the system needs deterministic scope for whether soft deprovision is allowed.
-- Tenant-scoped users still hold valid-looking JWT claims for a tenant that has since become inactive.
+- Tenant-scoped users still hold valid-looking JWT claims for a tenant that has since become inactive, and this story must avoid widening into logout or token-revocation behavior.
 - Soft deprovision must not drop the tenant schema, tenant migration history, or control-plane records.
 
 ## Requirements *(mandatory)*
@@ -68,8 +68,8 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 - **FR-001**: The system MUST expose a super-admin-only API capability to soft deprovision a tenant from the platform control plane.
 - **FR-002**: Soft deprovision MUST mark the target tenant inactive without deleting its tenant schema or control-plane record.
 - **FR-003**: The system MUST preserve existing tenant schema migration history and related control-plane metadata when a tenant is soft deprovisioned.
-- **FR-004**: After soft deprovision, tenant-scoped authentication or current-user resolution for the inactive tenant MUST be denied as an inactive tenant context rather than treated as an active membership.
-- **FR-005**: After soft deprovision, protected tenant access flows MUST block normal active-use behavior for the inactive tenant.
+- **FR-004**: Soft deprovision for this story MUST remain limited to the tenant lifecycle state transition and MUST NOT introduce forced logout or token invalidation behavior for already-authenticated sessions.
+- **FR-005**: Existing platform-only `super_admin` access behavior MUST remain unchanged after soft deprovision.
 - **FR-006**: The soft deprovision capability MUST remain limited to authenticated `super_admin` users.
 - **FR-007**: The API contract MUST distinguish soft deprovision from hard destructive deletion.
 - **FR-008**: The API MUST provide deterministic behavior when the target tenant does not exist or is already inactive.
@@ -80,7 +80,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 
 - **Tenant Lifecycle Status**: The platform-level tenant state used to determine whether a tenant is active or inactive.
 - **Soft Deprovision Operation**: The super-admin action that transitions a tenant out of active use without deleting data.
-- **Tenant Access Context**: The tenant-scoped auth resolution and protected-route behavior that must no longer treat an inactive tenant as available for normal use.
+- **Tenant Session Boundary**: The out-of-scope forced logout or token invalidation behavior that is explicitly deferred beyond `CROWN-75`.
 
 ### Assumptions
 
@@ -92,7 +92,6 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 ### Dependencies
 
 - Existing tenant provisioning and control-plane tenant routing in `apps/api`.
-- Existing tenant-auth resolution and protected-route middleware in `apps/api/src/auth` and `apps/api/src/middleware`.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
 ## Success Criteria *(mandatory)*
@@ -100,7 +99,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 ### Measurable Outcomes
 
 - **SC-001**: Reviewers can verify that 100% of tested successful soft deprovision calls transition the targeted tenant to `inactive` without deleting its schema or control-plane record.
-- **SC-002**: Reviewers can verify that 100% of tested tenant-auth flows for a soft-deprovisioned tenant are denied as inactive or unavailable for normal tenant use.
+- **SC-002**: Reviewers can verify that 100% of reviewed soft deprovision behavior stays limited to the lifecycle state transition and does not add forced logout or token invalidation behavior.
 - **SC-003**: Reviewers can verify that 100% of tested unauthenticated or non-super-admin requests are rejected with the existing protected-route error behavior.
 - **SC-004**: Reviewers can verify from the API contract and OpenAPI documentation that soft deprovision is explicitly non-destructive and distinct from hard deletion.
 - **SC-005**: Reviewers can verify the implementation remains limited to additive tenant-management backend behavior and does not introduce tenant data deletion.

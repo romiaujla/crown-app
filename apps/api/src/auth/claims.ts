@@ -18,6 +18,7 @@ export const TenantRoleSchema = z.enum(TenantRoleEnum);
 export enum AuthErrorCodeEnum {
   VALIDATION_ERROR = "validation_error",
   UNAUTHENTICATED = "unauthenticated",
+  NOT_FOUND = "not_found",
   INVALID_CREDENTIALS = "invalid_credentials",
   DISABLED_ACCOUNT = "disabled_account",
   INVALID_CLAIMS = "invalid_claims",

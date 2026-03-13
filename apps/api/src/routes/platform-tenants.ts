@@ -5,16 +5,20 @@ import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
 import { sendAuthError } from "../types/errors.js";
 
-import { TenantProvisionRequestSchema, TenantProvisionResponseSchema } from "../tenant/contracts.js";
+import { SoftDeprovisionTenantResponseSchema, TenantProvisionRequestSchema, TenantProvisionResponseSchema } from "../tenant/contracts.js";
+import { softDeprovisionTenant } from "../tenant/lifecycle-service.js";
 import { provisionTenant } from "../tenant/provision-service.js";
+import type { SoftDeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
   provision?: typeof provisionTenant;
+  softDeprovision?: (input: { tenantId: string }) => Promise<SoftDeprovisionTenantResult>;
 };
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
   const router = Router();
   const provision = options.provision ?? provisionTenant;
+  const deprovision = options.softDeprovision ?? softDeprovisionTenant;
 
   router.post("/platform/tenants", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
@@ -45,6 +49,34 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
 
     return res.status(201).json(response);
   });
+
+  router.post(
+    "/platform/tenants/:tenantId/deprovision",
+    authenticate,
+    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    async (req, res) => {
+      const result = await deprovision({ tenantId: req.params.tenantId });
+
+      if (result.status === "not_found") {
+        return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, result.message);
+      }
+
+      if (result.status === "conflict") {
+        return sendAuthError(res, 409, AuthErrorCodeEnum.CONFLICT, result.message);
+      }
+
+      const response = SoftDeprovisionTenantResponseSchema.parse({
+        tenant_id: result.tenantId,
+        slug: result.slug,
+        schema_name: result.schemaName,
+        previous_status: result.previousStatus,
+        status: "inactive",
+        operation: "soft_deprovisioned"
+      });
+
+      return res.status(200).json(response);
+    }
+  );
 
   return router;
 };

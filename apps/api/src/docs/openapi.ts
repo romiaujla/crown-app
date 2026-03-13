@@ -217,6 +217,27 @@ export const authDocsDocument = {
           }
         }
       },
+      SoftDeprovisionTenantResponse: {
+        type: "object",
+        required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
+        properties: {
+          tenant_id: { type: "string" },
+          slug: { type: "string" },
+          schema_name: { type: "string" },
+          previous_status: {
+            type: "string",
+            enum: tenantStatusValues
+          },
+          status: {
+            type: "string",
+            enum: ["inactive"]
+          },
+          operation: {
+            type: "string",
+            enum: ["soft_deprovisioned"]
+          }
+        }
+      },
       TenantStatusCountEntry: {
         type: "object",
         required: ["status", "count"],
@@ -623,6 +644,37 @@ export const authDocsDocument = {
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
           "409": errorResponse("Tenant slug conflict", "conflict", "tenant slug already exists")
+        }
+      }
+    },
+    "/api/v1/platform/tenants/{tenantId}/deprovision": {
+      post: {
+        tags: ["Platform Tenants"],
+        summary: "Soft deprovision a tenant",
+        description:
+          "Protected super-admin route used to mark a tenant inactive without deleting its schema or control-plane record. Existing tenant sessions are not invalidated by this story.",
+        security: bearerSecurity,
+        parameters: [
+          {
+            name: "tenantId",
+            in: "path",
+            required: true,
+            schema: { type: "string" }
+          }
+        ],
+        responses: {
+          "200": {
+            description: "Tenant soft deprovisioned",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/SoftDeprovisionTenantResponse" }
+              }
+            }
+          },
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
+          "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),
+          "409": errorResponse("Tenant already inactive", "conflict", "Tenant is already inactive")
         }
       }
     }

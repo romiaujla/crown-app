@@ -55,4 +55,4 @@
 
 - The operation is non-destructive: tenant schema data, tenant schema version history, and the control-plane tenant record are preserved.
 - Successful soft deprovision changes only lifecycle state.
-- After success, tenant-scoped login or current-user resolution for that tenant must no longer resolve as an active membership.
+- This story does not invalidate existing tenant auth tokens or force logout active sessions.
