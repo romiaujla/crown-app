@@ -328,13 +328,13 @@ export const authDocsDocument = {
                 username: {
                   value: {
                     identifier: "super.admin",
-                    password: "Password123!"
+                    password: "SeedSuperAdmin123!"
                   }
                 },
                 email: {
                   value: {
                     identifier: "super-admin@acme-local.test",
-                    password: "Password123!"
+                    password: "SeedSuperAdmin123!"
                   }
                 }
               }
