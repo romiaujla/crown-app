@@ -212,6 +212,7 @@ h3 {
 .sidebar-shell-card {
   position: sticky;
   top: 2rem;
+  z-index: 20;
 }
 
 .sidebar-nav__item {
@@ -284,12 +285,11 @@ h3 {
       opacity 140ms ease,
       transform 140ms ease;
     white-space: nowrap;
-    z-index: 10;
+    z-index: 40;
   }
 
   .sidebar-nav__item:hover .sidebar-nav__tooltip,
-  .sidebar-nav__item:focus-visible .sidebar-nav__tooltip,
-  .sidebar-nav__item:focus-within .sidebar-nav__tooltip {
+  .sidebar-nav__item:focus-visible .sidebar-nav__tooltip {
     opacity: 1;
     transform: translateY(-50%) translateX(0);
   }

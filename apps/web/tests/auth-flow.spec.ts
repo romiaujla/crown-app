@@ -182,7 +182,7 @@ test("super-admin login stores the token and routes to the platform shell", asyn
   await page.getByRole("button", { name: "Sign in" }).click();
 
   await expect(page).toHaveURL(/\/platform$/);
-  await expect(page.getByRole("heading", { name: "Crown Control Plane", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dashboard", level: 3 })).toBeVisible();
   expect(
     await page.evaluate((key) => {
       const token = window.sessionStorage.getItem(key);
@@ -258,8 +258,6 @@ test("super-admin shell renders the required control-plane navigation inventory"
   await primeAuthenticatedSession(page, "super_admin");
 
   await page.goto("/platform");
-
-  await expect(page.getByRole("heading", { name: "Crown Control Plane", level: 1 })).toBeVisible();
 
   for (const item of [
     "Dashboard",

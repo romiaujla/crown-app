@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
-import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,13 +27,14 @@ type OverviewCard = {
 
 type SharedWorkspaceShellProps = {
   tone: "platform" | "tenant";
-  shellLabel: string;
+  shellLabel?: string;
   title: string;
   description: string;
   contextLabel: string;
   contextValue: string;
   contextNote: string;
   userDisplayName: string;
+  hideHero?: boolean;
 };
 
 type CardLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
@@ -87,6 +88,7 @@ export const WorkspaceShell = ({
   contextValue,
   contextNote,
   userDisplayName,
+  hideHero = false,
   ...layoutProps
 }: WorkspaceShellProps) => {
   const style = toneClasses[tone];
@@ -104,37 +106,35 @@ export const WorkspaceShell = ({
           </CardContent>
         </Card>
 
-        <Card className={cn("border shadow-2xl shadow-stone-950/10 backdrop-blur", style.hero)}>
-          <CardContent className="grid gap-6 p-6 lg:grid-cols-[1.8fr_minmax(0,0.9fr)] lg:items-end">
-            <div className="space-y-4">
-              <p className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>{shellLabel}</p>
-              <div className="space-y-3">
-                <h1 className="text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">{title}</h1>
-                <p className="max-w-3xl text-base leading-7 text-stone-600">{description}</p>
+        {hideHero ? null : (
+          <Card className={cn("border shadow-2xl shadow-stone-950/10 backdrop-blur", style.hero)}>
+            <CardContent className="grid gap-6 p-6 lg:grid-cols-[1.8fr_minmax(0,0.9fr)] lg:items-end">
+              <div className="space-y-4">
+                {shellLabel ? (
+                  <p className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>{shellLabel}</p>
+                ) : null}
+                <div className="space-y-3">
+                  <h1 className="text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">{title}</h1>
+                  <p className="max-w-3xl text-base leading-7 text-stone-600">{description}</p>
+                </div>
               </div>
-            </div>
-            <Card className={cn("border shadow-none", style.panel)}>
-              <CardHeader className="space-y-2">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.22em]", style.accent)}>
-                  {contextLabel}
-                </CardDescription>
-                <CardTitle className="text-2xl font-semibold capitalize text-stone-950">{contextValue}</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 text-sm leading-6 text-stone-600">{contextNote}</CardContent>
-            </Card>
-          </CardContent>
-        </Card>
+              <Card className={cn("border shadow-none", style.panel)}>
+                <CardHeader className="space-y-2">
+                  <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.22em]", style.accent)}>
+                    {contextLabel}
+                  </CardDescription>
+                  <CardTitle className="text-2xl font-semibold capitalize text-stone-950">{contextValue}</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 text-sm leading-6 text-stone-600">{contextNote}</CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {layoutProps.layout === "sidebar" ? (
           <div className="platform-shell-grid grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
             <Card className={cn("sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
-              <CardHeader className="space-y-2">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
-                  Primary navigation
-                </CardDescription>
-                <CardTitle className="text-2xl tracking-tight text-stone-950">{layoutProps.navigationTitle}</CardTitle>
-              </CardHeader>
-              <CardContent className="sidebar-nav px-3 pb-3 pt-0">
+              <CardContent className="sidebar-nav px-3 pb-3 pt-5">
                 <nav aria-label={layoutProps.navigationTitle}>
                   <ul className="m-0 flex list-none flex-col gap-2 p-0">
                     {layoutProps.navigationItems.map((item) => {
@@ -152,6 +152,9 @@ export const WorkspaceShell = ({
                             )}
                             data-active={isActive ? "true" : "false"}
                             href={item.href}
+                            onPointerUp={(event) => {
+                              event.currentTarget.blur();
+                            }}
                             title={item.title}
                           >
                             <span

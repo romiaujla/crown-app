@@ -52,14 +52,6 @@ const platformNavigation = [
     description: "Track operational events, platform follow-up, and the latest control-plane changes from one stream."
   },
   {
-    key: "settings",
-    title: "Settings",
-    href: "/platform?section=settings",
-    icon: Settings,
-    eyebrow: "Platform defaults",
-    description: "Adjust global platform settings, conventions, and future control-plane defaults as they are delivered."
-  },
-  {
     key: "system-health",
     title: "System Health",
     href: "/platform?section=system-health",
@@ -90,6 +82,14 @@ const platformNavigation = [
     icon: FileText,
     eyebrow: "Platform traceability",
     description: "Review change history, governance evidence, and audit-oriented activity as those capabilities come online."
+  },
+  {
+    key: "settings",
+    title: "Settings",
+    href: "/platform?section=settings",
+    icon: Settings,
+    eyebrow: "Platform defaults",
+    description: "Adjust global platform settings, conventions, and future control-plane defaults as they are delivered."
   }
 ] as const;
 
@@ -262,6 +262,7 @@ const PlatformPage = () => {
       contextNote="No tenant needs to be selected before platform work begins."
       contextValue={currentUser.principal.role}
       description="Operate Crown as the platform for tenant management systems, with global navigation, overview context, and clear separation from tenant workspaces."
+      hideHero
       layout="sidebar"
       navigationItems={platformNavigation}
       navigationTitle="Control-plane sections"
@@ -277,7 +278,6 @@ const PlatformPage = () => {
       sectionDescription={activeSection.description}
       sectionEyebrow={activeSection.eyebrow}
       sectionTitle={activeSection.title}
-      shellLabel="Platform operator shell"
       title="Crown Control Plane"
       tone="platform"
       userDisplayName={currentUser.principal.display_name}
