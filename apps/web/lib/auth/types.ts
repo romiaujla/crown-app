@@ -1,5 +1,5 @@
+import { DashboardMetricWindowSchema } from "@crown/types";
 import { z } from "zod";
-import { DashboardMetricWindowEnum, DashboardMetricWindowSchema } from "@crown/types";
 
 export enum AuthStateStatusEnum {
   BOOTSTRAPPING = "bootstrapping",
@@ -119,4 +119,3 @@ export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 export type DashboardOverviewResponse = z.infer<typeof DashboardOverviewResponseSchema>;
-export { DashboardMetricWindowEnum };

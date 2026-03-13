@@ -1,5 +1,5 @@
+import { DashboardMetricWindowSchema } from "@crown/types";
 import { z } from "zod";
-import { DashboardMetricWindowEnum, DashboardMetricWindowSchema } from "@crown/types";
 
 import { TenantStatusSchema } from "../../domain/status-enums.js";
 
