@@ -99,7 +99,7 @@
 - [X] T020 [P] Run API typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
 - [X] T021 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
 - [X] T022 Review the final implementation against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md
-- [ ] T023 Create the PR for `feat/CROWN-119-super-admin-dashboard-metric-cards-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/tasks.md
+- [X] T023 Create the PR for `feat/CROWN-119-super-admin-dashboard-metric-cards-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/tasks.md
 
 ---
 
