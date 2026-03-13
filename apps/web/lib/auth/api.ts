@@ -3,6 +3,8 @@ import {
   AccessTokenResponseSchema,
   AuthErrorResponseSchema,
   CurrentUserResponseSchema,
+  DashboardOverviewResponseSchema,
+  type DashboardOverviewResponse,
   type CurrentUserResponse
 } from "./types";
 
@@ -129,3 +131,13 @@ export const logout = async (accessToken: string) => {
     method: "POST"
   });
 };
+
+export const getPlatformDashboardOverview = async (accessToken: string) =>
+  DashboardOverviewResponseSchema.parse(
+    await request("/api/v1/platform/dashboard/overview", {
+      headers: {
+        authorization: `Bearer ${accessToken}`
+      },
+      method: "GET"
+    })
+  ) as DashboardOverviewResponse;

@@ -12,11 +12,15 @@ import {
   Users
 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { StatusPanel } from "@/components/auth/status-panel";
 import { useProtectedShell } from "@/components/auth/use-protected-shell";
 import { WorkspaceShell } from "@/components/auth/workspace-shell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPlatformDashboardOverview } from "@/lib/auth/api";
+import { getStoredAccessToken } from "@/lib/auth/storage";
+import type { DashboardOverviewResponse, TenantStatus } from "@/lib/auth/types";
 
 const platformNavigation = [
   {
@@ -93,88 +97,155 @@ const platformNavigation = [
   }
 ] as const;
 
-const overviewCards = [
-  {
-    title: "Tenant footprint",
-    value: "0 active tenants",
-    detail: "No tenant management systems are provisioned yet."
-  },
-  {
-    title: "Platform actions",
-    value: "No pending actions",
-    detail: "Control-plane follow-up work will appear here when global operations begin."
-  },
-  {
-    title: "System direction",
-    value: "Management-system ready",
-    detail: "Crown is positioned as the platform for tenant management systems, not a CRM shell."
-  }
-] as const;
+enum DashboardOverviewStatusEnum {
+  LOADING = "loading",
+  SUCCESS = "success",
+  ERROR = "error"
+}
 
-const dashboardHighlights = [
-  {
-    title: "Operator focus",
-    value: "Control-plane ready",
-    detail: "Use the navigation rail to move between platform oversight areas without leaving the super-admin shell."
-  },
-  {
-    title: "Navigation model",
-    value: "9 core sections",
-    detail: "The shell now exposes the full control-plane information architecture expected for super-admin work."
+type DashboardOverviewLoadingState = {
+  status: DashboardOverviewStatusEnum.LOADING;
+};
+
+type DashboardOverviewSuccessState = {
+  status: DashboardOverviewStatusEnum.SUCCESS;
+  overview: DashboardOverviewResponse;
+};
+
+type DashboardOverviewErrorState = {
+  status: DashboardOverviewStatusEnum.ERROR;
+  message: string;
+};
+
+type DashboardOverviewState =
+  | DashboardOverviewLoadingState
+  | DashboardOverviewSuccessState
+  | DashboardOverviewErrorState;
+
+const formatTenantStatusLabel = (status: TenantStatus) =>
+  status
+    .split("_")
+    .filter(Boolean)
+    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+    .join(" ");
+
+const DashboardOverviewSection = () => {
+  const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
+    status: DashboardOverviewStatusEnum.LOADING
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const accessToken = getStoredAccessToken();
+    if (!accessToken) {
+      setOverviewState({
+        status: DashboardOverviewStatusEnum.ERROR,
+        message: "Dashboard overview is unavailable because your platform session could not be confirmed."
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const loadOverview = async () => {
+      try {
+        const overview = await getPlatformDashboardOverview(accessToken);
+        if (!cancelled) {
+          setOverviewState({
+            status: DashboardOverviewStatusEnum.SUCCESS,
+            overview
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          setOverviewState({
+            status: DashboardOverviewStatusEnum.ERROR,
+            message: "Dashboard overview is unavailable right now. Try refreshing once the platform API is reachable."
+          });
+        }
+      }
+    };
+
+    void loadOverview();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (overviewState.status === DashboardOverviewStatusEnum.LOADING) {
+    return (
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Platform footprint
+          </CardDescription>
+          <CardTitle className="text-2xl text-stone-950">Loading tenant overview</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-0">
+          <div className="h-12 animate-pulse rounded-2xl bg-stone-100" />
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="h-20 animate-pulse rounded-2xl border border-stone-100 bg-stone-50" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
-] as const;
+
+  if (overviewState.status === DashboardOverviewStatusEnum.ERROR) {
+    return (
+      <Card className="border-amber-200/80 bg-amber-50/85 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
+            Platform footprint
+          </CardDescription>
+          <CardTitle className="text-2xl text-stone-950">Dashboard overview unavailable</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0 text-sm leading-7 text-stone-700">{overviewState.message}</CardContent>
+      </Card>
+    );
+  }
+
+  const tenantSummary = overviewState.overview.widgets.tenant_summary;
+
+  return (
+    <Card className="border-white/70 bg-white/92 shadow-sm">
+      <CardHeader className="space-y-3">
+        <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Platform footprint
+        </CardDescription>
+        <div className="space-y-2">
+          <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} Tenants</CardTitle>
+          <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+            Current tenant count and status distribution in the platform.
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4 pt-0">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {tenantSummary.tenant_status_counts.map((entry) => (
+            <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                {formatTenantStatusLabel(entry.status)}
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const platformSections = {
   dashboard: {
     eyebrow: "Platform overview",
     title: "Dashboard",
-    description:
-      "Operate Crown as the platform for tenant management systems, with a stable navigation shell and a clear starting point for global oversight.",
-    renderContent: () => (
-      <>
-        <div className="grid gap-4 xl:grid-cols-3">
-          {overviewCards.map((card) => (
-            <Card key={card.title} className="border-white/70 bg-white/90 shadow-sm">
-              <CardHeader className="space-y-3">
-                <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                  {card.title}
-                </CardDescription>
-                <CardTitle className="text-2xl text-stone-950">{card.value}</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 text-sm leading-6 text-stone-600">{card.detail}</CardContent>
-            </Card>
-          ))}
-        </div>
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
-          <Card className="border-white/70 bg-white/90 shadow-sm">
-            <CardHeader className="space-y-3">
-              <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                No-data guidance
-              </CardDescription>
-              <CardTitle className="text-2xl text-stone-950">Start by preparing the first tenant management system</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 text-sm leading-7 text-stone-600">
-              Crown is ready for platform setup even when no live tenant data exists yet. Use the navigation shell to move
-              into tenant administration, operational oversight, security planning, billing readiness, and audit tracking
-              as each capability comes online.
-            </CardContent>
-          </Card>
-          <div className="grid gap-4">
-            {dashboardHighlights.map((highlight) => (
-              <Card key={highlight.title} className="border-white/70 bg-white/90 shadow-sm">
-                <CardHeader className="space-y-3">
-                  <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                    {highlight.title}
-                  </CardDescription>
-                  <CardTitle className="text-2xl text-stone-950">{highlight.value}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 text-sm leading-6 text-stone-600">{highlight.detail}</CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </>
-    )
+    description: "",
+    renderContent: () => <DashboardOverviewSection />
   },
   tenants: {
     eyebrow: "Tenant management",
