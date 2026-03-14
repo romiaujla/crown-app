@@ -15,6 +15,7 @@ enum PlatformUserAccountStatus {
 
 enum TenantStatus {
   active
+  hard_deprovisioned
   inactive
   provisioning
   provisioning_failed

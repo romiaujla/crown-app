@@ -144,7 +144,7 @@ describe("tenant soft deprovision integration", () => {
     expect(tenantSchemaVersionDeleteMany).toHaveBeenCalledWith({ where: { tenantId: "tenant-acme" } });
     expect(tenantUpdate).toHaveBeenCalledWith({
       where: { id: "tenant-acme" },
-      data: { status: TenantStatus.inactive }
+      data: { status: TenantStatus.hard_deprovisioned }
     });
   });
 

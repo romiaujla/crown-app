@@ -1,4 +1,9 @@
-import { DashboardMetricWindowEnum, DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "@crown/types";
+import {
+  DashboardMetricWindowEnum,
+  DashboardOverviewResponseSchema,
+  TenantStatusEnum,
+  type DashboardOverviewResponse
+} from "@crown/types";
 import { RoleEnum } from "../../auth/claims.js";
 import { prisma } from "../../db/prisma.js";
 import { TenantStatus } from "../../domain/status-enums.js";
@@ -21,7 +26,7 @@ type DashboardOverviewPrismaClient = {
   };
 };
 
-const tenantStatusOrder = Object.values(TenantStatus) as TenantStatus[];
+const tenantStatusOrder = Object.values(TenantStatusEnum);
 const dashboardMetricWindows = [
   { window: DashboardMetricWindowEnum.WEEK, durationDays: 7 },
   { window: DashboardMetricWindowEnum.MONTH, durationDays: 30 },
