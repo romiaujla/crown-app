@@ -5,7 +5,7 @@ const PlatformTenantDirectoryPage = () => (
   <PlatformShellFrame
     activeNavigationKey="tenants"
     sectionContent={<TenantDirectoryPage />}
-    sectionDescription="Search the platform tenant list, review lifecycle status, and move into follow-up tenant routes from one dedicated control-plane view."
+    sectionDescription=""
     sectionEyebrow="Tenant management"
     sectionTitle="Tenant Directory"
   />

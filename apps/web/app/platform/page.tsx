@@ -212,12 +212,6 @@ const platformSections = {
     description: "",
     renderContent: () => <DashboardOverviewSection />
   },
-  tenants: {
-    eyebrow: "Tenant management",
-    title: "Tenants Coming Soon",
-    description:
-      "Tenant provisioning, readiness review, and lifecycle actions will surface here as the next control-plane capabilities are delivered."
-  },
   users: {
     eyebrow: "Identity oversight",
     title: "Users Coming Soon",
