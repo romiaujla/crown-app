@@ -550,32 +550,29 @@ test("platform dashboard renders the live metric cards from the overview widget"
   await expect(page.getByTestId("platform-footprint-kpi-label-hard_deprovisioned")).toBeVisible();
 });
 
-test("platform footprint keeps all five dashboard KPIs on one row across desktop and mobile", async ({ page }) => {
+test("platform footprint keeps all five dashboard KPIs on one row for desktop and stacks them on mobile", async ({ page }) => {
   await primeAuthenticatedSession(page, "super_admin");
 
-  const assertSingleKpiRow = async () => {
+  const getTopOffsets = async () => {
     const kpiCards = page.getByTestId("platform-footprint-kpi-card");
     await expect(kpiCards).toHaveCount(5);
 
-    const topOffsets = await kpiCards.evaluateAll((elements) =>
-      elements.map((element) => (element as HTMLElement).offsetTop)
-    );
-
-    const firstTop = topOffsets[0];
-    expect(firstTop).toBeDefined();
-
-    for (const topOffset of topOffsets) {
-      expect(topOffset).toBe(firstTop);
-    }
+    return kpiCards.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).offsetTop));
   };
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/platform");
-  await assertSingleKpiRow();
+  const desktopTopOffsets = await getTopOffsets();
+  const firstDesktopTop = desktopTopOffsets[0];
+  expect(firstDesktopTop).toBeDefined();
+  for (const topOffset of desktopTopOffsets) {
+    expect(topOffset).toBe(firstDesktopTop);
+  }
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/platform");
-  await assertSingleKpiRow();
+  const mobileTopOffsets = await getTopOffsets();
+  expect(new Set(mobileTopOffsets).size).toBeGreaterThan(1);
 });
 
 test("platform footprint KPI labels stay non-interactive when they fit within their cards", async ({ page }) => {

@@ -169,7 +169,7 @@ const DashboardOverviewSection = () => {
         </CardHeader>
         <CardContent className="space-y-4 pt-0">
           <div className="h-12 animate-pulse rounded-2xl bg-stone-100" />
-          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3" data-testid="platform-footprint-kpi-grid">
             {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
@@ -220,11 +220,11 @@ const DashboardOverviewSection = () => {
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3" data-testid="platform-footprint-kpi-grid">
             {tenantSummary.tenant_status_counts.map((entry) => (
               <div
                 key={entry.status}
-                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2 sm:p-3.5"
+                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-3 sm:p-3.5"
                 data-testid="platform-footprint-kpi-card"
               >
                 <DashboardStatusKpiLabel status={entry.status} />
