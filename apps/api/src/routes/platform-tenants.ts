@@ -1,4 +1,9 @@
-import { DeprovisionTypeEnum, TenantDirectoryListRequestSchema, type TenantDirectoryListResponse } from "@crown/types";
+import {
+  DeprovisionTypeEnum,
+  TenantDirectoryListRequestSchema,
+  TenantStatusEnum,
+  type TenantDirectoryListResponse
+} from "@crown/types";
 import { Router, type RequestHandler } from "express";
 
 import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
@@ -20,7 +25,7 @@ import { provisionTenant } from "../tenant/provision-service.js";
 import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
-  listTenants?: (input: { name?: string; status?: "active" | "inactive" | "provisioning" | "provisioning_failed" }) => Promise<TenantDirectoryListResponse>;
+  listTenants?: (input: { name?: string; status?: TenantStatusEnum }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
   searchRateLimitMiddleware?: RequestHandler;
@@ -124,7 +129,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
               slug: result.slug,
               schema_name: result.schemaName,
               previous_status: result.previousStatus,
-              status: "inactive",
+              status: "hard_deprovisioned",
               operation: "hard_deprovisioned"
             })
           : SoftDeprovisionTenantResponseSchema.parse({

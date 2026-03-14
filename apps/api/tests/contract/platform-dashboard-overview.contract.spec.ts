@@ -15,7 +15,8 @@ const createOverviewPayload = (): DashboardOverviewResponse => ({
         { status: TenantStatusEnum.ACTIVE, count: 1 },
         { status: TenantStatusEnum.INACTIVE, count: 1 },
         { status: TenantStatusEnum.PROVISIONING, count: 1 },
-        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 }
+        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 },
+        { status: TenantStatusEnum.HARD_DEPROVISIONED, count: 0 }
       ],
       new_tenant_counts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },
@@ -49,7 +50,8 @@ describe("platform dashboard overview contract", () => {
       { status: "active", count: 1 },
       { status: "inactive", count: 1 },
       { status: "provisioning", count: 1 },
-      { status: "provisioning_failed", count: 0 }
+      { status: "provisioning_failed", count: 0 },
+      { status: "hard_deprovisioned", count: 0 }
     ]);
     expect(response.body.widgets.tenant_summary.new_tenant_counts).toEqual([
       { window: DashboardMetricWindowEnum.WEEK, count: 1 },

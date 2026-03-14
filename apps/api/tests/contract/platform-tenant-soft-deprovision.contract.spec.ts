@@ -21,7 +21,7 @@ describe("platform tenant soft deprovision contract", () => {
         name: "Acme Local Logistics",
         slug: "acme-local",
         schemaName: "tenant_acme_local",
-        status: TenantStatus.inactive,
+        status: TenantStatus.hard_deprovisioned,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -160,7 +160,7 @@ describe("platform tenant soft deprovision contract", () => {
       slug: "acme-local",
       schema_name: "tenant_acme_local",
       previous_status: "active",
-      status: "inactive",
+      status: "hard_deprovisioned",
       operation: "hard_deprovisioned"
     });
     expect(deprovision).toHaveBeenCalledWith({

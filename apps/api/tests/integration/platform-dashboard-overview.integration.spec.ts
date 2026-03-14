@@ -74,7 +74,8 @@ describe("platform dashboard overview integration", () => {
             { status: TenantStatus.active, count: 2 },
             { status: TenantStatus.inactive, count: 0 },
             { status: TenantStatus.provisioning, count: 1 },
-            { status: TenantStatus.provisioning_failed, count: 0 }
+            { status: TenantStatus.provisioning_failed, count: 0 },
+            { status: TenantStatus.hard_deprovisioned, count: 0 }
           ],
           new_tenant_counts: [
             { window: DashboardMetricWindowEnum.WEEK, count: 1 },
@@ -106,7 +107,8 @@ describe("platform dashboard overview integration", () => {
       { status: TenantStatus.active, count: 0 },
       { status: TenantStatus.inactive, count: 0 },
       { status: TenantStatus.provisioning, count: 0 },
-      { status: TenantStatus.provisioning_failed, count: 0 }
+      { status: TenantStatus.provisioning_failed, count: 0 },
+      { status: TenantStatus.hard_deprovisioned, count: 0 }
     ]);
     expect(response.widgets.tenant_summary.new_tenant_counts).toEqual([
       { window: DashboardMetricWindowEnum.WEEK, count: 0 },

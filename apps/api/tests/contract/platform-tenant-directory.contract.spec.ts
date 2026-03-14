@@ -96,6 +96,43 @@ describe("platform tenant directory contract", () => {
     expect(listTenants).not.toHaveBeenCalled();
   });
 
+  it("accepts hard_deprovisioned as a valid status filter", async () => {
+    const listTenants = vi.fn(async () => ({
+      data: {
+        tenantList: [
+          {
+            tenantId: "tenant-legacy",
+            name: "Legacy Fleet",
+            slug: "legacy-fleet",
+            schemaName: "tenant_legacy_fleet",
+            status: TenantStatusEnum.HARD_DEPROVISIONED,
+            createdAt: "2026-03-01T12:00:00.000Z",
+            updatedAt: "2026-03-10T09:30:00.000Z"
+          }
+        ]
+      },
+      meta: {
+        totalRecords: 1,
+        filters: {
+          name: null,
+          status: TenantStatusEnum.HARD_DEPROVISIONED
+        }
+      }
+    }));
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ listTenants }) });
+
+    const response = await request(app)
+      .post("/api/v1/platform/tenants/search")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ filters: { status: "hard_deprovisioned" } });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.tenantList[0]?.status).toBe("hard_deprovisioned");
+    expect(listTenants).toHaveBeenCalledWith({
+      status: TenantStatusEnum.HARD_DEPROVISIONED
+    });
+  });
+
   it("returns 401 for missing token", async () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ listTenants: vi.fn() }) });
 
