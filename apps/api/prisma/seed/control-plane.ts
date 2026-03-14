@@ -1,7 +1,8 @@
 import type { SeedControlPlaneBaseline, SeedPrismaClient } from "./types.js";
 import {
-  LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES,
+  LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES,
+  LOCAL_SEED_ROLES,
   LOCAL_SEED_TENANT,
   LOCAL_SEED_USERS
 } from "./constants.js";
@@ -156,50 +157,79 @@ export const ensureControlPlaneBaseline = async ({
   for (const managementSystemType of LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES) {
     const persistedType = await prisma.managementSystemType.upsert({
       where: {
-        typeCode: managementSystemType.typeCode
+        typeCode_version: {
+          typeCode: managementSystemType.typeCode,
+          version: managementSystemType.version
+        }
       },
       create: {
         typeCode: managementSystemType.typeCode,
+        version: managementSystemType.version,
         displayName: managementSystemType.displayName,
         description: managementSystemType.description,
         availabilityStatus: managementSystemType.availabilityStatus
       },
       update: {
+        version: managementSystemType.version,
         displayName: managementSystemType.displayName,
         description: managementSystemType.description,
         availabilityStatus: managementSystemType.availabilityStatus
       }
     });
 
-    managementSystemTypes.set(managementSystemType.typeCode, persistedType.id);
+    managementSystemTypes.set(`${managementSystemType.typeCode}:${managementSystemType.version}`, persistedType.id);
   }
 
-  for (const roleTemplate of LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES) {
-    const managementSystemTypeId = managementSystemTypes.get(roleTemplate.managementSystemTypeCode);
+  const roles = new Map<string, string>();
+
+  for (const role of LOCAL_SEED_ROLES) {
+    const persistedRole = await prisma.role.upsert({
+      where: {
+        roleCode: role.roleCode
+      },
+      create: {
+        roleCode: role.roleCode,
+        displayName: role.displayName,
+        description: role.description
+      },
+      update: {
+        displayName: role.displayName,
+        description: role.description
+      }
+    });
+
+    roles.set(role.roleCode, persistedRole.id);
+  }
+
+  for (const managementSystemTypeRole of LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES) {
+    const managementSystemTypeId = managementSystemTypes.get(
+      `${managementSystemTypeRole.managementSystemTypeCode}:${managementSystemTypeRole.managementSystemTypeVersion}`
+    );
     if (!managementSystemTypeId) {
-      throw new Error(`Missing management system type baseline for ${roleTemplate.managementSystemTypeCode}`);
+      throw new Error(
+        `Missing management system type baseline for ${managementSystemTypeRole.managementSystemTypeCode}:${managementSystemTypeRole.managementSystemTypeVersion}`
+      );
     }
 
-    await prisma.managementSystemRoleTemplate.upsert({
+    const roleId = roles.get(managementSystemTypeRole.roleCode);
+    if (!roleId) {
+      throw new Error(`Missing role baseline for ${managementSystemTypeRole.roleCode}`);
+    }
+
+    await prisma.managementSystemTypeRole.upsert({
       where: {
-        managementSystemTypeId_roleCode: {
+        managementSystemTypeId_roleId: {
           managementSystemTypeId,
-          roleCode: roleTemplate.roleCode
+          roleId
         }
       },
       create: {
         managementSystemTypeId,
-        roleCode: roleTemplate.roleCode,
-        displayName: roleTemplate.displayName,
-        description: roleTemplate.description,
-        isRequired: roleTemplate.isRequired,
-        bootstrapRole: roleTemplate.bootstrapRole
+        roleId,
+        isDefault: managementSystemTypeRole.isDefault
       },
       update: {
-        displayName: roleTemplate.displayName,
-        description: roleTemplate.description,
-        isRequired: roleTemplate.isRequired,
-        bootstrapRole: roleTemplate.bootstrapRole
+        isDefault: managementSystemTypeRole.isDefault
       }
     });
   }

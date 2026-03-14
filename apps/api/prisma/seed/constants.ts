@@ -1,9 +1,6 @@
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
 import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
-import {
-  ManagementSystemRoleTemplateBootstrapRoleEnum,
-  ManagementSystemTypeAvailabilityStatusEnum
-} from "../../src/generated/prisma/enums.js";
+import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 import { SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 
 export const LOCAL_SEED_TENANT = {
@@ -44,67 +41,98 @@ export const LOCAL_SEED_ACTOR_SUB = "seed-local-runner";
 
 export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
   {
-    typeCode: "tms",
+    typeCode: "transportation",
+    version: "1.0",
     displayName: "Transportation Management System",
     description: "Baseline tenant product context for transportation operations workflows.",
     availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
   },
   {
-    typeCode: "dms",
+    typeCode: "dealership",
+    version: "1.0",
     displayName: "Dealer Management System",
     description: "Baseline tenant product context for dealer operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  },
+  {
+    typeCode: "inventory",
+    version: "1.0",
+    displayName: "Inventory Management System",
+    description: "Baseline tenant product context for inventory operations workflows.",
     availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
   }
 ] as const;
 
-export const LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES = [
+export const LOCAL_SEED_ROLES = [
   {
-    managementSystemTypeCode: "tms",
-    roleCode: "admin",
+    roleCode: "tenant_admin",
     displayName: "Admin",
-    description: "Required tenant setup administrator for the transportation baseline.",
-    isRequired: true,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.tenant_admin
+    description: "Baseline administrator role shared across management-system types."
   },
   {
-    managementSystemTypeCode: "tms",
     roleCode: "dispatcher",
     displayName: "Dispatcher",
-    description: "Coordinates transportation loads and assignments.",
-    isRequired: false,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+    description: "Coordinates transportation loads and assignments."
   },
   {
-    managementSystemTypeCode: "tms",
+    roleCode: "accountant",
+    displayName: "Accountant",
+    description: "Handles financial workflows for the tenant."
+  },
+  {
+    roleCode: "human_resources",
+    displayName: "Human Resources",
+    description: "Handles people and staffing workflows for the tenant."
+  },
+  {
     roleCode: "driver",
     displayName: "Driver",
-    description: "Executes assigned transportation work in the tenant workspace.",
-    isRequired: false,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+    description: "Executes assigned transportation work in the tenant workspace."
+  }
+] as const;
+
+export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
   },
   {
-    managementSystemTypeCode: "dms",
-    roleCode: "admin",
-    displayName: "Admin",
-    description: "Required tenant setup administrator for the dealer baseline.",
-    isRequired: true,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.tenant_admin
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "dispatcher",
+    isDefault: true
   },
   {
-    managementSystemTypeCode: "dms",
-    roleCode: "sales_manager",
-    displayName: "Sales Manager",
-    description: "Oversees dealer sales workflows and team setup.",
-    isRequired: false,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "accountant",
+    isDefault: false
   },
   {
-    managementSystemTypeCode: "dms",
-    roleCode: "service_advisor",
-    displayName: "Service Advisor",
-    description: "Coordinates dealer service intake and follow-up workflows.",
-    isRequired: false,
-    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "human_resources",
+    isDefault: false
+  },
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "driver",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "dealership",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "inventory",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
   }
 ] as const;
 

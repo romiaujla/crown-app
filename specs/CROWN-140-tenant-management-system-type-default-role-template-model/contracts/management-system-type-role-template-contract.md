@@ -1,36 +1,25 @@
-# Contract: Management-System Type And Default Role Template Baseline
+# Contract: Versioned Management-System Type And Shared Role Baseline
 
 ## Intent
 
-This contract defines the persisted source-of-truth shape that later tenant onboarding, module selection, and tenant bootstrap stories may consume.
+This contract defines the persisted source-of-truth shape for versioned management-system types, shared roles, and default/bootstrap role membership.
 
-## Management-System Type Contract
+## Contract Rules
 
-- Each management-system type is represented as one control-plane record.
-- Each record exposes a stable `type_code` for deterministic lookups.
-- Each record includes lifecycle metadata so the catalog can disable a type without deleting the record.
-
-## Default Role Template Contract
-
-- Each default role template belongs to exactly one management-system type.
-- Each template exposes a stable `role_code` unique within its parent management-system type.
-- Each template includes display metadata for later UI or audit consumption.
-- Each template carries explicit bootstrap metadata for required setup and the current v1 bootstrap identity path.
+- Management-system types are versioned records keyed by `type_code` and `version`.
+- Roles are shared records keyed by `role_code`.
+- Type-to-role membership is expressed only through the junction table.
+- `is_default = true` means that role is part of the default/bootstrap role set for that management-system type version.
 
 ## Required Baseline Records
 
-- `tms`
-  - `admin` with `is_required = true` and bootstrap mapping to `tenant_admin`
-  - `dispatcher`
-  - `driver`
-- `dms`
-  - `admin` with `is_required = true` and bootstrap mapping to `tenant_admin`
-  - `sales_manager`
-  - `service_advisor`
-
-## Out Of Scope
-
-- Tenant-create API request/response contracts
-- UI forms or management-system pickers
-- Copying these templates into tenant schemas
-- Tenant-specific role customization workflows
+- `transportation:1.0`
+  - `tenant_admin` default
+  - `dispatcher` default
+  - `accountant`
+  - `human_resources`
+  - `driver` default
+- `dealership:1.0`
+  - `tenant_admin` default
+- `inventory:1.0`
+  - `tenant_admin` default
