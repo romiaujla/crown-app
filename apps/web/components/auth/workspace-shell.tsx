@@ -60,7 +60,7 @@ type SidebarLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
   activeNavigationKey: string;
   sectionEyebrow: string;
   sectionTitle: string;
-  sectionDescription: string;
+  sectionDescription?: string;
   sectionContent: ReactNode;
 };
 
@@ -281,9 +281,11 @@ export const WorkspaceShell = ({
                 </CardDescription>
                 <div className="space-y-3">
                   <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.sectionTitle}</CardTitle>
-                  <CardDescription className="max-w-3xl text-base leading-7 text-stone-600">
-                    {layoutProps.sectionDescription}
-                  </CardDescription>
+                  {layoutProps.sectionDescription ? (
+                    <CardDescription className="max-w-3xl text-base leading-7 text-stone-600">
+                      {layoutProps.sectionDescription}
+                    </CardDescription>
+                  ) : null}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">{layoutProps.sectionContent}</CardContent>

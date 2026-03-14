@@ -98,7 +98,7 @@ type PlatformShellFrameProps = {
   activeNavigationKey: (typeof platformNavigation)[number]["key"];
   sectionEyebrow: string;
   sectionTitle: string;
-  sectionDescription: string;
+  sectionDescription?: string;
   sectionContent: ReactNode;
 };
 

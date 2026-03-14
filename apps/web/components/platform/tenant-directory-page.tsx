@@ -13,24 +13,19 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-enum TenantDirectoryViewStatusEnum {
-  LOADING = "loading",
-  SUCCESS = "success",
-  ERROR = "error"
-}
+import { ViewStatusEnum } from "@/lib/view-state";
 
 type TenantDirectoryLoadingState = {
-  status: TenantDirectoryViewStatusEnum.LOADING;
+  status: ViewStatusEnum.LOADING;
 };
 
 type TenantDirectorySuccessState = {
-  status: TenantDirectoryViewStatusEnum.SUCCESS;
+  status: ViewStatusEnum.SUCCESS;
   response: TenantDirectoryListResponse;
 };
 
 type TenantDirectoryErrorState = {
-  status: TenantDirectoryViewStatusEnum.ERROR;
+  status: ViewStatusEnum.ERROR;
   message: string;
 };
 
@@ -67,7 +62,7 @@ export const TenantDirectoryPage = () => {
   const deferredNameFilter = useDeferredValue(nameFilter);
   const [statusFilter, setStatusFilter] = useState<TenantStatusEnum | "">("");
   const [viewState, setViewState] = useState<TenantDirectoryViewState>({
-    status: TenantDirectoryViewStatusEnum.LOADING
+    status: ViewStatusEnum.LOADING
   });
 
   useEffect(() => {
@@ -77,7 +72,7 @@ export const TenantDirectoryPage = () => {
 
     if (!accessToken) {
       setViewState({
-        status: TenantDirectoryViewStatusEnum.ERROR,
+        status: ViewStatusEnum.ERROR,
         message: "Tenant directory is unavailable because your platform session could not be confirmed."
       });
       return () => {
@@ -85,7 +80,7 @@ export const TenantDirectoryPage = () => {
       };
     }
 
-    setViewState({ status: TenantDirectoryViewStatusEnum.LOADING });
+    setViewState({ status: ViewStatusEnum.LOADING });
 
     const loadTenantDirectory = async () => {
       try {
@@ -98,14 +93,14 @@ export const TenantDirectoryPage = () => {
 
         if (!cancelled) {
           setViewState({
-            status: TenantDirectoryViewStatusEnum.SUCCESS,
+            status: ViewStatusEnum.SUCCESS,
             response
           });
         }
       } catch {
         if (!cancelled) {
           setViewState({
-            status: TenantDirectoryViewStatusEnum.ERROR,
+            status: ViewStatusEnum.ERROR,
             message: "Tenant directory is unavailable right now. Try refreshing once the platform API is reachable."
           });
         }
@@ -162,7 +157,7 @@ export const TenantDirectoryPage = () => {
           <Link href="/platform/tenants/new">Add new</Link>
         </Button>
       </div>
-      {viewState.status === TenantDirectoryViewStatusEnum.LOADING ? (
+      {viewState.status === ViewStatusEnum.LOADING ? (
         <div className="space-y-3 rounded-3xl border border-stone-200 bg-stone-50/80 p-4">
           <p className="text-sm font-medium text-stone-700">Loading tenant directory</p>
           <div className="grid gap-2">
@@ -172,13 +167,13 @@ export const TenantDirectoryPage = () => {
           </div>
         </div>
       ) : null}
-      {viewState.status === TenantDirectoryViewStatusEnum.ERROR ? (
+      {viewState.status === ViewStatusEnum.ERROR ? (
         <div className="rounded-3xl border border-amber-200 bg-amber-50/85 p-5">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">Directory unavailable</p>
           <p className="mt-3 text-sm leading-7 text-stone-700">{viewState.message}</p>
         </div>
       ) : null}
-      {viewState.status === TenantDirectoryViewStatusEnum.SUCCESS ? (
+      {viewState.status === ViewStatusEnum.SUCCESS ? (
         viewState.response.data.tenantList.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-sm leading-7 text-stone-600">
             No tenants matched the current filters.

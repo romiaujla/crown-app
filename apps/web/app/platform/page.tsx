@@ -15,24 +15,19 @@ import { PlatformSectionPlaceholder, PlatformShellFrame } from "@/components/pla
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
-
-enum DashboardOverviewStatusEnum {
-  LOADING = "loading",
-  SUCCESS = "success",
-  ERROR = "error"
-}
+import { ViewStatusEnum } from "@/lib/view-state";
 
 type DashboardOverviewLoadingState = {
-  status: DashboardOverviewStatusEnum.LOADING;
+  status: ViewStatusEnum.LOADING;
 };
 
 type DashboardOverviewSuccessState = {
-  status: DashboardOverviewStatusEnum.SUCCESS;
+  status: ViewStatusEnum.SUCCESS;
   overview: DashboardOverviewResponse;
 };
 
 type DashboardOverviewErrorState = {
-  status: DashboardOverviewStatusEnum.ERROR;
+  status: ViewStatusEnum.ERROR;
   message: string;
 };
 
@@ -52,7 +47,7 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
 
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
-    status: DashboardOverviewStatusEnum.LOADING
+    status: ViewStatusEnum.LOADING
   });
   const [selectedNewTenantWindow, setSelectedNewTenantWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
   const [selectedGrowthRateWindow, setSelectedGrowthRateWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
@@ -63,7 +58,7 @@ const DashboardOverviewSection = () => {
     const accessToken = getStoredAccessToken();
     if (!accessToken) {
       setOverviewState({
-        status: DashboardOverviewStatusEnum.ERROR,
+        status: ViewStatusEnum.ERROR,
         message: "Dashboard overview is unavailable because your platform session could not be confirmed."
       });
       return () => {
@@ -76,14 +71,14 @@ const DashboardOverviewSection = () => {
         const overview = await getPlatformDashboardOverview(accessToken);
         if (!cancelled) {
           setOverviewState({
-            status: DashboardOverviewStatusEnum.SUCCESS,
+            status: ViewStatusEnum.SUCCESS,
             overview
           });
         }
       } catch {
         if (!cancelled) {
           setOverviewState({
-            status: DashboardOverviewStatusEnum.ERROR,
+            status: ViewStatusEnum.ERROR,
             message: "Dashboard overview is unavailable right now. Try refreshing once the platform API is reachable."
           });
         }
@@ -97,7 +92,7 @@ const DashboardOverviewSection = () => {
     };
   }, []);
 
-  if (overviewState.status === DashboardOverviewStatusEnum.LOADING) {
+  if (overviewState.status === ViewStatusEnum.LOADING) {
     return (
       <Card className="border-white/70 bg-white/92 shadow-sm">
         <CardHeader className="space-y-3">
@@ -118,7 +113,7 @@ const DashboardOverviewSection = () => {
     );
   }
 
-  if (overviewState.status === DashboardOverviewStatusEnum.ERROR) {
+  if (overviewState.status === ViewStatusEnum.ERROR) {
     return (
       <Card className="border-amber-200/80 bg-amber-50/85 shadow-sm">
         <CardHeader className="space-y-3">
@@ -209,7 +204,6 @@ const platformSections = {
   dashboard: {
     eyebrow: "Platform overview",
     title: "Dashboard",
-    description: "",
     renderContent: () => <DashboardOverviewSection />
   },
   users: {
@@ -265,7 +259,7 @@ const PlatformPage = () => {
           <PlatformSectionPlaceholder description={activeSection.description} />
         )
       }
-      sectionDescription={activeSection.description}
+      sectionDescription={"description" in activeSection ? activeSection.description : undefined}
       sectionEyebrow={activeSection.eyebrow}
       sectionTitle={activeSection.title}
     />
