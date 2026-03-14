@@ -111,7 +111,7 @@
 - [X] T026 [P] Run focused Playwright coverage for the tenant-directory flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
 - [X] T027 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
 - [X] T028 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`
-- [ ] T029 Create the PR for `feat/CROWN-95-tenant-directory-table-search-status-filter` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/tasks.md`
+- [X] T029 Create the PR for `feat/CROWN-95-tenant-directory-table-search-status-filter` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/tasks.md`
 
 ---
 
