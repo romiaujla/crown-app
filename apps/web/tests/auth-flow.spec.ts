@@ -578,20 +578,16 @@ test("platform footprint keeps all five dashboard KPIs on one row across desktop
   await assertSingleKpiRow();
 });
 
-test("platform footprint KPI labels reveal the full status text on hover and tap", async ({ page }) => {
+test("platform footprint KPI labels stay non-interactive when they fit within their cards", async ({ page }) => {
   await primeAuthenticatedSession(page, "super_admin");
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/platform");
-
-  await page.getByTestId("platform-footprint-kpi-label-provisioning_failed").hover();
-  await expect(page.getByTestId("platform-footprint-kpi-tooltip-provisioning_failed")).toBeVisible();
+  await expect(page.locator('button[data-testid^="platform-footprint-kpi-label-"]')).toHaveCount(0);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/platform");
-
-  await page.getByTestId("platform-footprint-kpi-label-provisioning_failed").click();
-  await expect(page.getByTestId("platform-footprint-kpi-popover-provisioning_failed")).toBeVisible();
+  await expect(page.locator('button[data-testid^="platform-footprint-kpi-label-"]')).toHaveCount(0);
 });
 
 test("platform dashboard window chips switch one selected value at a time", async ({ page }) => {

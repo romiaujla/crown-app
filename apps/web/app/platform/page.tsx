@@ -2,7 +2,7 @@
 
 import { DashboardMetricWindowEnum, type DashboardOverviewResponse, type TenantStatusEnum } from "@crown/types";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   formatGrowthRateValue,
@@ -34,6 +34,51 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
 
 const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
   const label = formatTenantStatusLabel(status).toUpperCase();
+  const labelRef = useRef<HTMLButtonElement | HTMLParagraphElement | null>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    const labelElement = labelRef.current;
+    if (!labelElement) {
+      return;
+    }
+
+    const updateTruncation = () => {
+      setIsTruncated(labelElement.scrollWidth > labelElement.clientWidth + 1);
+    };
+
+    updateTruncation();
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            updateTruncation();
+          })
+        : null;
+
+    resizeObserver?.observe(labelElement);
+    if (labelElement.parentElement) {
+      resizeObserver?.observe(labelElement.parentElement);
+    }
+    window.addEventListener("resize", updateTruncation);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateTruncation);
+    };
+  }, [label]);
+
+  if (!isTruncated) {
+    return (
+      <p
+        ref={labelRef as React.RefObject<HTMLParagraphElement>}
+        className="truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 sm:text-[11px] sm:tracking-[0.14em]"
+        data-testid={`platform-footprint-kpi-label-${status}`}
+      >
+        {label}
+      </p>
+    );
+  }
 
   return (
     <Popover>
@@ -42,7 +87,8 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
           <PopoverTrigger asChild>
             <button
               aria-label={label}
-              className="block w-full cursor-help truncate text-left text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-xs sm:tracking-[0.18em]"
+              ref={labelRef as React.RefObject<HTMLButtonElement>}
+              className="block w-full truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-[11px] sm:tracking-[0.14em]"
               data-testid={`platform-footprint-kpi-label-${status}`}
               type="button"
             >
@@ -173,11 +219,11 @@ const DashboardOverviewSection = () => {
               {tenantSummary.tenant_status_counts.map((entry) => (
                 <div
                   key={entry.status}
-                  className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2.5 sm:p-4"
+                  className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2 sm:p-3.5"
                   data-testid="platform-footprint-kpi-card"
                 >
                   <DashboardStatusKpiLabel status={entry.status} />
-                  <p className="mt-2 text-xl font-semibold leading-none text-stone-950 sm:mt-3 sm:text-3xl">{entry.count}</p>
+                  <p className="mt-2 text-lg font-semibold leading-none text-stone-950 sm:mt-3 sm:text-[1.75rem]">{entry.count}</p>
                 </div>
               ))}
             </div>
