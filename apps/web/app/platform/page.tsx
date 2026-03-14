@@ -22,11 +22,13 @@ type DashboardOverviewState = ViewState<DashboardOverviewResponse, "overview">;
 type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
 
 const formatTenantStatusLabel = (status: TenantStatusEnum) =>
-  status
-    .split("_")
-    .filter(Boolean)
-    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
-    .join(" ");
+  status === "hard_deprovisioned"
+    ? "Deprovisioned"
+    : status
+        .split("_")
+        .filter(Boolean)
+        .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+        .join(" ");
 
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
@@ -86,9 +88,13 @@ const DashboardOverviewSection = () => {
         </CardHeader>
         <CardContent className="space-y-4 pt-0">
           <div className="h-12 animate-pulse rounded-2xl bg-stone-100" />
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-20 animate-pulse rounded-2xl border border-stone-100 bg-stone-50" />
+          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="h-20 animate-pulse rounded-2xl border border-stone-100 bg-stone-50"
+                data-testid="platform-footprint-kpi-card"
+              />
             ))}
           </div>
         </CardContent>
@@ -133,13 +139,17 @@ const DashboardOverviewSection = () => {
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
             {tenantSummary.tenant_status_counts.map((entry) => (
-              <div key={entry.status} className="rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+              <div
+                key={entry.status}
+                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2.5 sm:p-4"
+                data-testid="platform-footprint-kpi-card"
+              >
+                <p className="text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-stone-500 sm:text-xs sm:tracking-[0.18em]">
                   {formatTenantStatusLabel(entry.status)}
                 </p>
-                <p className="mt-3 text-3xl font-semibold text-stone-950">{entry.count}</p>
+                <p className="mt-2 text-xl font-semibold leading-none text-stone-950 sm:mt-3 sm:text-3xl">{entry.count}</p>
               </div>
             ))}
           </div>

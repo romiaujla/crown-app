@@ -32,13 +32,14 @@ type TenantDirectoryFixture = TenantDirectoryListResponse;
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
   widgets: {
     tenant_summary: {
-      total_tenant_count: 4,
+      total_tenant_count: 5,
       tenant_user_count: 12,
       tenant_status_counts: [
         { status: TenantStatusEnum.ACTIVE, count: 3 },
         { status: TenantStatusEnum.INACTIVE, count: 1 },
         { status: TenantStatusEnum.PROVISIONING, count: 0 },
-        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 }
+        { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 },
+        { status: TenantStatusEnum.HARD_DEPROVISIONED, count: 1 }
       ],
       new_tenant_counts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },
@@ -533,7 +534,7 @@ test("platform dashboard renders the live metric cards from the overview widget"
   await page.goto("/platform");
 
   await expect(page.getByText("Platform footprint")).toBeVisible();
-  await expect(page.getByText("4 tenants")).toBeVisible();
+  await expect(page.getByText("5 tenants")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Total users" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "New tenants" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Tenant growth rate" })).toBeVisible();
@@ -546,6 +547,35 @@ test("platform dashboard renders the live metric cards from the overview widget"
   await expect(page.getByText("Inactive", { exact: true })).toBeVisible();
   await expect(page.getByText("Provisioning", { exact: true })).toBeVisible();
   await expect(page.getByText("Provisioning Failed", { exact: true })).toBeVisible();
+  await expect(page.getByText("Deprovisioned", { exact: true })).toBeVisible();
+});
+
+test("platform footprint keeps all five dashboard KPIs on one row across desktop and mobile", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  const assertSingleKpiRow = async () => {
+    const kpiCards = page.getByTestId("platform-footprint-kpi-card");
+    await expect(kpiCards).toHaveCount(5);
+
+    const topOffsets = await kpiCards.evaluateAll((elements) =>
+      elements.map((element) => (element as HTMLElement).offsetTop)
+    );
+
+    const firstTop = topOffsets[0];
+    expect(firstTop).toBeDefined();
+
+    for (const topOffset of topOffsets) {
+      expect(topOffset).toBe(firstTop);
+    }
+  };
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/platform");
+  await assertSingleKpiRow();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/platform");
+  await assertSingleKpiRow();
 });
 
 test("platform dashboard window chips switch one selected value at a time", async ({ page }) => {
@@ -593,7 +623,7 @@ test("platform shell collapses to icon-only navigation on iPad-sized layouts and
 
   await expect(page.locator(".sidebar-nav__label", { hasText: "Dashboard" })).toBeHidden();
   await expect(page.getByRole("link", { name: "Dashboard" })).toHaveAttribute("title", "Dashboard");
-  await expect(page.getByText("4 tenants")).toBeVisible();
+  await expect(page.getByText("5 tenants")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Total users" })).toBeVisible();
 
   const billingLink = page.getByRole("link", { name: "Billing" });
