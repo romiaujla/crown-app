@@ -119,4 +119,28 @@ describe("platform tenant directory integration", () => {
       }
     });
   });
+
+  it("maps hard_deprovisioned tenants through the shared directory contract", async () => {
+    tenantFindMany.mockResolvedValue([
+      {
+        id: "tenant-legacy",
+        name: "Legacy Fleet",
+        slug: "legacy-fleet",
+        schemaName: "tenant_legacy_fleet",
+        status: "hard_deprovisioned",
+        createdAt: new Date("2026-03-01T12:00:00.000Z"),
+        updatedAt: new Date("2026-03-10T09:30:00.000Z")
+      }
+    ]);
+    tenantCount.mockResolvedValue(1);
+
+    const { getPlatformTenantDirectory } = await import("../../src/platform/tenants/directory-service.js");
+
+    const response = await getPlatformTenantDirectory({
+      status: TenantStatusEnum.HARD_DEPROVISIONED
+    });
+
+    expect(response.data.tenantList[0]?.status).toBe(TenantStatusEnum.HARD_DEPROVISIONED);
+    expect(response.meta.filters.status).toBe(TenantStatusEnum.HARD_DEPROVISIONED);
+  });
 });

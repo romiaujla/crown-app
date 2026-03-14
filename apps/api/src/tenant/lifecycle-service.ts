@@ -166,7 +166,7 @@ export const hardDeprovisionTenant = async (
 
   const updatedTenant = await db.tenant.update({
     where: { id: input.tenantId },
-    data: { status: TenantStatus.inactive }
+    data: { status: TenantStatus.hard_deprovisioned }
   });
 
   return {

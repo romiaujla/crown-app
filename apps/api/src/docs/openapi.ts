@@ -349,7 +349,7 @@ export const authDocsDocument = {
           },
           status: {
             type: "string",
-            enum: ["inactive"]
+            enum: ["hard_deprovisioned"]
           },
           operation: {
             type: "string",
@@ -803,7 +803,7 @@ export const authDocsDocument = {
         tags: ["Platform Tenants"],
         summary: "Soft or hard deprovision a tenant",
         description:
-          "Protected super-admin route used to soft deprovision a tenant by default or hard deprovision it when `deprovisionType` is `hard`. Hard deprovision drops the tenant schema and tenant-scoped metadata but retains the tenant record in `inactive`.",
+          "Protected super-admin route used to soft deprovision a tenant by default or hard deprovision it when `deprovisionType` is `hard`. Hard deprovision drops the tenant schema and tenant-scoped metadata but retains the tenant record in `hard_deprovisioned`.",
         security: bearerSecurity,
         requestBody: {
           required: true,
