@@ -15,26 +15,9 @@ import { PlatformSectionPlaceholder, PlatformShellFrame } from "@/components/pla
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
-import { ViewStatusEnum } from "@/lib/view-state";
+import { ViewState, ViewStatusEnum } from "@/lib/view-state";
 
-type DashboardOverviewLoadingState = {
-  status: ViewStatusEnum.LOADING;
-};
-
-type DashboardOverviewSuccessState = {
-  status: ViewStatusEnum.SUCCESS;
-  overview: DashboardOverviewResponse;
-};
-
-type DashboardOverviewErrorState = {
-  status: ViewStatusEnum.ERROR;
-  message: string;
-};
-
-type DashboardOverviewState =
-  | DashboardOverviewLoadingState
-  | DashboardOverviewSuccessState
-  | DashboardOverviewErrorState;
+type DashboardOverviewState = ViewState<DashboardOverviewResponse, "overview">;
 
 type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
 

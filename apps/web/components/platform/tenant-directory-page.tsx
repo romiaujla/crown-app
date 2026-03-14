@@ -13,26 +13,9 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ViewStatusEnum } from "@/lib/view-state";
+import { ViewState, ViewStatusEnum } from "@/lib/view-state";
 
-type TenantDirectoryLoadingState = {
-  status: ViewStatusEnum.LOADING;
-};
-
-type TenantDirectorySuccessState = {
-  status: ViewStatusEnum.SUCCESS;
-  response: TenantDirectoryListResponse;
-};
-
-type TenantDirectoryErrorState = {
-  status: ViewStatusEnum.ERROR;
-  message: string;
-};
-
-type TenantDirectoryViewState =
-  | TenantDirectoryLoadingState
-  | TenantDirectorySuccessState
-  | TenantDirectoryErrorState;
+type TenantDirectoryViewState = ViewState<TenantDirectoryListResponse, "response">;
 
 const ALL_STATUSES_VALUE = "__all__";
 const tenantStatusOptions = Object.values(TenantStatusEnum);
