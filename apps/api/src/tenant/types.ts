@@ -1,4 +1,4 @@
-import type { DeprovisionType } from "@crown/types";
+import type { DeprovisionTypeEnum } from "@crown/types";
 import type { Tenant } from "../generated/prisma/client.js";
 import type { TenantStatus } from "../domain/status-enums.js";
 
@@ -71,7 +71,7 @@ export type HardDeprovisionTenantInput = {
 
 export type DeprovisionTenantInput = {
   tenantId: string;
-  deprovisionType: DeprovisionType;
+  deprovisionType: DeprovisionTypeEnum;
 };
 
 export type SoftDeprovisionTenantSuccessResult = {

@@ -18,11 +18,13 @@ Applies to all contributors (human and AI) across all repository directories.
 - One-off literal values that are local to a single type or schema may remain inline when the value set is not reused elsewhere.
 - TypeScript enum member keys must use `SNAKE_CASE`.
 - TypeScript enum type names must use the `Enum` suffix.
+- When a shared enum is the source of truth for a contract, use the enum type directly in exported TypeScript types instead of creating template-literal aliases such as ``type X = `${XEnum}```.
 - When a reusable finite value set already exists as a shared enum, Zod schemas should derive from that enum directly, using `z.enum(SharedEnum)` on the repository's Zod 4 baseline rather than repeating inline string arrays.
 - For multi-branch discriminated unions, prefer composing the union from named branch type aliases instead of inlining multiple object-literal branches in a single declaration.
 - Use named result-branch aliases when the branches carry distinct meaning, are reused, or would otherwise make the union harder to scan in review.
 - When API and web packages share the same contract shapes, schemas, enums, or inferred types, define that shared contract once in `@crown/types` instead of duplicating it across app-local modules.
 - Validate external input with Zod before business logic.
+- Protected API endpoints must apply rate limiting by default. Any intentional exemption must be called out in the PR description and relevant API documentation with rationale.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
 - Do not commit generated build artifacts unless explicitly required.

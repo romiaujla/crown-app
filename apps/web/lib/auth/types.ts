@@ -1,4 +1,4 @@
-import { DashboardOverviewResponseSchema, type TenantStatus } from "@crown/types";
+import { DashboardOverviewResponseSchema } from "@crown/types";
 import { z } from "zod";
 
 export enum AuthStateStatusEnum {
