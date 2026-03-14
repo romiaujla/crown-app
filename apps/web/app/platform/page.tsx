@@ -1,6 +1,6 @@
 "use client";
 
-import { DashboardMetricWindowEnum, type DashboardOverviewResponse, type TenantStatus } from "@crown/types";
+import { DashboardMetricWindowEnum, type DashboardOverviewResponse, type TenantStatusEnum } from "@crown/types";
 import {
   Activity,
   BadgeDollarSign,
@@ -131,7 +131,7 @@ type DashboardOverviewState =
 
 type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
 
-const formatTenantStatusLabel = (status: TenantStatus) =>
+const formatTenantStatusLabel = (status: TenantStatusEnum) =>
   status
     .split("_")
     .filter(Boolean)
