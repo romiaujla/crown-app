@@ -13,8 +13,7 @@ import {
 } from "@/components/platform/dashboard-metric-cards";
 import { PlatformSectionPlaceholder, PlatformShellFrame } from "@/components/platform/platform-shell-frame";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
 import { ViewState, ViewStatusEnum } from "@/lib/view-state";
@@ -34,8 +33,21 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
 
 const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
   const label = formatTenantStatusLabel(status).toUpperCase();
-  const labelRef = useRef<HTMLButtonElement | HTMLParagraphElement | null>(null);
+  const labelRef = useRef<HTMLButtonElement | null>(null);
   const [isTruncated, setIsTruncated] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const shouldExposeFullLabel = isTruncated || label.length > 12;
+
+  const refreshTruncation = () => {
+    const labelElement = labelRef.current;
+    if (!labelElement) {
+      return false;
+    }
+
+    const nextIsTruncated = labelElement.scrollWidth > labelElement.clientWidth + 1;
+    setIsTruncated(nextIsTruncated);
+    return nextIsTruncated;
+  };
 
   useEffect(() => {
     const labelElement = labelRef.current;
@@ -43,16 +55,12 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
       return;
     }
 
-    const updateTruncation = () => {
-      setIsTruncated(labelElement.scrollWidth > labelElement.clientWidth + 1);
-    };
-
-    updateTruncation();
+    refreshTruncation();
 
     const resizeObserver =
       typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => {
-            updateTruncation();
+            refreshTruncation();
           })
         : null;
 
@@ -60,44 +68,42 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
     if (labelElement.parentElement) {
       resizeObserver?.observe(labelElement.parentElement);
     }
-    window.addEventListener("resize", updateTruncation);
+    window.addEventListener("resize", refreshTruncation);
 
     return () => {
       resizeObserver?.disconnect();
-      window.removeEventListener("resize", updateTruncation);
+      window.removeEventListener("resize", refreshTruncation);
     };
   }, [label]);
 
-  if (!isTruncated) {
-    return (
-      <p
-        ref={labelRef as React.RefObject<HTMLParagraphElement>}
-        className="truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 sm:text-[11px] sm:tracking-[0.14em]"
-        data-testid={`platform-footprint-kpi-label-${status}`}
-      >
-        {label}
-      </p>
-    );
+  const labelButton = (
+    <button
+      aria-label={label}
+      className="block w-full truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-[11px] sm:tracking-[0.14em]"
+      data-testid={`platform-footprint-kpi-label-${status}`}
+      onFocus={refreshTruncation}
+      onClick={() => {
+        refreshTruncation();
+        if (shouldExposeFullLabel) {
+          setIsPopoverOpen((currentValue) => !currentValue);
+        }
+      }}
+      onMouseEnter={refreshTruncation}
+      ref={labelRef}
+      title={shouldExposeFullLabel ? label : undefined}
+      type="button"
+    >
+      {label}
+    </button>
+  );
+
+  if (!shouldExposeFullLabel) {
+    return labelButton;
   }
 
   return (
-    <Popover>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <button
-              aria-label={label}
-              ref={labelRef as React.RefObject<HTMLButtonElement>}
-              className="block w-full truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-[11px] sm:tracking-[0.14em]"
-              data-testid={`platform-footprint-kpi-label-${status}`}
-              type="button"
-            >
-              {label}
-            </button>
-          </PopoverTrigger>
-        </TooltipTrigger>
-        <TooltipContent data-testid={`platform-footprint-kpi-tooltip-${status}`}>{label}</TooltipContent>
-      </Tooltip>
+    <Popover onOpenChange={setIsPopoverOpen} open={isPopoverOpen}>
+      <PopoverAnchor asChild>{labelButton}</PopoverAnchor>
       <PopoverContent className="w-fit max-w-[12rem]" data-testid={`platform-footprint-kpi-popover-${status}`}>
         {label}
       </PopoverContent>
@@ -200,71 +206,69 @@ const DashboardOverviewSection = () => {
     tenantSummary.tenant_growth_rates[0];
 
   return (
-    <TooltipProvider delayDuration={150}>
-      <div className="space-y-6">
-        <Card className="border-white/70 bg-white/92 shadow-sm">
-          <CardHeader className="space-y-3">
-            <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Platform footprint
+    <div className="space-y-6">
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Platform footprint
+          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Current tenant count with lifecycle status KPIs for the platform.
             </CardDescription>
-            <div className="space-y-2">
-              <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
-              <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-                Current tenant count with lifecycle status KPIs for the platform.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
-              {tenantSummary.tenant_status_counts.map((entry) => (
-                <div
-                  key={entry.status}
-                  className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2 sm:p-3.5"
-                  data-testid="platform-footprint-kpi-card"
-                >
-                  <DashboardStatusKpiLabel status={entry.status} />
-                  <p className="mt-2 text-lg font-semibold leading-none text-stone-950 sm:mt-3 sm:text-[1.75rem]">{entry.count}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-white/70 bg-white/92 shadow-sm">
-          <CardHeader className="space-y-3">
-            <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Current scale
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
+            {tenantSummary.tenant_status_counts.map((entry) => (
+              <div
+                key={entry.status}
+                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2 sm:p-3.5"
+                data-testid="platform-footprint-kpi-card"
+              >
+                <DashboardStatusKpiLabel status={entry.status} />
+                <p className="mt-2 text-lg font-semibold leading-none text-stone-950 sm:mt-3 sm:text-[1.75rem]">{entry.count}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="border-white/70 bg-white/92 shadow-sm">
+        <CardHeader className="space-y-3">
+          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Current scale
+          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
+            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+              Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
             </CardDescription>
-            <div className="space-y-2">
-              <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
-              <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-                Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
-            <SummaryMetricCard
-              description="Current number of tenant users across all tenant workspaces."
-              title="Total users"
-              value={tenantSummary.tenant_user_count.toString()}
-            />
-            <WindowMetricCard
-              description={getNewTenantDescription(selectedNewTenantMetric.window)}
-              onSelectWindow={setSelectedNewTenantWindow}
-              selectedWindow={selectedNewTenantMetric.window}
-              title="New tenants"
-              value={selectedNewTenantMetric.count.toString()}
-            />
-            <WindowMetricCard
-              description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
-              onSelectWindow={setSelectedGrowthRateWindow}
-              selectedWindow={selectedGrowthRateMetric.window}
-              title="Tenant growth rate"
-              value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
-            />
-          </CardContent>
-        </Card>
-      </div>
-    </TooltipProvider>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
+          <SummaryMetricCard
+            description="Current number of tenant users across all tenant workspaces."
+            title="Total users"
+            value={tenantSummary.tenant_user_count.toString()}
+          />
+          <WindowMetricCard
+            description={getNewTenantDescription(selectedNewTenantMetric.window)}
+            onSelectWindow={setSelectedNewTenantWindow}
+            selectedWindow={selectedNewTenantMetric.window}
+            title="New tenants"
+            value={selectedNewTenantMetric.count.toString()}
+          />
+          <WindowMetricCard
+            description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
+            onSelectWindow={setSelectedGrowthRateWindow}
+            selectedWindow={selectedGrowthRateMetric.window}
+            title="Tenant growth rate"
+            value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

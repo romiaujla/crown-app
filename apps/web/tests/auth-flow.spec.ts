@@ -583,11 +583,26 @@ test("platform footprint KPI labels stay non-interactive when they fit within th
 
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/platform");
-  await expect(page.locator('button[data-testid^="platform-footprint-kpi-label-"]')).toHaveCount(0);
+  await expect(page.getByTestId("platform-footprint-kpi-label-active")).not.toHaveAttribute("title", /.+/);
+});
+
+test("platform footprint KPI labels reveal full text for long statuses", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/platform");
+
+  const desktopInteractiveLabel = page.getByRole("button", { name: "PROVISIONING FAILED" });
+  await expect(desktopInteractiveLabel).toBeVisible();
+  await expect(desktopInteractiveLabel).toHaveAttribute("title", "PROVISIONING FAILED");
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/platform");
-  await expect(page.locator('button[data-testid^="platform-footprint-kpi-label-"]')).toHaveCount(0);
+
+  const mobileInteractiveLabel = page.getByRole("button", { name: "PROVISIONING FAILED" });
+  await expect(mobileInteractiveLabel).toBeVisible();
+  await mobileInteractiveLabel.click();
+  await expect(page.locator('[data-testid^="platform-footprint-kpi-popover-"]').first()).toBeVisible();
 });
 
 test("platform dashboard window chips switch one selected value at a time", async ({ page }) => {
