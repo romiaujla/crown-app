@@ -1,5 +1,6 @@
-import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
+import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 import { SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 
 export const LOCAL_SEED_TENANT = {
@@ -37,6 +38,103 @@ export const LOCAL_SEED_USERS = {
 } as const;
 
 export const LOCAL_SEED_ACTOR_SUB = "seed-local-runner";
+
+export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
+  {
+    typeCode: "transportation",
+    version: "1.0",
+    displayName: "Transportation Management System",
+    description: "Baseline tenant product context for transportation operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  },
+  {
+    typeCode: "dealership",
+    version: "1.0",
+    displayName: "Dealer Management System",
+    description: "Baseline tenant product context for dealer operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  },
+  {
+    typeCode: "inventory",
+    version: "1.0",
+    displayName: "Inventory Management System",
+    description: "Baseline tenant product context for inventory operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  }
+] as const;
+
+export const LOCAL_SEED_ROLES = [
+  {
+    roleCode: "tenant_admin",
+    displayName: "Admin",
+    description: "Baseline administrator role shared across management-system types."
+  },
+  {
+    roleCode: "dispatcher",
+    displayName: "Dispatcher",
+    description: "Coordinates transportation loads and assignments."
+  },
+  {
+    roleCode: "accountant",
+    displayName: "Accountant",
+    description: "Handles financial workflows for the tenant."
+  },
+  {
+    roleCode: "human_resources",
+    displayName: "Human Resources",
+    description: "Handles people and staffing workflows for the tenant."
+  },
+  {
+    roleCode: "driver",
+    displayName: "Driver",
+    description: "Executes assigned transportation work in the tenant workspace."
+  }
+] as const;
+
+export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "dispatcher",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "accountant",
+    isDefault: false
+  },
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "human_resources",
+    isDefault: false
+  },
+  {
+    managementSystemTypeCode: "transportation",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "driver",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "dealership",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
+  },
+  {
+    managementSystemTypeCode: "inventory",
+    managementSystemTypeVersion: "1.0",
+    roleCode: "tenant_admin",
+    isDefault: true
+  }
+] as const;
 
 export const LOCAL_SEED_RESET_TABLES = [
   "activity_records",
