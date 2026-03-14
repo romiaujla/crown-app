@@ -206,7 +206,7 @@ export const TenantDirectoryPage = () => {
                   {viewState.response.data.tenantList.map((tenant) => (
                     <tr key={tenant.tenantId} className="border-b border-stone-200/80 text-sm text-stone-700 last:border-b-0">
                       <td className="px-4 py-4 align-top">
-                        <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.tenantId}`}>
+                        <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.slug}`}>
                           <span>{tenant.name}</span>
                           <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
                         </Link>
@@ -226,7 +226,7 @@ export const TenantDirectoryPage = () => {
                       <td className="px-4 py-4 align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</td>
                       <td className="px-4 py-4 align-top text-right">
                         <Button asChild size="sm" variant="outline">
-                          <Link href={`/platform/tenants/${tenant.tenantId}/edit`}>
+                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>
                             <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
                             Edit
                           </Link>

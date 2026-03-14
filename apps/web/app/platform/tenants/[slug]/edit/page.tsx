@@ -3,7 +3,7 @@ import { PlatformShellFrame } from "@/components/platform/platform-shell-frame";
 
 type PlatformTenantEditEntryPageProps = {
   params: {
-    tenantId: string;
+    slug: string;
   };
 };
 
@@ -24,7 +24,7 @@ const PlatformTenantEditEntryPage = ({ params }: PlatformTenantEditEntryPageProp
             scope for this story.
           </p>
           <p>
-            Tenant reference: <span className="font-semibold text-stone-950">{params.tenantId}</span>
+            Tenant reference: <span className="font-semibold text-stone-950">{params.slug}</span>
           </p>
         </CardContent>
       </Card>

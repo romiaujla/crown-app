@@ -476,9 +476,9 @@ test("tenant directory action links route to stable detail, add, and edit entry 
   await page.goto("/platform/tenants");
   await page.getByRole("link", { name: "Northwind TMS" }).click();
 
-  await expect(page).toHaveURL(/\/platform\/tenants\/tenant-1$/);
+  await expect(page).toHaveURL(/\/platform\/tenants\/northwind-tms$/);
   await expect(page.getByRole("heading", { name: "Tenant Details", level: 3, exact: true })).toBeVisible();
-  await expect(page.getByText("Tenant reference:")).toContainText("tenant-1");
+  await expect(page.getByText("Tenant reference:")).toContainText("northwind-tms");
 
   await page.goto("/platform/tenants");
   await page.getByRole("link", { name: "Add new" }).click();
@@ -489,7 +489,7 @@ test("tenant directory action links route to stable detail, add, and edit entry 
   await page.goto("/platform/tenants");
   await page.getByRole("link", { name: /Edit/ }).first().click();
 
-  await expect(page).toHaveURL(/\/platform\/tenants\/tenant-1\/edit$/);
+  await expect(page).toHaveURL(/\/platform\/tenants\/northwind-tms\/edit$/);
   await expect(page.getByRole("heading", { name: "Edit Tenant", level: 3 })).toBeVisible();
 });
 
