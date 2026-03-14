@@ -240,6 +240,27 @@ export const authDocsDocument = {
           }
         }
       },
+      TenantDirectoryListFilter: {
+        type: "object",
+        properties: {
+          search: {
+            type: "string",
+            minLength: 1,
+            maxLength: 120
+          },
+          status: {
+            type: "string",
+            enum: tenantStatusValues
+          }
+        }
+      },
+      TenantDirectoryListRequest: {
+        type: "object",
+        required: ["filter"],
+        properties: {
+          filter: { $ref: "#/components/schemas/TenantDirectoryListFilter" }
+        }
+      },
       TenantDirectoryListFilters: {
         type: "object",
         required: ["search", "status"],
@@ -641,34 +662,21 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/platform/tenants": {
-      get: {
+    "/api/v1/platform/tenants/search": {
+      post: {
         tags: ["Platform Tenants"],
-        summary: "List tenants for the control plane",
+        summary: "Search tenants for the control plane",
         description:
-          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Supports name search and a single tenant-status filter.",
+          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Accepts a request body with `filter.search` and `filter.status`.",
         security: bearerSecurity,
-        parameters: [
-          {
-            name: "search",
-            in: "query",
-            required: false,
-            schema: {
-              type: "string",
-              minLength: 1,
-              maxLength: 120
-            }
-          },
-          {
-            name: "status",
-            in: "query",
-            required: false,
-            schema: {
-              type: "string",
-              enum: tenantStatusValues
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TenantDirectoryListRequest" }
             }
           }
-        ],
+        },
         responses: {
           "200": {
             description: "Tenant directory response",
@@ -678,7 +686,7 @@ export const authDocsDocument = {
               }
             }
           },
-          "400": errorResponse("Invalid tenant directory query", "validation_error", "Invalid tenant directory query"),
+          "400": errorResponse("Invalid tenant directory filter", "validation_error", "Invalid tenant directory filter"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
         }

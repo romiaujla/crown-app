@@ -22,13 +22,20 @@ export enum TenantStatusEnum {
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
 export type TenantStatus = `${TenantStatusEnum}`;
 
-export const TenantDirectoryListQuerySchema = z.object({
+export const TenantDirectoryListFilterSchema = z.object({
   search: z.string().trim().min(1).max(120).optional(),
   status: TenantStatusSchema.optional()
 });
-export type TenantDirectoryListQuery = {
+export type TenantDirectoryListFilter = {
   search?: string;
   status?: TenantStatus;
+};
+
+export const TenantDirectoryListRequestSchema = z.object({
+  filter: TenantDirectoryListFilterSchema.default({})
+});
+export type TenantDirectoryListRequest = {
+  filter: TenantDirectoryListFilter;
 };
 
 export const TenantDirectoryListItemSchema = z.object({

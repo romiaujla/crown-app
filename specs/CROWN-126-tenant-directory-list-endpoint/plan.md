@@ -5,7 +5,7 @@
 
 ## Summary
 
-Add a super-admin-only tenant directory endpoint that returns persisted tenant records for the control plane in the agreed `{ data, meta }` envelope. The implementation will add one collection route, one focused directory service, shared contract types in `@crown/types`, contract and integration coverage, and OpenAPI documentation for the list response plus `search` and `status` filtering.
+Add a super-admin-only tenant directory search endpoint that returns persisted tenant records for the control plane in the agreed `{ data, meta }` envelope. The implementation will add one collection-search route, one focused directory service, shared contract types in `@crown/types`, contract and integration coverage, and OpenAPI documentation for the list response plus body-based `filter.search` and `filter.status`.
 
 ## Technical Context
 
@@ -21,13 +21,13 @@ Add a super-admin-only tenant directory endpoint that returns persisted tenant r
 
 ## CROWN-126 Implementation Outline
 
-- Add a protected `GET /api/v1/platform/tenants` route for tenant directory reads.
-- Validate `search` and `status` query parameters before executing business logic.
+- Add a protected `POST /api/v1/platform/tenants/search` route for tenant directory reads.
+- Validate the request body `filter.search` and `filter.status` before executing business logic.
 - Query persisted `Tenant` records through Prisma and map them to the agreed camelCase API response.
 - Return the collection in `{ data: { tenantList }, meta }` with `meta.totalRecords` and echoed filters.
 - Reuse the shared tenant status enum as the source of truth for status filtering and response values.
 - Define the shared request/response schemas and inferred types once in `@crown/types` so the web client can consume the same contract.
-- Update the manual OpenAPI document and docs-route tests for the new collection route.
+- Update the manual OpenAPI document and docs-route tests for the new search-style collection route.
 
 ## Constitution Check
 

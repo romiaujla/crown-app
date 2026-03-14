@@ -42,11 +42,11 @@
 
 **Goal**: A super admin can request the tenant directory and receive persisted tenant records in the agreed `{ data, meta }` envelope
 
-**Independent Test**: Call `GET /api/v1/platform/tenants` as a super admin and verify the route returns `data.tenantList` with camelCase tenant fields plus `meta.totalRecords`
+**Independent Test**: Call `POST /api/v1/platform/tenants/search` as a super admin and verify the route returns `data.tenantList` with camelCase tenant fields plus `meta.totalRecords`
 
 ### Tests for User Story 1
 
-- [ ] T008 [P] [US1] Add contract coverage for `GET /api/v1/platform/tenants` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-directory.contract.spec.ts`
+- [ ] T008 [P] [US1] Add contract coverage for `POST /api/v1/platform/tenants/search` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-directory.contract.spec.ts`
 - [ ] T009 [P] [US1] Add service/integration coverage for tenant directory mapping and empty-result behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-tenant-directory.integration.spec.ts`
 
 ### Implementation for User Story 1
@@ -63,7 +63,7 @@
 
 **Goal**: The tenant directory applies `search` and `status` filters before returning results
 
-**Independent Test**: Call the route with `search` and `status` query parameters and verify only matching tenants are returned while the applied filters are echoed in `meta.filters`
+**Independent Test**: Call the route with `filter.search` and `filter.status` in the request body and verify only matching tenants are returned while the applied filters are echoed in `meta.filters`
 
 ### Tests for User Story 2
 
@@ -93,7 +93,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Document the tenant directory route, query parameters, and shared response schemas in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`
+- [ ] T020 [US3] Document the tenant directory route, request body contract, and shared response schemas in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`
 - [ ] T021 [US3] Keep the route explicitly limited to tenant collection data without nested relations such as `userList` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/tenants/directory-service.ts`
 
 **Checkpoint**: The endpoint is standardized, documented, and protected consistently with other platform routes
@@ -147,7 +147,7 @@
 
 ```bash
 # Validate the new collection route from both HTTP and service angles in parallel:
-Task: "Add contract coverage for GET /api/v1/platform/tenants in apps/api/tests/contract/platform-tenant-directory.contract.spec.ts"
+Task: "Add contract coverage for POST /api/v1/platform/tenants/search in apps/api/tests/contract/platform-tenant-directory.contract.spec.ts"
 Task: "Add service/integration coverage for tenant directory mapping in apps/api/tests/integration/platform-tenant-directory.integration.spec.ts"
 ```
 

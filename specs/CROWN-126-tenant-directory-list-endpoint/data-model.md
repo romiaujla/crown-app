@@ -1,12 +1,16 @@
 # Data Model: CROWN-126 Tenant Directory List Endpoint
 
-## TenantDirectoryListQuery
+## TenantDirectoryListFilter
 
 - **search**: `string | null`
   - Optional free-text filter applied to persisted tenant names.
   - Trimmed before execution.
 - **status**: `TenantStatus | null`
   - Optional single-select filter using the shared persisted tenant status enum.
+
+## TenantDirectoryListRequest
+
+- **filter**: `TenantDirectoryListFilter`
 
 ## TenantDirectoryListItem
 

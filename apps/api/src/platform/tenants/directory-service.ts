@@ -1,6 +1,6 @@
 import {
   TenantDirectoryListResponseSchema,
-  type TenantDirectoryListQuery,
+  type TenantDirectoryListFilter,
   type TenantDirectoryListResponse,
   type TenantStatus
 } from "@crown/types";
@@ -39,7 +39,7 @@ type TenantDirectoryPrismaClient = {
   };
 };
 
-const buildTenantDirectoryWhere = ({ search, status }: TenantDirectoryListQuery): TenantDirectoryWhere => ({
+const buildTenantDirectoryWhere = ({ search, status }: TenantDirectoryListFilter): TenantDirectoryWhere => ({
   ...(search
     ? {
         name: {
@@ -52,7 +52,7 @@ const buildTenantDirectoryWhere = ({ search, status }: TenantDirectoryListQuery)
 });
 
 export const getPlatformTenantDirectory = async (
-  filters: TenantDirectoryListQuery,
+  filters: TenantDirectoryListFilter,
   db: TenantDirectoryPrismaClient = prisma
 ): Promise<TenantDirectoryListResponse> => {
   const where = buildTenantDirectoryWhere(filters);

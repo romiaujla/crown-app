@@ -1,9 +1,9 @@
-## Decision: Expose the tenant directory as `GET /api/v1/platform/tenants`
+## Decision: Expose the tenant directory as `POST /api/v1/platform/tenants/search`
 
-- **Why**: The story is a collection read endpoint, and a plural collection path keeps the route semantics clear for directory behavior even though the existing create action uses the singular `/api/v1/platform/tenant` path.
+- **Why**: The agreed contract now uses a request body for filters, so a search-style POST endpoint is the most reliable and interoperable way to carry that payload.
 - **Alternatives considered**:
-  - `GET /api/v1/platform/tenant`: rejected because a singular resource path is less clear for a collection response.
-  - `POST /api/v1/platform/tenant/search`: rejected because the current requirements are satisfied by simple query parameters on a read route.
+  - `GET /api/v1/platform/tenants`: rejected because GET-with-body is not a reliable API contract and query parameters are no longer the chosen shape.
+  - `POST /api/v1/platform/tenant/search`: rejected because the plural collection path is clearer for directory semantics.
 
 ## Decision: Standardize the response as `{ data, meta }` with `data.tenantList`
 

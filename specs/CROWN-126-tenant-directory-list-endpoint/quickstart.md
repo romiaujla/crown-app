@@ -17,8 +17,11 @@ Verify that the super-admin tenant directory endpoint returns the agreed `{ data
 1. Request the unfiltered directory:
 
 ```bash
-curl -H "Authorization: Bearer <token>" \
-  "http://localhost:3001/api/v1/platform/tenants"
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"filter":{}}' \
+  "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 
 Expected:
@@ -30,8 +33,11 @@ Expected:
 2. Request the directory with a name search:
 
 ```bash
-curl -H "Authorization: Bearer <token>" \
-  "http://localhost:3001/api/v1/platform/tenants?search=acme"
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"filter":{"search":"acme"}}' \
+  "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 
 Expected:
@@ -41,8 +47,11 @@ Expected:
 3. Request the directory with a status filter:
 
 ```bash
-curl -H "Authorization: Bearer <token>" \
-  "http://localhost:3001/api/v1/platform/tenants?status=active"
+curl -X POST \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"filter":{"status":"active"}}' \
+  "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 
 Expected:

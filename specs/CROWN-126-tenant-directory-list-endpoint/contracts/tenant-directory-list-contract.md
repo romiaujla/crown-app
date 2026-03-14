@@ -2,15 +2,21 @@
 
 ## Route
 
-- **Method**: `GET`
-- **Path**: `/api/v1/platform/tenants`
+- **Method**: `POST`
+- **Path**: `/api/v1/platform/tenants/search`
 - **Auth**: Bearer token required
 - **Authorization**: `super_admin` only
 
-## Query Parameters
+## Request Body
 
-- **search**: optional string
-- **status**: optional `TenantStatus`
+```json
+{
+  "filter": {
+    "search": "acme",
+    "status": "active"
+  }
+}
+```
 
 ## Successful Response
 
@@ -58,7 +64,7 @@
 
 ## Error Behavior
 
-- `400` for invalid query parameters
+- `400` for invalid request filters
 - `401` for missing or invalid bearer token
 - `403` for callers without the `super_admin` role
 

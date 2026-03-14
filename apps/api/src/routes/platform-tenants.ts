@@ -1,4 +1,4 @@
-import { DeprovisionTypeEnum, TenantDirectoryListQuerySchema, type TenantDirectoryListResponse } from "@crown/types";
+import { DeprovisionTypeEnum, TenantDirectoryListRequestSchema, type TenantDirectoryListResponse } from "@crown/types";
 import { Router, type RequestHandler } from "express";
 
 import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
@@ -39,13 +39,13 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
 
-  router.get("/platform/tenants", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
-    const parsed = TenantDirectoryListQuerySchema.safeParse(req.query);
+  router.post("/platform/tenants/search", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
+    const parsed = TenantDirectoryListRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory query");
+      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory filter");
     }
 
-    const response = await listTenants(parsed.data);
+    const response = await listTenants(parsed.data.filter ?? {});
     return res.status(200).json(response);
   });
 
