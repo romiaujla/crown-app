@@ -15,6 +15,8 @@ Applies to all contributors (human and AI) across all repository directories.
 ## Coding Standards
 - Use TypeScript strict mode for new code where applicable.
 - For reusable finite state or value sets in TypeScript, prefer named enums over ad hoc string unions or inline string tuples.
+- When two or more features share the same finite state or value set, define one base enum and reuse it instead of duplicating lookalike enums in multiple modules.
+- When a specific feature needs additional enum values beyond a shared base enum, keep the extra values in a feature-local enum and compose the final type as a union of the shared base enum and the feature-local enum instead of cloning the full enum.
 - One-off literal values that are local to a single type or schema may remain inline when the value set is not reused elsewhere.
 - TypeScript enum member keys must use `SNAKE_CASE`.
 - TypeScript enum type names must use the `Enum` suffix.

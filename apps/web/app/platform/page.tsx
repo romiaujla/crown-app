@@ -1,23 +1,9 @@
 "use client";
 
 import { DashboardMetricWindowEnum, type DashboardOverviewResponse, type TenantStatusEnum } from "@crown/types";
-import {
-  Activity,
-  BadgeDollarSign,
-  Building2,
-  FileText,
-  HeartPulse,
-  LayoutDashboard,
-  Settings,
-  Shield,
-  Users
-} from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { StatusPanel } from "@/components/auth/status-panel";
-import { useProtectedShell } from "@/components/auth/use-protected-shell";
-import { WorkspaceShell } from "@/components/auth/workspace-shell";
 import {
   formatGrowthRateValue,
   getGrowthRateDescription,
@@ -25,109 +11,13 @@ import {
   SummaryMetricCard,
   WindowMetricCard
 } from "@/components/platform/dashboard-metric-cards";
+import { PlatformSectionPlaceholder, PlatformShellFrame } from "@/components/platform/platform-shell-frame";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
+import { ViewState, ViewStatusEnum } from "@/lib/view-state";
 
-const platformNavigation = [
-  {
-    key: "dashboard",
-    title: "Dashboard",
-    href: "/platform",
-    icon: LayoutDashboard,
-    eyebrow: "Platform overview",
-    description: "Review Crown's platform posture, tenant readiness, and next setup steps from the control-plane home."
-  },
-  {
-    key: "tenants",
-    title: "Tenants",
-    href: "/platform?section=tenants",
-    icon: Building2,
-    eyebrow: "Tenant management",
-    description: "Review tenant readiness, provisioning status, and lifecycle actions from one platform entry point."
-  },
-  {
-    key: "users",
-    title: "Users",
-    href: "/platform?section=users",
-    icon: Users,
-    eyebrow: "Identity oversight",
-    description: "Review operator access, account hygiene, and user-related follow-up without leaving the control plane."
-  },
-  {
-    key: "activity",
-    title: "Activity",
-    href: "/platform?section=activity",
-    icon: Activity,
-    eyebrow: "Recent platform activity",
-    description: "Track operational events, platform follow-up, and the latest control-plane changes from one stream."
-  },
-  {
-    key: "system-health",
-    title: "System Health",
-    href: "/platform?section=system-health",
-    icon: HeartPulse,
-    eyebrow: "Operational posture",
-    description: "Monitor service posture, readiness indicators, and environment follow-up work for the platform."
-  },
-  {
-    key: "security",
-    title: "Security",
-    href: "/platform?section=security",
-    icon: Shield,
-    eyebrow: "Security posture",
-    description: "Review security-focused controls, audits, and platform hardening work as the control plane evolves."
-  },
-  {
-    key: "billing",
-    title: "Billing",
-    href: "/platform?section=billing",
-    icon: BadgeDollarSign,
-    eyebrow: "Commercial controls",
-    description: "Track billing readiness, commercial workflows, and platform-wide financial administration from one area."
-  },
-  {
-    key: "audit-log",
-    title: "Audit Log",
-    href: "/platform?section=audit-log",
-    icon: FileText,
-    eyebrow: "Platform traceability",
-    description: "Review change history, governance evidence, and audit-oriented activity as those capabilities come online."
-  },
-  {
-    key: "settings",
-    title: "Settings",
-    href: "/platform?section=settings",
-    icon: Settings,
-    eyebrow: "Platform defaults",
-    description: "Adjust global platform settings, conventions, and future control-plane defaults as they are delivered."
-  }
-] as const;
-
-enum DashboardOverviewStatusEnum {
-  LOADING = "loading",
-  SUCCESS = "success",
-  ERROR = "error"
-}
-
-type DashboardOverviewLoadingState = {
-  status: DashboardOverviewStatusEnum.LOADING;
-};
-
-type DashboardOverviewSuccessState = {
-  status: DashboardOverviewStatusEnum.SUCCESS;
-  overview: DashboardOverviewResponse;
-};
-
-type DashboardOverviewErrorState = {
-  status: DashboardOverviewStatusEnum.ERROR;
-  message: string;
-};
-
-type DashboardOverviewState =
-  | DashboardOverviewLoadingState
-  | DashboardOverviewSuccessState
-  | DashboardOverviewErrorState;
+type DashboardOverviewState = ViewState<DashboardOverviewResponse, "overview">;
 
 type MetricWindow = DashboardOverviewResponse["widgets"]["tenant_summary"]["new_tenant_counts"][number]["window"];
 
@@ -140,7 +30,7 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
 
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
-    status: DashboardOverviewStatusEnum.LOADING
+    status: ViewStatusEnum.LOADING
   });
   const [selectedNewTenantWindow, setSelectedNewTenantWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
   const [selectedGrowthRateWindow, setSelectedGrowthRateWindow] = useState<MetricWindow>(DashboardMetricWindowEnum.WEEK);
@@ -151,7 +41,7 @@ const DashboardOverviewSection = () => {
     const accessToken = getStoredAccessToken();
     if (!accessToken) {
       setOverviewState({
-        status: DashboardOverviewStatusEnum.ERROR,
+        status: ViewStatusEnum.ERROR,
         message: "Dashboard overview is unavailable because your platform session could not be confirmed."
       });
       return () => {
@@ -164,14 +54,14 @@ const DashboardOverviewSection = () => {
         const overview = await getPlatformDashboardOverview(accessToken);
         if (!cancelled) {
           setOverviewState({
-            status: DashboardOverviewStatusEnum.SUCCESS,
+            status: ViewStatusEnum.SUCCESS,
             overview
           });
         }
       } catch {
         if (!cancelled) {
           setOverviewState({
-            status: DashboardOverviewStatusEnum.ERROR,
+            status: ViewStatusEnum.ERROR,
             message: "Dashboard overview is unavailable right now. Try refreshing once the platform API is reachable."
           });
         }
@@ -185,7 +75,7 @@ const DashboardOverviewSection = () => {
     };
   }, []);
 
-  if (overviewState.status === DashboardOverviewStatusEnum.LOADING) {
+  if (overviewState.status === ViewStatusEnum.LOADING) {
     return (
       <Card className="border-white/70 bg-white/92 shadow-sm">
         <CardHeader className="space-y-3">
@@ -206,7 +96,7 @@ const DashboardOverviewSection = () => {
     );
   }
 
-  if (overviewState.status === DashboardOverviewStatusEnum.ERROR) {
+  if (overviewState.status === ViewStatusEnum.ERROR) {
     return (
       <Card className="border-amber-200/80 bg-amber-50/85 shadow-sm">
         <CardHeader className="space-y-3">
@@ -297,14 +187,7 @@ const platformSections = {
   dashboard: {
     eyebrow: "Platform overview",
     title: "Dashboard",
-    description: "",
     renderContent: () => <DashboardOverviewSection />
-  },
-  tenants: {
-    eyebrow: "Tenant management",
-    title: "Tenants Coming Soon",
-    description:
-      "Tenant provisioning, readiness review, and lifecycle actions will surface here as the next control-plane capabilities are delivered."
   },
   users: {
     eyebrow: "Identity oversight",
@@ -344,68 +227,24 @@ const platformSections = {
 } as const;
 
 const PlatformPage = () => {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const protectedShell = useProtectedShell(pathname);
-
-  if (protectedShell.kind === "bootstrapping") {
-    return (
-      <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
-        <StatusPanel
-          description="Resolving platform access before Crown renders protected content."
-          eyebrow="Platform operator shell"
-          title="Preparing the control plane"
-          tone="platform"
-        />
-      </main>
-    );
-  }
-
-  if (protectedShell.kind !== "ready") {
-    return (
-      <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
-        <StatusPanel
-          description="Crown is redirecting you to a safe route for your authenticated context."
-          eyebrow="Platform operator shell"
-          title="Correcting your destination"
-          tone="platform"
-        />
-      </main>
-    );
-  }
-
-  const { currentUser } = protectedShell;
   const requestedSection = searchParams.get("section") ?? "dashboard";
-  const activeSectionKey = requestedSection in platformSections ? requestedSection : "dashboard";
-  const activeSection = platformSections[activeSectionKey as keyof typeof platformSections];
+  const activeSectionKey = (requestedSection in platformSections ? requestedSection : "dashboard") as keyof typeof platformSections;
+  const activeSection = platformSections[activeSectionKey];
 
   return (
-    <WorkspaceShell
+    <PlatformShellFrame
       activeNavigationKey={activeSectionKey}
-      contextLabel="Operator context"
-      contextNote="No tenant needs to be selected before platform work begins."
-      contextValue={currentUser.principal.role}
-      description="Operate Crown as the platform for tenant management systems, with global navigation, overview context, and clear separation from tenant workspaces."
-      hideHero
-      layout="sidebar"
-      navigationItems={platformNavigation}
-      navigationTitle="Control-plane sections"
       sectionContent={
         "renderContent" in activeSection ? (
           activeSection.renderContent()
         ) : (
-          <Card className="border-white/70 bg-white/92 shadow-sm">
-            <CardContent className="pt-6 text-sm leading-7 text-stone-600">{activeSection.description}</CardContent>
-          </Card>
+          <PlatformSectionPlaceholder description={activeSection.description} />
         )
       }
-      sectionDescription={activeSection.description}
+      sectionDescription={"description" in activeSection ? activeSection.description : undefined}
       sectionEyebrow={activeSection.eyebrow}
       sectionTitle={activeSection.title}
-      title="Crown Control Plane"
-      tone="platform"
-      userDisplayName={currentUser.principal.display_name}
-      userRole={currentUser.principal.role}
     />
   );
 };

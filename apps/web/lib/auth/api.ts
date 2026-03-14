@@ -1,4 +1,11 @@
-import { DashboardOverviewResponseSchema, type DashboardOverviewResponse } from "@crown/types";
+import {
+  DashboardOverviewResponseSchema,
+  TenantDirectoryListRequestSchema,
+  TenantDirectoryListResponseSchema,
+  type DashboardOverviewResponse,
+  type TenantDirectoryListRequest,
+  type TenantDirectoryListResponse
+} from "@crown/types";
 import {
   type AccessTokenClaims,
   AccessTokenResponseSchema,
@@ -140,3 +147,14 @@ export const getPlatformDashboardOverview = async (accessToken: string) =>
       method: "GET"
     })
   ) as DashboardOverviewResponse;
+
+export const searchPlatformTenants = async (accessToken: string, input: TenantDirectoryListRequest) =>
+  TenantDirectoryListResponseSchema.parse(
+    await request("/api/v1/platform/tenants/search", {
+      body: JSON.stringify(TenantDirectoryListRequestSchema.parse(input)),
+      headers: {
+        authorization: `Bearer ${accessToken}`
+      },
+      method: "POST"
+    })
+  ) as TenantDirectoryListResponse;
