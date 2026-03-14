@@ -1,18 +1,18 @@
 "use client";
 
 import { TenantStatusEnum, type TenantDirectoryListResponse } from "@crown/types";
-import { ArrowUpRight, PencilLine, Search } from "lucide-react";
+import { ArrowUpRight, PencilLine, Plus, Search } from "lucide-react";
 import Link from "next/link";
-import { useDeferredValue, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { searchPlatformTenants } from "@/lib/auth/api";
 import { Badge } from "@/components/ui/badge";
-import { getStoredAccessToken } from "@/lib/auth/storage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { searchPlatformTenants } from "@/lib/auth/api";
+import { getStoredAccessToken } from "@/lib/auth/storage";
 import { ViewState, ViewStatusEnum } from "@/lib/view-state";
 
 type TenantDirectoryViewState = ViewState<TenantDirectoryListResponse, "response">;
@@ -40,18 +40,39 @@ const formatTimestamp = (value: string) =>
     timeStyle: "short"
   }).format(new Date(value));
 
+const SEARCH_DEBOUNCE_MS = 500;
+
+export const TenantDirectoryPrimaryAction = () => (
+  <Button asChild aria-label="Add new tenant" className="rounded-full px-3 sm:px-4" title="Add new tenant">
+    <Link href="/platform/tenants/new">
+      <Plus aria-hidden="true" className="h-4 w-4 sm:mr-2" />
+      <span className="sr-only sm:not-sr-only">Add new</span>
+    </Link>
+  </Button>
+);
+
 export const TenantDirectoryPage = () => {
   const [nameFilter, setNameFilter] = useState("");
-  const deferredNameFilter = useDeferredValue(nameFilter);
+  const [debouncedNameFilter, setDebouncedNameFilter] = useState(nameFilter);
   const [statusFilter, setStatusFilter] = useState<TenantStatusEnum | "">("");
   const [viewState, setViewState] = useState<TenantDirectoryViewState>({
     status: ViewStatusEnum.LOADING
   });
 
   useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedNameFilter(nameFilter);
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [nameFilter]);
+
+  useEffect(() => {
     let cancelled = false;
     const accessToken = getStoredAccessToken();
-    const trimmedName = deferredNameFilter.trim();
+    const trimmedName = debouncedNameFilter.trim();
 
     if (!accessToken) {
       setViewState({
@@ -95,11 +116,11 @@ export const TenantDirectoryPage = () => {
     return () => {
       cancelled = true;
     };
-  }, [deferredNameFilter, statusFilter]);
+  }, [debouncedNameFilter, statusFilter]);
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_15rem_auto] lg:items-end">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-end">
         <label className="space-y-2">
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Search by name</span>
           <span className="relative block">
@@ -136,9 +157,6 @@ export const TenantDirectoryPage = () => {
             </SelectContent>
           </Select>
         </label>
-        <Button asChild className="rounded-full px-5 lg:self-end">
-          <Link href="/platform/tenants/new">Add new</Link>
-        </Button>
       </div>
       {viewState.status === ViewStatusEnum.LOADING ? (
         <div className="space-y-3 rounded-3xl border border-stone-200 bg-stone-50/80 p-4">
@@ -186,32 +204,32 @@ export const TenantDirectoryPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                  {viewState.response.data.tenantList.map((tenant) => (
-                    <TableRow key={tenant.tenantId} className="border-stone-200/80 text-sm text-stone-700">
-                      <TableCell className="align-top">
-                        <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.slug}`}>
-                          <span>{tenant.name}</span>
-                          <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+                {viewState.response.data.tenantList.map((tenant) => (
+                  <TableRow key={tenant.tenantId} className="border-stone-200/80 text-sm text-stone-700">
+                    <TableCell className="align-top">
+                      <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.slug}`}>
+                        <span>{tenant.name}</span>
+                        <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+                      </Link>
+                    </TableCell>
+                    <TableCell className="align-top">
+                      <Badge variant={tenantStatusBadgeVariants[tenant.status]}>
+                        {formatTenantStatusLabel(tenant.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
+                    <TableCell className="align-top text-stone-600">{tenant.schemaName}</TableCell>
+                    <TableCell className="align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</TableCell>
+                    <TableCell className="align-top text-right">
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={`/platform/tenants/${tenant.slug}/edit`}>
+                          <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
+                          Edit
                         </Link>
-                      </TableCell>
-                      <TableCell className="align-top">
-                        <Badge variant={tenantStatusBadgeVariants[tenant.status]}>
-                          {formatTenantStatusLabel(tenant.status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
-                      <TableCell className="align-top text-stone-600">{tenant.schemaName}</TableCell>
-                      <TableCell className="align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</TableCell>
-                      <TableCell className="align-top text-right">
-                        <Button asChild size="sm" variant="outline">
-                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>
-                            <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
-                            Edit
-                          </Link>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </Card>

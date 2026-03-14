@@ -61,6 +61,7 @@ type SidebarLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
   sectionEyebrow: string;
   sectionTitle: string;
   sectionDescription?: string;
+  sectionActions?: ReactNode;
   sectionContent: ReactNode;
 };
 
@@ -276,16 +277,21 @@ export const WorkspaceShell = ({
 
             <Card className={cn("border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
               <CardHeader className="space-y-3">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
-                  {layoutProps.sectionEyebrow}
-                </CardDescription>
-                <div className="space-y-3">
-                  <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.sectionTitle}</CardTitle>
-                  {layoutProps.sectionDescription ? (
-                    <CardDescription className="max-w-3xl text-base leading-7 text-stone-600">
-                      {layoutProps.sectionDescription}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="space-y-3">
+                    <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
+                      {layoutProps.sectionEyebrow}
                     </CardDescription>
-                  ) : null}
+                    <div className="space-y-3">
+                      <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.sectionTitle}</CardTitle>
+                      {layoutProps.sectionDescription ? (
+                        <CardDescription className="max-w-3xl text-base leading-7 text-stone-600">
+                          {layoutProps.sectionDescription}
+                        </CardDescription>
+                      ) : null}
+                    </div>
+                  </div>
+                  {layoutProps.sectionActions ? <div className="sm:pt-1">{layoutProps.sectionActions}</div> : null}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">{layoutProps.sectionContent}</CardContent>

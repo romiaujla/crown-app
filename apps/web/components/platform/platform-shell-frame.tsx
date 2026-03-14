@@ -99,6 +99,7 @@ type PlatformShellFrameProps = {
   sectionEyebrow: string;
   sectionTitle: string;
   sectionDescription?: string;
+  sectionActions?: ReactNode;
   sectionContent: ReactNode;
 };
 
@@ -113,6 +114,7 @@ export const PlatformShellFrame = ({
   sectionEyebrow,
   sectionTitle,
   sectionDescription,
+  sectionActions,
   sectionContent
 }: PlatformShellFrameProps) => {
   const pathname = usePathname();
@@ -158,6 +160,7 @@ export const PlatformShellFrame = ({
       navigationItems={platformNavigation}
       navigationTitle="Control-plane sections"
       sectionContent={sectionContent}
+      sectionActions={sectionActions}
       sectionDescription={sectionDescription}
       sectionEyebrow={sectionEyebrow}
       sectionTitle={sectionTitle}
