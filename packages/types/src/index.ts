@@ -100,7 +100,6 @@ export enum DeprovisionTypeEnum {
 }
 
 export const DeprovisionTypeSchema = z.enum(DeprovisionTypeEnum);
-export type DeprovisionType = `${DeprovisionTypeEnum}`;
 
 export const TenantStatusCountEntrySchema = z.object({
   status: TenantStatusSchema,
