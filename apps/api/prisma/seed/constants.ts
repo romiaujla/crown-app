@@ -1,5 +1,9 @@
-import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
+import {
+  ManagementSystemRoleTemplateBootstrapRoleEnum,
+  ManagementSystemTypeAvailabilityStatusEnum
+} from "../../src/generated/prisma/enums.js";
 import { SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 
 export const LOCAL_SEED_TENANT = {
@@ -37,6 +41,72 @@ export const LOCAL_SEED_USERS = {
 } as const;
 
 export const LOCAL_SEED_ACTOR_SUB = "seed-local-runner";
+
+export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
+  {
+    typeCode: "tms",
+    displayName: "Transportation Management System",
+    description: "Baseline tenant product context for transportation operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  },
+  {
+    typeCode: "dms",
+    displayName: "Dealer Management System",
+    description: "Baseline tenant product context for dealer operations workflows.",
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+  }
+] as const;
+
+export const LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES = [
+  {
+    managementSystemTypeCode: "tms",
+    roleCode: "admin",
+    displayName: "Admin",
+    description: "Required tenant setup administrator for the transportation baseline.",
+    isRequired: true,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.tenant_admin
+  },
+  {
+    managementSystemTypeCode: "tms",
+    roleCode: "dispatcher",
+    displayName: "Dispatcher",
+    description: "Coordinates transportation loads and assignments.",
+    isRequired: false,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+  },
+  {
+    managementSystemTypeCode: "tms",
+    roleCode: "driver",
+    displayName: "Driver",
+    description: "Executes assigned transportation work in the tenant workspace.",
+    isRequired: false,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+  },
+  {
+    managementSystemTypeCode: "dms",
+    roleCode: "admin",
+    displayName: "Admin",
+    description: "Required tenant setup administrator for the dealer baseline.",
+    isRequired: true,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.tenant_admin
+  },
+  {
+    managementSystemTypeCode: "dms",
+    roleCode: "sales_manager",
+    displayName: "Sales Manager",
+    description: "Oversees dealer sales workflows and team setup.",
+    isRequired: false,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+  },
+  {
+    managementSystemTypeCode: "dms",
+    roleCode: "service_advisor",
+    displayName: "Service Advisor",
+    description: "Coordinates dealer service intake and follow-up workflows.",
+    isRequired: false,
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum.none
+  }
+] as const;
 
 export const LOCAL_SEED_RESET_TABLES = [
   "activity_records",

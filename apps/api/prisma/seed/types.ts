@@ -1,4 +1,8 @@
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import type {
+  ManagementSystemRoleTemplateBootstrapRoleEnum,
+  ManagementSystemTypeAvailabilityStatusEnum
+} from "../../src/generated/prisma/enums.js";
 
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
@@ -56,10 +60,63 @@ export type SeedPlatformUserTenantDelegate = {
   }): Promise<{ id: string; platformUserId: string; tenantId: string; role: string }>;
 };
 
+export type SeedManagementSystemTypeDelegate = {
+  upsert(args: {
+    where: { typeCode: string };
+    create: {
+      typeCode: string;
+      displayName: string;
+      description?: string | null;
+      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+    };
+    update: {
+      displayName: string;
+      description?: string | null;
+      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+    };
+  }): Promise<{
+    id: string;
+    typeCode: string;
+    displayName: string;
+    description: string | null;
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+  }>;
+};
+
+export type SeedManagementSystemRoleTemplateDelegate = {
+  upsert(args: {
+    where: { managementSystemTypeId_roleCode: { managementSystemTypeId: string; roleCode: string } };
+    create: {
+      managementSystemTypeId: string;
+      roleCode: string;
+      displayName: string;
+      description?: string | null;
+      isRequired: boolean;
+      bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum;
+    };
+    update: {
+      displayName: string;
+      description?: string | null;
+      isRequired: boolean;
+      bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum;
+    };
+  }): Promise<{
+    id: string;
+    managementSystemTypeId: string;
+    roleCode: string;
+    displayName: string;
+    description: string | null;
+    isRequired: boolean;
+    bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum;
+  }>;
+};
+
 export type SeedPrismaClient = {
   tenant: SeedTenantDelegate;
   platformUser: SeedPlatformUserDelegate;
   platformUserTenant: SeedPlatformUserTenantDelegate;
+  managementSystemType: SeedManagementSystemTypeDelegate;
+  managementSystemRoleTemplate: SeedManagementSystemRoleTemplateDelegate;
 };
 
 export type SeedPhaseName =

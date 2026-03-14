@@ -21,6 +21,16 @@ enum TenantStatus {
   provisioning_failed
 }
 
+enum ManagementSystemTypeAvailabilityStatusEnum {
+  active
+  inactive
+}
+
+enum ManagementSystemRoleTemplateBootstrapRoleEnum {
+  none
+  tenant_admin
+}
+
 model PlatformUser {
   id            String                    @id @default(cuid())
   email         String                    @unique
@@ -38,18 +48,49 @@ model PlatformUser {
 }
 
 model Tenant {
-  id          String       @id @default(cuid())
-  name        String
-  slug        String       @unique
-  schemaName  String       @unique @map("schema_name")
-  status      TenantStatus @default(active)
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  id         String       @id @default(cuid())
+  name       String
+  slug       String       @unique
+  schemaName String       @unique @map("schema_name")
+  status     TenantStatus @default(active)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
 
   platformUserTenants PlatformUserTenant[]
-  versions    TenantSchemaVersion[]
+  versions            TenantSchemaVersion[]
 
   @@map("tenants")
+}
+
+model ManagementSystemType {
+  id                 String                                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  typeCode           String                                     @unique @map("type_code")
+  displayName        String                                     @map("display_name")
+  description        String?
+  availabilityStatus ManagementSystemTypeAvailabilityStatusEnum @default(active) @map("availability_status")
+  createdAt          DateTime                                   @default(now()) @map("created_at")
+  updatedAt          DateTime                                   @updatedAt @map("updated_at")
+
+  roleTemplates ManagementSystemRoleTemplate[]
+
+  @@map("management_system_types")
+}
+
+model ManagementSystemRoleTemplate {
+  id                     String                                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  managementSystemTypeId String                                        @map("management_system_type_id") @db.Uuid
+  roleCode               String                                        @map("role_code")
+  displayName            String                                        @map("display_name")
+  description            String?
+  isRequired             Boolean                                       @default(false) @map("is_required")
+  bootstrapRole          ManagementSystemRoleTemplateBootstrapRoleEnum @default(none) @map("bootstrap_role")
+  createdAt              DateTime                                      @default(now()) @map("created_at")
+  updatedAt              DateTime                                      @updatedAt @map("updated_at")
+
+  managementSystemType ManagementSystemType @relation(fields: [managementSystemTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([managementSystemTypeId, roleCode])
+  @@map("management_system_role_templates")
 }
 
 model PlatformUserTenant {

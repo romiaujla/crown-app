@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the current control-plane schema and seed baseline touchpoints before implementation begins
 
-- [ ] T001 Review the current control-plane Prisma schema in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma` and capture carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/research.md`
-- [ ] T002 [P] Review the local seed baseline touchpoints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
+- [X] T001 Review the current control-plane Prisma schema in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma` and capture carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/research.md`
+- [X] T002 [P] Review the local seed baseline touchpoints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
 
 ---
 
@@ -28,8 +28,8 @@
 
 **⚠️ CRITICAL**: No user story implementation should begin until this phase is complete
 
-- [ ] T003 Define the new control-plane entities, enums, and seed baseline contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/contracts/management-system-type-role-template-contract.md`
-- [ ] T004 [P] Align implementation scope, assumptions, and validation boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/plan.md`
+- [X] T003 Define the new control-plane entities, enums, and seed baseline contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/contracts/management-system-type-role-template-contract.md`
+- [X] T004 [P] Align implementation scope, assumptions, and validation boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/plan.md`
 
 **Checkpoint**: The target schema shape and baseline catalog are stable enough to implement without reopening scope
 
@@ -43,13 +43,13 @@
 
 ### Validation for User Story 1
 
-- [ ] T005 [P] [US1] Add focused validation coverage for the management-system type baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
+- [X] T005 [P] [US1] Add focused validation coverage for the management-system type baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Add the management-system type model and availability enum to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [ ] T007 [US1] Generate and inspect the Prisma migration for the new management-system type catalog in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
-- [ ] T008 [US1] Add deterministic baseline management-system type records to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [X] T006 [US1] Add the management-system type model and availability enum to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [X] T007 [US1] Generate and inspect the Prisma migration for the new management-system type catalog in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
+- [X] T008 [US1] Add deterministic baseline management-system type records to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
 
 **Checkpoint**: Approved management-system types are persisted and deterministically available through the local control-plane baseline
 
@@ -63,13 +63,13 @@
 
 ### Validation for User Story 2
 
-- [ ] T009 [P] [US2] Extend focused validation coverage for default role-template baseline records in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
+- [X] T009 [P] [US2] Extend focused validation coverage for default role-template baseline records in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Add the management-system role-template model and relations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [ ] T011 [US2] Extend the Prisma migration with role-template constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
-- [ ] T012 [US2] Add deterministic baseline default role-template records to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
+- [X] T010 [US2] Add the management-system role-template model and relations to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [X] T011 [US2] Extend the Prisma migration with role-template constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
+- [X] T012 [US2] Add deterministic baseline default role-template records to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
 
 **Checkpoint**: Each approved management-system type owns a deterministic persisted default role-template set
 
@@ -83,13 +83,13 @@
 
 ### Validation for User Story 3
 
-- [ ] T013 [P] [US3] Add focused assertions for required-admin bootstrap metadata in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
+- [X] T013 [P] [US3] Add focused assertions for required-admin bootstrap metadata in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Add the bootstrap-mapping enum and required-template metadata fields to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [ ] T015 [US3] Seed explicit bootstrap metadata for the required admin templates in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
-- [ ] T016 [US3] Align the local seed type surface for the new control-plane records in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
+- [X] T014 [US3] Add the bootstrap-mapping enum and required-template metadata fields to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [X] T015 [US3] Seed explicit bootstrap metadata for the required admin templates in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [X] T016 [US3] Align the local seed type surface for the new control-plane records in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
 
 **Checkpoint**: The required admin role template is persisted with deterministic required/setup and bootstrap mapping metadata
 
@@ -99,9 +99,9 @@
 
 **Purpose**: Final consistency, validation, and artifact readiness across the feature
 
-- [ ] T017 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T018 [P] Run focused API validation with `pnpm --filter @crown/api exec vitest run tests/integration/prisma-local-seed.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T019 Perform a final consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/contracts/management-system-type-role-template-contract.md`
+- [X] T017 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T018 [P] Run focused API validation with `pnpm --filter @crown/api exec vitest run tests/integration/prisma-local-seed.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T019 Perform a final consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/contracts/management-system-type-role-template-contract.md`
 - [ ] T020 Create the PR for `feat/CROWN-140-db-tenant-management-system-type-default-role-template-model` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-140-tenant-management-system-type-default-role-template-model/tasks.md`
 
 ---

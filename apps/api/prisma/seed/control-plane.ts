@@ -1,5 +1,10 @@
 import type { SeedControlPlaneBaseline, SeedPrismaClient } from "./types.js";
-import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS } from "./constants.js";
+import {
+  LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES,
+  LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES,
+  LOCAL_SEED_TENANT,
+  LOCAL_SEED_USERS
+} from "./constants.js";
 import { hashPassword } from "../../src/auth/passwords.js";
 
 type EnsureControlPlaneBaselineOptions = {
@@ -145,6 +150,59 @@ export const ensureControlPlaneBaseline = async ({
       role: "tenant_user"
     }
   });
+
+  const managementSystemTypes = new Map<string, string>();
+
+  for (const managementSystemType of LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES) {
+    const persistedType = await prisma.managementSystemType.upsert({
+      where: {
+        typeCode: managementSystemType.typeCode
+      },
+      create: {
+        typeCode: managementSystemType.typeCode,
+        displayName: managementSystemType.displayName,
+        description: managementSystemType.description,
+        availabilityStatus: managementSystemType.availabilityStatus
+      },
+      update: {
+        displayName: managementSystemType.displayName,
+        description: managementSystemType.description,
+        availabilityStatus: managementSystemType.availabilityStatus
+      }
+    });
+
+    managementSystemTypes.set(managementSystemType.typeCode, persistedType.id);
+  }
+
+  for (const roleTemplate of LOCAL_SEED_MANAGEMENT_SYSTEM_ROLE_TEMPLATES) {
+    const managementSystemTypeId = managementSystemTypes.get(roleTemplate.managementSystemTypeCode);
+    if (!managementSystemTypeId) {
+      throw new Error(`Missing management system type baseline for ${roleTemplate.managementSystemTypeCode}`);
+    }
+
+    await prisma.managementSystemRoleTemplate.upsert({
+      where: {
+        managementSystemTypeId_roleCode: {
+          managementSystemTypeId,
+          roleCode: roleTemplate.roleCode
+        }
+      },
+      create: {
+        managementSystemTypeId,
+        roleCode: roleTemplate.roleCode,
+        displayName: roleTemplate.displayName,
+        description: roleTemplate.description,
+        isRequired: roleTemplate.isRequired,
+        bootstrapRole: roleTemplate.bootstrapRole
+      },
+      update: {
+        displayName: roleTemplate.displayName,
+        description: roleTemplate.description,
+        isRequired: roleTemplate.isRequired,
+        bootstrapRole: roleTemplate.bootstrapRole
+      }
+    });
+  }
 
   return {
     tenantId: tenant.id,

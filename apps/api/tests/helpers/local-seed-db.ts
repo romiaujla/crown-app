@@ -1,6 +1,10 @@
 import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS, LOCAL_SEED_RESET_TABLES } from "../../prisma/seed/constants.js";
 import type { SeedPrismaClient, SeedSqlClient, SeedQueryResult } from "../../prisma/seed/types.js";
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import type {
+  ManagementSystemRoleTemplateBootstrapRoleEnum,
+  ManagementSystemTypeAvailabilityStatusEnum
+} from "../../src/generated/prisma/enums.js";
 import {
   PlatformUserAccountStatus as PlatformUserAccountStatusValues,
   TenantStatus as TenantStatusValues
@@ -29,6 +33,24 @@ type PlatformUserTenantRow = {
   platformUserId: string;
   tenantId: string;
   role: string;
+};
+
+type ManagementSystemTypeRow = {
+  id: string;
+  typeCode: string;
+  displayName: string;
+  description: string | null;
+  availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+};
+
+type ManagementSystemRoleTemplateRow = {
+  id: string;
+  managementSystemTypeId: string;
+  roleCode: string;
+  displayName: string;
+  description: string | null;
+  isRequired: boolean;
+  bootstrapRole: ManagementSystemRoleTemplateBootstrapRoleEnum;
 };
 
 type ReferenceDataRow = {
@@ -126,6 +148,8 @@ type HarnessState = {
   tenants: Map<string, TenantRow>;
   platformUsers: Map<string, PlatformUserRow>;
   platformUserTenants: Map<string, PlatformUserTenantRow>;
+  managementSystemTypes: Map<string, ManagementSystemTypeRow>;
+  managementSystemRoleTemplates: Map<string, ManagementSystemRoleTemplateRow>;
   referenceDataSets: Map<string, ReferenceDataRow>;
   organizations: Map<string, OrganizationRow>;
   locations: Map<string, LocationRow>;
@@ -143,6 +167,8 @@ const createState = (): HarnessState => ({
   tenants: new Map(),
   platformUsers: new Map(),
   platformUserTenants: new Map(),
+  managementSystemTypes: new Map(),
+  managementSystemRoleTemplates: new Map(),
   referenceDataSets: new Map(),
   organizations: new Map(),
   locations: new Map(),
@@ -160,6 +186,8 @@ const cloneState = (state: HarnessState): HarnessState => ({
   tenants: new Map(state.tenants),
   platformUsers: new Map(state.platformUsers),
   platformUserTenants: new Map(state.platformUserTenants),
+  managementSystemTypes: new Map(state.managementSystemTypes),
+  managementSystemRoleTemplates: new Map(state.managementSystemRoleTemplates),
   referenceDataSets: new Map(state.referenceDataSets),
   organizations: new Map(state.organizations),
   locations: new Map(state.locations),
@@ -247,6 +275,51 @@ export const createSeedTestHarness = (): {
           ...args.create
         };
         state.platformUserTenants.set(key, created);
+        return created;
+      }
+    },
+    managementSystemType: {
+      async upsert(args) {
+        const existing = state.managementSystemTypes.get(args.where.typeCode);
+        if (existing) {
+          const updated: ManagementSystemTypeRow = {
+            ...existing,
+            ...args.update,
+            description: args.update.description ?? null
+          };
+          state.managementSystemTypes.set(updated.typeCode, updated);
+          return updated;
+        }
+
+        const created: ManagementSystemTypeRow = {
+          id: createId("management-system-type", args.create.typeCode),
+          ...args.create,
+          description: args.create.description ?? null
+        };
+        state.managementSystemTypes.set(created.typeCode, created);
+        return created;
+      }
+    },
+    managementSystemRoleTemplate: {
+      async upsert(args) {
+        const key = `${args.where.managementSystemTypeId_roleCode.managementSystemTypeId}:${args.where.managementSystemTypeId_roleCode.roleCode}`;
+        const existing = state.managementSystemRoleTemplates.get(key);
+        if (existing) {
+          const updated: ManagementSystemRoleTemplateRow = {
+            ...existing,
+            ...args.update,
+            description: args.update.description ?? null
+          };
+          state.managementSystemRoleTemplates.set(key, updated);
+          return updated;
+        }
+
+        const created: ManagementSystemRoleTemplateRow = {
+          id: createId("management-system-role-template", key),
+          ...args.create,
+          description: args.create.description ?? null
+        };
+        state.managementSystemRoleTemplates.set(key, created);
         return created;
       }
     }
@@ -553,6 +626,16 @@ export const createSeedTestHarness = (): {
         platformUserStatuses: Array.from(state.platformUsers.values())
           .map((user) => `${user.email}:${user.accountStatus}`)
           .sort(),
+        managementSystemTypeCodes: Array.from(state.managementSystemTypes.keys()).sort(),
+        managementSystemRoleTemplateKeys: Array.from(state.managementSystemRoleTemplates.values())
+          .map((roleTemplate) => {
+            const managementSystemType = Array.from(state.managementSystemTypes.values()).find(
+              (type) => type.id === roleTemplate.managementSystemTypeId
+            );
+
+            return `${managementSystemType?.typeCode ?? "unknown"}:${roleTemplate.roleCode}:${roleTemplate.bootstrapRole}:${roleTemplate.isRequired}`;
+          })
+          .sort(),
         organizationCodes: Array.from(state.organizations.keys()).sort(),
         locationCodes: Array.from(state.locations.keys()).sort(),
         personCodes: Array.from(state.people.keys()).sort(),
@@ -629,6 +712,8 @@ export const expectedCanonicalDeterministicLookupFields = [
   `platform_user.username:${LOCAL_SEED_USERS.tenantAdmin.username}`,
   `platform_user.email:${LOCAL_SEED_USERS.tenantUser.email}`,
   `platform_user.username:${LOCAL_SEED_USERS.tenantUser.username}`,
+  "management_system_types.type_code",
+  "management_system_role_templates.role_code",
   "reference_data_sets.data_set_code",
   "organizations.organization_code",
   "locations.location_code",
@@ -648,6 +733,15 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
     `${LOCAL_SEED_USERS.tenantAdmin.email}:${LOCAL_SEED_USERS.tenantAdmin.accountStatus}`,
     `${LOCAL_SEED_USERS.tenantUser.email}:${LOCAL_SEED_USERS.tenantUser.accountStatus}`
   ].sort(),
+  managementSystemTypeCodes: ["dms", "tms"],
+  managementSystemRoleTemplateKeys: [
+    "dms:admin:tenant_admin:true",
+    "dms:sales_manager:none:false",
+    "dms:service_advisor:none:false",
+    "tms:admin:tenant_admin:true",
+    "tms:dispatcher:none:false",
+    "tms:driver:none:false"
+  ],
   organizationCodes: expectedOrganizationCodes,
   locationCodes: expectedLocationCodes,
   personCodes: expectedPersonCodes,

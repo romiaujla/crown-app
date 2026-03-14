@@ -30,6 +30,7 @@ describe("prisma local seed baseline", () => {
       tenantSlugs: ["acme-local", "other-tenant"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
       platformUsernames: ["other.user", ...expectedSeededUsernames].sort(),
+      managementSystemTypeCodes: ["dms", "tms"],
       organizationCodes: expectedOrganizationCodes
     });
 
@@ -77,6 +78,7 @@ describe("prisma local seed baseline", () => {
     expect(summary.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(harness.snapshot()).toMatchObject({
       schemaReady: true,
+      managementSystemTypeCodes: ["dms", "tms"],
       organizationCodes: expectedOrganizationCodes
     });
   });

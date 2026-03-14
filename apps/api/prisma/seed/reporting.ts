@@ -10,6 +10,8 @@ const deterministicKeys = [
   `platform_user.username:${LOCAL_SEED_USERS.tenantAdmin.username}`,
   `platform_user.email:${LOCAL_SEED_USERS.tenantUser.email}`,
   `platform_user.username:${LOCAL_SEED_USERS.tenantUser.username}`,
+  "management_system_types.type_code",
+  "management_system_role_templates.role_code",
   "reference_data_sets.data_set_code",
   "organizations.organization_code",
   "locations.location_code",
