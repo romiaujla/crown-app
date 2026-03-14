@@ -37,7 +37,7 @@ export const HardDeprovisionTenantResponseSchema = z.object({
   slug: z.string(),
   schema_name: z.string(),
   previous_status: TenantStatusSchema,
-  status: z.literal("inactive"),
+  status: z.literal("hard_deprovisioned"),
   operation: z.literal("hard_deprovisioned")
 });
 

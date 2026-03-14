@@ -16,7 +16,8 @@ export enum TenantStatusEnum {
   ACTIVE = "active",
   INACTIVE = "inactive",
   PROVISIONING = "provisioning",
-  PROVISIONING_FAILED = "provisioning_failed"
+  PROVISIONING_FAILED = "provisioning_failed",
+  HARD_DEPROVISIONED = "hard_deprovisioned"
 }
 
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
