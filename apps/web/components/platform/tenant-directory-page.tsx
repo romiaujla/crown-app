@@ -21,11 +21,18 @@ const ALL_STATUSES_VALUE = "__all__";
 const tenantStatusOptions = Object.values(TenantStatusEnum);
 
 const formatTenantStatusLabel = (status: TenantStatusEnum) =>
-  status
-    .split("_")
-    .filter(Boolean)
-    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
-    .join(" ");
+  status === TenantStatusEnum.HARD_DEPROVISIONED
+    ? "Deprovisioned"
+    : status
+        .split("_")
+        .filter(Boolean)
+        .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+        .join(" ");
+
+const canEditTenant = (status: TenantStatusEnum) => status !== TenantStatusEnum.HARD_DEPROVISIONED;
+
+const formatTenantSchemaName = (status: TenantStatusEnum, schemaName: string) =>
+  status === TenantStatusEnum.HARD_DEPROVISIONED ? "-" : schemaName;
 
 const tenantStatusBadgeVariants: Record<TenantStatusEnum, "success" | "muted" | "warning" | "destructive" | "contrast"> = {
   [TenantStatusEnum.ACTIVE]: "success",
@@ -219,15 +226,17 @@ export const TenantDirectoryPage = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
-                    <TableCell className="align-top text-stone-600">{tenant.schemaName}</TableCell>
+                    <TableCell className="align-top text-stone-600">{formatTenantSchemaName(tenant.status, tenant.schemaName)}</TableCell>
                     <TableCell className="align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</TableCell>
                     <TableCell className="align-top text-right">
-                      <Button asChild size="sm" variant="outline">
-                        <Link href={`/platform/tenants/${tenant.slug}/edit`}>
-                          <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
-                          Edit
-                        </Link>
-                      </Button>
+                      {canEditTenant(tenant.status) ? (
+                        <Button asChild size="sm" variant="outline">
+                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>
+                            <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
+                            Edit
+                          </Link>
+                        </Button>
+                      ) : null}
                     </TableCell>
                   </TableRow>
                 ))}

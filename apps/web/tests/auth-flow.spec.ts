@@ -478,10 +478,12 @@ test("tenant directory filters tenants by name and explicit persisted status val
   await expect(page.getByRole("link", { name: "Northwind TMS" })).toHaveCount(0);
 
   await page.getByLabel("Filter tenants by status").click();
-  await page.getByRole("option", { name: "Hard Deprovisioned", exact: true }).click();
+  await page.getByRole("option", { name: "Deprovisioned", exact: true }).click();
   await expect(page.getByRole("link", { name: "Legacy Fleet" })).toBeVisible();
-  await expect(page.getByRole("table").getByText("Hard Deprovisioned", { exact: true })).toBeVisible();
+  await expect(page.getByRole("table").getByText("Deprovisioned", { exact: true })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "-", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Summit Logistics" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Edit/ })).toHaveCount(0);
 
   await page.getByLabel("Search tenants by name").fill("missing");
   await expect(page.getByText("No tenants matched the current filters.")).toBeVisible();
