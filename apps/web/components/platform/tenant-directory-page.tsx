@@ -10,6 +10,8 @@ import { getStoredAccessToken } from "@/lib/auth/storage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 enum TenantDirectoryViewStatusEnum {
@@ -37,6 +39,7 @@ type TenantDirectoryViewState =
   | TenantDirectorySuccessState
   | TenantDirectoryErrorState;
 
+const ALL_STATUSES_VALUE = "__all__";
 const tenantStatusOptions = Object.values(TenantStatusEnum);
 
 const formatTenantStatusLabel = (status: TenantStatusEnum) =>
@@ -136,21 +139,24 @@ export const TenantDirectoryPage = () => {
         </label>
         <label className="space-y-2">
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Status</span>
-          <select
-            aria-label="Filter tenants by status"
-            className="flex h-10 w-full rounded-2xl border border-stone-200 bg-stone-50 px-3 py-2 pr-10 text-sm text-stone-950 focus:outline-none focus:ring-1 focus:ring-primary"
-            onChange={(event) => {
-              setStatusFilter(event.target.value as TenantStatusEnum | "");
+          <Select
+            onValueChange={(value) => {
+              setStatusFilter(value === ALL_STATUSES_VALUE ? "" : (value as TenantStatusEnum));
             }}
-            value={statusFilter}
+            value={statusFilter || ALL_STATUSES_VALUE}
           >
-            <option value="">All statuses</option>
-            {tenantStatusOptions.map((status) => (
-              <option key={status} value={status}>
-                {formatTenantStatusLabel(status)}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger aria-label="Filter tenants by status">
+              <SelectValue placeholder="All statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_STATUSES_VALUE}>All statuses</SelectItem>
+              {tenantStatusOptions.map((status) => (
+                <SelectItem key={status} value={status}>
+                  {formatTenantStatusLabel(status)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </label>
         <Button asChild className="rounded-full px-5 lg:self-end">
           <Link href="/platform/tenants/new">Add new</Link>
@@ -190,28 +196,27 @@ export const TenantDirectoryPage = () => {
                 </span>
               </p>
             </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-stone-200 bg-white/70 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                    <th className="px-4 py-3">Tenant name</th>
-                    <th className="px-4 py-3">Status</th>
-                    <th className="px-4 py-3">Slug</th>
-                    <th className="px-4 py-3">Schema</th>
-                    <th className="px-4 py-3">Updated</th>
-                    <th className="px-4 py-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <Table className="min-w-full border-collapse text-left">
+              <TableHeader className="bg-white/70">
+                <TableRow className="border-stone-200">
+                  <TableHead>Tenant name</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Slug</TableHead>
+                  <TableHead>Schema</TableHead>
+                  <TableHead>Updated</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                   {viewState.response.data.tenantList.map((tenant) => (
-                    <tr key={tenant.tenantId} className="border-b border-stone-200/80 text-sm text-stone-700 last:border-b-0">
-                      <td className="px-4 py-4 align-top">
+                    <TableRow key={tenant.tenantId} className="border-stone-200/80 text-sm text-stone-700">
+                      <TableCell className="align-top">
                         <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.slug}`}>
                           <span>{tenant.name}</span>
                           <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
                         </Link>
-                      </td>
-                      <td className="px-4 py-4 align-top">
+                      </TableCell>
+                      <TableCell className="align-top">
                         <span
                           className={cn(
                             "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em]",
@@ -220,23 +225,22 @@ export const TenantDirectoryPage = () => {
                         >
                           {formatTenantStatusLabel(tenant.status)}
                         </span>
-                      </td>
-                      <td className="px-4 py-4 align-top text-stone-600">{tenant.slug}</td>
-                      <td className="px-4 py-4 align-top text-stone-600">{tenant.schemaName}</td>
-                      <td className="px-4 py-4 align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</td>
-                      <td className="px-4 py-4 align-top text-right">
+                      </TableCell>
+                      <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
+                      <TableCell className="align-top text-stone-600">{tenant.schemaName}</TableCell>
+                      <TableCell className="align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</TableCell>
+                      <TableCell className="align-top text-right">
                         <Button asChild size="sm" variant="outline">
                           <Link href={`/platform/tenants/${tenant.slug}/edit`}>
                             <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
                             Edit
                           </Link>
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
+              </TableBody>
+            </Table>
           </Card>
         )
       ) : null}

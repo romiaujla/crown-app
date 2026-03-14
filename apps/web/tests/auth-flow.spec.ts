@@ -462,7 +462,8 @@ test("tenant directory filters tenants by name and explicit persisted status val
   await expect(page.getByRole("link", { name: "Atlas Freight" })).toHaveCount(0);
 
   await page.getByLabel("Search tenants by name").fill("");
-  await page.getByLabel("Filter tenants by status").selectOption(TenantStatusEnum.PROVISIONING);
+  await page.getByLabel("Filter tenants by status").click();
+  await page.getByRole("option", { name: "Provisioning", exact: true }).click();
   await expect(page.getByRole("link", { name: "Summit Logistics" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Northwind TMS" })).toHaveCount(0);
 
