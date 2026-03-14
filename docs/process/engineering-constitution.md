@@ -23,6 +23,7 @@ Applies to all contributors (human and AI) across all repository directories.
 - Use named result-branch aliases when the branches carry distinct meaning, are reused, or would otherwise make the union harder to scan in review.
 - When API and web packages share the same contract shapes, schemas, enums, or inferred types, define that shared contract once in `@crown/types` instead of duplicating it across app-local modules.
 - Validate external input with Zod before business logic.
+- Protected API endpoints must apply rate limiting by default. Any intentional exemption must be called out in the PR description and relevant API documentation with rationale.
 - Keep modules cohesive and avoid hidden cross-package coupling.
 - Add tests for behavior changes (unit/integration/e2e as appropriate).
 - Do not commit generated build artifacts unless explicitly required.

@@ -39,15 +39,21 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
 
-  router.post("/platform/tenants/search", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
-    const parsed = TenantDirectoryListRequestSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory filter");
-    }
+  router.post(
+    "/platform/tenants/search",
+    authenticate,
+    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    rateLimitMiddleware,
+    async (req, res) => {
+      const parsed = TenantDirectoryListRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory filter");
+      }
 
-    const response = await listTenants(parsed.data.filters ?? {});
-    return res.status(200).json(response);
-  });
+      const response = await listTenants(parsed.data.filters ?? {});
+      return res.status(200).json(response);
+    }
+  );
 
   router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), rateLimitMiddleware, async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);
