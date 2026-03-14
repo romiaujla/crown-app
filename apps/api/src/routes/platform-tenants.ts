@@ -1,4 +1,4 @@
-import { DeprovisionTypeEnum } from "@crown/types";
+import { DeprovisionTypeEnum, TenantDirectoryListQuerySchema, type TenantDirectoryListResponse } from "@crown/types";
 import { Router, type RequestHandler } from "express";
 
 import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
@@ -14,11 +14,13 @@ import {
   TenantProvisionRequestSchema,
   TenantProvisionResponseSchema
 } from "../tenant/contracts.js";
+import { getPlatformTenantDirectory } from "../platform/tenants/directory-service.js";
 import { deprovisionTenant } from "../tenant/lifecycle-service.js";
 import { provisionTenant } from "../tenant/provision-service.js";
 import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
+  listTenants?: (input: { search?: string; status?: "active" | "inactive" | "provisioning" | "provisioning_failed" }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
   deprovision?: (input: { tenantId: string; deprovisionType: DeprovisionTypeEnum }) => Promise<DeprovisionTenantResult>;
@@ -26,6 +28,7 @@ type PlatformTenantsRouterOptions = {
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
   const router = Router();
+  const listTenants = options.listTenants ?? getPlatformTenantDirectory;
   const provision = options.provision ?? provisionTenant;
   const rateLimitMiddleware =
     options.rateLimitMiddleware ??
@@ -35,6 +38,16 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       message: "Too many tenant mutation requests"
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
+
+  router.get("/platform/tenants", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), async (req, res) => {
+    const parsed = TenantDirectoryListQuerySchema.safeParse(req.query);
+    if (!parsed.success) {
+      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory query");
+    }
+
+    const response = await listTenants(parsed.data);
+    return res.status(200).json(response);
+  });
 
   router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), rateLimitMiddleware, async (req, res) => {
     const parsed = TenantProvisionRequestSchema.safeParse(req.body);

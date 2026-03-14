@@ -218,6 +218,69 @@ export const authDocsDocument = {
           }
         }
       },
+      TenantDirectoryListItem: {
+        type: "object",
+        required: ["tenantId", "name", "slug", "schemaName", "status", "createdAt", "updatedAt"],
+        properties: {
+          tenantId: { type: "string" },
+          name: { type: "string" },
+          slug: { type: "string" },
+          schemaName: { type: "string" },
+          status: {
+            type: "string",
+            enum: tenantStatusValues
+          },
+          createdAt: {
+            type: "string",
+            format: "date-time"
+          },
+          updatedAt: {
+            type: "string",
+            format: "date-time"
+          }
+        }
+      },
+      TenantDirectoryListFilters: {
+        type: "object",
+        required: ["search", "status"],
+        properties: {
+          search: { type: "string", nullable: true },
+          status: {
+            type: "string",
+            nullable: true,
+            enum: tenantStatusValues
+          }
+        }
+      },
+      TenantDirectoryListMeta: {
+        type: "object",
+        required: ["totalRecords", "filters"],
+        properties: {
+          totalRecords: {
+            type: "integer",
+            minimum: 0
+          },
+          filters: { $ref: "#/components/schemas/TenantDirectoryListFilters" }
+        }
+      },
+      TenantDirectoryListData: {
+        type: "object",
+        required: ["tenantList"],
+        properties: {
+          tenantList: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantDirectoryListItem" }
+          }
+        }
+      },
+      TenantDirectoryListResponse: {
+        type: "object",
+        required: ["data", "meta"],
+        properties: {
+          data: { $ref: "#/components/schemas/TenantDirectoryListData" },
+          meta: { $ref: "#/components/schemas/TenantDirectoryListMeta" }
+        }
+      },
       DeprovisionType: {
         type: "string",
         enum: deprovisionTypeValues,
@@ -573,6 +636,49 @@ export const authDocsDocument = {
               }
             }
           },
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
+        }
+      }
+    },
+    "/api/v1/platform/tenants": {
+      get: {
+        tags: ["Platform Tenants"],
+        summary: "List tenants for the control plane",
+        description:
+          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Supports name search and a single tenant-status filter.",
+        security: bearerSecurity,
+        parameters: [
+          {
+            name: "search",
+            in: "query",
+            required: false,
+            schema: {
+              type: "string",
+              minLength: 1,
+              maxLength: 120
+            }
+          },
+          {
+            name: "status",
+            in: "query",
+            required: false,
+            schema: {
+              type: "string",
+              enum: tenantStatusValues
+            }
+          }
+        ],
+        responses: {
+          "200": {
+            description: "Tenant directory response",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/TenantDirectoryListResponse" }
+              }
+            }
+          },
+          "400": errorResponse("Invalid tenant directory query", "validation_error", "Invalid tenant directory query"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
         }

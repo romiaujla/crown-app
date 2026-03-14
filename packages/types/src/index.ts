@@ -20,7 +20,69 @@ export enum TenantStatusEnum {
 }
 
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
-export type TenantStatus = z.infer<typeof TenantStatusSchema>;
+export type TenantStatus = `${TenantStatusEnum}`;
+
+export const TenantDirectoryListQuerySchema = z.object({
+  search: z.string().trim().min(1).max(120).optional(),
+  status: TenantStatusSchema.optional()
+});
+export type TenantDirectoryListQuery = {
+  search?: string;
+  status?: TenantStatus;
+};
+
+export const TenantDirectoryListItemSchema = z.object({
+  tenantId: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  schemaName: z.string(),
+  status: TenantStatusSchema,
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime()
+});
+export type TenantDirectoryListItem = {
+  tenantId: string;
+  name: string;
+  slug: string;
+  schemaName: string;
+  status: TenantStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export const TenantDirectoryListDataSchema = z.object({
+  tenantList: z.array(TenantDirectoryListItemSchema)
+});
+export type TenantDirectoryListData = {
+  tenantList: TenantDirectoryListItem[];
+};
+
+export const TenantDirectoryListFiltersSchema = z.object({
+  search: z.string().nullable(),
+  status: TenantStatusSchema.nullable()
+});
+export type TenantDirectoryListFilters = {
+  search: string | null;
+  status: TenantStatus | null;
+};
+
+export const TenantDirectoryListMetaSchema = z.object({
+  totalRecords: z.number().int().nonnegative(),
+  filters: TenantDirectoryListFiltersSchema
+});
+export type TenantDirectoryListMeta = {
+  totalRecords: number;
+  filters: TenantDirectoryListFilters;
+};
+
+export const TenantDirectoryListResponseSchema = z.object({
+  data: TenantDirectoryListDataSchema,
+  meta: TenantDirectoryListMetaSchema
+});
+export type TenantDirectoryListResponse = {
+  data: TenantDirectoryListData;
+  meta: TenantDirectoryListMeta;
+};
 
 export enum DeprovisionTypeEnum {
   HARD = "hard",
@@ -28,7 +90,7 @@ export enum DeprovisionTypeEnum {
 }
 
 export const DeprovisionTypeSchema = z.enum(DeprovisionTypeEnum);
-export type DeprovisionType = z.infer<typeof DeprovisionTypeSchema>;
+export type DeprovisionType = `${DeprovisionTypeEnum}`;
 
 export const TenantStatusCountEntrySchema = z.object({
   status: TenantStatusSchema,
