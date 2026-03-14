@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useDeferredValue, useEffect, useState } from "react";
 
 import { searchPlatformTenants } from "@/lib/auth/api";
+import { Badge } from "@/components/ui/badge";
 import { getStoredAccessToken } from "@/lib/auth/storage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 
 enum TenantDirectoryViewStatusEnum {
   LOADING = "loading",
@@ -49,11 +49,11 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
     .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
     .join(" ");
 
-const tenantStatusChipClasses: Record<TenantStatusEnum, string> = {
-  [TenantStatusEnum.ACTIVE]: "bg-emerald-100 text-emerald-800",
-  [TenantStatusEnum.INACTIVE]: "bg-stone-200 text-stone-700",
-  [TenantStatusEnum.PROVISIONING]: "bg-amber-100 text-amber-800",
-  [TenantStatusEnum.PROVISIONING_FAILED]: "bg-rose-100 text-rose-800"
+const tenantStatusBadgeVariants: Record<TenantStatusEnum, "success" | "muted" | "warning" | "destructive"> = {
+  [TenantStatusEnum.ACTIVE]: "success",
+  [TenantStatusEnum.INACTIVE]: "muted",
+  [TenantStatusEnum.PROVISIONING]: "warning",
+  [TenantStatusEnum.PROVISIONING_FAILED]: "destructive"
 };
 
 const formatTimestamp = (value: string) =>
@@ -217,14 +217,9 @@ export const TenantDirectoryPage = () => {
                         </Link>
                       </TableCell>
                       <TableCell className="align-top">
-                        <span
-                          className={cn(
-                            "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em]",
-                            tenantStatusChipClasses[tenant.status]
-                          )}
-                        >
+                        <Badge variant={tenantStatusBadgeVariants[tenant.status]}>
                           {formatTenantStatusLabel(tenant.status)}
-                        </span>
+                        </Badge>
                       </TableCell>
                       <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
                       <TableCell className="align-top text-stone-600">{tenant.schemaName}</TableCell>
