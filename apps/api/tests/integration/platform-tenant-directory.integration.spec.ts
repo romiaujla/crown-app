@@ -1,3 +1,4 @@
+import { TenantStatusEnum } from "@crown/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const tenantFindMany = vi.fn();
@@ -35,7 +36,7 @@ describe("platform tenant directory integration", () => {
 
     const response = await getPlatformTenantDirectory({
       name: "acme",
-      status: "active"
+      status: TenantStatusEnum.ACTIVE
     });
 
     expect(response).toEqual({
@@ -46,7 +47,7 @@ describe("platform tenant directory integration", () => {
             name: "Acme Logistics",
             slug: "acme-logistics",
             schemaName: "tenant_acme_logistics",
-            status: "active",
+            status: TenantStatusEnum.ACTIVE,
             createdAt: "2026-03-01T12:00:00.000Z",
             updatedAt: "2026-03-10T09:30:00.000Z"
           }
@@ -56,7 +57,7 @@ describe("platform tenant directory integration", () => {
         totalRecords: 1,
         filters: {
           name: "acme",
-          status: "active"
+          status: TenantStatusEnum.ACTIVE
         }
       }
     });
@@ -70,7 +71,7 @@ describe("platform tenant directory integration", () => {
 
     await getPlatformTenantDirectory({
       name: "acme",
-      status: "inactive"
+      status: TenantStatusEnum.INACTIVE
     });
 
     expect(tenantFindMany).toHaveBeenCalledWith({
@@ -79,7 +80,7 @@ describe("platform tenant directory integration", () => {
           contains: "acme",
           mode: "insensitive"
         },
-        status: "inactive"
+        status: TenantStatusEnum.INACTIVE
       },
       orderBy: {
         createdAt: "desc"
@@ -91,7 +92,7 @@ describe("platform tenant directory integration", () => {
           contains: "acme",
           mode: "insensitive"
         },
-        status: "inactive"
+        status: TenantStatusEnum.INACTIVE
       }
     });
   });

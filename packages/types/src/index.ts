@@ -20,7 +20,6 @@ export enum TenantStatusEnum {
 }
 
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
-export type TenantStatus = `${TenantStatusEnum}`;
 
 export const TenantDirectoryListFilterSchema = z
   .object({
@@ -30,7 +29,7 @@ export const TenantDirectoryListFilterSchema = z
   .strict();
 export type TenantDirectoryListFilter = {
   name?: string;
-  status?: TenantStatus;
+  status?: TenantStatusEnum;
 };
 
 export const TenantDirectoryListRequestSchema = z
@@ -56,7 +55,7 @@ export type TenantDirectoryListItem = {
   name: string;
   slug: string;
   schemaName: string;
-  status: TenantStatus;
+  status: TenantStatusEnum;
   createdAt: string;
   updatedAt: string;
 };
@@ -74,7 +73,7 @@ export const TenantDirectoryListFiltersSchema = z.object({
 });
 export type TenantDirectoryListFilters = {
   name: string | null;
-  status: TenantStatus | null;
+  status: TenantStatusEnum | null;
 };
 
 export const TenantDirectoryListMetaSchema = z.object({

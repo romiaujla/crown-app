@@ -1,3 +1,4 @@
+import { TenantStatusEnum } from "@crown/types";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import type { RequestHandler } from "express";
@@ -16,7 +17,7 @@ describe("platform tenant directory contract", () => {
             name: "Acme Logistics",
             slug: "acme-logistics",
             schemaName: "tenant_acme_logistics",
-            status: "active" as const,
+            status: TenantStatusEnum.ACTIVE,
             createdAt: "2026-03-01T12:00:00.000Z",
             updatedAt: "2026-03-10T09:30:00.000Z"
           }
@@ -26,7 +27,7 @@ describe("platform tenant directory contract", () => {
         totalRecords: 1,
         filters: {
           name: "acme",
-          status: "active" as const
+          status: TenantStatusEnum.ACTIVE
         }
       }
     }));
@@ -42,7 +43,7 @@ describe("platform tenant directory contract", () => {
     expect(response.body.meta.totalRecords).toBe(1);
     expect(listTenants).toHaveBeenCalledWith({
       name: "acme",
-      status: "active"
+      status: TenantStatusEnum.ACTIVE
     });
   });
 

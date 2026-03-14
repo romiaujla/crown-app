@@ -1,9 +1,11 @@
 import {
   TenantDirectoryListResponseSchema,
+  TenantStatusSchema,
   type TenantDirectoryListFilter,
-  type TenantDirectoryListResponse,
-  type TenantStatus
+  type TenantDirectoryListResponse
 } from "@crown/types";
+import type { PrismaClient } from "../../generated/prisma/client.js";
+import type { TenantStatus as PrismaTenantStatus } from "../../generated/prisma/enums.js";
 
 import { prisma } from "../../db/prisma.js";
 
@@ -12,48 +14,24 @@ type TenantDirectoryWhere = {
     contains: string;
     mode: "insensitive";
   };
-  status?: TenantStatus;
-};
-
-type TenantDirectoryPrismaClient = {
-  tenant: {
-    findMany(args: {
-      where?: TenantDirectoryWhere;
-      orderBy: {
-        createdAt: "desc";
-      };
-    }): Promise<
-      Array<{
-        id: string;
-        name: string;
-        slug: string;
-        schemaName: string;
-        status: TenantStatus;
-        createdAt: Date;
-        updatedAt: Date;
-      }>
-    >;
-    count(args?: {
-      where?: TenantDirectoryWhere;
-    }): Promise<number>;
-  };
+  status?: PrismaTenantStatus;
 };
 
 const buildTenantDirectoryWhere = ({ name, status }: TenantDirectoryListFilter): TenantDirectoryWhere => ({
   ...(name
     ? {
-        name: {
-          contains: name,
-          mode: "insensitive" as const
-        }
+      name: {
+        contains: name,
+        mode: "insensitive" as const
       }
+    }
     : {}),
-  ...(status ? { status } : {})
+  ...(status ? { status: status as PrismaTenantStatus } : {})
 });
 
 export const getPlatformTenantDirectory = async (
   filters: TenantDirectoryListFilter,
-  db: TenantDirectoryPrismaClient = prisma
+  db: Pick<PrismaClient, "tenant"> = prisma
 ): Promise<TenantDirectoryListResponse> => {
   const where = buildTenantDirectoryWhere(filters);
   const [tenants, totalRecords] = await Promise.all([
@@ -73,7 +51,7 @@ export const getPlatformTenantDirectory = async (
         name: tenant.name,
         slug: tenant.slug,
         schemaName: tenant.schemaName,
-        status: tenant.status,
+        status: TenantStatusSchema.parse(tenant.status),
         createdAt: tenant.createdAt.toISOString(),
         updatedAt: tenant.updatedAt.toISOString()
       }))
