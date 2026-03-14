@@ -22,6 +22,14 @@ export enum TenantStatusEnum {
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
 export type TenantStatus = z.infer<typeof TenantStatusSchema>;
 
+export enum DeprovisionTypeEnum {
+  HARD = "hard",
+  SOFT = "soft"
+}
+
+export const DeprovisionTypeSchema = z.enum(DeprovisionTypeEnum);
+export type DeprovisionType = z.infer<typeof DeprovisionTypeSchema>;
+
 export const TenantStatusCountEntrySchema = z.object({
   status: TenantStatusSchema,
   count: z.number().int().nonnegative()
