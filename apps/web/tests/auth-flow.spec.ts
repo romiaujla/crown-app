@@ -81,6 +81,15 @@ const baseTenantDirectoryList = [
     status: TenantStatusEnum.PROVISIONING,
     createdAt: "2026-03-03T15:00:00.000Z",
     updatedAt: "2026-03-12T15:00:00.000Z"
+  },
+  {
+    tenantId: "tenant-4",
+    name: "Legacy Fleet",
+    slug: "legacy-fleet",
+    schemaName: "tenant_legacy_fleet",
+    status: TenantStatusEnum.HARD_DEPROVISIONED,
+    createdAt: "2026-03-04T15:00:00.000Z",
+    updatedAt: "2026-03-13T15:00:00.000Z"
   }
 ] as const;
 
@@ -456,6 +465,7 @@ test("tenant directory filters tenants by name and explicit persisted status val
   await expect(page.getByRole("link", { name: "Northwind TMS" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Atlas Freight" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Summit Logistics" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Legacy Fleet" })).toBeVisible();
 
   await page.getByLabel("Search tenants by name").fill("north");
   await expect(page.getByRole("link", { name: "Northwind TMS" })).toBeVisible();
@@ -466,6 +476,12 @@ test("tenant directory filters tenants by name and explicit persisted status val
   await page.getByRole("option", { name: "Provisioning", exact: true }).click();
   await expect(page.getByRole("link", { name: "Summit Logistics" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Northwind TMS" })).toHaveCount(0);
+
+  await page.getByLabel("Filter tenants by status").click();
+  await page.getByRole("option", { name: "Hard Deprovisioned", exact: true }).click();
+  await expect(page.getByRole("link", { name: "Legacy Fleet" })).toBeVisible();
+  await expect(page.getByRole("table").getByText("Hard Deprovisioned", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Summit Logistics" })).toHaveCount(0);
 
   await page.getByLabel("Search tenants by name").fill("missing");
   await expect(page.getByText("No tenants matched the current filters.")).toBeVisible();

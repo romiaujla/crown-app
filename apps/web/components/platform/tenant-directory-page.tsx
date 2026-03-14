@@ -27,11 +27,12 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
     .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
     .join(" ");
 
-const tenantStatusBadgeVariants: Record<TenantStatusEnum, "success" | "muted" | "warning" | "destructive"> = {
+const tenantStatusBadgeVariants: Record<TenantStatusEnum, "success" | "muted" | "warning" | "destructive" | "contrast"> = {
   [TenantStatusEnum.ACTIVE]: "success",
   [TenantStatusEnum.INACTIVE]: "muted",
   [TenantStatusEnum.PROVISIONING]: "warning",
-  [TenantStatusEnum.PROVISIONING_FAILED]: "destructive"
+  [TenantStatusEnum.PROVISIONING_FAILED]: "destructive",
+  [TenantStatusEnum.HARD_DEPROVISIONED]: "contrast"
 };
 
 const formatTimestamp = (value: string) =>
