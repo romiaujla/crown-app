@@ -11,8 +11,8 @@
 
 ```json
 {
-  "filter": {
-    "search": "acme",
+  "filters": {
+    "name": "acme",
     "status": "active"
   }
 }
@@ -38,7 +38,7 @@
   "meta": {
     "totalRecords": 1,
     "filters": {
-      "search": "acme",
+      "name": "acme",
       "status": "active"
     }
   }
@@ -55,7 +55,7 @@
   "meta": {
     "totalRecords": 0,
     "filters": {
-      "search": null,
+      "name": null,
       "status": null
     }
   }

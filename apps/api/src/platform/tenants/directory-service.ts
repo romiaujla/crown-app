@@ -39,11 +39,11 @@ type TenantDirectoryPrismaClient = {
   };
 };
 
-const buildTenantDirectoryWhere = ({ search, status }: TenantDirectoryListFilter): TenantDirectoryWhere => ({
-  ...(search
+const buildTenantDirectoryWhere = ({ name, status }: TenantDirectoryListFilter): TenantDirectoryWhere => ({
+  ...(name
     ? {
         name: {
-          contains: search,
+          contains: name,
           mode: "insensitive" as const
         }
       }
@@ -81,7 +81,7 @@ export const getPlatformTenantDirectory = async (
     meta: {
       totalRecords,
       filters: {
-        search: filters.search ?? null,
+        name: filters.name ?? null,
         status: filters.status ?? null
       }
     }

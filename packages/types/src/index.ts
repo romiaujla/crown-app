@@ -22,20 +22,24 @@ export enum TenantStatusEnum {
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
 export type TenantStatus = `${TenantStatusEnum}`;
 
-export const TenantDirectoryListFilterSchema = z.object({
-  search: z.string().trim().min(1).max(120).optional(),
-  status: TenantStatusSchema.optional()
-});
+export const TenantDirectoryListFilterSchema = z
+  .object({
+    name: z.string().trim().min(1).max(120).optional(),
+    status: TenantStatusSchema.optional()
+  })
+  .strict();
 export type TenantDirectoryListFilter = {
-  search?: string;
+  name?: string;
   status?: TenantStatus;
 };
 
-export const TenantDirectoryListRequestSchema = z.object({
-  filter: TenantDirectoryListFilterSchema.default({})
-});
+export const TenantDirectoryListRequestSchema = z
+  .object({
+    filters: TenantDirectoryListFilterSchema.default({})
+  })
+  .strict();
 export type TenantDirectoryListRequest = {
-  filter: TenantDirectoryListFilter;
+  filters: TenantDirectoryListFilter;
 };
 
 export const TenantDirectoryListItemSchema = z.object({
@@ -65,11 +69,11 @@ export type TenantDirectoryListData = {
 };
 
 export const TenantDirectoryListFiltersSchema = z.object({
-  search: z.string().nullable(),
+  name: z.string().nullable(),
   status: TenantStatusSchema.nullable()
 });
 export type TenantDirectoryListFilters = {
-  search: string | null;
+  name: string | null;
   status: TenantStatus | null;
 };
 

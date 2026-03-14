@@ -2,7 +2,7 @@
 
 ## Goal
 
-Verify that the super-admin tenant directory endpoint returns the agreed `{ data, meta }` contract and applies `search` plus `status` filtering.
+Verify that the super-admin tenant directory endpoint returns the agreed `{ data, meta }` contract and applies `name` plus `status` filtering.
 
 ## Preconditions
 
@@ -20,7 +20,7 @@ Verify that the super-admin tenant directory endpoint returns the agreed `{ data
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"filter":{}}' \
+  -d '{"filters":{}}' \
   "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 
@@ -28,7 +28,7 @@ Expected:
 - `200 OK`
 - response includes `data.tenantList`
 - response includes `meta.totalRecords`
-- response includes `meta.filters.search` and `meta.filters.status`
+- response includes `meta.filters.name` and `meta.filters.status`
 
 2. Request the directory with a name search:
 
@@ -36,13 +36,13 @@ Expected:
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"filter":{"search":"acme"}}' \
+  -d '{"filters":{"name":"acme"}}' \
   "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 
 Expected:
 - only matching tenant names are returned
-- `meta.filters.search` echoes `"acme"`
+- `meta.filters.name` echoes `"acme"`
 
 3. Request the directory with a status filter:
 
@@ -50,7 +50,7 @@ Expected:
 curl -X POST \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
-  -d '{"filter":{"status":"active"}}' \
+  -d '{"filters":{"status":"active"}}' \
   "http://localhost:3001/api/v1/platform/tenants/search"
 ```
 

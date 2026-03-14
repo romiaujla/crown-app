@@ -34,7 +34,7 @@ describe("platform tenant directory integration", () => {
     const { getPlatformTenantDirectory } = await import("../../src/platform/tenants/directory-service.js");
 
     const response = await getPlatformTenantDirectory({
-      search: "acme",
+      name: "acme",
       status: "active"
     });
 
@@ -55,7 +55,7 @@ describe("platform tenant directory integration", () => {
       meta: {
         totalRecords: 1,
         filters: {
-          search: "acme",
+          name: "acme",
           status: "active"
         }
       }
@@ -69,7 +69,7 @@ describe("platform tenant directory integration", () => {
     const { getPlatformTenantDirectory } = await import("../../src/platform/tenants/directory-service.js");
 
     await getPlatformTenantDirectory({
-      search: "acme",
+      name: "acme",
       status: "inactive"
     });
 
@@ -107,7 +107,7 @@ describe("platform tenant directory integration", () => {
     expect(response.meta).toEqual({
       totalRecords: 0,
       filters: {
-        search: null,
+        name: null,
         status: null
       }
     });

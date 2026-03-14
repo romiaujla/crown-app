@@ -2,7 +2,7 @@
 
 ## TenantDirectoryListFilter
 
-- **search**: `string | null`
+- **name**: `string | null`
   - Optional free-text filter applied to persisted tenant names.
   - Trimmed before execution.
 - **status**: `TenantStatus | null`
@@ -10,7 +10,7 @@
 
 ## TenantDirectoryListRequest
 
-- **filter**: `TenantDirectoryListFilter`
+- **filters**: `TenantDirectoryListFilter`
 
 ## TenantDirectoryListItem
 
@@ -30,7 +30,7 @@
 
 - **totalRecords**: `number`
 - **filters**:
-  - **search**: `string | null`
+  - **name**: `string | null`
   - **status**: `TenantStatus | null`
 
 ## TenantDirectoryListResponse
@@ -43,7 +43,7 @@
   "meta": {
     "totalRecords": 0,
     "filters": {
-      "search": null,
+      "name": null,
       "status": null
     }
   }

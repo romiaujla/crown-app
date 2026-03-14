@@ -61,20 +61,20 @@
 
 ## Phase 4: User Story 2 - Filter The Tenant Directory By Search And Status (Priority: P2)
 
-**Goal**: The tenant directory applies `search` and `status` filters before returning results
+**Goal**: The tenant directory applies `name` and `status` filters before returning results
 
-**Independent Test**: Call the route with `filter.search` and `filter.status` in the request body and verify only matching tenants are returned while the applied filters are echoed in `meta.filters`
+**Independent Test**: Call the route with `filters.name` and `filters.status` in the request body and verify only matching tenants are returned while the applied filters are echoed in `meta.filters`
 
 ### Tests for User Story 2
 
-- [ ] T013 [P] [US2] Extend `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-directory.contract.spec.ts` to cover `search`, `status`, and combined filter behavior
+- [ ] T013 [P] [US2] Extend `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-directory.contract.spec.ts` to cover `name`, `status`, and combined filter behavior
 - [ ] T014 [P] [US2] Extend `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-tenant-directory.integration.spec.ts` to verify filtered Prisma query behavior and echoed filters
 
 ### Implementation for User Story 2
 
 - [ ] T015 [US2] Implement name-search filtering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/tenants/directory-service.ts`
 - [ ] T016 [US2] Implement persisted status filtering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/tenants/directory-service.ts`
-- [ ] T017 [US2] Echo effective `search` and `status` values in the route response metadata in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts`
+- [ ] T017 [US2] Echo effective `name` and `status` values in the route response metadata in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts`
 
 **Checkpoint**: The directory behaves like a filterable collection endpoint for the control plane
 
@@ -166,7 +166,7 @@ Task: "Add service/integration coverage for tenant directory mapping in apps/api
 
 1. Add the shared directory contract and service seams
 2. Mount the collection route and return the agreed response envelope
-3. Add `search` and `status` filtering behavior
+3. Add `name` and `status` filtering behavior
 4. Finalize OpenAPI documentation and complete the validation loop
 
 ---

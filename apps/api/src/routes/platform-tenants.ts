@@ -20,7 +20,7 @@ import { provisionTenant } from "../tenant/provision-service.js";
 import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
-  listTenants?: (input: { search?: string; status?: "active" | "inactive" | "provisioning" | "provisioning_failed" }) => Promise<TenantDirectoryListResponse>;
+  listTenants?: (input: { name?: string; status?: "active" | "inactive" | "provisioning" | "provisioning_failed" }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
   deprovision?: (input: { tenantId: string; deprovisionType: DeprovisionTypeEnum }) => Promise<DeprovisionTenantResult>;
@@ -45,7 +45,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory filter");
     }
 
-    const response = await listTenants(parsed.data.filter ?? {});
+    const response = await listTenants(parsed.data.filters ?? {});
     return res.status(200).json(response);
   });
 

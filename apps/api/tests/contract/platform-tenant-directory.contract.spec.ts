@@ -24,7 +24,7 @@ describe("platform tenant directory contract", () => {
       meta: {
         totalRecords: 1,
         filters: {
-          search: "acme",
+          name: "acme",
           status: "active" as const
         }
       }
@@ -34,13 +34,13 @@ describe("platform tenant directory contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenants/search")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ filter: { search: "acme", status: "active" } });
+      .send({ filters: { name: "acme", status: "active" } });
 
     expect(response.status).toBe(200);
     expect(response.body.data.tenantList).toHaveLength(1);
     expect(response.body.meta.totalRecords).toBe(1);
     expect(listTenants).toHaveBeenCalledWith({
-      search: "acme",
+      name: "acme",
       status: "active"
     });
   });
@@ -53,7 +53,7 @@ describe("platform tenant directory contract", () => {
       meta: {
         totalRecords: 0,
         filters: {
-          search: null,
+          name: null,
           status: null
         }
       }
@@ -63,7 +63,7 @@ describe("platform tenant directory contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenants/search")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ filter: {} });
+      .send({ filters: {} });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -73,7 +73,7 @@ describe("platform tenant directory contract", () => {
       meta: {
         totalRecords: 0,
         filters: {
-          search: null,
+          name: null,
           status: null
         }
       }
@@ -87,7 +87,7 @@ describe("platform tenant directory contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenants/search")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ filter: { status: "destroyed" } });
+      .send({ filters: { status: "destroyed" } });
 
     expect(response.status).toBe(400);
     expect(response.body.error_code).toBe("validation_error");
@@ -97,7 +97,7 @@ describe("platform tenant directory contract", () => {
   it("returns 401 for missing token", async () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ listTenants: vi.fn() }) });
 
-    const response = await request(app).post("/api/v1/platform/tenants/search").send({ filter: {} });
+    const response = await request(app).post("/api/v1/platform/tenants/search").send({ filters: {} });
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("unauthenticated");
@@ -109,7 +109,7 @@ describe("platform tenant directory contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenants/search")
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
-      .send({ filter: {} });
+      .send({ filters: {} });
 
     expect(response.status).toBe(403);
     expect(response.body.error_code).toBe("forbidden_role");

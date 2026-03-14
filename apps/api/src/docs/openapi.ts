@@ -243,7 +243,7 @@ export const authDocsDocument = {
       TenantDirectoryListFilter: {
         type: "object",
         properties: {
-          search: {
+          name: {
             type: "string",
             minLength: 1,
             maxLength: 120
@@ -256,16 +256,16 @@ export const authDocsDocument = {
       },
       TenantDirectoryListRequest: {
         type: "object",
-        required: ["filter"],
+        required: ["filters"],
         properties: {
-          filter: { $ref: "#/components/schemas/TenantDirectoryListFilter" }
+          filters: { $ref: "#/components/schemas/TenantDirectoryListFilter" }
         }
       },
       TenantDirectoryListFilters: {
         type: "object",
-        required: ["search", "status"],
+        required: ["name", "status"],
         properties: {
-          search: { type: "string", nullable: true },
+          name: { type: "string", nullable: true },
           status: {
             type: "string",
             nullable: true,
@@ -667,7 +667,7 @@ export const authDocsDocument = {
         tags: ["Platform Tenants"],
         summary: "Search tenants for the control plane",
         description:
-          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Accepts a request body with `filter.search` and `filter.status`.",
+          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Accepts a request body with `filters.name` and `filters.status`.",
         security: bearerSecurity,
         requestBody: {
           required: true,

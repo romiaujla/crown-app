@@ -29,13 +29,13 @@ As a super admin, I want the tenant directory endpoint to support search and sta
 
 **Why this priority**: Search and status filtering are explicit Jira acceptance criteria and are central to the directory workflow.
 
-**Independent Test**: Call the tenant directory endpoint with a request body containing `filter.search` and `filter.status` and verify the API returns only matching records while echoing applied filters in `meta.filters`.
+**Independent Test**: Call the tenant directory endpoint with a request body containing `filters.name` and `filters.status` and verify the API returns only matching records while echoing applied filters in `meta.filters`.
 
 **Acceptance Scenarios**:
 
-1. **Given** multiple tenants exist with different names, **When** the super admin supplies `filter.search`, **Then** the API returns only tenants whose persisted names match the search behavior defined for this story.
-2. **Given** tenants exist in different lifecycle states, **When** the super admin supplies `filter.status`, **Then** the API returns only tenants with that persisted status.
-3. **Given** both `filter.search` and `filter.status` are supplied, **When** the request is processed, **Then** the API applies both filters and echoes the effective values in `meta.filters`.
+1. **Given** multiple tenants exist with different names, **When** the super admin supplies `filters.name`, **Then** the API returns only tenants whose persisted names match the search behavior defined for this story.
+2. **Given** tenants exist in different lifecycle states, **When** the super admin supplies `filters.status`, **Then** the API returns only tenants with that persisted status.
+3. **Given** both `filters.name` and `filters.status` are supplied, **When** the request is processed, **Then** the API applies both filters and echoes the effective values in `meta.filters`.
 
 ---
 
@@ -57,7 +57,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 ### Edge Cases
 
 - The caller passes an unsupported tenant status filter value.
-- The caller passes an empty or whitespace-only `search` value.
+- The caller passes an empty or whitespace-only `name` value.
 - No tenants match the provided filters.
 - Matching tenants include a mix of `active`, `inactive`, `provisioning`, and `provisioningFailed` statuses.
 - The directory must return persisted platform statuses rather than duplicating web-only constants.
@@ -72,9 +72,9 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 - **FR-003**: The tenant directory API MUST return top-level `meta` containing `totalRecords` and `filters`.
 - **FR-004**: Tenant records in the response MUST use camelCase body properties.
 - **FR-005**: Each returned tenant record MUST include `tenantId`, `name`, `slug`, `schemaName`, `status`, `createdAt`, and `updatedAt`.
-- **FR-006**: The tenant directory API MUST accept a request body with `filter.search` for name-based filtering.
-- **FR-007**: The tenant directory API MUST accept a request body with single-select `filter.status` using the persisted tenant status model as the source of truth.
-- **FR-008**: The API MUST echo the applied `search` and `status` values in `meta.filters`.
+- **FR-006**: The tenant directory API MUST accept a request body with `filters.name` for name-based filtering.
+- **FR-007**: The tenant directory API MUST accept a request body with single-select `filters.status` using the persisted tenant status model as the source of truth.
+- **FR-008**: The API MUST echo the applied `name` and `status` values in `meta.filters`.
 - **FR-009**: The API MUST return `meta.totalRecords` for the filtered result set.
 - **FR-010**: The tenant directory API MUST remain limited to tenant collection data for this story and MUST NOT include nested related collections such as `userList`.
 - **FR-011**: The tenant directory API MUST reject unauthenticated and non-super-admin callers using the existing protected-route error behavior.
@@ -84,7 +84,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 ### Key Entities *(include if feature involves data)*
 
 - **Tenant Directory Item**: A control-plane tenant record returned in the list response, including identity, lifecycle status, and timestamps.
-- **Tenant Directory Filters**: The request-body filter inputs and echoed metadata for `search` and `status`.
+- **Tenant Directory Filters**: The request-body filter inputs and echoed metadata for `name` and `status`.
 - **Tenant Directory Response Envelope**: The standardized `{ data, meta }` response shape containing `tenantList` and collection metadata.
 
 ### Assumptions
@@ -106,7 +106,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 ### Measurable Outcomes
 
 - **SC-001**: Reviewers can verify that 100% of tested successful requests return the tenant directory in the agreed `{ data, meta }` envelope with `data.tenantList`.
-- **SC-002**: Reviewers can verify that 100% of tested `filter.search` and `filter.status` requests return only matching tenant records and echo the applied filters in `meta.filters`.
+- **SC-002**: Reviewers can verify that 100% of tested `filters.name` and `filters.status` requests return only matching tenant records and echo the applied filters in `meta.filters`.
 - **SC-003**: Reviewers can verify that 100% of tested unauthenticated or non-super-admin requests are rejected with the existing protected-route error behavior.
 - **SC-004**: Reviewers can verify from the contract and OpenAPI documentation that tenant directory response properties use camelCase and that nested related collections are out of scope for this story.
 - **SC-005**: Reviewers can verify that the endpoint returns persisted platform tenant statuses rather than duplicated frontend-only status definitions.
