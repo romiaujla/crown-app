@@ -118,10 +118,10 @@ describe("platform tenant directory contract", () => {
   });
 
   it("returns 429 when rate limited", async () => {
-    const rateLimitMiddleware: RequestHandler = (_req, res) => {
-      res.status(429).json({ error_code: "rate_limited", message: "Too many tenant mutation requests" });
+    const searchRateLimitMiddleware: RequestHandler = (_req, res) => {
+      res.status(429).json({ error_code: "rate_limited", message: "Too many tenant directory requests" });
     };
-    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ listTenants: vi.fn(), rateLimitMiddleware }) });
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ listTenants: vi.fn(), searchRateLimitMiddleware }) });
 
     const response = await request(app)
       .post("/api/v1/platform/tenants/search")
@@ -130,5 +130,6 @@ describe("platform tenant directory contract", () => {
 
     expect(response.status).toBe(429);
     expect(response.body.error_code).toBe("rate_limited");
+    expect(response.body.message).toBe("Too many tenant directory requests");
   });
 });

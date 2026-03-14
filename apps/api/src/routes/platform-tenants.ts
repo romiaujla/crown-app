@@ -23,6 +23,7 @@ type PlatformTenantsRouterOptions = {
   listTenants?: (input: { name?: string; status?: "active" | "inactive" | "provisioning" | "provisioning_failed" }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
+  searchRateLimitMiddleware?: RequestHandler;
   deprovision?: (input: { tenantId: string; deprovisionType: DeprovisionTypeEnum }) => Promise<DeprovisionTenantResult>;
 };
 
@@ -37,13 +38,20 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       maxRequests: 10,
       message: "Too many tenant mutation requests"
     });
+  const searchRateLimitMiddleware =
+    options.searchRateLimitMiddleware ??
+    createRateLimitMiddleware({
+      windowMs: 60_000,
+      maxRequests: 100,
+      message: "Too many tenant directory requests"
+    });
   const deprovision = options.deprovision ?? deprovisionTenant;
 
   router.post(
     "/platform/tenants/search",
     authenticate,
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
-    rateLimitMiddleware,
+    searchRateLimitMiddleware,
     async (req, res) => {
       const parsed = TenantDirectoryListRequestSchema.safeParse(req.body);
       if (!parsed.success) {

@@ -687,7 +687,7 @@ export const authDocsDocument = {
             }
           },
           "400": errorResponse("Invalid tenant directory filter", "validation_error", "Invalid tenant directory filter"),
-          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant mutation requests"),
+          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
         }
