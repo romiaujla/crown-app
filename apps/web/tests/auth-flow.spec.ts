@@ -1,5 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
-import { DashboardMetricWindowEnum, TenantStatusEnum, type DashboardOverviewResponse } from "@crown/types";
+import {
+  DashboardMetricWindowEnum,
+  TenantStatusEnum,
+  type DashboardOverviewResponse,
+  type TenantDirectoryListResponse
+} from "@crown/types";
 
 const API_BASE_URL = "http://localhost:4000";
 const ACCESS_TOKEN_STORAGE_KEY = "crown.auth.access_token";
@@ -22,6 +27,7 @@ const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
 
 type Persona = "super_admin" | "tenant_admin" | "tenant_user";
 type DashboardOverviewFixture = DashboardOverviewResponse;
+type TenantDirectoryFixture = TenantDirectoryListResponse;
 
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
   widgets: {
@@ -47,6 +53,62 @@ const buildDashboardOverview = (): DashboardOverviewFixture => ({
     }
   }
 });
+
+const baseTenantDirectoryList = [
+  {
+    tenantId: "tenant-1",
+    name: "Northwind TMS",
+    slug: "northwind-tms",
+    schemaName: "tenant_northwind_tms",
+    status: TenantStatusEnum.ACTIVE,
+    createdAt: "2026-03-01T15:00:00.000Z",
+    updatedAt: "2026-03-10T15:00:00.000Z"
+  },
+  {
+    tenantId: "tenant-2",
+    name: "Atlas Freight",
+    slug: "atlas-freight",
+    schemaName: "tenant_atlas_freight",
+    status: TenantStatusEnum.INACTIVE,
+    createdAt: "2026-03-02T15:00:00.000Z",
+    updatedAt: "2026-03-11T15:00:00.000Z"
+  },
+  {
+    tenantId: "tenant-3",
+    name: "Summit Logistics",
+    slug: "summit-logistics",
+    schemaName: "tenant_summit_logistics",
+    status: TenantStatusEnum.PROVISIONING,
+    createdAt: "2026-03-03T15:00:00.000Z",
+    updatedAt: "2026-03-12T15:00:00.000Z"
+  }
+] as const;
+
+const buildTenantDirectoryResponse = (filters?: {
+  name?: string | null;
+  status?: TenantStatusEnum | null;
+}): TenantDirectoryFixture => {
+  const normalizedName = filters?.name?.trim().toLowerCase() ?? null;
+  const filteredTenantList = baseTenantDirectoryList.filter((tenant) => {
+    const matchesName = normalizedName ? tenant.name.toLowerCase().includes(normalizedName) : true;
+    const matchesStatus = filters?.status ? tenant.status === filters.status : true;
+
+    return matchesName && matchesStatus;
+  });
+
+  return {
+    data: {
+      tenantList: filteredTenantList.map((tenant) => ({ ...tenant }))
+    },
+    meta: {
+      totalRecords: filteredTenantList.length,
+      filters: {
+        name: filters?.name?.trim() || null,
+        status: filters?.status ?? null
+      }
+    }
+  };
+};
 
 const buildCurrentUser = (persona: Persona) => {
   const tenant =
@@ -91,6 +153,8 @@ const setupAuthRoutes = async (
     logoutStatus?: number;
     overviewStatus?: number;
     overviewResponse?: DashboardOverviewFixture;
+    tenantDirectoryStatus?: number;
+    tenantDirectoryResponse?: TenantDirectoryFixture;
   } = {}
 ) => {
   await page.route(`${API_BASE_URL}/api/v1/**`, async (route) => {
@@ -108,6 +172,36 @@ const setupAuthRoutes = async (
             : JSON.stringify(options.overviewResponse ?? buildDashboardOverview()),
         contentType: "application/json",
         status: options.overviewStatus ?? 200
+      });
+      return;
+    }
+
+    if (url.endsWith("/platform/tenants/search")) {
+      if (options.tenantDirectoryStatus && options.tenantDirectoryStatus !== 200) {
+        await route.fulfill({
+          body: JSON.stringify({
+            error_code: "tenant_directory_unavailable",
+            message: "Tenant directory is unavailable."
+          }),
+          contentType: "application/json",
+          status: options.tenantDirectoryStatus
+        });
+        return;
+      }
+
+      const rawPayload = request.postDataJSON() as { filters?: { name?: string; status?: TenantStatusEnum } } | null;
+      const filters = rawPayload?.filters ?? {};
+
+      await route.fulfill({
+        body: JSON.stringify(
+          options.tenantDirectoryResponse ??
+            buildTenantDirectoryResponse({
+              name: filters.name ?? null,
+              status: filters.status ?? null
+            })
+        ),
+        contentType: "application/json",
+        status: 200
       });
       return;
     }
@@ -338,6 +432,80 @@ test("platform navigation switches the active section and renders coming-soon pl
   await expect(
     page.getByText("Billing workflows and platform-wide commercial administration will appear here").last()
   ).toBeVisible();
+});
+
+test("tenant navigation routes to a dedicated tenant directory page", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform");
+  await page.getByRole("link", { name: "Tenants" }).click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants$/);
+  await expect(page.getByRole("link", { name: "Tenants" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("heading", { name: "Tenant Directory", level: 3 })).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Tenant name" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Northwind TMS" })).toBeVisible();
+  await expect(page.getByText("Tenants Coming Soon")).toHaveCount(0);
+});
+
+test("tenant directory filters tenants by name and explicit persisted status values", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform/tenants");
+
+  await expect(page.getByRole("link", { name: "Northwind TMS" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Atlas Freight" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Summit Logistics" })).toBeVisible();
+
+  await page.getByLabel("Search tenants by name").fill("north");
+  await expect(page.getByRole("link", { name: "Northwind TMS" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Atlas Freight" })).toHaveCount(0);
+
+  await page.getByLabel("Search tenants by name").fill("");
+  await page.getByLabel("Filter tenants by status").selectOption(TenantStatusEnum.PROVISIONING);
+  await expect(page.getByRole("link", { name: "Summit Logistics" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Northwind TMS" })).toHaveCount(0);
+
+  await page.getByLabel("Search tenants by name").fill("missing");
+  await expect(page.getByText("No tenants matched the current filters.")).toBeVisible();
+});
+
+test("tenant directory action links route to stable detail, add, and edit entry points", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.goto("/platform/tenants");
+  await page.getByRole("link", { name: "Northwind TMS" }).click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants\/tenant-1$/);
+  await expect(page.getByRole("heading", { name: "Tenant Details", level: 3, exact: true })).toBeVisible();
+  await expect(page.getByText("Tenant reference:")).toContainText("tenant-1");
+
+  await page.goto("/platform/tenants");
+  await page.getByRole("link", { name: "Add new" }).click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants\/new$/);
+  await expect(page.getByRole("heading", { name: "Add Tenant", level: 3 })).toBeVisible();
+
+  await page.goto("/platform/tenants");
+  await page.getByRole("link", { name: /Edit/ }).first().click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants\/tenant-1\/edit$/);
+  await expect(page.getByRole("heading", { name: "Edit Tenant", level: 3 })).toBeVisible();
+});
+
+test("tenant directory shows a contained error state when the directory API fails", async ({ page }) => {
+  await setupAuthRoutes(page, { mePersona: "super_admin", tenantDirectoryStatus: 500 });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken("super_admin") }
+  );
+
+  await page.goto("/platform/tenants");
+
+  await expect(page.getByText("Directory unavailable")).toBeVisible();
+  await expect(page.getByText("Tenant directory is unavailable right now. Try refreshing once the platform API is reachable.")).toBeVisible();
 });
 
 test("platform dashboard renders the live metric cards from the overview widget", async ({ page }) => {
