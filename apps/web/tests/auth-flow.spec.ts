@@ -543,11 +543,11 @@ test("platform dashboard renders the live metric cards from the overview widget"
   await expect(page.getByRole("heading", { name: "New tenants" }).locator("..").getByText("1", { exact: true })).toBeVisible();
   await expect(page.getByText("Trailing window count based on the past 7 days.")).toBeVisible();
   await expect(page.getByText("100%", { exact: true })).toBeVisible();
-  await expect(page.getByText("Active", { exact: true })).toBeVisible();
-  await expect(page.getByText("Inactive", { exact: true })).toBeVisible();
-  await expect(page.getByText("Provisioning", { exact: true })).toBeVisible();
-  await expect(page.getByText("Provisioning Failed", { exact: true })).toBeVisible();
-  await expect(page.getByText("Deprovisioned", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("platform-footprint-kpi-label-active")).toBeVisible();
+  await expect(page.getByTestId("platform-footprint-kpi-label-inactive")).toBeVisible();
+  await expect(page.getByTestId("platform-footprint-kpi-label-provisioning")).toBeVisible();
+  await expect(page.getByTestId("platform-footprint-kpi-label-provisioning_failed")).toBeVisible();
+  await expect(page.getByTestId("platform-footprint-kpi-label-hard_deprovisioned")).toBeVisible();
 });
 
 test("platform footprint keeps all five dashboard KPIs on one row across desktop and mobile", async ({ page }) => {
@@ -576,6 +576,22 @@ test("platform footprint keeps all five dashboard KPIs on one row across desktop
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/platform");
   await assertSingleKpiRow();
+});
+
+test("platform footprint KPI labels reveal the full status text on hover and tap", async ({ page }) => {
+  await primeAuthenticatedSession(page, "super_admin");
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/platform");
+
+  await page.getByTestId("platform-footprint-kpi-label-provisioning_failed").hover();
+  await expect(page.getByTestId("platform-footprint-kpi-tooltip-provisioning_failed")).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/platform");
+
+  await page.getByTestId("platform-footprint-kpi-label-provisioning_failed").click();
+  await expect(page.getByTestId("platform-footprint-kpi-popover-provisioning_failed")).toBeVisible();
 });
 
 test("platform dashboard window chips switch one selected value at a time", async ({ page }) => {

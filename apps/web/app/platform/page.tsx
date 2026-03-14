@@ -13,6 +13,8 @@ import {
 } from "@/components/platform/dashboard-metric-cards";
 import { PlatformSectionPlaceholder, PlatformShellFrame } from "@/components/platform/platform-shell-frame";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { getPlatformDashboardOverview } from "@/lib/auth/api";
 import { getStoredAccessToken } from "@/lib/auth/storage";
 import { ViewState, ViewStatusEnum } from "@/lib/view-state";
@@ -29,6 +31,33 @@ const formatTenantStatusLabel = (status: TenantStatusEnum) =>
         .filter(Boolean)
         .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
         .join(" ");
+
+const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
+  const label = formatTenantStatusLabel(status).toUpperCase();
+
+  return (
+    <Popover>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <button
+              aria-label={label}
+              className="block w-full cursor-help truncate text-left text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-xs sm:tracking-[0.18em]"
+              data-testid={`platform-footprint-kpi-label-${status}`}
+              type="button"
+            >
+              {label}
+            </button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent data-testid={`platform-footprint-kpi-tooltip-${status}`}>{label}</TooltipContent>
+      </Tooltip>
+      <PopoverContent className="w-fit max-w-[12rem]" data-testid={`platform-footprint-kpi-popover-${status}`}>
+        {label}
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 const DashboardOverviewSection = () => {
   const [overviewState, setOverviewState] = useState<DashboardOverviewState>({
@@ -125,71 +154,71 @@ const DashboardOverviewSection = () => {
     tenantSummary.tenant_growth_rates[0];
 
   return (
-    <div className="space-y-6">
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Platform footprint
-          </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-              Current tenant count with lifecycle status KPIs for the platform.
+    <TooltipProvider delayDuration={150}>
+      <div className="space-y-6">
+        <Card className="border-white/70 bg-white/92 shadow-sm">
+          <CardHeader className="space-y-3">
+            <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Platform footprint
             </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
-            {tenantSummary.tenant_status_counts.map((entry) => (
-              <div
-                key={entry.status}
-                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2.5 sm:p-4"
-                data-testid="platform-footprint-kpi-card"
-              >
-                <p className="text-[10px] font-semibold uppercase leading-tight tracking-[0.12em] text-stone-500 sm:text-xs sm:tracking-[0.18em]">
-                  {formatTenantStatusLabel(entry.status)}
-                </p>
-                <p className="mt-2 text-xl font-semibold leading-none text-stone-950 sm:mt-3 sm:text-3xl">{entry.count}</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Current scale
-          </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
-              Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
+            <div className="space-y-2">
+              <CardTitle className="text-3xl text-stone-950">{tenantSummary.total_tenant_count} tenants</CardTitle>
+              <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+                Current tenant count with lifecycle status KPIs for the platform.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-5 gap-2 sm:gap-3" data-testid="platform-footprint-kpi-grid">
+              {tenantSummary.tenant_status_counts.map((entry) => (
+                <div
+                  key={entry.status}
+                  className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-2.5 sm:p-4"
+                  data-testid="platform-footprint-kpi-card"
+                >
+                  <DashboardStatusKpiLabel status={entry.status} />
+                  <p className="mt-2 text-xl font-semibold leading-none text-stone-950 sm:mt-3 sm:text-3xl">{entry.count}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-white/70 bg-white/92 shadow-sm">
+          <CardHeader className="space-y-3">
+            <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Current scale
             </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
-          <SummaryMetricCard
-            description="Current number of tenant users across all tenant workspaces."
-            title="Total users"
-            value={tenantSummary.tenant_user_count.toString()}
-          />
-          <WindowMetricCard
-            description={getNewTenantDescription(selectedNewTenantMetric.window)}
-            onSelectWindow={setSelectedNewTenantWindow}
-            selectedWindow={selectedNewTenantMetric.window}
-            title="New tenants"
-            value={selectedNewTenantMetric.count.toString()}
-          />
-          <WindowMetricCard
-            description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
-            onSelectWindow={setSelectedGrowthRateWindow}
-            selectedWindow={selectedGrowthRateMetric.window}
-            title="Tenant growth rate"
-            value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
-          />
-        </CardContent>
-      </Card>
-    </div>
+            <div className="space-y-2">
+              <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
+              <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+                Review total users plus the currently selected trailing window for new tenants and tenant growth rate.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
+            <SummaryMetricCard
+              description="Current number of tenant users across all tenant workspaces."
+              title="Total users"
+              value={tenantSummary.tenant_user_count.toString()}
+            />
+            <WindowMetricCard
+              description={getNewTenantDescription(selectedNewTenantMetric.window)}
+              onSelectWindow={setSelectedNewTenantWindow}
+              selectedWindow={selectedNewTenantMetric.window}
+              title="New tenants"
+              value={selectedNewTenantMetric.count.toString()}
+            />
+            <WindowMetricCard
+              description={getGrowthRateDescription(selectedGrowthRateMetric.window)}
+              onSelectWindow={setSelectedGrowthRateWindow}
+              selectedWindow={selectedGrowthRateMetric.window}
+              title="Tenant growth rate"
+              value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </TooltipProvider>
   );
 };
 
