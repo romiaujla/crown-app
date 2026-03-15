@@ -8,6 +8,13 @@
   - Keep the legacy table names and only add new relation tables around them: rejected because it would preserve naming drift against the approved design.
   - Rename only some tables now and defer the rest: rejected because partial normalization would keep the control-plane model conceptually inconsistent.
 
+## Decision 1a: Keep Control-Plane Auth Roles Limited To `tenant_admin` And `tenant_user`
+
+- **Decision**: Treat `dispatcher`, `driver`, `accountant`, and `human_resources` as `tenant_user`-class auth behavior rather than persisting them as distinct control-plane auth roles.
+- **Rationale**: The current JWT contract, route authorization, and user clarification all point to a two-level tenant auth model for now: `tenant_admin` and `tenant_user`. Specialized operational personas can remain business/template concepts without widening the control-plane auth schema.
+- **Alternatives considered**:
+  - Persist every specialized operational persona in `tenant_roles`: rejected because the current auth layer does not need separate DB-backed auth roles for them in this story.
+
 ## Decision 2: Keep Legacy Role Columns Temporarily If They Are Still Needed For Compatibility
 
 - **Decision**: Preserve legacy role columns only if needed for a safe compatibility window; otherwise remove them as part of the schema migration.

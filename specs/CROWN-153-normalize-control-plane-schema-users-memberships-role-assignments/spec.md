@@ -35,7 +35,7 @@ As a maintainer, I want tenant association stored separately from tenant authori
 
 1. **Given** a user belongs to a tenant, **When** the schema is reviewed, **Then** that relationship is stored in `tenant_memberships` even if no tenant role has yet been assigned.
 2. **Given** a tenant membership holds one or more tenant roles, **When** the schema is reviewed, **Then** those grants are stored in `tenant_membership_role_assignments` rather than on the membership row itself.
-3. **Given** the approved tenant role catalog from `CROWN-140`, **When** the schema is reviewed, **Then** assignable tenant-scoped roles are modeled in `tenant_roles` separately from platform roles.
+3. **Given** operational personas such as `dispatcher`, `driver`, `accountant`, and `human_resources` still exist in the product, **When** the schema is reviewed, **Then** the control-plane auth schema treats them as `tenant_user`-class behavior rather than storing them as distinct auth roles in `tenant_roles`.
 
 ---
 
@@ -68,7 +68,7 @@ As a maintainer, I want the normalized schema migration to preserve management-s
 - **FR-001**: The Prisma schema MUST introduce the normalized `users` persistence model for global identity records.
 - **FR-002**: The Prisma schema MUST introduce `platform_roles` and `user_platform_role_assignments` as separate platform-scoped authorization structures.
 - **FR-003**: The Prisma schema MUST introduce `tenant_memberships` as the user-to-tenant association table independent from tenant-role assignment.
-- **FR-004**: The Prisma schema MUST introduce `tenant_roles` as the assignable tenant-scoped role catalog.
+- **FR-004**: The Prisma schema MUST introduce `tenant_roles` as the assignable tenant-scoped auth role catalog, limited to canonical auth roles such as `tenant_admin` and `tenant_user`.
 - **FR-005**: The Prisma schema MUST introduce `tenant_membership_role_assignments` as the actual user-to-tenant-role grant table.
 - **FR-006**: The schema MUST support many-to-many tenant-role assignment by allowing multiple role-assignment rows per tenant membership.
 - **FR-007**: Platform roles and tenant-scoped roles MUST remain modeled separately.
@@ -84,7 +84,7 @@ As a maintainer, I want the normalized schema migration to preserve management-s
 - **Platform Role**: A platform-scoped authorization definition such as `super_admin`.
 - **User Platform Role Assignment**: The actual platform authorization grant linking a user to a platform role.
 - **Tenant Membership**: The user-to-tenant association that exists independently from tenant authorization.
-- **Tenant Role**: The assignable tenant-scoped role definition such as `tenant_admin`, `dispatcher`, `driver`, `accountant`, or `human_resources`.
+- **Tenant Role**: The assignable tenant-scoped auth role definition, limited to canonical auth roles such as `tenant_admin` and `tenant_user`.
 - **Tenant Membership Role Assignment**: The actual tenant authorization grant linking a membership to a tenant role.
 - **Management System Type Role**: The template/default mapping between a management-system type and an available tenant role.
 
@@ -92,7 +92,7 @@ As a maintainer, I want the normalized schema migration to preserve management-s
 
 - The approved target model from `CROWN-152` is the source of truth for the normalized table layout and relationship boundaries.
 - The story may keep selected legacy columns temporarily if that is safer for the current compatibility window than removing every old reader in one change.
-- The current shared role catalog and management-system template data can be migrated into the normalized `tenant_roles` naming without changing their business meaning.
+- The current shared role catalog and management-system template data remain separate from the canonical control-plane auth role set when they represent specialized operational personas.
 - Focused validation can rely on Prisma schema generation, migration review, and targeted typecheck/test coverage rather than a full repository-wide rewrite of every auth consumer in this story.
 
 ## Success Criteria *(mandatory)*

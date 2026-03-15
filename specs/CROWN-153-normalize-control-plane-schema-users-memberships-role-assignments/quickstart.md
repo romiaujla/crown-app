@@ -16,6 +16,8 @@ Use this feature’s outputs to implement and review the normalized control-plan
 - Generate and inspect the migration SQL before treating the schema change as final.
 - Update seed/auth-support code only as needed to keep validation meaningful against the new schema.
 - Preserve the distinction between `tenant_memberships` and `tenant_membership_role_assignments`.
+- Keep canonical auth tenant roles limited to `tenant_admin` and `tenant_user`.
+- Treat `dispatcher`, `driver`, `accountant`, and `human_resources` as `tenant_user`-class auth behavior rather than distinct DB auth roles.
 
 ## Validation Command
 
@@ -31,4 +33,5 @@ The feature is ready for implementation review once reviewers agree that:
 - platform roles and tenant roles are separated
 - tenant membership and tenant authorization are separated
 - management-system role templates remain configuration only
+- specialized operational personas resolve through `tenant_user` compatibility behavior rather than distinct auth rows
 - seed and focused auth-support validation reflect the new schema shape

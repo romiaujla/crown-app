@@ -96,10 +96,9 @@
   - `updated_at`
 - **Baseline roles**:
   - `tenant_admin`
-  - `dispatcher`
-  - `driver`
-  - `accountant`
-  - `human_resources`
+  - `tenant_user`
+- **Compatibility rule**:
+  - Specialized personas such as `dispatcher`, `driver`, `accountant`, and `human_resources` are treated as `tenant_user`-class auth behavior and are not persisted here as distinct control-plane auth roles.
 
 ### TenantMembershipRoleAssignment
 
@@ -126,7 +125,7 @@
 ### ManagementSystemTypeRole
 
 - **Table**: `management_system_type_roles`
-- **Purpose**: Existing template/default mapping between management-system types and available tenant roles.
+- **Purpose**: Existing template/default mapping between management-system types and available operational/template roles.
 - **Rule**:
   - This table remains configuration only and never becomes a user-grant table.
 
@@ -138,19 +137,20 @@
 - `Tenant` 1 -> many `TenantMembership`
 - `TenantMembership` 1 -> many `TenantMembershipRoleAssignment`
 - `TenantRole` 1 -> many `TenantMembershipRoleAssignment`
-- `ManagementSystemType` many -> many `TenantRole` through `ManagementSystemTypeRole`
+- `ManagementSystemType` many -> many operational/template roles through `ManagementSystemTypeRole`
 
 ## Migration Scope For This Story
 
 - Replace legacy identity table naming with `users`.
 - Introduce platform-role and platform-role-assignment persistence.
 - Replace the old `platform_user_tenants` meaning with normalized `tenant_memberships`.
-- Rename the shared assignable role catalog to `tenant_roles`.
+- Introduce `tenant_roles` as the canonical auth-role catalog with `tenant_admin` and `tenant_user`.
 - Introduce `tenant_membership_role_assignments`.
-- Preserve `management_system_types` and `management_system_type_roles` with their existing business meaning.
+- Preserve `management_system_types` and `management_system_type_roles` with their existing template/business meaning.
 
 ## Compatibility Notes
 
 - Auth resolution may continue deriving one effective tenant role per session/JWT while storage supports many-to-many assignments.
+- Specialized operational personas such as `dispatcher`, `driver`, `accountant`, and `human_resources` map to `tenant_user` in the control-plane auth model.
 - If legacy role columns remain temporarily, they must be treated as transitional only.
 - Seed data and focused tests must reflect the normalized schema so reviewers can validate the new relational model directly.

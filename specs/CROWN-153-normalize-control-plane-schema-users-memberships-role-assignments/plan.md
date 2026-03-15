@@ -11,7 +11,7 @@ Implement the control-plane schema changes defined by `CROWN-152` so the repo pe
 
 **Language/Version**: TypeScript 5.x on Node.js 20, Prisma ORM 7.x, SQL migrations, Markdown planning artifacts  
 **Primary Dependencies**: Prisma 7, `@prisma/client`, `@prisma/adapter-pg`, PostgreSQL, existing control-plane seed/auth modules, `CROWN-152` design artifacts  
-**Storage**: PostgreSQL control-plane schema via Prisma with normalized tables `users`, `platform_roles`, `user_platform_role_assignments`, `tenants`, `tenant_memberships`, `tenant_roles`, `tenant_membership_role_assignments`, `management_system_types`, and `management_system_type_roles`  
+**Storage**: PostgreSQL control-plane schema via Prisma with normalized tables `users`, `platform_roles`, `user_platform_role_assignments`, `tenants`, `tenant_memberships`, `tenant_roles`, `tenant_membership_role_assignments`, `management_system_types`, and `management_system_type_roles`, where canonical auth tenant roles remain limited to `tenant_admin` and `tenant_user`  
 **Testing**: `pnpm --filter @crown/api typecheck`, focused Vitest coverage for auth/seed helpers that touch the changed schema, and `pnpm specify.audit`  
 **Target Platform**: Monorepo API workspace with Prisma-backed control-plane persistence and deterministic local seed flows  
 **Project Type**: Monorepo web application with API service, Prisma schema/migrations, and spec-driven workflow artifacts  
