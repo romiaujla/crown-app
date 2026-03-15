@@ -1,4 +1,9 @@
-import { DashboardMetricWindowEnum, DeprovisionTypeEnum, TenantStatusEnum } from "@crown/types";
+import {
+  DashboardMetricWindowEnum,
+  DeprovisionTypeEnum,
+  ManagementSystemTypeCodeEnum,
+  TenantStatusEnum
+} from "@crown/types";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
@@ -12,6 +17,7 @@ const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 const tenantStatusValues = Object.values(TenantStatusEnum);
+const managementSystemTypeCodeValues = Object.values(ManagementSystemTypeCodeEnum);
 const deprovisionTypeValues = Object.values(DeprovisionTypeEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
@@ -320,7 +326,7 @@ export const authDocsDocument = {
         type: "object",
         required: ["typeCode", "version", "displayName", "description", "roleOptions"],
         properties: {
-          typeCode: { type: "string" },
+          typeCode: { type: "string", enum: managementSystemTypeCodeValues },
           version: { type: "string" },
           displayName: { type: "string" },
           description: { type: "string", nullable: true },
@@ -333,7 +339,7 @@ export const authDocsDocument = {
       TenantCreateReferenceDataFilter: {
         type: "object",
         properties: {
-          managementSystemType: { type: "string", minLength: 1 }
+          typeCode: { type: "string", enum: managementSystemTypeCodeValues }
         }
       },
       TenantCreateReferenceDataRequest: {

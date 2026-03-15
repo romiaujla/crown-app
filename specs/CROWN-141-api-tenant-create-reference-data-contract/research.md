@@ -1,8 +1,8 @@
 # Research: API Tenant Create Reference-Data Contract For Management-System Types And Default Roles
 
-## Decision 1: Use a dedicated `POST /api/v1/platform/tenant/reference-data` route with an optional filter body
+## Decision 1: Use a dedicated `POST /api/v1/platform/tenant/reference-data` route with an optional `filter.typeCode` body
 
-- **Decision**: Add a read-only `POST` route under the existing platform tenant router and accept an optional `filter.managementSystemType` request body.
+- **Decision**: Add a read-only `POST` route under the existing platform tenant router and accept an optional `filter.typeCode` request body.
 - **Why**: The story still needs a distinct reference-data route, and the optional body filter lets the caller request one management-system type without splitting the contract into separate endpoints or query-string handling.
 - **Alternatives considered**:
   - Extending `POST /api/v1/platform/tenant`: rejected because it mixes creation and catalog discovery into one route surface.

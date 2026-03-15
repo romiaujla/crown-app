@@ -1,3 +1,4 @@
+import { ManagementSystemTypeCodeEnum } from "@crown/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const managementSystemTypeFindMany = vi.fn();
@@ -19,7 +20,7 @@ describe("platform tenant create reference data integration", () => {
     managementSystemTypeFindMany.mockResolvedValue([
       {
         id: "type-transportation",
-        typeCode: "transportation",
+        typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
         version: "1.0",
         displayName: "Transportation Management System",
         description: "Transportation workflows",
@@ -59,7 +60,7 @@ describe("platform tenant create reference data integration", () => {
       data: {
         managementSystemTypeList: [
           {
-            typeCode: "transportation",
+            typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
             version: "1.0",
             displayName: "Transportation Management System",
             description: "Transportation workflows",
@@ -93,13 +94,13 @@ describe("platform tenant create reference data integration", () => {
     );
 
     await getPlatformTenantCreateReferenceData({
-      managementSystemType: "transportation"
+      typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION
     });
 
     expect(managementSystemTypeFindMany).toHaveBeenCalledWith({
       where: {
         availabilityStatus: "active",
-        typeCode: "transportation"
+        typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION
       },
       include: {
         roles: {
@@ -116,7 +117,7 @@ describe("platform tenant create reference data integration", () => {
     managementSystemTypeFindMany.mockResolvedValue([
       {
         id: "type-dealership",
-        typeCode: "dealership",
+        typeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
         version: "1.0",
         displayName: "Dealer Management System",
         description: null,
@@ -143,7 +144,7 @@ describe("platform tenant create reference data integration", () => {
     const response = await getPlatformTenantCreateReferenceData();
 
     expect(response.data.managementSystemTypeList[0]).toEqual({
-      typeCode: "dealership",
+      typeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
       version: "1.0",
       displayName: "Dealer Management System",
       description: null,

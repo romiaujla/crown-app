@@ -22,6 +22,15 @@ export enum TenantStatusEnum {
 
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
 
+export enum ManagementSystemTypeCodeEnum {
+  TRANSPORTATION = "transportation",
+  DEALERSHIP = "dealership",
+  INVENTORY = "inventory"
+}
+
+export const ManagementSystemTypeCodeSchema = z.enum(ManagementSystemTypeCodeEnum);
+export type ManagementSystemTypeCode = z.infer<typeof ManagementSystemTypeCodeSchema>;
+
 export const TenantDirectoryListFilterSchema = z
   .object({
     name: z.string().trim().min(1).max(120).optional(),
@@ -106,7 +115,7 @@ export type TenantCreateRoleOption = z.infer<typeof TenantCreateRoleOptionSchema
 
 export const TenantCreateReferenceDataFilterSchema = z
   .object({
-    managementSystemType: z.string().trim().min(1).optional()
+    typeCode: ManagementSystemTypeCodeSchema.optional()
   })
   .strict();
 export type TenantCreateReferenceDataFilter = z.infer<typeof TenantCreateReferenceDataFilterSchema>;
@@ -119,7 +128,7 @@ export const TenantCreateReferenceDataRequestSchema = z
 export type TenantCreateReferenceDataRequest = z.infer<typeof TenantCreateReferenceDataRequestSchema>;
 
 export const TenantCreateManagementSystemTypeSchema = z.object({
-  typeCode: z.string(),
+  typeCode: ManagementSystemTypeCodeSchema,
   version: z.string(),
   displayName: z.string(),
   description: z.string().nullable(),

@@ -1,3 +1,4 @@
+import { ManagementSystemTypeCodeEnum } from "@crown/types";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
 import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
@@ -41,21 +42,21 @@ export const LOCAL_SEED_ACTOR_SUB = "seed-local-runner";
 
 export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
   {
-    typeCode: "transportation",
+    typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     version: "1.0",
     displayName: "Transportation Management System",
     description: "Baseline tenant product context for transportation operations workflows.",
     availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
   },
   {
-    typeCode: "dealership",
+    typeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
     version: "1.0",
     displayName: "Dealer Management System",
     description: "Baseline tenant product context for dealer operations workflows.",
     availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
   },
   {
-    typeCode: "inventory",
+    typeCode: ManagementSystemTypeCodeEnum.INVENTORY,
     version: "1.0",
     displayName: "Inventory Management System",
     description: "Baseline tenant product context for inventory operations workflows.",
@@ -93,43 +94,43 @@ export const LOCAL_SEED_ROLES = [
 
 export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
   {
-    managementSystemTypeCode: "transportation",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
     roleCode: "tenant_admin",
     isDefault: true
   },
   {
-    managementSystemTypeCode: "transportation",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
     roleCode: "dispatcher",
     isDefault: true
   },
   {
-    managementSystemTypeCode: "transportation",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
     roleCode: "accountant",
     isDefault: false
   },
   {
-    managementSystemTypeCode: "transportation",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
     roleCode: "human_resources",
     isDefault: false
   },
   {
-    managementSystemTypeCode: "transportation",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
     roleCode: "driver",
     isDefault: true
   },
   {
-    managementSystemTypeCode: "dealership",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
     managementSystemTypeVersion: "1.0",
     roleCode: "tenant_admin",
     isDefault: true
   },
   {
-    managementSystemTypeCode: "inventory",
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.INVENTORY,
     managementSystemTypeVersion: "1.0",
     roleCode: "tenant_admin",
     isDefault: true

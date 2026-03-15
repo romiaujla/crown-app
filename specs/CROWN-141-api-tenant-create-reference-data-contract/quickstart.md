@@ -20,7 +20,7 @@ pnpm specify.audit
 curl -X POST \
   -H "Authorization: Bearer <super-admin-jwt>" \
   -H "Content-Type: application/json" \
-  -d '{"filter":{"managementSystemType":"transportation"}}' \
+  -d '{"filter":{"typeCode":"transportation"}}' \
   http://localhost:3000/api/v1/platform/tenant/reference-data
 ```
 

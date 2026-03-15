@@ -1,3 +1,4 @@
+import { ManagementSystemTypeCodeEnum } from "@crown/types";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import type { RequestHandler } from "express";
@@ -12,7 +13,7 @@ describe("platform tenant create reference data contract", () => {
       data: {
         managementSystemTypeList: [
           {
-            typeCode: "transportation",
+            typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
             version: "1.0",
             displayName: "Transportation Management System",
             description: "Transportation workflows",
@@ -34,12 +35,12 @@ describe("platform tenant create reference data contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenant/reference-data")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ filter: { managementSystemType: "transportation" } });
+      .send({ filter: { typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION } });
 
     expect(response.status).toBe(200);
     expect(response.body.data.managementSystemTypeList).toHaveLength(1);
     expect(response.body.data.managementSystemTypeList[0]?.roleOptions[0]?.isRequired).toBe(true);
-    expect(getReferenceData).toHaveBeenCalledWith({ managementSystemType: "transportation" });
+    expect(getReferenceData).toHaveBeenCalledWith({ typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION });
   });
 
   it("returns an empty managementSystemTypeList collection when no records match", async () => {
@@ -71,7 +72,7 @@ describe("platform tenant create reference data contract", () => {
     const response = await request(app)
       .post("/api/v1/platform/tenant/reference-data")
       .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ filter: { managementSystemType: "" } });
+      .send({ filter: { typeCode: "" } });
 
     expect(response.status).toBe(400);
     expect(response.body.error_code).toBe("validation_error");

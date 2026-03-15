@@ -1,4 +1,5 @@
 import {
+  ManagementSystemTypeCodeEnum,
   type TenantCreateReferenceDataFilter,
   TenantCreateReferenceDataResponseSchema,
   type TenantCreateReferenceDataResponse
@@ -19,7 +20,7 @@ export const getPlatformTenantCreateReferenceData = async (
   const managementSystemTypes = await db.managementSystemType.findMany({
     where: {
       availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active,
-      ...(filter.managementSystemType ? { typeCode: filter.managementSystemType } : {})
+      ...(filter.typeCode ? { typeCode: filter.typeCode } : {})
     },
     include: {
       roles: {
