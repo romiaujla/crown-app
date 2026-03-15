@@ -33,7 +33,7 @@ export const getPlatformTenantCreateReferenceData = async (
 
   return TenantCreateReferenceDataResponseSchema.parse({
     data: {
-      managementSystemTypes: managementSystemTypes.map((managementSystemType) => ({
+      managementSystemTypeList: managementSystemTypes.map((managementSystemType) => ({
         typeCode: managementSystemType.typeCode,
         version: managementSystemType.version,
         displayName: managementSystemType.displayName,

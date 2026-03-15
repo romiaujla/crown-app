@@ -345,9 +345,9 @@ export const authDocsDocument = {
       },
       TenantCreateReferenceDataData: {
         type: "object",
-        required: ["managementSystemTypes"],
+        required: ["managementSystemTypeList"],
         properties: {
-          managementSystemTypes: {
+          managementSystemTypeList: {
             type: "array",
             items: { $ref: "#/components/schemas/TenantCreateManagementSystemType" }
           }

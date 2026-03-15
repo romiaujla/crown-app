@@ -128,7 +128,7 @@ export const TenantCreateManagementSystemTypeSchema = z.object({
 export type TenantCreateManagementSystemType = z.infer<typeof TenantCreateManagementSystemTypeSchema>;
 
 export const TenantCreateReferenceDataSchema = z.object({
-  managementSystemTypes: z.array(TenantCreateManagementSystemTypeSchema)
+  managementSystemTypeList: z.array(TenantCreateManagementSystemTypeSchema)
 });
 export type TenantCreateReferenceData = z.infer<typeof TenantCreateReferenceDataSchema>;
 

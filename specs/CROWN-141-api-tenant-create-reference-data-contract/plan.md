@@ -23,7 +23,7 @@ Add a protected tenant-create reference-data endpoint that returns supported man
 
 - Add a protected `POST /api/v1/platform/tenant/reference-data` route for tenant-create onboarding metadata, with an optional body filter for one management-system type.
 - Query active management-system types from Prisma, including their role membership and shared role details.
-- Map the persisted catalog into a shared response envelope such as `data.managementSystemTypes`.
+- Map the persisted catalog into a shared response envelope such as `data.managementSystemTypeList`.
 - Return role options with display metadata plus `isDefault` and derived `isRequired` semantics.
 - Treat the shared role code `tenant_admin` as the required admin role while preserving the persisted display label `Admin`.
 - Centralize the request/response schemas and inferred types in `@crown/types` for later web reuse.

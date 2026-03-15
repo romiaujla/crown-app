@@ -4,7 +4,7 @@
 
 - **Purpose**: The top-level payload delivered to the tenant-create flow for onboarding options.
 - **Shape**:
-  - `data.managementSystemTypes`
+  - `data.managementSystemTypeList`
 - **Rules**:
   - Returns only supported management-system types for onboarding.
   - Does not include tenant records, provisioning payload fields, or mutation metadata.

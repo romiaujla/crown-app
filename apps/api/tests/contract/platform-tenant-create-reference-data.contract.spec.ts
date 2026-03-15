@@ -10,7 +10,7 @@ describe("platform tenant create reference data contract", () => {
   it("returns 200 for super_admin", async () => {
     const getReferenceData = vi.fn(async () => ({
       data: {
-        managementSystemTypes: [
+        managementSystemTypeList: [
           {
             typeCode: "transportation",
             version: "1.0",
@@ -37,15 +37,15 @@ describe("platform tenant create reference data contract", () => {
       .send({ filter: { managementSystemType: "transportation" } });
 
     expect(response.status).toBe(200);
-    expect(response.body.data.managementSystemTypes).toHaveLength(1);
-    expect(response.body.data.managementSystemTypes[0]?.roleOptions[0]?.isRequired).toBe(true);
+    expect(response.body.data.managementSystemTypeList).toHaveLength(1);
+    expect(response.body.data.managementSystemTypeList[0]?.roleOptions[0]?.isRequired).toBe(true);
     expect(getReferenceData).toHaveBeenCalledWith({ managementSystemType: "transportation" });
   });
 
-  it("returns an empty managementSystemTypes collection when no records match", async () => {
+  it("returns an empty managementSystemTypeList collection when no records match", async () => {
     const getReferenceData = vi.fn(async () => ({
       data: {
-        managementSystemTypes: []
+        managementSystemTypeList: []
       }
     }));
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData }) });
@@ -58,7 +58,7 @@ describe("platform tenant create reference data contract", () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       data: {
-        managementSystemTypes: []
+        managementSystemTypeList: []
       }
     });
     expect(getReferenceData).toHaveBeenCalledWith({});

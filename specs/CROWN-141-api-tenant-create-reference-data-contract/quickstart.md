@@ -38,7 +38,7 @@ curl -H "Authorization: Bearer <super-admin-jwt>" \
 ```json
 {
   "data": {
-    "managementSystemTypes": [
+    "managementSystemTypeList": [
       {
         "typeCode": "transportation",
         "version": "1.0",
@@ -63,4 +63,4 @@ curl -H "Authorization: Bearer <super-admin-jwt>" \
 
 - Unauthenticated requests return the existing protected-route unauthenticated response.
 - Authenticated non-super-admin requests return the existing protected-route forbidden response.
-- Unsupported or inactive management-system types do not appear in `data.managementSystemTypes`.
+- Unsupported or inactive management-system types do not appear in `data.managementSystemTypeList`.

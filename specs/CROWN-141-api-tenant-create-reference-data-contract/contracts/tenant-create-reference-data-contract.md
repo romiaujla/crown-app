@@ -28,7 +28,7 @@
 ```json
 {
   "data": {
-    "managementSystemTypes": [
+    "managementSystemTypeList": [
       {
         "typeCode": "transportation",
         "version": "1.0",

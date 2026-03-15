@@ -41,7 +41,7 @@
 
 **Goal**: A super admin can request supported management-system types for tenant-create from persisted platform data
 
-**Independent Test**: Call `POST /api/v1/platform/tenant/reference-data` as a super admin and verify the route returns `data.managementSystemTypes` with the agreed type metadata, returning all data when `filter` is empty
+**Independent Test**: Call `POST /api/v1/platform/tenant/reference-data` as a super admin and verify the route returns `data.managementSystemTypeList` with the agreed type metadata, returning all data when `filter` is empty
 
 ### Tests for User Story 1
 
@@ -52,7 +52,7 @@
 
 - [ ] T009 [US1] Implement the protected reference-data route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts`
 - [ ] T010 [US1] Implement active management-system type querying and deterministic ordering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/tenants/reference-data-service.ts`
-- [ ] T011 [US1] Ensure the route response uses the shared `data.managementSystemTypes` contract from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`
+- [ ] T011 [US1] Ensure the route response uses the shared `data.managementSystemTypeList` contract from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`
 
 **Checkpoint**: Super admins can load supported management-system types for tenant-create from persisted platform data
 

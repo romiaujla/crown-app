@@ -57,7 +57,7 @@ describe("platform tenant create reference data integration", () => {
 
     expect(response).toEqual({
       data: {
-        managementSystemTypes: [
+        managementSystemTypeList: [
           {
             typeCode: "transportation",
             version: "1.0",
@@ -142,7 +142,7 @@ describe("platform tenant create reference data integration", () => {
 
     const response = await getPlatformTenantCreateReferenceData();
 
-    expect(response.data.managementSystemTypes[0]).toEqual({
+    expect(response.data.managementSystemTypeList[0]).toEqual({
       typeCode: "dealership",
       version: "1.0",
       displayName: "Dealer Management System",
