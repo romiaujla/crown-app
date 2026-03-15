@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the current auth baseline and the design-artifact workspace before refining the target normalized model
 
-- [ ] T001 Review the current auth persistence and role-resolution baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/default-auth-service.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`
-- [ ] T002 [P] Review the shared role catalog and management-system template baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
+- [X] T001 Review the current auth persistence and role-resolution baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/default-auth-service.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`
+- [X] T002 [P] Review the shared role catalog and management-system template baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Consolidate normalized auth-model scope, constraints, and compatibility goals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/plan.md`
-- [ ] T004 [P] Define the target entity and requirement boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
-- [ ] T005 [P] Align downstream guarantees and non-goals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
-- [ ] T006 Reconcile the current auth baseline with the normalized target entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T003 Consolidate normalized auth-model scope, constraints, and compatibility goals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/plan.md`
+- [X] T004 [P] Define the target entity and requirement boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
+- [X] T005 [P] Align downstream guarantees and non-goals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
+- [X] T006 Reconcile the current auth baseline with the normalized target entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
 
 **Checkpoint**: Foundational modeling rules are stable and the design can be reviewed without reopening scope boundaries
 
@@ -45,14 +45,14 @@
 
 ### Validation for User Story 1
 
-- [ ] T007 [P] [US1] Cross-check normalized identity and membership requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
-- [ ] T008 [P] [US1] Cross-check entity boundaries and relationship rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T007 [P] [US1] Cross-check normalized identity and membership requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
+- [X] T008 [P] [US1] Cross-check entity boundaries and relationship rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Refine `PlatformUser`, `PlatformRole`, `PlatformUserPlatformRoleAssignment`, `TenantMembership`, and `TenantMembershipRoleAssignment` definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
-- [ ] T010 [US1] Align normalized requirements, assumptions, and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
-- [ ] T011 [US1] Record the identity-versus-authorization normalization decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`
+- [X] T009 [US1] Refine `PlatformUser`, `PlatformRole`, `PlatformUserPlatformRoleAssignment`, `TenantMembership`, and `TenantMembershipRoleAssignment` definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T010 [US1] Align normalized requirements, assumptions, and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
+- [X] T011 [US1] Record the identity-versus-authorization normalization decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`
 
 **Checkpoint**: The normalized core entity model is independently reviewable
 
@@ -66,14 +66,14 @@
 
 ### Validation for User Story 2
 
-- [ ] T012 [P] [US2] Review template-versus-assignment requirements and supported role mappings in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
-- [ ] T013 [P] [US2] Review role catalog, display-label, and assignment guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T012 [P] [US2] Review template-versus-assignment requirements and supported role mappings in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
+- [X] T013 [P] [US2] Review role catalog, display-label, and assignment guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Refine the `TenantAuthRole`, `ManagementSystemTypeRole`, and `Admin` display-label mapping guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
-- [ ] T015 [US2] Refine the reusable role-catalog and template-boundary decisions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`
-- [ ] T016 [US2] Reconcile the downstream handoff contract with the template-versus-grant boundary in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
+- [X] T014 [US2] Refine the `TenantAuthRole`, `ManagementSystemTypeRole`, and `Admin` display-label mapping guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T015 [US2] Refine the reusable role-catalog and template-boundary decisions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`
+- [X] T016 [US2] Reconcile the downstream handoff contract with the template-versus-grant boundary in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
 
 **Checkpoint**: The distinction between role templates and actual grants is explicit and stable
 
@@ -87,14 +87,14 @@
 
 ### Validation for User Story 3
 
-- [ ] T017 [P] [US3] Review migration, compatibility, and legacy-removal requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
-- [ ] T018 [P] [US3] Review rollout sequencing and effective-role guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T017 [P] [US3] Review migration, compatibility, and legacy-removal requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
+- [X] T018 [P] [US3] Review rollout sequencing and effective-role guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Refine the staged rollout and compatibility guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
-- [ ] T020 [US3] Refine downstream review rules and escalation points in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
-- [ ] T021 [US3] Update downstream usage and reviewer guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/quickstart.md`
+- [X] T019 [US3] Refine the staged rollout and compatibility guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T020 [US3] Refine downstream review rules and escalation points in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
+- [X] T021 [US3] Update downstream usage and reviewer guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/quickstart.md`
 
 **Checkpoint**: The migration path is concrete enough for downstream implementation planning
 
@@ -104,10 +104,10 @@
 
 **Purpose**: Run final validation, mark completed artifact work, and confirm the design handoff is internally consistent
 
-- [ ] T022 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T023 [P] Perform final terminology and scope consistency review across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
-- [ ] T024 [P] Confirm quickstart guidance and downstream consumers remain aligned in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/quickstart.md`
-- [ ] T025 Mark completed task items and prepare the artifact package for downstream review in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/tasks.md`
+- [X] T022 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [X] T023 [P] Perform final terminology and scope consistency review across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/contracts/auth-normalized-model-handoff-contract.md`
+- [X] T024 [P] Confirm quickstart guidance and downstream consumers remain aligned in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/quickstart.md`
+- [X] T025 Mark completed task items and prepare the artifact package for downstream review in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/tasks.md`
 
 ---
 
