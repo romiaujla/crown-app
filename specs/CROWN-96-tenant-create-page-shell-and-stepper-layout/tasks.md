@@ -17,9 +17,9 @@
 
 **Purpose**: Confirm the existing tenant-create placeholder route, protected shell behavior, and browser-test seams that `CROWN-96` extends.
 
-- [ ] T001 Review the current tenant-create entry point in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx`
-- [ ] T002 [P] Review the platform shell and protected-route behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/platform-shell-frame.tsx` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/auth/use-protected-shell.ts`
-- [ ] T003 [P] Review the current browser coverage around tenant-directory routing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T001 Review the current tenant-create entry point in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx`
+- [X] T002 [P] Review the platform shell and protected-route behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/platform-shell-frame.tsx` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/auth/use-protected-shell.ts`
+- [X] T003 [P] Review the current browser coverage around tenant-directory routing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ---
 
@@ -29,9 +29,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Add a reusable tenant-create shell component in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T005 [P] Add feature-local step metadata and draft/dirty-state handling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T006 [P] Replace the placeholder route content in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx` so it renders the new shell inside `PlatformShellFrame`
+- [X] T004 Add a reusable tenant-create shell component in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T005 [P] Add feature-local step metadata and draft/dirty-state handling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T006 [P] Replace the placeholder route content in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx` so it renders the new shell inside `PlatformShellFrame`
 
 **Checkpoint**: The tenant-create route renders a reusable guided-shell surface inside the existing protected platform layout.
 
@@ -45,13 +45,13 @@
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Add browser coverage for tenant-directory `Add new` routing into `/platform/tenants/new` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [ ] T008 [P] [US1] Add browser assertions for the dedicated shell framing and visible stepper in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T007 [P] [US1] Add browser coverage for tenant-directory `Add new` routing into `/platform/tenants/new` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T008 [P] [US1] Add browser assertions for the dedicated shell framing and visible stepper in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Render the tenant-create page shell and progress indicator in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T010 [US1] Ensure `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx` preserves the existing platform-shell framing and super-admin access boundary
+- [X] T009 [US1] Render the tenant-create page shell and progress indicator in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T010 [US1] Ensure `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/app/platform/tenants/new/page.tsx` preserves the existing platform-shell framing and super-admin access boundary
 
 **Checkpoint**: The create route is no longer a simple “coming soon” card and instead shows a proper guided shell.
 
@@ -65,14 +65,14 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Add browser assertions for next/back step transitions and first-step back behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [ ] T012 [P] [US2] Add browser assertions that placeholder content remains clearly non-final while step titles update in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T011 [P] [US2] Add browser assertions for next/back step transitions and first-step back behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T012 [P] [US2] Add browser assertions that placeholder content remains clearly non-final while step titles update in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Implement ordered placeholder step definitions for `Tenant info`, `Role selection`, `User assignment`, and `Review` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T014 [US2] Implement `Next` and `Back` navigation wiring plus active/completed/upcoming step rendering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T015 [US2] Add placeholder step content and minimal in-progress input state to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx` so later stories have a stable extension point
+- [X] T013 [US2] Implement ordered placeholder step definitions for `Tenant info`, `Role selection`, `User assignment`, and `Review` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T014 [US2] Implement `Next` and `Back` navigation wiring plus active/completed/upcoming step rendering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T015 [US2] Add placeholder step content and minimal in-progress input state to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx` so later stories have a stable extension point
 
 **Checkpoint**: The tenant-create shell supports guided placeholder progression without implementing real onboarding logic.
 
@@ -86,14 +86,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T016 [P] [US3] Add browser assertions for clean cancel when no data has been entered in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [ ] T017 [P] [US3] Add browser assertions for discard confirmation after entered step data in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T016 [P] [US3] Add browser assertions for clean cancel when no data has been entered in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T017 [P] [US3] Add browser assertions for discard confirmation after entered step data in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Implement `Cancel` navigation and in-app discard confirmation behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T019 [US3] Implement browser/page-exit dirty-state protection where supported in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
-- [ ] T020 [US3] Verify the protected-shell behavior for `/platform/tenants/new` still blocks non-super-admin users via `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T018 [US3] Implement `Cancel` navigation and in-app discard confirmation behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T019 [US3] Implement browser/page-exit dirty-state protection where supported in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/components/platform/tenant-create-shell.tsx`
+- [X] T020 [US3] Verify the protected-shell behavior for `/platform/tenants/new` still blocks non-super-admin users via `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 **Checkpoint**: Exit flows protect in-progress tenant-create input without widening into persistence or submission logic.
 
@@ -103,10 +103,10 @@
 
 **Purpose**: Run the required validation loop, confirm scope discipline, and prepare the branch for PR creation.
 
-- [ ] T021 [P] Run app-level typecheck in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/package.json`
-- [ ] T022 [P] Run focused Playwright coverage for the tenant-create shell flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [ ] T023 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app`
-- [ ] T024 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`
+- [X] T021 [P] Run app-level typecheck in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/package.json`
+- [X] T022 [P] Run focused Playwright coverage for the tenant-create shell flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [X] T023 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app`
+- [X] T024 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`
 - [ ] T025 Create the PR for `feat/CROWN-96-tenant-create-page-shell-and-stepper-layout` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/tasks.md`
 
 ---
