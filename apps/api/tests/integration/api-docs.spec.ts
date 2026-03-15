@@ -10,6 +10,7 @@ describe("api docs openapi document", () => {
         "/api/v1/auth/me",
         "/api/v1/auth/logout",
         "/api/v1/platform/ping",
+        "/api/v1/platform/tenant/reference-data",
         "/api/v1/platform/tenants/search",
         "/api/v1/tenant/admin/{tenantId}",
         "/api/v1/tenant/user/{tenantId}",
@@ -21,6 +22,7 @@ describe("api docs openapi document", () => {
   it("marks protected routes with bearer auth", () => {
     expect(authDocsDocument.paths["/api/v1/auth/me"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/ping"].get.security).toEqual([{ bearerAuth: [] }]);
+    expect(authDocsDocument.paths["/api/v1/platform/tenant/reference-data"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/tenants/search"].post.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/admin/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/user/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);

@@ -44,7 +44,10 @@ export const authDocsDocument = {
     { name: "Auth", description: "Authentication and current-user endpoints." },
     { name: "Authorization", description: "Protected route examples for platform and tenant access." },
     { name: "Platform Dashboard", description: "Super-admin dashboard overview widgets and summary data." },
-    { name: "Platform Tenants", description: "Tenant provisioning route protected for super admins." }
+    {
+      name: "Platform Tenants",
+      description: "Tenant reference-data, directory, provisioning, and deprovision routes protected for super admins."
+    }
   ],
   components: {
     securitySchemes: {
@@ -300,6 +303,48 @@ export const authDocsDocument = {
         properties: {
           data: { $ref: "#/components/schemas/TenantDirectoryListData" },
           meta: { $ref: "#/components/schemas/TenantDirectoryListMeta" }
+        }
+      },
+      TenantCreateRoleOption: {
+        type: "object",
+        required: ["roleCode", "displayName", "description", "isDefault", "isRequired"],
+        properties: {
+          roleCode: { type: "string" },
+          displayName: { type: "string" },
+          description: { type: "string", nullable: true },
+          isDefault: { type: "boolean" },
+          isRequired: { type: "boolean" }
+        }
+      },
+      TenantCreateManagementSystemType: {
+        type: "object",
+        required: ["typeCode", "version", "displayName", "description", "roleOptions"],
+        properties: {
+          typeCode: { type: "string" },
+          version: { type: "string" },
+          displayName: { type: "string" },
+          description: { type: "string", nullable: true },
+          roleOptions: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantCreateRoleOption" }
+          }
+        }
+      },
+      TenantCreateReferenceDataData: {
+        type: "object",
+        required: ["managementSystemTypes"],
+        properties: {
+          managementSystemTypes: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantCreateManagementSystemType" }
+          }
+        }
+      },
+      TenantCreateReferenceDataResponse: {
+        type: "object",
+        required: ["data"],
+        properties: {
+          data: { $ref: "#/components/schemas/TenantCreateReferenceDataData" }
         }
       },
       DeprovisionType: {
@@ -687,6 +732,28 @@ export const authDocsDocument = {
             }
           },
           "400": errorResponse("Invalid tenant directory filter", "validation_error", "Invalid tenant directory filter"),
+          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
+        }
+      }
+    },
+    "/api/v1/platform/tenant/reference-data": {
+      get: {
+        tags: ["Platform Tenants"],
+        summary: "Get tenant-create reference data",
+        description:
+          "Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow.",
+        security: bearerSecurity,
+        responses: {
+          "200": {
+            description: "Tenant-create reference data response",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/TenantCreateReferenceDataResponse" }
+              }
+            }
+          },
           "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
