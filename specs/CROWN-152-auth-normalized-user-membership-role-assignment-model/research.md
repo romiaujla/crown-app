@@ -1,27 +1,28 @@
 # Research: Auth Normalized User, Membership, And Role-Assignment Model
 
-## Decision 1: Keep `PlatformUser` As The Identity Root, But Remove Authorization Meaning From Its Legacy `role` Column
+## Decision 1: Keep The Existing Identity Root, But Normalize It To `users` And Remove Authorization Meaning From Its Legacy `role` Column
 
-- **Decision**: Treat `PlatformUser` as the long-lived identity and credential anchor, but move authorization meaning into explicit platform-role and tenant-role assignment relationships.
-- **Rationale**: `CROWN-60` already established `PlatformUser` for credentials, account status, and profile identity. Reusing it avoids a second identity table while still allowing `PlatformUser.role` to be retired once downstream readers migrate.
+- **Decision**: Treat the existing user identity root as the long-lived credential and profile anchor, but name the normalized table `users` and move authorization meaning into explicit platform-role and tenant-role assignment relationships.
+- **Rationale**: `CROWN-60` already established the current control-plane user record as the identity anchor for credentials, account status, and profile identity. Renaming the normalized target to `users` keeps the model simpler while still allowing the legacy `platform_users.role` field to be retired once downstream readers migrate.
 - **Alternatives considered**:
-  - Replace `PlatformUser` with a new `User` table now: rejected because it would widen the story into identity replatforming rather than role normalization.
-  - Keep `PlatformUser.role` as the permanent source of authorization truth: rejected because it cannot model multiple platform grants, tenant memberships, and explicit tenant-role assignments cleanly.
+  - Keep the table named `platform_users` forever: rejected because the normalized model is cleaner and more general with `users`.
+  - Keep `platform_users.role` as the permanent source of authorization truth: rejected because it cannot model multiple platform grants, tenant memberships, and explicit tenant-role assignments cleanly.
 
 ## Decision 2: Model Platform Authorization Separately From Tenant Membership And Tenant Authorization
 
 - **Decision**: Represent platform authorization through explicit platform-role assignments and represent tenant access through tenant memberships plus tenant-role assignments.
 - **Rationale**: `super_admin` is fundamentally a platform-scoped authorization concern, while tenant roles are tenant-scoped and should depend on membership. Separating those concerns prevents a single `role` field from carrying multiple incompatible meanings.
 - **Alternatives considered**:
+  - Skip tenant memberships and store tenant roles directly on user-to-tenant role-assignment rows only: rejected because the design needs a way to represent tenant association separately from tenant authorization.
   - Treat tenant membership itself as the authorization grant: rejected because membership alone does not express which tenant role the user holds.
   - Put `super_admin` into the tenant role catalog: rejected because it is not tenant-scoped and should not participate in management-system role-template rules.
 
-## Decision 3: Reuse The Shared `Role` Catalog For Canonical Tenant Auth Roles
+## Decision 3: Reuse The Shared Role Catalog As Canonical `tenant_roles`
 
-- **Decision**: Treat the shared `Role` catalog introduced by `CROWN-140` as the canonical tenant auth-role definition set for assignable tenant-scoped roles.
+- **Decision**: Treat the shared role catalog introduced by `CROWN-140` as the canonical `tenant_roles` definition set for assignable tenant-scoped roles.
 - **Rationale**: The catalog already carries stable `role_code` values for `tenant_admin`, `dispatcher`, `accountant`, `human_resources`, and `driver`. Reusing it keeps one source of truth for tenant role codes across templates, seeds, and assignments.
 - **Alternatives considered**:
-  - Introduce a second tenant-role definition table separate from `Role`: rejected because it would duplicate role codes and invite drift between template and assignment concepts.
+  - Introduce a second tenant-role definition table separate from the current shared role catalog: rejected because it would duplicate role codes and invite drift between template and assignment concepts.
   - Keep tenant auth roles as free-form strings on membership records: rejected because it would continue the denormalized design this story is meant to replace.
 
 ## Decision 4: Treat Management-System Role Templates As Eligibility Configuration, Not User Grants

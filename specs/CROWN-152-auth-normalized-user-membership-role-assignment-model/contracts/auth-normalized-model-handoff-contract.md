@@ -21,8 +21,9 @@ Define what downstream `CROWN-149` implementation stories may rely on from `CROW
 
 ## Review Rules
 
-- `PlatformUser` remains the identity root unless a follow-up issue explicitly changes that decision.
+- `users` remains the identity root unless a follow-up issue explicitly changes that decision.
 - `super_admin` must remain a platform-scoped role rather than moving into the tenant role catalog.
+- `tenant_memberships` must remain distinct from `tenant_membership_role_assignments` so tenant association is not collapsed back into authorization.
 - `ManagementSystemTypeRole` must remain template/default configuration and must not be reused as a user-grant table.
 - `Admin` remains a display label for `tenant_admin`; downstream work should not introduce a second overlapping `admin` auth role without a new design decision.
 - Initial runtime behavior must continue to derive one effective tenant role per session until a later issue explicitly widens the JWT and RBAC contracts.

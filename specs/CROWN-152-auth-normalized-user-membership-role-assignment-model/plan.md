@@ -5,13 +5,13 @@
 
 ## Summary
 
-Define the normalized target auth model needed by `CROWN-149` so follow-up schema, seed, JWT, and API stories can replace the overloaded `PlatformUser.role` and `PlatformUserTenant.role` fields with explicit identity, platform-role, tenant-membership, and tenant-role-assignment relationships. The output remains design-first: a stable target model, rationale for the role-template boundary, and a migration outline that keeps current auth behavior intact while follow-up implementation proceeds incrementally.
+Define the normalized target auth model needed by `CROWN-149` so follow-up schema, seed, JWT, and API stories can replace the overloaded `platform_users.role` and `platform_user_tenants.role` fields with explicit identity, platform-role, tenant-membership, and tenant-role-assignment relationships. The output remains design-first: a stable target model, rationale for the role-template boundary, and a migration outline that keeps current auth behavior intact while follow-up implementation proceeds incrementally.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x on Node.js 20 for the repo baseline; Markdown design artifacts for this story  
 **Primary Dependencies**: Prisma 7, `@prisma/client`, `@prisma/adapter-pg`, PostgreSQL, existing auth/RBAC contracts, shared role catalog introduced by `CROWN-140`, credential foundation from `CROWN-60`  
-**Storage**: PostgreSQL control-plane schema via Prisma models such as `PlatformUser`, `Tenant`, `PlatformUserTenant`, `Role`, and `ManagementSystemTypeRole`, with JWT claims derived from persisted auth state  
+**Storage**: PostgreSQL control-plane schema via normalized tables such as `users`, `tenants`, `tenant_memberships`, `tenant_roles`, `platform_roles`, `user_platform_role_assignments`, `tenant_membership_role_assignments`, and `management_system_type_roles`, with JWT claims derived from persisted auth state  
 **Testing**: `pnpm specify.audit` plus artifact review against downstream schema, seed, and auth-resolution readiness  
 **Target Platform**: Monorepo API + web application using current Crown access-token auth and RBAC middleware  
 **Project Type**: Monorepo web application with design artifacts under `specs/`  
@@ -63,7 +63,7 @@ docs/
 └── architecture/
 ```
 
-**Structure Decision**: The story is design-first and internal. The primary output lives under `specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/`, while the key follow-up implementation touchpoints are `apps/api/prisma/schema.prisma`, `apps/api/prisma/seed/`, `apps/api/src/auth/`, `apps/api/src/routes/`, and `packages/types/src/index.ts`.
+**Structure Decision**: The story is design-first and internal. The primary output lives under `specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/`, while the key follow-up implementation touchpoints are `apps/api/prisma/schema.prisma`, `apps/api/prisma/seed/`, `apps/api/src/auth/`, `apps/api/src/routes/`, and `packages/types/src/index.ts`. The intended normalized persistence names use `users`, `tenant_roles`, and `user_platform_role_assignments` for consistency with the requested table naming.
 
 ## Complexity Tracking
 

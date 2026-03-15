@@ -50,7 +50,7 @@
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Refine `PlatformUser`, `PlatformRole`, `PlatformUserPlatformRoleAssignment`, `TenantMembership`, and `TenantMembershipRoleAssignment` definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
+- [X] T009 [US1] Refine `User`, `PlatformRole`, `UserPlatformRoleAssignment`, `TenantMembership`, and `TenantMembershipRoleAssignment` definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/data-model.md`
 - [X] T010 [US1] Align normalized requirements, assumptions, and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/spec.md`
 - [X] T011 [US1] Record the identity-versus-authorization normalization decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-152-auth-normalized-user-membership-role-assignment-model/research.md`
 

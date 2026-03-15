@@ -6,16 +6,17 @@
 
 ## Current-State Problem Summary
 
-- `PlatformUser.role` currently mixes platform persona and tenant-scoped role intent.
-- `PlatformUserTenant.role` currently mixes tenant membership and tenant authorization.
+- `platform_users.role` currently mixes platform persona and tenant-scoped role intent.
+- `platform_user_tenants.role` currently mixes tenant membership and tenant authorization.
 - `ManagementSystemTypeRole` describes tenant-type role availability/defaults, but it does not represent a specific user's access grant.
 - JWT claims and route policies currently assume one effective role plus one optional `tenant_id`, which constrains how quickly the runtime contract can change.
 
 ## Target Entities
 
-### PlatformUser
+### User
 
 - **Purpose**: Long-lived global identity record for credentials, account status, and profile metadata.
+- **Target table name**: `users`
 - **Existing fields expected to remain**:
   - `id`
   - `email`
@@ -34,6 +35,7 @@
 ### PlatformRole
 
 - **Purpose**: Canonical platform-scoped authorization definition for global permissions.
+- **Target table name**: `platform_roles`
 - **Initial code set**:
   - `super_admin`
 - **Suggested fields**:
@@ -47,12 +49,13 @@
   - Platform roles never depend on tenant membership.
   - Platform roles are not stored in the tenant role catalog.
 
-### PlatformUserPlatformRoleAssignment
+### UserPlatformRoleAssignment
 
-- **Purpose**: Actual platform authorization grant linking one `PlatformUser` to one `PlatformRole`.
+- **Purpose**: Actual platform authorization grant linking one `User` to one `PlatformRole`.
+- **Target table name**: `user_platform_role_assignments`
 - **Suggested fields**:
   - `id`
-  - `platformUserId`
+  - `userId`
   - `platformRoleId`
   - `assignmentStatus`
   - `assignedAt`
@@ -66,10 +69,15 @@
 ### TenantMembership
 
 - **Purpose**: User-to-tenant relationship establishing tenant association independent from a specific tenant auth role.
-- **Suggested source**: Evolves from the current `PlatformUserTenant` concept.
+- **Target table name**: `tenant_memberships`
+- **Suggested source**: Evolves from the current `platform_user_tenants` concept.
+- **Why this exists separately**:
+  - A user can belong to a tenant before any tenant role is assigned.
+  - A user can keep tenant association while one tenant role is revoked or changed.
+  - One tenant membership can hold multiple tenant-role assignments over time without duplicating the user-to-tenant link.
 - **Suggested fields**:
   - `id`
-  - `platformUserId`
+  - `userId`
   - `tenantId`
   - `membershipStatus`
   - `joinedAt`
@@ -86,7 +94,8 @@
 ### TenantAuthRole
 
 - **Purpose**: Canonical tenant-scoped auth-role definition reused across templates, seeds, and assignments.
-- **Suggested source**: Reuses the current shared `Role` catalog.
+- **Target table name**: `tenant_roles`
+- **Suggested source**: Reuses the current shared role catalog under the normalized `tenant_roles` name.
 - **Canonical role codes in scope**:
   - `tenant_admin`
   - `dispatcher`
@@ -102,6 +111,7 @@
 ### TenantMembershipRoleAssignment
 
 - **Purpose**: Actual tenant authorization grant linking one tenant membership to one tenant auth role.
+- **Target table name**: `tenant_membership_role_assignments`
 - **Suggested fields**:
   - `id`
   - `tenantMembershipId`
@@ -120,7 +130,8 @@
 ### ManagementSystemTypeRole
 
 - **Purpose**: Tenant-type configuration describing which tenant auth roles are available to a management-system type and which ones are provisioned by default.
-- **Current source**: Existing shared mapping between `ManagementSystemType` and `Role`.
+- **Target table name**: `management_system_type_roles`
+- **Current source**: Existing shared mapping between `management_system_types` and the shared role catalog that normalizes to `tenant_roles`.
 - **Meaning in the normalized model**:
   - availability rule
   - default provisioning hint
@@ -131,9 +142,9 @@
 
 ## Relationship Summary
 
-- `PlatformUser` 1 -> many `PlatformUserPlatformRoleAssignment`
-- `PlatformRole` 1 -> many `PlatformUserPlatformRoleAssignment`
-- `PlatformUser` 1 -> many `TenantMembership`
+- `User` 1 -> many `UserPlatformRoleAssignment`
+- `PlatformRole` 1 -> many `UserPlatformRoleAssignment`
+- `User` 1 -> many `TenantMembership`
 - `Tenant` 1 -> many `TenantMembership`
 - `TenantMembership` 1 -> many `TenantMembershipRoleAssignment`
 - `TenantAuthRole` 1 -> many `TenantMembershipRoleAssignment`
@@ -143,7 +154,7 @@
 
 ### Platform Scope
 
-- `super_admin` is a `PlatformRole` granted through `PlatformUserPlatformRoleAssignment`.
+- `super_admin` is a `PlatformRole` granted through `UserPlatformRoleAssignment`.
 - Platform authorization checks should read effective platform grants, not tenant memberships.
 
 ### Tenant Scope
@@ -169,14 +180,14 @@
 
 - Add explicit platform-role and platform-role-assignment persistence.
 - Add normalized tenant-membership-role-assignment persistence.
-- Keep legacy `PlatformUser.role` and `PlatformUserTenant.role` columns temporarily for compatibility.
+- Keep legacy `platform_users.role` and `platform_user_tenants.role` columns temporarily for compatibility.
 
 ### Phase 2: Seed And Backfill
 
 - Seed canonical platform roles, starting with `super_admin`.
-- Continue using the shared `Role` catalog as tenant auth-role definitions.
-- Backfill platform-role assignments from legacy `PlatformUser.role = super_admin`.
-- Backfill tenant memberships from existing `PlatformUserTenant` rows.
+- Continue using the shared role catalog as the source for `tenant_roles`.
+- Backfill platform-role assignments from legacy `platform_users.role = super_admin`.
+- Backfill tenant memberships from existing `platform_user_tenants` rows.
 - Backfill tenant-role assignments from legacy tenant-scoped role columns.
 
 ### Phase 3: Dual-Read Auth Resolution
@@ -192,7 +203,7 @@
 
 ### Phase 5: Legacy Removal
 
-- Remove legacy `PlatformUser.role` and `PlatformUserTenant.role` only after:
+- Remove legacy `platform_users.role` and `platform_user_tenants.role` only after:
   - backfill is complete
   - auth readers use normalized assignments
   - all writers stop persisting legacy fields

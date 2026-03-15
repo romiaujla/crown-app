@@ -11,7 +11,7 @@
 
 As a maintainer, I want the auth model to separate user identity, platform roles, tenant memberships, and tenant role assignments so downstream schema and auth work can evolve without overloading one `role` column for multiple meanings.
 
-**Why this priority**: The current `PlatformUser.role` plus `PlatformUserTenant.role` structure mixes persona, membership, and authorization intent, which blocks safe migration for `CROWN-149`.
+**Why this priority**: The current `platform_users.role` plus `platform_user_tenants.role` structure mixes persona, membership, and authorization intent, which blocks safe migration for `CROWN-149`.
 
 **Independent Test**: A reviewer can inspect the specification and data model artifacts and clearly identify the target entities for identity, platform authorization, tenant membership, and tenant role assignment, along with the relationships between them.
 
@@ -59,7 +59,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 - A single tenant membership eventually needs more than one stored tenant-role assignment, but current JWT claims and route policies still expect one effective tenant role at a time.
 - A tenant is inactive or deprovisioned while the user identity remains valid in the control plane.
 - A management-system type exposes a role template that is not yet assigned to any user.
-- A legacy user currently stores `tenant_user` on `PlatformUser.role` even though the normalized catalog prefers explicit tenant auth-role assignments.
+- A legacy user currently stores `tenant_user` on `platform_users.role` even though the normalized catalog prefers explicit tenant auth-role assignments.
 - Existing seeded display labels use `Admin`, but the canonical auth role code remains `tenant_admin`.
 
 ## Requirements *(mandatory)*
@@ -69,6 +69,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 - **FR-001**: The target design MUST define a user-identity entity that remains separate from both platform authorization and tenant authorization.
 - **FR-002**: The target design MUST define platform-role concepts separately from tenant memberships and tenant auth-role assignments.
 - **FR-003**: The target design MUST define tenant membership as a user-to-tenant relationship that can exist independently from tenant auth-role assignments.
+- **FR-003a**: The target design MUST explain that tenant membership exists to capture tenant association separately from tenant authorization so a user can belong to a tenant before, after, or independently of a specific tenant-role grant.
 - **FR-004**: The target design MUST define tenant auth-role assignment as a separate relationship from tenant membership and from management-system role-template configuration.
 - **FR-005**: The target design MUST explicitly state that `ManagementSystemTypeRole`-style records represent role availability/default templates rather than actual user access grants.
 - **FR-006**: The target design MUST define how `super_admin` fits into the normalized model as a platform-scoped authorization concern.
@@ -82,7 +83,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 
 ### Key Entities *(include if feature involves data)*
 
-- **User Identity**: The global person/account record used for login credentials, account status, and profile identity.
+- **User**: The global person/account record used for login credentials, account status, and profile identity.
 - **Platform Role Assignment**: The platform-scoped authorization grant that enables global permissions such as `super_admin`.
 - **Tenant Membership**: The user-to-tenant relationship that establishes tenant association independently from a concrete tenant auth role.
 - **Tenant Auth Role**: The reusable tenant-scoped auth role definition, such as `tenant_admin`, `dispatcher`, `driver`, `accountant`, or `human_resources`.
@@ -91,8 +92,8 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 
 ## Assumptions
 
-- The current `PlatformUser` identity root remains the preferred anchor for credentials, account status, and user profile metadata.
-- The existing shared `Role` catalog introduced for management-system templates can evolve into the canonical tenant auth-role catalog rather than introducing a second competing tenant-role definition table.
+- The current `platform_users` identity root remains the preferred anchor for credentials, account status, and user profile metadata, even if the normalized table is renamed to `users`.
+- The existing shared `roles` catalog introduced for management-system templates can evolve into the canonical `tenant_roles` catalog rather than introducing a second competing tenant-role definition table.
 - The product label `Admin` remains a display name for the canonical tenant auth role code `tenant_admin`, not a separate assignable auth role.
 - The normalized schema will support many-to-many tenant-role assignments over time, but the initial auth runtime will continue to resolve one effective tenant auth role per session for compatibility with the current JWT and RBAC contracts.
 - Schema, seed, JWT, and API/UI implementation work will be delivered in follow-up stories under `CROWN-149` once this target design is approved.
