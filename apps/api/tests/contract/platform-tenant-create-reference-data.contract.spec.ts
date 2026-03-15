@@ -32,13 +32,14 @@ describe("platform tenant create reference data contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData }) });
 
     const response = await request(app)
-      .get("/api/v1/platform/tenant/reference-data")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenant/reference-data")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ filter: { managementSystemType: "transportation" } });
 
     expect(response.status).toBe(200);
     expect(response.body.data.managementSystemTypes).toHaveLength(1);
     expect(response.body.data.managementSystemTypes[0]?.roleOptions[0]?.isRequired).toBe(true);
-    expect(getReferenceData).toHaveBeenCalledWith();
+    expect(getReferenceData).toHaveBeenCalledWith({ managementSystemType: "transportation" });
   });
 
   it("returns an empty managementSystemTypes collection when no records match", async () => {
@@ -50,8 +51,9 @@ describe("platform tenant create reference data contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData }) });
 
     const response = await request(app)
-      .get("/api/v1/platform/tenant/reference-data")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenant/reference-data")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({});
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -59,12 +61,27 @@ describe("platform tenant create reference data contract", () => {
         managementSystemTypes: []
       }
     });
+    expect(getReferenceData).toHaveBeenCalledWith({});
+  });
+
+  it("returns 400 for an invalid filter payload", async () => {
+    const getReferenceData = vi.fn();
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData }) });
+
+    const response = await request(app)
+      .post("/api/v1/platform/tenant/reference-data")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ filter: { managementSystemType: "" } });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error_code).toBe("validation_error");
+    expect(getReferenceData).not.toHaveBeenCalled();
   });
 
   it("returns 401 for missing token", async () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData: vi.fn() }) });
 
-    const response = await request(app).get("/api/v1/platform/tenant/reference-data");
+    const response = await request(app).post("/api/v1/platform/tenant/reference-data").send({});
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("unauthenticated");
@@ -74,8 +91,9 @@ describe("platform tenant create reference data contract", () => {
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ getReferenceData: vi.fn() }) });
 
     const response = await request(app)
-      .get("/api/v1/platform/tenant/reference-data")
-      .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
+      .post("/api/v1/platform/tenant/reference-data")
+      .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
+      .send({});
 
     expect(response.status).toBe(403);
     expect(response.body.error_code).toBe("forbidden_role");
@@ -90,8 +108,9 @@ describe("platform tenant create reference data contract", () => {
     });
 
     const response = await request(app)
-      .get("/api/v1/platform/tenant/reference-data")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`);
+      .post("/api/v1/platform/tenant/reference-data")
+      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({});
 
     expect(response.status).toBe(429);
     expect(response.body.error_code).toBe("rate_limited");

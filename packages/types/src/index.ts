@@ -104,6 +104,20 @@ export const TenantCreateRoleOptionSchema = z.object({
 });
 export type TenantCreateRoleOption = z.infer<typeof TenantCreateRoleOptionSchema>;
 
+export const TenantCreateReferenceDataFilterSchema = z
+  .object({
+    managementSystemType: z.string().trim().min(1).optional()
+  })
+  .strict();
+export type TenantCreateReferenceDataFilter = z.infer<typeof TenantCreateReferenceDataFilterSchema>;
+
+export const TenantCreateReferenceDataRequestSchema = z
+  .object({
+    filter: TenantCreateReferenceDataFilterSchema.default({})
+  })
+  .strict();
+export type TenantCreateReferenceDataRequest = z.infer<typeof TenantCreateReferenceDataRequestSchema>;
+
 export const TenantCreateManagementSystemTypeSchema = z.object({
   typeCode: z.string(),
   version: z.string(),

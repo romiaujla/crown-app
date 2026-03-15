@@ -21,7 +21,7 @@ Add a protected tenant-create reference-data endpoint that returns supported man
 
 ## CROWN-141 Implementation Outline
 
-- Add a protected `GET /api/v1/platform/tenant/reference-data` route for tenant-create onboarding metadata.
+- Add a protected `POST /api/v1/platform/tenant/reference-data` route for tenant-create onboarding metadata, with an optional body filter for one management-system type.
 - Query active management-system types from Prisma, including their role membership and shared role details.
 - Map the persisted catalog into a shared response envelope such as `data.managementSystemTypes`.
 - Return role options with display metadata plus `isDefault` and derived `isRequired` semantics.

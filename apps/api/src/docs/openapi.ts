@@ -330,6 +330,19 @@ export const authDocsDocument = {
           }
         }
       },
+      TenantCreateReferenceDataFilter: {
+        type: "object",
+        properties: {
+          managementSystemType: { type: "string", minLength: 1 }
+        }
+      },
+      TenantCreateReferenceDataRequest: {
+        type: "object",
+        required: ["filter"],
+        properties: {
+          filter: { $ref: "#/components/schemas/TenantCreateReferenceDataFilter" }
+        }
+      },
       TenantCreateReferenceDataData: {
         type: "object",
         required: ["managementSystemTypes"],
@@ -739,12 +752,20 @@ export const authDocsDocument = {
       }
     },
     "/api/v1/platform/tenant/reference-data": {
-      get: {
+      post: {
         tags: ["Platform Tenants"],
         summary: "Get tenant-create reference data",
         description:
-          "Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow.",
+          "Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow. Accepts an optional request body filter for a single management-system type.",
         security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TenantCreateReferenceDataRequest" }
+            }
+          }
+        },
         responses: {
           "200": {
             description: "Tenant-create reference data response",
@@ -754,6 +775,11 @@ export const authDocsDocument = {
               }
             }
           },
+          "400": errorResponse(
+            "Invalid tenant create reference-data filter",
+            "validation_error",
+            "Invalid tenant create reference-data filter"
+          ),
           "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")

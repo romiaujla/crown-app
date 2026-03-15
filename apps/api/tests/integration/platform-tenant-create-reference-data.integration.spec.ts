@@ -92,11 +92,14 @@ describe("platform tenant create reference data integration", () => {
       "../../src/platform/tenants/reference-data-service.js"
     );
 
-    await getPlatformTenantCreateReferenceData();
+    await getPlatformTenantCreateReferenceData({
+      managementSystemType: "transportation"
+    });
 
     expect(managementSystemTypeFindMany).toHaveBeenCalledWith({
       where: {
-        availabilityStatus: "active"
+        availabilityStatus: "active",
+        typeCode: "transportation"
       },
       include: {
         roles: {
@@ -153,6 +156,30 @@ describe("platform tenant create reference data integration", () => {
           isRequired: true
         }
       ]
+    });
+  });
+
+  it("returns all active management-system types when no filter is provided", async () => {
+    managementSystemTypeFindMany.mockResolvedValue([]);
+
+    const { getPlatformTenantCreateReferenceData } = await import(
+      "../../src/platform/tenants/reference-data-service.js"
+    );
+
+    await getPlatformTenantCreateReferenceData({});
+
+    expect(managementSystemTypeFindMany).toHaveBeenCalledWith({
+      where: {
+        availabilityStatus: "active"
+      },
+      include: {
+        roles: {
+          include: {
+            role: true
+          }
+        }
+      },
+      orderBy: [{ displayName: "asc" }, { typeCode: "asc" }]
     });
   });
 });

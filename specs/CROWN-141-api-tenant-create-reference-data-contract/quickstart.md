@@ -17,7 +17,19 @@ pnpm specify.audit
 ## Happy-Path Request
 
 ```bash
+curl -X POST \
+  -H "Authorization: Bearer <super-admin-jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{"filter":{"managementSystemType":"transportation"}}' \
+  http://localhost:3000/api/v1/platform/tenant/reference-data
+```
+
+## Return All Data
+
+```bash
 curl -H "Authorization: Bearer <super-admin-jwt>" \
+  -H "Content-Type: application/json" \
+  -d '{}' \
   http://localhost:3000/api/v1/platform/tenant/reference-data
 ```
 

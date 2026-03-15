@@ -1,4 +1,5 @@
 import {
+  type TenantCreateReferenceDataFilter,
   TenantCreateReferenceDataResponseSchema,
   type TenantCreateReferenceDataResponse
 } from "@crown/types";
@@ -12,11 +13,13 @@ const REQUIRED_ROLE_CODE = "tenant_admin";
 type PlatformTenantReferenceDataDb = Pick<PrismaClient, "managementSystemType">;
 
 export const getPlatformTenantCreateReferenceData = async (
+  filter: TenantCreateReferenceDataFilter = {},
   db: PlatformTenantReferenceDataDb = prisma
 ): Promise<TenantCreateReferenceDataResponse> => {
   const managementSystemTypes = await db.managementSystemType.findMany({
     where: {
-      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active
+      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active,
+      ...(filter.managementSystemType ? { typeCode: filter.managementSystemType } : {})
     },
     include: {
       roles: {

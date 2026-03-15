@@ -22,7 +22,7 @@ describe("api docs openapi document", () => {
   it("marks protected routes with bearer auth", () => {
     expect(authDocsDocument.paths["/api/v1/auth/me"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/ping"].get.security).toEqual([{ bearerAuth: [] }]);
-    expect(authDocsDocument.paths["/api/v1/platform/tenant/reference-data"].get.security).toEqual([{ bearerAuth: [] }]);
+    expect(authDocsDocument.paths["/api/v1/platform/tenant/reference-data"].post.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/tenants/search"].post.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/admin/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/tenant/user/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
@@ -40,6 +40,13 @@ describe("api docs openapi document", () => {
     expect(loginSchema).toEqual({ $ref: "#/components/schemas/LoginRequest" });
     expect(currentUserSchema).toEqual({ $ref: "#/components/schemas/CurrentUserResponse" });
     expect(currentUserForbidden).toEqual({ $ref: "#/components/schemas/ErrorResponse" });
+  });
+
+  it("documents the tenant-create reference-data request payload", () => {
+    const referenceDataSchema =
+      authDocsDocument.paths["/api/v1/platform/tenant/reference-data"].post.requestBody.content["application/json"].schema;
+
+    expect(referenceDataSchema).toEqual({ $ref: "#/components/schemas/TenantCreateReferenceDataRequest" });
   });
 
   it("does not include a raw openapi json route in the document", () => {

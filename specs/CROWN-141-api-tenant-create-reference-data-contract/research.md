@@ -1,12 +1,13 @@
 # Research: API Tenant Create Reference-Data Contract For Management-System Types And Default Roles
 
-## Decision 1: Use a dedicated `GET /api/v1/platform/tenant/reference-data` route
+## Decision 1: Use a dedicated `POST /api/v1/platform/tenant/reference-data` route with an optional filter body
 
-- **Decision**: Add a read-only `GET` route under the existing platform tenant router rather than overloading `POST /api/v1/platform/tenant` or the tenant directory route.
-- **Why**: The story is pure reference-data retrieval for tenant creation, so a distinct `GET` route keeps read concerns separate from provisioning and avoids fake request-body semantics.
+- **Decision**: Add a read-only `POST` route under the existing platform tenant router and accept an optional `filter.managementSystemType` request body.
+- **Why**: The story still needs a distinct reference-data route, and the optional body filter lets the caller request one management-system type without splitting the contract into separate endpoints or query-string handling.
 - **Alternatives considered**:
   - Extending `POST /api/v1/platform/tenant`: rejected because it mixes creation and catalog discovery into one route surface.
   - Reusing `POST /api/v1/platform/tenants/search`: rejected because tenant directory data is unrelated to management-system type onboarding metadata.
+  - Using `GET` with query parameters: rejected because the caller now needs a body-driven filter contract for consistency with the requested payload shape.
 
 ## Decision 2: Return only active management-system types
 

@@ -1,5 +1,7 @@
 import {
   DeprovisionTypeEnum,
+  TenantCreateReferenceDataRequestSchema,
+  type TenantCreateReferenceDataFilter,
   type TenantCreateReferenceDataResponse,
   TenantDirectoryListRequestSchema,
   TenantStatusEnum,
@@ -27,7 +29,7 @@ import { provisionTenant } from "../tenant/provision-service.js";
 import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
-  getReferenceData?: () => Promise<TenantCreateReferenceDataResponse>;
+  getReferenceData?: (filter: TenantCreateReferenceDataFilter) => Promise<TenantCreateReferenceDataResponse>;
   listTenants?: (input: { name?: string; status?: TenantStatusEnum }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
@@ -56,13 +58,18 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
 
-  router.get(
+  router.post(
     "/platform/tenant/reference-data",
     authenticate,
     authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     searchRateLimitMiddleware,
-    async (_req, res) => {
-      const response = await getReferenceData();
+    async (req, res) => {
+      const parsed = TenantCreateReferenceDataRequestSchema.safeParse(req.body ?? {});
+      if (!parsed.success) {
+        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant create reference-data filter");
+      }
+
+      const response = await getReferenceData(parsed.data.filter ?? {});
       return res.status(200).json(response);
     }
   );

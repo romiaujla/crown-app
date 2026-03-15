@@ -41,11 +41,11 @@
 
 **Goal**: A super admin can request supported management-system types for tenant-create from persisted platform data
 
-**Independent Test**: Call `GET /api/v1/platform/tenant/reference-data` as a super admin and verify the route returns `data.managementSystemTypes` with the agreed type metadata
+**Independent Test**: Call `POST /api/v1/platform/tenant/reference-data` as a super admin and verify the route returns `data.managementSystemTypes` with the agreed type metadata, returning all data when `filter` is empty
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Add contract coverage for `GET /api/v1/platform/tenant/reference-data` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-create-reference-data.contract.spec.ts`
+- [ ] T007 [P] [US1] Add contract coverage for `POST /api/v1/platform/tenant/reference-data` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-tenant-create-reference-data.contract.spec.ts`
 - [ ] T008 [P] [US1] Add service/integration coverage for active management-system type loading and response mapping in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-tenant-create-reference-data.integration.spec.ts`
 
 ### Implementation for User Story 1
@@ -145,7 +145,7 @@
 
 ```bash
 # Validate the new reference-data route from both HTTP and service angles in parallel:
-Task: "Add contract coverage for GET /api/v1/platform/tenant/reference-data in apps/api/tests/contract/platform-tenant-create-reference-data.contract.spec.ts"
+Task: "Add contract coverage for POST /api/v1/platform/tenant/reference-data in apps/api/tests/contract/platform-tenant-create-reference-data.contract.spec.ts"
 Task: "Add service/integration coverage for active management-system type loading in apps/api/tests/integration/platform-tenant-create-reference-data.integration.spec.ts"
 ```
 
