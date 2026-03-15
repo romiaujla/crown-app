@@ -107,7 +107,7 @@
 - [X] T022 [P] Run focused Playwright coverage for the tenant-create shell flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/apps/web/tests/auth-flow.spec.ts`
 - [X] T023 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app`
 - [X] T024 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`
-- [ ] T025 Create the PR for `feat/CROWN-96-tenant-create-page-shell-and-stepper-layout` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/tasks.md`
+- [X] T025 Create the PR for `feat/CROWN-96-tenant-create-page-shell-and-stepper-layout` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/a913/crown-app/specs/CROWN-96-tenant-create-page-shell-and-stepper-layout/tasks.md`
 
 ---
 
