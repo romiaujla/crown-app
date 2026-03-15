@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const TENANT_SLUG_PATTERN = "^[a-z0-9]+(?:-[a-z0-9]+)*$";
+
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
@@ -114,6 +116,32 @@ export type TenantDirectoryListResponse = {
   data: TenantDirectoryListData;
   meta: TenantDirectoryListMeta;
 };
+
+export const TenantSlugSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(48)
+  .regex(new RegExp(TENANT_SLUG_PATTERN), "slug must be lowercase kebab-case");
+export type TenantSlug = z.infer<typeof TenantSlugSchema>;
+
+export const TenantSlugAvailabilityRequestSchema = z
+  .object({
+    slug: z.string().trim().min(1).max(48)
+  })
+  .strict();
+export type TenantSlugAvailabilityRequest = z.infer<typeof TenantSlugAvailabilityRequestSchema>;
+
+export const TenantSlugAvailabilityDataSchema = z.object({
+  slug: TenantSlugSchema,
+  isAvailable: z.boolean()
+});
+export type TenantSlugAvailabilityData = z.infer<typeof TenantSlugAvailabilityDataSchema>;
+
+export const TenantSlugAvailabilityResponseSchema = z.object({
+  data: TenantSlugAvailabilityDataSchema
+});
+export type TenantSlugAvailabilityResponse = z.infer<typeof TenantSlugAvailabilityResponseSchema>;
 
 export const TenantCreateRoleOptionSchema = z.object({
   roleCode: RoleCodeSchema,

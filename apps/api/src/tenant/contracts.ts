@@ -1,18 +1,13 @@
-import { DeprovisionTypeEnum, DeprovisionTypeSchema } from "@crown/types";
+import { DeprovisionTypeEnum, DeprovisionTypeSchema, TENANT_SLUG_PATTERN, TenantSlugSchema } from "@crown/types";
 import { z } from "zod";
 
 import { TenantStatusSchema } from "../domain/status-enums.js";
 
-const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_REGEX = new RegExp(TENANT_SLUG_PATTERN);
 
 export const TenantProvisionRequestSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  slug: z
-    .string()
-    .trim()
-    .min(1)
-    .max(48)
-    .regex(SLUG_REGEX, "slug must be lowercase kebab-case")
+  slug: TenantSlugSchema
 });
 
 export const TenantProvisionResponseSchema = z.object({

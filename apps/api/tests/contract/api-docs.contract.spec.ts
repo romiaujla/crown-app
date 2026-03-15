@@ -26,6 +26,8 @@ describe("api docs contract", () => {
     expect(initResponse.headers["content-type"]).toContain("application/javascript");
     expect(initResponse.text).toContain("SwaggerUIBundle");
     expect(initResponse.text).toContain("swaggerDoc");
+    expect(initResponse.text).toContain("/api/v1/platform/tenant/slug-availability");
+    expect(initResponse.text).toContain("TenantSlugAvailabilityRequest");
     expect(initResponse.text).toContain("/api/v1/platform/tenant/reference-data");
     expect(initResponse.text).toContain("TenantCreateReferenceDataRequest");
     expect(initResponse.text).toContain("/api/v1/platform/tenant/deprovision");
