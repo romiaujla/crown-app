@@ -1,3 +1,5 @@
+import { RoleCodeEnum, type RoleCode } from "@crown/types";
+
 export type PersonFixture = {
   organizationCode?: string;
   personCode: string;
@@ -8,14 +10,14 @@ export type PersonFixture = {
 };
 
 export type TenantRoleFixture = {
-  roleCode: string;
+  roleCode: RoleCode;
   displayName: string;
   description: string;
 };
 
 export type TenantRoleAssignmentFixture = {
   personCode: string;
-  roleCode: string;
+  roleCode: RoleCode;
 };
 
 export type EquipmentAssetFixture = {
@@ -81,12 +83,12 @@ export const personFixtures: PersonFixture[] = [
 
 export const tenantRoleFixtures: TenantRoleFixture[] = [
   {
-    roleCode: "dispatcher",
+    roleCode: RoleCodeEnum.DISPATCHER,
     displayName: "Dispatcher",
     description: "Coordinates loads and assets"
   },
   {
-    roleCode: "driver",
+    roleCode: RoleCodeEnum.DRIVER,
     displayName: "Driver",
     description: "Handles assigned moves"
   }
@@ -95,11 +97,11 @@ export const tenantRoleFixtures: TenantRoleFixture[] = [
 export const tenantRoleAssignmentFixtures: TenantRoleAssignmentFixture[] = [
   {
     personCode: "DISPATCH-CHI",
-    roleCode: "dispatcher"
+    roleCode: RoleCodeEnum.DISPATCHER
   },
   {
     personCode: "DRIVER-CLE",
-    roleCode: "driver"
+    roleCode: RoleCodeEnum.DRIVER
   }
 ];
 

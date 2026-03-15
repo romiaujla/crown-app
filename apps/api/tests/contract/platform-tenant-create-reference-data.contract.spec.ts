@@ -1,4 +1,4 @@
-import { ManagementSystemTypeCodeEnum } from "@crown/types";
+import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from "@crown/types";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import type { RequestHandler } from "express";
@@ -19,7 +19,7 @@ describe("platform tenant create reference data contract", () => {
             description: "Transportation workflows",
             roleOptions: [
               {
-                roleCode: "tenant_admin",
+                roleCode: RoleCodeEnum.TENANT_ADMIN,
                 displayName: "Admin",
                 description: "Baseline administrator role.",
                 isDefault: true,

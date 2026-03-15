@@ -1,4 +1,4 @@
-import { ManagementSystemTypeCodeEnum } from "@crown/types";
+import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from "@crown/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const managementSystemTypeFindMany = vi.fn();
@@ -31,7 +31,7 @@ describe("platform tenant create reference data integration", () => {
             isDefault: true,
             role: {
               id: "driver",
-              roleCode: "driver",
+              roleCode: RoleCodeEnum.DRIVER,
               displayName: "Driver",
               description: "Executes transportation work."
             }
@@ -41,7 +41,7 @@ describe("platform tenant create reference data integration", () => {
             isDefault: true,
             role: {
               id: "tenant-admin",
-              roleCode: "tenant_admin",
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
               displayName: "Admin",
               description: "Baseline administrator role."
             }
@@ -66,14 +66,14 @@ describe("platform tenant create reference data integration", () => {
             description: "Transportation workflows",
             roleOptions: [
               {
-                roleCode: "tenant_admin",
+                roleCode: RoleCodeEnum.TENANT_ADMIN,
                 displayName: "Admin",
                 description: "Baseline administrator role.",
                 isDefault: true,
                 isRequired: true
               },
               {
-                roleCode: "driver",
+                roleCode: RoleCodeEnum.DRIVER,
                 displayName: "Driver",
                 description: "Executes transportation work.",
                 isDefault: true,
@@ -128,7 +128,7 @@ describe("platform tenant create reference data integration", () => {
             isDefault: true,
             role: {
               id: "tenant-admin",
-              roleCode: "tenant_admin",
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
               displayName: "Admin",
               description: null
             }
@@ -150,7 +150,7 @@ describe("platform tenant create reference data integration", () => {
       description: null,
       roleOptions: [
         {
-          roleCode: "tenant_admin",
+          roleCode: RoleCodeEnum.TENANT_ADMIN,
           displayName: "Admin",
           description: null,
           isDefault: true,

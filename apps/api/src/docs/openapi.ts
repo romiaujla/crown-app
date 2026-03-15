@@ -2,6 +2,7 @@ import {
   DashboardMetricWindowEnum,
   DeprovisionTypeEnum,
   ManagementSystemTypeCodeEnum,
+  RoleCodeEnum,
   TenantStatusEnum
 } from "@crown/types";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
@@ -18,6 +19,7 @@ const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 const tenantStatusValues = Object.values(TenantStatusEnum);
 const managementSystemTypeCodeValues = Object.values(ManagementSystemTypeCodeEnum);
+const roleCodeValues = Object.values(RoleCodeEnum);
 const deprovisionTypeValues = Object.values(DeprovisionTypeEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
@@ -315,7 +317,7 @@ export const authDocsDocument = {
         type: "object",
         required: ["roleCode", "displayName", "description", "isDefault", "isRequired"],
         properties: {
-          roleCode: { type: "string" },
+          roleCode: { type: "string", enum: roleCodeValues },
           displayName: { type: "string" },
           description: { type: "string", nullable: true },
           isDefault: { type: "boolean" },

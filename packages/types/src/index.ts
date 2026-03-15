@@ -3,6 +3,17 @@ import { z } from "zod";
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
+export enum RoleCodeEnum {
+  TENANT_ADMIN = "tenant_admin",
+  DISPATCHER = "dispatcher",
+  ACCOUNTANT = "accountant",
+  HUMAN_RESOURCES = "human_resources",
+  DRIVER = "driver"
+}
+
+export const RoleCodeSchema = z.enum(RoleCodeEnum);
+export type RoleCode = z.infer<typeof RoleCodeSchema>;
+
 export enum DashboardMetricWindowEnum {
   WEEK = "week",
   MONTH = "month",
@@ -105,7 +116,7 @@ export type TenantDirectoryListResponse = {
 };
 
 export const TenantCreateRoleOptionSchema = z.object({
-  roleCode: z.string(),
+  roleCode: RoleCodeSchema,
   displayName: z.string(),
   description: z.string().nullable(),
   isDefault: z.boolean(),
