@@ -30,6 +30,7 @@ describe("prisma local seed baseline", () => {
       tenantSlugs: ["acme-local", "other-tenant"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
       platformUsernames: ["other.user", ...expectedSeededUsernames].sort(),
+      managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
       organizationCodes: expectedOrganizationCodes
     });
 
@@ -77,6 +78,7 @@ describe("prisma local seed baseline", () => {
     expect(summary.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(harness.snapshot()).toMatchObject({
       schemaReady: true,
+      managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
       organizationCodes: expectedOrganizationCodes
     });
   });

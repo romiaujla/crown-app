@@ -1,4 +1,5 @@
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
+import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
@@ -56,10 +57,78 @@ export type SeedPlatformUserTenantDelegate = {
   }): Promise<{ id: string; platformUserId: string; tenantId: string; role: string }>;
 };
 
+export type SeedManagementSystemTypeDelegate = {
+  upsert(args: {
+    where: { typeCode_version: { typeCode: string; version: string } };
+    create: {
+      typeCode: string;
+      version: string;
+      displayName: string;
+      description?: string | null;
+      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+    };
+    update: {
+      version?: string;
+      displayName: string;
+      description?: string | null;
+      availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+    };
+  }): Promise<{
+    id: string;
+    typeCode: string;
+    version: string;
+    displayName: string;
+    description: string | null;
+    availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
+  }>;
+};
+
+export type SeedRoleDelegate = {
+  upsert(args: {
+    where: { roleCode: string };
+    create: {
+      roleCode: string;
+      displayName: string;
+      description?: string | null;
+    };
+    update: {
+      displayName: string;
+      description?: string | null;
+    };
+  }): Promise<{
+    id: string;
+    roleCode: string;
+    displayName: string;
+    description: string | null;
+  }>;
+};
+
+export type SeedManagementSystemTypeRoleDelegate = {
+  upsert(args: {
+    where: { managementSystemTypeId_roleId: { managementSystemTypeId: string; roleId: string } };
+    create: {
+      managementSystemTypeId: string;
+      roleId: string;
+      isDefault: boolean;
+    };
+    update: {
+      isDefault: boolean;
+    };
+  }): Promise<{
+    id: string;
+    managementSystemTypeId: string;
+    roleId: string;
+    isDefault: boolean;
+  }>;
+};
+
 export type SeedPrismaClient = {
   tenant: SeedTenantDelegate;
   platformUser: SeedPlatformUserDelegate;
   platformUserTenant: SeedPlatformUserTenantDelegate;
+  managementSystemType: SeedManagementSystemTypeDelegate;
+  role: SeedRoleDelegate;
+  managementSystemTypeRole: SeedManagementSystemTypeRoleDelegate;
 };
 
 export type SeedPhaseName =
