@@ -3,6 +3,17 @@ import { z } from "zod";
 export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
 export type Role = z.infer<typeof RoleSchema>;
 
+export enum RoleCodeEnum {
+  TENANT_ADMIN = "tenant_admin",
+  DISPATCHER = "dispatcher",
+  ACCOUNTANT = "accountant",
+  HUMAN_RESOURCES = "human_resources",
+  DRIVER = "driver"
+}
+
+export const RoleCodeSchema = z.enum(RoleCodeEnum);
+export type RoleCode = z.infer<typeof RoleCodeSchema>;
+
 export enum DashboardMetricWindowEnum {
   WEEK = "week",
   MONTH = "month",
@@ -21,6 +32,15 @@ export enum TenantStatusEnum {
 }
 
 export const TenantStatusSchema = z.enum(TenantStatusEnum);
+
+export enum ManagementSystemTypeCodeEnum {
+  TRANSPORTATION = "transportation",
+  DEALERSHIP = "dealership",
+  INVENTORY = "inventory"
+}
+
+export const ManagementSystemTypeCodeSchema = z.enum(ManagementSystemTypeCodeEnum);
+export type ManagementSystemTypeCode = z.infer<typeof ManagementSystemTypeCodeSchema>;
 
 export const TenantDirectoryListFilterSchema = z
   .object({
@@ -94,6 +114,48 @@ export type TenantDirectoryListResponse = {
   data: TenantDirectoryListData;
   meta: TenantDirectoryListMeta;
 };
+
+export const TenantCreateRoleOptionSchema = z.object({
+  roleCode: RoleCodeSchema,
+  displayName: z.string(),
+  description: z.string().nullable(),
+  isDefault: z.boolean(),
+  isRequired: z.boolean()
+});
+export type TenantCreateRoleOption = z.infer<typeof TenantCreateRoleOptionSchema>;
+
+export const TenantCreateReferenceDataFilterSchema = z
+  .object({
+    typeCode: ManagementSystemTypeCodeSchema.optional()
+  })
+  .strict();
+export type TenantCreateReferenceDataFilter = z.infer<typeof TenantCreateReferenceDataFilterSchema>;
+
+export const TenantCreateReferenceDataRequestSchema = z
+  .object({
+    filter: TenantCreateReferenceDataFilterSchema.default({})
+  })
+  .strict();
+export type TenantCreateReferenceDataRequest = z.infer<typeof TenantCreateReferenceDataRequestSchema>;
+
+export const TenantCreateManagementSystemTypeSchema = z.object({
+  typeCode: ManagementSystemTypeCodeSchema,
+  version: z.string(),
+  displayName: z.string(),
+  description: z.string().nullable(),
+  roleOptions: z.array(TenantCreateRoleOptionSchema)
+});
+export type TenantCreateManagementSystemType = z.infer<typeof TenantCreateManagementSystemTypeSchema>;
+
+export const TenantCreateReferenceDataSchema = z.object({
+  managementSystemTypeList: z.array(TenantCreateManagementSystemTypeSchema)
+});
+export type TenantCreateReferenceData = z.infer<typeof TenantCreateReferenceDataSchema>;
+
+export const TenantCreateReferenceDataResponseSchema = z.object({
+  data: TenantCreateReferenceDataSchema
+});
+export type TenantCreateReferenceDataResponse = z.infer<typeof TenantCreateReferenceDataResponseSchema>;
 
 export enum DeprovisionTypeEnum {
   HARD = "hard",

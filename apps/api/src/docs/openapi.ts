@@ -1,4 +1,10 @@
-import { DashboardMetricWindowEnum, DeprovisionTypeEnum, TenantStatusEnum } from "@crown/types";
+import {
+  DashboardMetricWindowEnum,
+  DeprovisionTypeEnum,
+  ManagementSystemTypeCodeEnum,
+  RoleCodeEnum,
+  TenantStatusEnum
+} from "@crown/types";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
 import { PlatformUserAccountStatus } from "../domain/status-enums.js";
@@ -12,6 +18,8 @@ const authRoutingReasonCodeValues = Object.values(AuthRoutingReasonCodeEnum);
 const authTargetAppValues = Object.values(AuthTargetAppEnum);
 const platformUserAccountStatusValues = Object.values(PlatformUserAccountStatus);
 const tenantStatusValues = Object.values(TenantStatusEnum);
+const managementSystemTypeCodeValues = Object.values(ManagementSystemTypeCodeEnum);
+const roleCodeValues = Object.values(RoleCodeEnum);
 const deprovisionTypeValues = Object.values(DeprovisionTypeEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 
@@ -44,7 +52,10 @@ export const authDocsDocument = {
     { name: "Auth", description: "Authentication and current-user endpoints." },
     { name: "Authorization", description: "Protected route examples for platform and tenant access." },
     { name: "Platform Dashboard", description: "Super-admin dashboard overview widgets and summary data." },
-    { name: "Platform Tenants", description: "Tenant provisioning route protected for super admins." }
+    {
+      name: "Platform Tenants",
+      description: "Tenant reference-data, directory, provisioning, and deprovision routes protected for super admins."
+    }
   ],
   components: {
     securitySchemes: {
@@ -300,6 +311,61 @@ export const authDocsDocument = {
         properties: {
           data: { $ref: "#/components/schemas/TenantDirectoryListData" },
           meta: { $ref: "#/components/schemas/TenantDirectoryListMeta" }
+        }
+      },
+      TenantCreateRoleOption: {
+        type: "object",
+        required: ["roleCode", "displayName", "description", "isDefault", "isRequired"],
+        properties: {
+          roleCode: { type: "string", enum: roleCodeValues },
+          displayName: { type: "string" },
+          description: { type: "string", nullable: true },
+          isDefault: { type: "boolean" },
+          isRequired: { type: "boolean" }
+        }
+      },
+      TenantCreateManagementSystemType: {
+        type: "object",
+        required: ["typeCode", "version", "displayName", "description", "roleOptions"],
+        properties: {
+          typeCode: { type: "string", enum: managementSystemTypeCodeValues },
+          version: { type: "string" },
+          displayName: { type: "string" },
+          description: { type: "string", nullable: true },
+          roleOptions: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantCreateRoleOption" }
+          }
+        }
+      },
+      TenantCreateReferenceDataFilter: {
+        type: "object",
+        properties: {
+          typeCode: { type: "string", enum: managementSystemTypeCodeValues }
+        }
+      },
+      TenantCreateReferenceDataRequest: {
+        type: "object",
+        required: ["filter"],
+        properties: {
+          filter: { $ref: "#/components/schemas/TenantCreateReferenceDataFilter" }
+        }
+      },
+      TenantCreateReferenceDataData: {
+        type: "object",
+        required: ["managementSystemTypeList"],
+        properties: {
+          managementSystemTypeList: {
+            type: "array",
+            items: { $ref: "#/components/schemas/TenantCreateManagementSystemType" }
+          }
+        }
+      },
+      TenantCreateReferenceDataResponse: {
+        type: "object",
+        required: ["data"],
+        properties: {
+          data: { $ref: "#/components/schemas/TenantCreateReferenceDataData" }
         }
       },
       DeprovisionType: {
@@ -687,6 +753,41 @@ export const authDocsDocument = {
             }
           },
           "400": errorResponse("Invalid tenant directory filter", "validation_error", "Invalid tenant directory filter"),
+          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
+          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
+          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
+        }
+      }
+    },
+    "/api/v1/platform/tenant/reference-data": {
+      post: {
+        tags: ["Platform Tenants"],
+        summary: "Get tenant-create reference data",
+        description:
+          "Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow. Accepts an optional request body filter for a single management-system type.",
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TenantCreateReferenceDataRequest" }
+            }
+          }
+        },
+        responses: {
+          "200": {
+            description: "Tenant-create reference data response",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/TenantCreateReferenceDataResponse" }
+              }
+            }
+          },
+          "400": errorResponse(
+            "Invalid tenant create reference-data filter",
+            "validation_error",
+            "Invalid tenant create reference-data filter"
+          ),
           "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")

@@ -1,3 +1,4 @@
+import { RoleCodeEnum } from "@crown/types";
 import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS, LOCAL_SEED_RESET_TABLES } from "../../prisma/seed/constants.js";
 import type { SeedPrismaClient, SeedSqlClient, SeedQueryResult } from "../../prisma/seed/types.js";
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
@@ -730,7 +731,7 @@ export const expectedReferenceDataCodes = ["asset-types", "load-modes", "locatio
 export const expectedOrganizationCodes = ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"];
 export const expectedLocationCodes = ["CHI-WH1", "CLE-PORT1", "DET-YARD1"];
 export const expectedPersonCodes = ["DISPATCH-CHI", "DRIVER-CLE", "OPS-DET"];
-export const expectedRoleCodes = ["dispatcher", "driver"];
+export const expectedRoleCodes = [RoleCodeEnum.DISPATCHER, RoleCodeEnum.DRIVER];
 export const expectedAssetCodes = ["TRACTOR-100", "TRAILER-200"];
 export const expectedLoadCodes = ["LOAD-1000", "LOAD-1001"];
 export const expectedCanonicalDeterministicLookupFields = [
@@ -766,15 +767,21 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
     `${LOCAL_SEED_USERS.tenantUser.email}:${LOCAL_SEED_USERS.tenantUser.accountStatus}`
   ].sort(),
   managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
-  managementSystemRoleCodes: ["accountant", "dispatcher", "driver", "human_resources", "tenant_admin"],
+  managementSystemRoleCodes: [
+    RoleCodeEnum.ACCOUNTANT,
+    RoleCodeEnum.DISPATCHER,
+    RoleCodeEnum.DRIVER,
+    RoleCodeEnum.HUMAN_RESOURCES,
+    RoleCodeEnum.TENANT_ADMIN
+  ],
   managementSystemTypeRoleKeys: [
-    "dealership:1.0:tenant_admin:true",
-    "inventory:1.0:tenant_admin:true",
-    "transportation:1.0:accountant:false",
-    "transportation:1.0:dispatcher:true",
-    "transportation:1.0:driver:true",
-    "transportation:1.0:human_resources:false",
-    "transportation:1.0:tenant_admin:true"
+    `dealership:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
+    `inventory:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
+    `transportation:1.0:${RoleCodeEnum.ACCOUNTANT}:false`,
+    `transportation:1.0:${RoleCodeEnum.DISPATCHER}:true`,
+    `transportation:1.0:${RoleCodeEnum.DRIVER}:true`,
+    `transportation:1.0:${RoleCodeEnum.HUMAN_RESOURCES}:false`,
+    `transportation:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`
   ],
   organizationCodes: expectedOrganizationCodes,
   locationCodes: expectedLocationCodes,

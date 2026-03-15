@@ -1,5 +1,8 @@
 import {
   DeprovisionTypeEnum,
+  TenantCreateReferenceDataRequestSchema,
+  type TenantCreateReferenceDataFilter,
+  type TenantCreateReferenceDataResponse,
   TenantDirectoryListRequestSchema,
   TenantStatusEnum,
   type TenantDirectoryListResponse
@@ -19,12 +22,14 @@ import {
   TenantProvisionRequestSchema,
   TenantProvisionResponseSchema
 } from "../tenant/contracts.js";
+import { getPlatformTenantCreateReferenceData } from "../platform/tenants/reference-data-service.js";
 import { getPlatformTenantDirectory } from "../platform/tenants/directory-service.js";
 import { deprovisionTenant } from "../tenant/lifecycle-service.js";
 import { provisionTenant } from "../tenant/provision-service.js";
 import type { DeprovisionTenantResult } from "../tenant/types.js";
 
 type PlatformTenantsRouterOptions = {
+  getReferenceData?: (filter: TenantCreateReferenceDataFilter) => Promise<TenantCreateReferenceDataResponse>;
   listTenants?: (input: { name?: string; status?: TenantStatusEnum }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
@@ -34,6 +39,7 @@ type PlatformTenantsRouterOptions = {
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
   const router = Router();
+  const getReferenceData = options.getReferenceData ?? getPlatformTenantCreateReferenceData;
   const listTenants = options.listTenants ?? getPlatformTenantDirectory;
   const provision = options.provision ?? provisionTenant;
   const rateLimitMiddleware =
@@ -51,6 +57,22 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       message: "Too many tenant directory requests"
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
+
+  router.post(
+    "/platform/tenant/reference-data",
+    authenticate,
+    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    searchRateLimitMiddleware,
+    async (req, res) => {
+      const parsed = TenantCreateReferenceDataRequestSchema.safeParse(req.body ?? {});
+      if (!parsed.success) {
+        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant create reference-data filter");
+      }
+
+      const response = await getReferenceData(parsed.data.filter ?? {});
+      return res.status(200).json(response);
+    }
+  );
 
   router.post(
     "/platform/tenants/search",
