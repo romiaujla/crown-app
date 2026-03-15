@@ -22,16 +22,16 @@ type RawAuthIdentityRecord = {
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
   platformRoleAssignments: Array<{
-    platformRole: {
-      roleCode: RoleEnum;
+    role: {
+      authClass: RoleEnum;
     };
   }>;
   tenantMemberships: Array<{
     tenantId: string;
     roleAssignments: Array<{
       isPrimary: boolean;
-      tenantRole: {
-        roleCode: RoleEnum;
+      role: {
+        authClass: RoleEnum;
       };
     }>;
   }>;
@@ -48,9 +48,9 @@ type UserLookup = {
     include: {
       platformRoleAssignments: {
         include: {
-          platformRole: {
+          role: {
             select: {
-              roleCode: true;
+              authClass: true;
             };
           };
         };
@@ -59,9 +59,9 @@ type UserLookup = {
         include: {
           roleAssignments: {
             include: {
-              tenantRole: {
+              role: {
                 select: {
-                  roleCode: true;
+                  authClass: true;
                 };
               };
             };
@@ -82,11 +82,11 @@ const toAuthIdentityRecord = (record: RawAuthIdentityRecord): AuthIdentityRecord
   username: record.username,
   passwordHash: record.passwordHash,
   accountStatus: record.accountStatus,
-  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.platformRole.roleCode),
+  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.role.authClass),
   tenantMemberships: record.tenantMemberships.map((membership) => {
-    const roleCodes = membership.roleAssignments.map((assignment) => assignment.tenantRole.roleCode);
+    const roleCodes = membership.roleAssignments.map((assignment) => assignment.role.authClass);
     const primaryRoleCode =
-      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.tenantRole.roleCode ??
+      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.role.authClass ??
       (roleCodes.length === 1 ? roleCodes[0] : null);
 
     return {
@@ -112,9 +112,9 @@ export const findAuthIdentityByIdentifier = async (
     include: {
       platformRoleAssignments: {
         include: {
-          platformRole: {
+          role: {
             select: {
-              roleCode: true
+              authClass: true
             }
           }
         }
@@ -123,9 +123,9 @@ export const findAuthIdentityByIdentifier = async (
         include: {
           roleAssignments: {
             include: {
-              tenantRole: {
+              role: {
                 select: {
-                  roleCode: true
+                  authClass: true
                 }
               }
             }

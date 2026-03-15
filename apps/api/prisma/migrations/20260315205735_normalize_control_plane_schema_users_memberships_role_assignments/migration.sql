@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "PlatformRoleCodeEnum" AS ENUM ('super_admin');
+CREATE TYPE "RoleScopeEnum" AS ENUM ('platform', 'tenant');
 
 -- CreateEnum
-CREATE TYPE "TenantRoleCodeEnum" AS ENUM ('tenant_admin', 'tenant_user');
+CREATE TYPE "RoleAuthClassEnum" AS ENUM ('super_admin', 'tenant_admin', 'tenant_user');
 
 -- CreateEnum
 CREATE TYPE "RoleAssignmentStatusEnum" AS ENUM ('active', 'inactive');
@@ -35,23 +35,38 @@ SET
 ALTER TABLE "tenant_memberships" ADD CONSTRAINT "tenant_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "tenant_memberships" ADD CONSTRAINT "tenant_memberships_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- CreateTable
-CREATE TABLE "platform_roles" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "role_code" "PlatformRoleCodeEnum" NOT NULL,
-    "display_name" TEXT NOT NULL,
-    "description" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+-- Promote the existing roles table into the single source of truth for both auth and management-system roles.
+ALTER TABLE "roles"
+    ADD COLUMN "scope" "RoleScopeEnum",
+    ADD COLUMN "auth_class" "RoleAuthClassEnum";
 
-    CONSTRAINT "platform_roles_pkey" PRIMARY KEY ("id")
-);
+INSERT INTO "roles" ("role_code", "scope", "auth_class", "display_name", "description", "updated_at")
+VALUES
+    ('super_admin', 'platform', 'super_admin', 'Super Admin', 'Platform-wide operator role.', CURRENT_TIMESTAMP),
+    ('admin', 'tenant', 'tenant_user', 'Admin', 'Management-system administrator role inside the tenant workspace.', CURRENT_TIMESTAMP)
+ON CONFLICT ("role_code") DO NOTHING;
+
+UPDATE "roles"
+SET
+    "scope" = CASE
+        WHEN "role_code" = 'super_admin' THEN 'platform'::"RoleScopeEnum"
+        ELSE 'tenant'::"RoleScopeEnum"
+    END,
+    "auth_class" = CASE
+        WHEN "role_code" = 'super_admin' THEN 'super_admin'::"RoleAuthClassEnum"
+        WHEN "role_code" = 'tenant_admin' THEN 'tenant_admin'::"RoleAuthClassEnum"
+        ELSE 'tenant_user'::"RoleAuthClassEnum"
+    END;
+
+ALTER TABLE "roles"
+    ALTER COLUMN "scope" SET NOT NULL,
+    ALTER COLUMN "auth_class" SET NOT NULL;
 
 -- CreateTable
 CREATE TABLE "user_platform_role_assignments" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "user_id" TEXT NOT NULL,
-    "platform_role_id" UUID NOT NULL,
+    "role_id" UUID NOT NULL,
     "assignment_status" "RoleAssignmentStatusEnum" NOT NULL DEFAULT 'active',
     "assigned_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ended_at" TIMESTAMP(3),
@@ -62,22 +77,10 @@ CREATE TABLE "user_platform_role_assignments" (
 );
 
 -- CreateTable
-CREATE TABLE "tenant_roles" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "role_code" "TenantRoleCodeEnum" NOT NULL,
-    "display_name" TEXT NOT NULL,
-    "description" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "tenant_roles_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "tenant_membership_role_assignments" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "tenant_membership_id" TEXT NOT NULL,
-    "tenant_role_id" UUID NOT NULL,
+    "role_id" UUID NOT NULL,
     "assignment_status" "RoleAssignmentStatusEnum" NOT NULL DEFAULT 'active',
     "is_primary" BOOLEAN NOT NULL DEFAULT false,
     "assigned_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -89,42 +92,27 @@ CREATE TABLE "tenant_membership_role_assignments" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "platform_roles_role_code_key" ON "platform_roles"("role_code");
+CREATE UNIQUE INDEX "user_platform_role_assignments_user_id_role_id_key" ON "user_platform_role_assignments"("user_id", "role_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_platform_role_assignments_user_id_platform_role_id_key" ON "user_platform_role_assignments"("user_id", "platform_role_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tenant_roles_role_code_key" ON "tenant_roles"("role_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tenant_membership_role_assignments_tenant_membership_id_ten_key" ON "tenant_membership_role_assignments"("tenant_membership_id", "tenant_role_id");
+CREATE UNIQUE INDEX "tenant_membership_role_assignments_tenant_membership_id_rol_key" ON "tenant_membership_role_assignments"("tenant_membership_id", "role_id");
 
 -- AddForeignKey
 ALTER TABLE "user_platform_role_assignments" ADD CONSTRAINT "user_platform_role_assignments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_platform_role_assignments" ADD CONSTRAINT "user_platform_role_assignments_platform_role_id_fkey" FOREIGN KEY ("platform_role_id") REFERENCES "platform_roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_platform_role_assignments" ADD CONSTRAINT "user_platform_role_assignments_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tenant_membership_role_assignments" ADD CONSTRAINT "tenant_membership_role_assignments_tenant_membership_id_fkey" FOREIGN KEY ("tenant_membership_id") REFERENCES "tenant_memberships"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tenant_membership_role_assignments" ADD CONSTRAINT "tenant_membership_role_assignments_tenant_role_id_fkey" FOREIGN KEY ("tenant_role_id") REFERENCES "tenant_roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tenant_membership_role_assignments" ADD CONSTRAINT "tenant_membership_role_assignments_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- Seed canonical auth roles for normalized lookups and assignment backfill.
-INSERT INTO "platform_roles" ("role_code", "display_name", "description", "updated_at")
-VALUES ('super_admin', 'Super Admin', 'Platform-wide operator role.', CURRENT_TIMESTAMP);
-
-INSERT INTO "tenant_roles" ("role_code", "display_name", "description", "updated_at")
-VALUES
-    ('tenant_admin', 'Admin', 'Canonical tenant admin auth role.', CURRENT_TIMESTAMP),
-    ('tenant_user', 'Tenant User', 'Canonical tenant user auth role for non-admin tenant personas.', CURRENT_TIMESTAMP);
-
--- Backfill platform role assignments from the legacy user role column.
+-- Backfill direct user role assignments from the legacy user role column.
 INSERT INTO "user_platform_role_assignments" (
     "user_id",
-    "platform_role_id",
+    "role_id",
     "assignment_status",
     "assigned_at",
     "created_at",
@@ -132,19 +120,20 @@ INSERT INTO "user_platform_role_assignments" (
 )
 SELECT
     "users"."id",
-    "platform_roles"."id",
+    "roles"."id",
     'active',
     "users"."created_at",
     "users"."created_at",
     CURRENT_TIMESTAMP
 FROM "users"
-JOIN "platform_roles" ON "platform_roles"."role_code" = 'super_admin'
-WHERE "users"."role" = 'super_admin';
+JOIN "roles" ON "roles"."role_code" = "users"."role"
+WHERE "users"."role" IS NOT NULL;
 
--- Backfill tenant role assignments from the legacy membership role column.
+-- Backfill tenant membership role assignments from the legacy membership role column.
+-- Legacy generic tenant users are mapped to `dispatcher` as the baseline tenant-user-class role in the normalized catalog.
 INSERT INTO "tenant_membership_role_assignments" (
     "tenant_membership_id",
-    "tenant_role_id",
+    "role_id",
     "assignment_status",
     "is_primary",
     "assigned_at",
@@ -153,16 +142,16 @@ INSERT INTO "tenant_membership_role_assignments" (
 )
 SELECT
     "tenant_memberships"."id",
-    "tenant_roles"."id",
+    "roles"."id",
     'active',
     true,
     "tenant_memberships"."created_at",
     "tenant_memberships"."created_at",
     CURRENT_TIMESTAMP
 FROM "tenant_memberships"
-JOIN "tenant_roles" ON "tenant_roles"."role_code" = CASE
-    WHEN "tenant_memberships"."role" = 'tenant_admin' THEN 'tenant_admin'::"TenantRoleCodeEnum"
-    ELSE 'tenant_user'::"TenantRoleCodeEnum"
+JOIN "roles" ON "roles"."role_code" = CASE
+    WHEN "tenant_memberships"."role" = 'tenant_user' THEN 'dispatcher'
+    ELSE "tenant_memberships"."role"
 END
 WHERE "tenant_memberships"."role" IS NOT NULL
   AND "tenant_memberships"."role" <> 'super_admin';

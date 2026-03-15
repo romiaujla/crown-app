@@ -16,8 +16,8 @@ Use this feature’s outputs to implement and review the normalized control-plan
 - Generate and inspect the migration SQL before treating the schema change as final.
 - Update seed/auth-support code only as needed to keep validation meaningful against the new schema.
 - Preserve the distinction between `tenant_memberships` and `tenant_membership_role_assignments`.
-- Keep canonical auth tenant roles limited to `tenant_admin` and `tenant_user`.
-- Treat `dispatcher`, `driver`, `accountant`, and `human_resources` as `tenant_user`-class auth behavior rather than distinct DB auth roles.
+- Use one shared `roles` table for direct user grants, tenant membership grants, and management-system templates.
+- Keep auth behavior explicit on each role row so `super_admin` stays platform-scoped, `tenant_admin` stays tenant-admin scoped, and `admin` / `dispatcher` / `driver` / `accountant` / `human_resources` resolve as `tenant_user` behavior for now.
 
 ## Validation Command
 
@@ -30,8 +30,8 @@ pnpm specify.audit
 The feature is ready for implementation review once reviewers agree that:
 
 - the normalized tables and relations exist in Prisma and migration SQL
-- platform roles and tenant roles are separated
+- the shared `roles` table carries clear scope and auth-behavior metadata
 - tenant membership and tenant authorization are separated
 - management-system role templates remain configuration only
-- specialized operational personas resolve through `tenant_user` compatibility behavior rather than distinct auth rows
+- specialized operational personas resolve through `tenant_user` compatibility behavior while remaining concrete role rows in the database
 - seed and focused auth-support validation reflect the new schema shape

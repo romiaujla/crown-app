@@ -163,7 +163,7 @@ describe("auth credential foundation", () => {
                 roleAssignments: [
                   {
                     isPrimary: true,
-                    tenantRole: { roleCode: RoleEnum.TENANT_USER }
+                    role: { authClass: RoleEnum.TENANT_USER }
                   }
                 ]
               }

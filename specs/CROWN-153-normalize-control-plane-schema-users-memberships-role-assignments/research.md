@@ -1,19 +1,19 @@
 # Research: Normalize Control-Plane Schema For Users, Memberships, And Role Assignments
 
-## Decision 1: Implement The `CROWN-152` Normalized Table Names In This Story
+## Decision 1: Use One Shared `roles` Table With Explicit Role Metadata
 
-- **Decision**: Use the approved normalized table names `users`, `platform_roles`, `user_platform_role_assignments`, `tenant_memberships`, `tenant_roles`, and `tenant_membership_role_assignments`.
-- **Rationale**: `CROWN-152` already resolved the target naming and relationship model. Reverting to the old `platform_users`, `platform_user_tenants`, or generic `roles` names in implementation would re-open a design decision that the previous story intentionally closed.
+- **Decision**: Implement `users`, `roles`, `user_platform_role_assignments`, `tenant_memberships`, and `tenant_membership_role_assignments`, with the shared `roles` table carrying both scope and auth-behavior metadata.
+- **Rationale**: The clarified product rule is simpler than the earlier split-catalog design. A shared role catalog keeps the schema easier to reason about while still preserving normalized assignment boundaries.
 - **Alternatives considered**:
+  - Keep separate `platform_roles` and `tenant_roles` tables: rejected because the extra split did not add enough value once most tenant roles collapsed to `tenant_user` runtime behavior.
   - Keep the legacy table names and only add new relation tables around them: rejected because it would preserve naming drift against the approved design.
-  - Rename only some tables now and defer the rest: rejected because partial normalization would keep the control-plane model conceptually inconsistent.
 
-## Decision 1a: Keep Control-Plane Auth Roles Limited To `tenant_admin` And `tenant_user`
+## Decision 1a: Keep Concrete Tenant Roles But Derive Auth Behavior From Metadata
 
-- **Decision**: Treat `dispatcher`, `driver`, `accountant`, and `human_resources` as `tenant_user`-class auth behavior rather than persisting them as distinct control-plane auth roles.
-- **Rationale**: The current JWT contract, route authorization, and user clarification all point to a two-level tenant auth model for now: `tenant_admin` and `tenant_user`. Specialized operational personas can remain business/template concepts without widening the control-plane auth schema.
+- **Decision**: Keep `admin`, `dispatcher`, `driver`, `accountant`, and `human_resources` as concrete rows in `roles`, but mark them as `tenant_user`-class auth behavior.
+- **Rationale**: This preserves the actual business roles the product wants in the database while keeping the current JWT and route-authorization behavior stable.
 - **Alternatives considered**:
-  - Persist every specialized operational persona in `tenant_roles`: rejected because the current auth layer does not need separate DB-backed auth roles for them in this story.
+  - Introduce a synthetic `tenant_user` row in `roles`: rejected because the desired database model is based on concrete role codes, with runtime auth derived from metadata instead of a generic tenant-user role row.
 
 ## Decision 2: Keep Legacy Role Columns Temporarily If They Are Still Needed For Compatibility
 
@@ -25,8 +25,8 @@
 
 ## Decision 3: Keep `management_system_type_roles` As Template Configuration Only
 
-- **Decision**: Preserve `management_system_type_roles` as type-to-role template/default configuration and add separate user-grant tables rather than repurposing the existing junction.
-- **Rationale**: `CROWN-140` introduced that table specifically for available/default roles per management-system type. Using it as a user grant would collapse configuration and authorization back together.
+- **Decision**: Preserve `management_system_type_roles` as type-to-role template/default configuration even though it now references the same shared `roles` table that auth assignments use.
+- **Rationale**: Reusing the shared catalog is fine as long as the junction still answers “which roles are available/default for this management-system type?” rather than “who has this access today?”.
 - **Alternatives considered**:
   - Reuse `management_system_type_roles` for actual user grants: rejected because it cannot answer who has access to a tenant today.
 

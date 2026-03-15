@@ -151,9 +151,9 @@ const createDirectoryClient = async () => {
           include: {
             platformRoleAssignments: {
               include: {
-                platformRole: {
+                role: {
                   select: {
-                    roleCode: true;
+                    authClass: true;
                   };
                 };
               };
@@ -162,9 +162,9 @@ const createDirectoryClient = async () => {
               include: {
                 roleAssignments: {
                   include: {
-                    tenantRole: {
+                    role: {
                       select: {
-                        roleCode: true;
+                        authClass: true;
                       };
                     };
                   };
@@ -204,7 +204,7 @@ const createDirectoryClient = async () => {
                     )
                     ?.platformRoleCodes ?? []
                   ).map((roleCode) => ({
-                    platformRole: { roleCode }
+                    role: { authClass: roleCode }
                   })),
                   tenantMemberships: (users
                     .find((user) =>
@@ -219,7 +219,7 @@ const createDirectoryClient = async () => {
                     tenantId: membership.tenantId,
                     roleAssignments: membership.roleCodes.map((roleCode) => ({
                       isPrimary: membership.primaryRoleCode === roleCode,
-                      tenantRole: { roleCode }
+                      role: { authClass: roleCode }
                     }))
                   }))
                 }

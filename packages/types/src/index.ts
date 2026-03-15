@@ -4,6 +4,7 @@ export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"])
 export type Role = z.infer<typeof RoleSchema>;
 
 export enum RoleCodeEnum {
+  ADMIN = "admin",
   TENANT_ADMIN = "tenant_admin",
   DISPATCHER = "dispatcher",
   ACCOUNTANT = "accountant",

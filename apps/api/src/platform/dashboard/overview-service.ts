@@ -9,21 +9,7 @@ import { TenantStatus } from "../../domain/status-enums.js";
 
 type DashboardOverviewPrismaClient = {
   user: {
-    count(args: {
-      where: {
-        tenantMemberships: {
-          some: {
-            roleAssignments: {
-              some: {
-                tenantRole: {
-                  roleCode: "tenant_user";
-                };
-              };
-            };
-          };
-        };
-      };
-    }): Promise<number>;
+    count(args?: { where?: unknown }): Promise<number>;
   };
   tenant: {
     count(args?: {
@@ -103,8 +89,8 @@ export const getPlatformDashboardOverview = async (
           some: {
             roleAssignments: {
               some: {
-                tenantRole: {
-                  roleCode: "tenant_user"
+                role: {
+                  authClass: "tenant_user"
                 }
               }
             }

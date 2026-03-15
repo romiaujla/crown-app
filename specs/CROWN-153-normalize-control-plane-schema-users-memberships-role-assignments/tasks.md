@@ -29,17 +29,17 @@
 
 - [x] T007 [P] [US1] Update Prisma identity and platform-role models in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
 - [x] T008 [P] [US1] Generate and inspect the migration SQL for the identity/platform-role changes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
-- [x] T009 [US1] Update control-plane seed and schema-dependent helpers for `users`, `platform_roles`, and `user_platform_role_assignments` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/`
+- [x] T009 [US1] Update control-plane seed and schema-dependent helpers for `users`, `roles`, and `user_platform_role_assignments` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/`
 
 ## Phase 4: User Story 2 - Persist Tenant Memberships And Tenant-Role Assignments Separately (Priority: P1)
 
-- [x] T010 [P] [US2] Update Prisma membership and tenant-role models in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, keeping auth tenant roles limited to `tenant_admin` and `tenant_user`
-- [x] T011 [P] [US2] Generate and inspect the migration SQL for `tenant_memberships`, `tenant_roles`, and `tenant_membership_role_assignments` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
+- [x] T010 [P] [US2] Update Prisma membership and tenant-role models in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, using one shared `roles` table with explicit auth behavior for `tenant_admin` and `tenant_user`-class roles
+- [x] T011 [P] [US2] Generate and inspect the migration SQL for `tenant_memberships`, `roles`, and `tenant_membership_role_assignments` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
 - [x] T012 [US2] Update seed/auth-support code to use memberships separate from tenant-role assignments in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/`, mapping specialized operational personas to `tenant_user` compatibility behavior
 
 ## Phase 5: User Story 3 - Keep Management-System Role Templates And Migration Compatibility Intact (Priority: P2)
 
-- [x] T013 [P] [US3] Keep management-system template relations aligned with the renamed tenant-role catalog in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [x] T013 [P] [US3] Keep management-system template relations aligned with the shared `roles` catalog in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
 - [x] T014 [P] [US3] Update focused auth/seed tests for compatibility behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/`
 - [x] T015 [US3] Document any retained legacy role fields or complete their safe removal in the finalized Prisma schema and migration SQL
 

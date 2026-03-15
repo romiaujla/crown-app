@@ -2,7 +2,7 @@
 
 ## Overview
 
-`CROWN-153` implements the control-plane schema from `CROWN-152`. The resulting persistence model separates identity, platform authorization, tenant association, tenant authorization, and management-system role templates into explicit relational structures.
+`CROWN-153` implements the control-plane schema from `CROWN-152`, but with one shared `roles` table instead of separate platform-role and tenant-role catalogs. The resulting persistence model separates identity, direct user authorization, tenant association, tenant authorization, and management-system role templates while deriving auth behavior from role metadata.
 
 ## Target Prisma Models And Tables
 
@@ -22,28 +22,14 @@
 - **Migration note**:
   - The legacy `platform_users.role` field should be removed or retained only as an explicit compatibility field during the rollout window.
 
-### PlatformRole
-
-- **Table**: `platform_roles`
-- **Purpose**: Canonical platform-scoped role definitions.
-- **Core fields**:
-  - `id`
-  - `role_code`
-  - `display_name`
-  - `description`
-  - `created_at`
-  - `updated_at`
-- **Initial baseline**:
-  - `super_admin`
-
 ### UserPlatformRoleAssignment
 
 - **Table**: `user_platform_role_assignments`
-- **Purpose**: Actual user grant for platform-scoped authorization.
+- **Purpose**: Actual direct user grant for platform-scoped authorization against the shared `roles` table.
 - **Core fields**:
   - `id`
   - `user_id`
-  - `platform_role_id`
+  - `role_id`
   - `assignment_status`
   - `assigned_at`
   - `ended_at`
@@ -83,31 +69,40 @@
 - **Migration note**:
   - The legacy `platform_user_tenants.role` field should be removed or retained only as an explicit compatibility field during rollout.
 
-### TenantRole
+### Role
 
-- **Table**: `tenant_roles`
-- **Purpose**: Assignable tenant-scoped role definitions.
+- **Table**: `roles`
+- **Purpose**: Shared role catalog used by management-system templates, direct user role assignments, and tenant membership role assignments.
 - **Core fields**:
   - `id`
   - `role_code`
+  - `scope`
+  - `auth_class`
   - `display_name`
   - `description`
   - `created_at`
   - `updated_at`
 - **Baseline roles**:
+  - `super_admin`
   - `tenant_admin`
-  - `tenant_user`
-- **Compatibility rule**:
-  - Specialized personas such as `dispatcher`, `driver`, `accountant`, and `human_resources` are treated as `tenant_user`-class auth behavior and are not persisted here as distinct control-plane auth roles.
+  - `admin`
+  - `dispatcher`
+  - `driver`
+  - `accountant`
+  - `human_resources`
+- **Auth-class rule**:
+  - `super_admin` maps to platform access.
+  - `tenant_admin` maps to tenant-admin access.
+  - `admin`, `dispatcher`, `driver`, `accountant`, and `human_resources` map to `tenant_user` auth behavior for now.
 
 ### TenantMembershipRoleAssignment
 
 - **Table**: `tenant_membership_role_assignments`
-- **Purpose**: Actual tenant authorization grant linking one membership to one tenant role.
+- **Purpose**: Actual tenant authorization grant linking one membership to one shared role.
 - **Core fields**:
   - `id`
   - `tenant_membership_id`
-  - `tenant_role_id`
+  - `role_id`
   - `assignment_status`
   - `is_primary`
   - `assigned_at`
@@ -132,25 +127,25 @@
 ## Relationship Summary
 
 - `User` 1 -> many `UserPlatformRoleAssignment`
-- `PlatformRole` 1 -> many `UserPlatformRoleAssignment`
+- `Role` 1 -> many `UserPlatformRoleAssignment`
 - `User` 1 -> many `TenantMembership`
 - `Tenant` 1 -> many `TenantMembership`
 - `TenantMembership` 1 -> many `TenantMembershipRoleAssignment`
-- `TenantRole` 1 -> many `TenantMembershipRoleAssignment`
+- `Role` 1 -> many `TenantMembershipRoleAssignment`
 - `ManagementSystemType` many -> many operational/template roles through `ManagementSystemTypeRole`
 
 ## Migration Scope For This Story
 
 - Replace legacy identity table naming with `users`.
-- Introduce platform-role and platform-role-assignment persistence.
+- Introduce direct user-role assignment persistence for platform-scoped access.
 - Replace the old `platform_user_tenants` meaning with normalized `tenant_memberships`.
-- Introduce `tenant_roles` as the canonical auth-role catalog with `tenant_admin` and `tenant_user`.
+- Reuse `roles` as the single role catalog by adding scope/auth metadata and the additional rows needed for auth and management-system workflows.
 - Introduce `tenant_membership_role_assignments`.
-- Preserve `management_system_types` and `management_system_type_roles` with their existing template/business meaning.
+- Preserve `management_system_types` and `management_system_type_roles` with their template/business meaning while keeping them on the shared `roles` catalog.
 
 ## Compatibility Notes
 
-- Auth resolution may continue deriving one effective tenant role per session/JWT while storage supports many-to-many assignments.
-- Specialized operational personas such as `dispatcher`, `driver`, `accountant`, and `human_resources` map to `tenant_user` in the control-plane auth model.
+- Auth resolution may continue deriving one effective role per session/JWT while storage supports many-to-many assignments.
+- Specialized operational personas such as `admin`, `dispatcher`, `driver`, `accountant`, and `human_resources` map to `tenant_user` in the control-plane auth model.
 - If legacy role columns remain temporarily, they must be treated as transitional only.
 - Seed data and focused tests must reflect the normalized schema so reviewers can validate the new relational model directly.

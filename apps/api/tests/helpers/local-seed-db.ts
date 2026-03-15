@@ -33,9 +33,11 @@ type PlatformUserTenantRow = {
   role: string;
 };
 
-type PlatformRoleRow = {
+type ControlPlaneRoleRow = {
   id: string;
   roleCode: string;
+  scope: "platform" | "tenant";
+  authClass: "super_admin" | "tenant_admin" | "tenant_user";
   displayName: string;
   description: string | null;
 };
@@ -43,7 +45,7 @@ type PlatformRoleRow = {
 type UserPlatformRoleAssignmentRow = {
   id: string;
   userId: string;
-  platformRoleId: string;
+  roleId: string;
 };
 
 type TenantMembershipRow = {
@@ -53,17 +55,10 @@ type TenantMembershipRow = {
   role: string | null;
 };
 
-type TenantAuthRoleRow = {
-  id: string;
-  roleCode: string;
-  displayName: string;
-  description: string | null;
-};
-
 type TenantMembershipRoleAssignmentRow = {
   id: string;
   tenantMembershipId: string;
-  tenantRoleId: string;
+  roleId: string;
   isPrimary: boolean;
 };
 
@@ -74,13 +69,6 @@ type ManagementSystemTypeRow = {
   displayName: string;
   description: string | null;
   availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
-};
-
-type ManagementSystemRoleRow = {
-  id: string;
-  roleCode: string;
-  displayName: string;
-  description: string | null;
 };
 
 type ManagementSystemTypeRoleRow = {
@@ -185,13 +173,11 @@ type HarnessState = {
   tenants: Map<string, TenantRow>;
   platformUsers: Map<string, PlatformUserRow>;
   platformUserTenants: Map<string, PlatformUserTenantRow>;
-  platformRoles: Map<string, PlatformRoleRow>;
+  controlPlaneRoles: Map<string, ControlPlaneRoleRow>;
   userPlatformRoleAssignments: Map<string, UserPlatformRoleAssignmentRow>;
   tenantMemberships: Map<string, TenantMembershipRow>;
-  tenantAuthRoles: Map<string, TenantAuthRoleRow>;
   tenantMembershipRoleAssignments: Map<string, TenantMembershipRoleAssignmentRow>;
   managementSystemTypes: Map<string, ManagementSystemTypeRow>;
-  managementSystemRoles: Map<string, ManagementSystemRoleRow>;
   managementSystemTypeRoles: Map<string, ManagementSystemTypeRoleRow>;
   referenceDataSets: Map<string, ReferenceDataRow>;
   organizations: Map<string, OrganizationRow>;
@@ -210,13 +196,11 @@ const createState = (): HarnessState => ({
   tenants: new Map(),
   platformUsers: new Map(),
   platformUserTenants: new Map(),
-  platformRoles: new Map(),
+  controlPlaneRoles: new Map(),
   userPlatformRoleAssignments: new Map(),
   tenantMemberships: new Map(),
-  tenantAuthRoles: new Map(),
   tenantMembershipRoleAssignments: new Map(),
   managementSystemTypes: new Map(),
-  managementSystemRoles: new Map(),
   managementSystemTypeRoles: new Map(),
   referenceDataSets: new Map(),
   organizations: new Map(),
@@ -235,13 +219,11 @@ const cloneState = (state: HarnessState): HarnessState => ({
   tenants: new Map(state.tenants),
   platformUsers: new Map(state.platformUsers),
   platformUserTenants: new Map(state.platformUserTenants),
-  platformRoles: new Map(state.platformRoles),
+  controlPlaneRoles: new Map(state.controlPlaneRoles),
   userPlatformRoleAssignments: new Map(state.userPlatformRoleAssignments),
   tenantMemberships: new Map(state.tenantMemberships),
-  tenantAuthRoles: new Map(state.tenantAuthRoles),
   tenantMembershipRoleAssignments: new Map(state.tenantMembershipRoleAssignments),
   managementSystemTypes: new Map(state.managementSystemTypes),
-  managementSystemRoles: new Map(state.managementSystemRoles),
   managementSystemTypeRoles: new Map(state.managementSystemTypeRoles),
   referenceDataSets: new Map(state.referenceDataSets),
   organizations: new Map(state.organizations),
@@ -312,38 +294,40 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    platformRole: {
+    role: {
       async upsert(args) {
-        const existing = state.platformRoles.get(args.where.roleCode);
+        const existing = state.controlPlaneRoles.get(args.where.roleCode);
         if (existing) {
-          const updated: PlatformRoleRow = {
+          const updated: ControlPlaneRoleRow = {
             ...existing,
             ...args.update,
             description: args.update.description ?? null
           };
-          state.platformRoles.set(updated.roleCode, updated);
+          state.controlPlaneRoles.set(updated.roleCode, updated);
           return updated;
         }
 
-        const created: PlatformRoleRow = {
-          id: createId("platform-role", args.create.roleCode),
+        const created: ControlPlaneRoleRow = {
+          id: createId("control-plane-role", args.create.roleCode),
           ...args.create,
           description: args.create.description ?? null
         };
-        state.platformRoles.set(created.roleCode, created);
+        state.controlPlaneRoles.set(created.roleCode, created);
         return created;
       }
     },
     userPlatformRoleAssignment: {
       async upsert(args) {
-        const key = `${args.where.userId_platformRoleId.userId}:${args.where.userId_platformRoleId.platformRoleId}`;
+        const uniqueKey = args.where.userId_roleId as { userId: string; roleId: string };
+        const createInput = args.create as { userId: string; roleId: string };
+        const key = `${uniqueKey.userId}:${uniqueKey.roleId}`;
         const existing = state.userPlatformRoleAssignments.get(key);
         if (existing) return existing;
 
         const created: UserPlatformRoleAssignmentRow = {
           id: createId("user-platform-role-assignment", key),
-          userId: args.create.userId,
-          platformRoleId: args.create.platformRoleId
+          userId: createInput.userId,
+          roleId: createInput.roleId
         };
         state.userPlatformRoleAssignments.set(key, created);
         return created;
@@ -372,36 +356,17 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    tenantRole: {
-      async upsert(args) {
-        const existing = state.tenantAuthRoles.get(args.where.roleCode);
-        if (existing) {
-          const updated: TenantAuthRoleRow = {
-            ...existing,
-            ...args.update,
-            description: args.update.description ?? null
-          };
-          state.tenantAuthRoles.set(updated.roleCode, updated);
-          return updated;
-        }
-
-        const created: TenantAuthRoleRow = {
-          id: createId("tenant-auth-role", args.create.roleCode),
-          ...args.create,
-          description: args.create.description ?? null
-        };
-        state.tenantAuthRoles.set(created.roleCode, created);
-        return created;
-      }
-    },
     tenantMembershipRoleAssignment: {
       async upsert(args) {
-        const key = `${args.where.tenantMembershipId_tenantRoleId.tenantMembershipId}:${args.where.tenantMembershipId_tenantRoleId.tenantRoleId}`;
+        const uniqueKey = args.where.tenantMembershipId_roleId as { tenantMembershipId: string; roleId: string };
+        const createInput = args.create as { tenantMembershipId: string; roleId: string; isPrimary: boolean };
+        const updateInput = args.update as { isPrimary: boolean };
+        const key = `${uniqueKey.tenantMembershipId}:${uniqueKey.roleId}`;
         const existing = state.tenantMembershipRoleAssignments.get(key);
         if (existing) {
           const updated: TenantMembershipRoleAssignmentRow = {
             ...existing,
-            isPrimary: args.update.isPrimary
+            isPrimary: updateInput.isPrimary
           };
           state.tenantMembershipRoleAssignments.set(key, updated);
           return updated;
@@ -409,9 +374,9 @@ export const createSeedTestHarness = (): {
 
         const created: TenantMembershipRoleAssignmentRow = {
           id: createId("tenant-membership-role-assignment", key),
-          tenantMembershipId: args.create.tenantMembershipId,
-          tenantRoleId: args.create.tenantRoleId,
-          isPrimary: args.create.isPrimary
+          tenantMembershipId: createInput.tenantMembershipId,
+          roleId: createInput.roleId,
+          isPrimary: createInput.isPrimary
         };
         state.tenantMembershipRoleAssignments.set(key, created);
         return created;
@@ -437,28 +402,6 @@ export const createSeedTestHarness = (): {
           description: args.create.description ?? null
         };
         state.managementSystemTypes.set(key, created);
-        return created;
-      }
-    },
-    role: {
-      async upsert(args) {
-        const existing = state.managementSystemRoles.get(args.where.roleCode);
-        if (existing) {
-          const updated: ManagementSystemRoleRow = {
-            ...existing,
-            ...args.update,
-            description: args.update.description ?? null
-          };
-          state.managementSystemRoles.set(updated.roleCode, updated);
-          return updated;
-        }
-
-        const created: ManagementSystemRoleRow = {
-          id: createId("management-system-role", args.create.roleCode),
-          ...args.create,
-          description: args.create.description ?? null
-        };
-        state.managementSystemRoles.set(created.roleCode, created);
         return created;
       }
     },
@@ -789,13 +732,13 @@ export const createSeedTestHarness = (): {
         managementSystemTypeKeys: Array.from(state.managementSystemTypes.values())
           .map((type) => `${type.typeCode}:${type.version}`)
           .sort(),
-        managementSystemRoleCodes: Array.from(state.managementSystemRoles.keys()).sort(),
+        managementSystemRoleCodes: Array.from(state.controlPlaneRoles.keys()).sort(),
         managementSystemTypeRoleKeys: Array.from(state.managementSystemTypeRoles.values())
           .map((typeRole) => {
             const managementSystemType = Array.from(state.managementSystemTypes.values()).find(
               (type) => type.id === typeRole.managementSystemTypeId
             );
-            const role = Array.from(state.managementSystemRoles.values()).find((candidate) => candidate.id === typeRole.roleId);
+            const role = Array.from(state.controlPlaneRoles.values()).find((candidate) => candidate.id === typeRole.roleId);
 
             return `${managementSystemType?.typeCode ?? "unknown"}:${managementSystemType?.version ?? "unknown"}:${role?.roleCode ?? "unknown"}:${typeRole.isDefault}`;
           })
@@ -901,21 +844,23 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
   ].sort(),
   managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
   managementSystemRoleCodes: [
+    RoleCodeEnum.ADMIN,
     RoleCodeEnum.ACCOUNTANT,
     RoleCodeEnum.DISPATCHER,
     RoleCodeEnum.DRIVER,
     RoleCodeEnum.HUMAN_RESOURCES,
-    RoleCodeEnum.TENANT_ADMIN
-  ],
+    RoleCodeEnum.TENANT_ADMIN,
+    "super_admin"
+  ].sort(),
   managementSystemTypeRoleKeys: [
-    `dealership:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
-    `inventory:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
+    `dealership:1.0:${RoleCodeEnum.ADMIN}:true`,
+    `inventory:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.ACCOUNTANT}:false`,
+    `transportation:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.DISPATCHER}:true`,
     `transportation:1.0:${RoleCodeEnum.DRIVER}:true`,
-    `transportation:1.0:${RoleCodeEnum.HUMAN_RESOURCES}:false`,
-    `transportation:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`
-  ],
+    `transportation:1.0:${RoleCodeEnum.HUMAN_RESOURCES}:false`
+  ].sort(),
   organizationCodes: expectedOrganizationCodes,
   locationCodes: expectedLocationCodes,
   personCodes: expectedPersonCodes,
