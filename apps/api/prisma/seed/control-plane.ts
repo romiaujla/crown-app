@@ -1,9 +1,11 @@
 import type { SeedControlPlaneBaseline, SeedPrismaClient } from "./types.js";
 import {
+  LOCAL_SEED_PLATFORM_ROLES,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES,
   LOCAL_SEED_ROLES,
   LOCAL_SEED_TENANT,
+  LOCAL_SEED_TENANT_AUTH_ROLES,
   LOCAL_SEED_USERS
 } from "./constants.js";
 import { hashPassword } from "../../src/auth/passwords.js";
@@ -38,7 +40,7 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  const superAdmin = await prisma.platformUser.upsert({
+  const superAdmin = await prisma.user.upsert({
     where: {
       email: LOCAL_SEED_USERS.superAdmin.email
     },
@@ -59,7 +61,7 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  const tenantAdmin = await prisma.platformUser.upsert({
+  const tenantAdmin = await prisma.user.upsert({
     where: {
       email: LOCAL_SEED_USERS.tenantAdmin.email
     },
@@ -80,7 +82,7 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  const tenantUser = await prisma.platformUser.upsert({
+  const tenantUser = await prisma.user.upsert({
     where: {
       email: LOCAL_SEED_USERS.tenantUser.email
     },
@@ -101,15 +103,15 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  await prisma.platformUserTenant.upsert({
+  const superAdminMembership = await prisma.tenantMembership.upsert({
     where: {
-      platformUserId_tenantId: {
-        platformUserId: superAdmin.id,
+      userId_tenantId: {
+        userId: superAdmin.id,
         tenantId: tenant.id
       }
     },
     create: {
-      platformUserId: superAdmin.id,
+      userId: superAdmin.id,
       tenantId: tenant.id,
       role: "super_admin"
     },
@@ -118,15 +120,15 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  await prisma.platformUserTenant.upsert({
+  const tenantAdminMembership = await prisma.tenantMembership.upsert({
     where: {
-      platformUserId_tenantId: {
-        platformUserId: tenantAdmin.id,
+      userId_tenantId: {
+        userId: tenantAdmin.id,
         tenantId: tenant.id
       }
     },
     create: {
-      platformUserId: tenantAdmin.id,
+      userId: tenantAdmin.id,
       tenantId: tenant.id,
       role: "tenant_admin"
     },
@@ -135,20 +137,110 @@ export const ensureControlPlaneBaseline = async ({
     }
   });
 
-  await prisma.platformUserTenant.upsert({
+  const tenantUserMembership = await prisma.tenantMembership.upsert({
     where: {
-      platformUserId_tenantId: {
-        platformUserId: tenantUser.id,
+      userId_tenantId: {
+        userId: tenantUser.id,
         tenantId: tenant.id
       }
     },
     create: {
-      platformUserId: tenantUser.id,
+      userId: tenantUser.id,
       tenantId: tenant.id,
       role: "tenant_user"
     },
     update: {
       role: "tenant_user"
+    }
+  });
+
+  const platformRoles = new Map<string, string>();
+
+  for (const platformRole of LOCAL_SEED_PLATFORM_ROLES) {
+    const persistedPlatformRole = await prisma.platformRole.upsert({
+      where: {
+        roleCode: platformRole.roleCode
+      },
+      create: {
+        roleCode: platformRole.roleCode,
+        displayName: platformRole.displayName,
+        description: platformRole.description
+      },
+      update: {
+        displayName: platformRole.displayName,
+        description: platformRole.description
+      }
+    });
+
+    platformRoles.set(platformRole.roleCode, persistedPlatformRole.id);
+  }
+
+  const tenantAuthRoles = new Map<string, string>();
+
+  for (const tenantRole of LOCAL_SEED_TENANT_AUTH_ROLES) {
+    const persistedTenantRole = await prisma.tenantRole.upsert({
+      where: {
+        roleCode: tenantRole.roleCode
+      },
+      create: {
+        roleCode: tenantRole.roleCode,
+        displayName: tenantRole.displayName,
+        description: tenantRole.description
+      },
+      update: {
+        displayName: tenantRole.displayName,
+        description: tenantRole.description
+      }
+    });
+
+    tenantAuthRoles.set(tenantRole.roleCode, persistedTenantRole.id);
+  }
+
+  await prisma.userPlatformRoleAssignment.upsert({
+    where: {
+      userId_platformRoleId: {
+        userId: superAdmin.id,
+        platformRoleId: platformRoles.get("super_admin") as string
+      }
+    },
+    create: {
+      userId: superAdmin.id,
+      platformRoleId: platformRoles.get("super_admin") as string
+    },
+    update: {}
+  });
+
+  await prisma.tenantMembershipRoleAssignment.upsert({
+    where: {
+      tenantMembershipId_tenantRoleId: {
+        tenantMembershipId: tenantAdminMembership.id,
+        tenantRoleId: tenantAuthRoles.get("tenant_admin") as string
+      }
+    },
+    create: {
+      tenantMembershipId: tenantAdminMembership.id,
+      tenantRoleId: tenantAuthRoles.get("tenant_admin") as string,
+      isPrimary: true
+    },
+    update: {
+      isPrimary: true
+    }
+  });
+
+  await prisma.tenantMembershipRoleAssignment.upsert({
+    where: {
+      tenantMembershipId_tenantRoleId: {
+        tenantMembershipId: tenantUserMembership.id,
+        tenantRoleId: tenantAuthRoles.get("tenant_user") as string
+      }
+    },
+    create: {
+      tenantMembershipId: tenantUserMembership.id,
+      tenantRoleId: tenantAuthRoles.get("tenant_user") as string,
+      isPrimary: true
+    },
+    update: {
+      isPrimary: true
     }
   });
 

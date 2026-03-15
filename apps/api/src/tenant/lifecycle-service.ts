@@ -34,7 +34,7 @@ type TenantLifecyclePrismaClient = {
       data: { status: TenantStatus };
     }): Promise<TenantRecord>;
   };
-  platformUserTenant: {
+  tenantMembership: {
     deleteMany(args: {
       where: { tenantId: string };
     }): Promise<{ count: number }>;
@@ -157,7 +157,7 @@ export const hardDeprovisionTenant = async (
     await client.end();
   }
 
-  await db.platformUserTenant.deleteMany({
+  await db.tenantMembership.deleteMany({
     where: { tenantId: existingTenant.id }
   });
   await db.tenantSchemaVersion.deleteMany({

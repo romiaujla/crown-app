@@ -38,6 +38,27 @@ export const LOCAL_SEED_USERS = {
   }
 } as const;
 
+export const LOCAL_SEED_PLATFORM_ROLES = [
+  {
+    roleCode: "super_admin",
+    displayName: "Super Admin",
+    description: "Platform-wide operator role."
+  }
+] as const;
+
+export const LOCAL_SEED_TENANT_AUTH_ROLES = [
+  {
+    roleCode: "tenant_admin",
+    displayName: "Admin",
+    description: "Canonical tenant admin auth role."
+  },
+  {
+    roleCode: "tenant_user",
+    displayName: "Tenant User",
+    description: "Canonical tenant user auth role for non-admin tenant personas."
+  }
+] as const;
+
 export const LOCAL_SEED_ACTOR_SUB = "seed-local-runner";
 
 export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [

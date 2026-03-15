@@ -33,6 +33,40 @@ type PlatformUserTenantRow = {
   role: string;
 };
 
+type PlatformRoleRow = {
+  id: string;
+  roleCode: string;
+  displayName: string;
+  description: string | null;
+};
+
+type UserPlatformRoleAssignmentRow = {
+  id: string;
+  userId: string;
+  platformRoleId: string;
+};
+
+type TenantMembershipRow = {
+  id: string;
+  userId: string;
+  tenantId: string;
+  role: string | null;
+};
+
+type TenantAuthRoleRow = {
+  id: string;
+  roleCode: string;
+  displayName: string;
+  description: string | null;
+};
+
+type TenantMembershipRoleAssignmentRow = {
+  id: string;
+  tenantMembershipId: string;
+  tenantRoleId: string;
+  isPrimary: boolean;
+};
+
 type ManagementSystemTypeRow = {
   id: string;
   typeCode: string;
@@ -151,6 +185,11 @@ type HarnessState = {
   tenants: Map<string, TenantRow>;
   platformUsers: Map<string, PlatformUserRow>;
   platformUserTenants: Map<string, PlatformUserTenantRow>;
+  platformRoles: Map<string, PlatformRoleRow>;
+  userPlatformRoleAssignments: Map<string, UserPlatformRoleAssignmentRow>;
+  tenantMemberships: Map<string, TenantMembershipRow>;
+  tenantAuthRoles: Map<string, TenantAuthRoleRow>;
+  tenantMembershipRoleAssignments: Map<string, TenantMembershipRoleAssignmentRow>;
   managementSystemTypes: Map<string, ManagementSystemTypeRow>;
   managementSystemRoles: Map<string, ManagementSystemRoleRow>;
   managementSystemTypeRoles: Map<string, ManagementSystemTypeRoleRow>;
@@ -171,6 +210,11 @@ const createState = (): HarnessState => ({
   tenants: new Map(),
   platformUsers: new Map(),
   platformUserTenants: new Map(),
+  platformRoles: new Map(),
+  userPlatformRoleAssignments: new Map(),
+  tenantMemberships: new Map(),
+  tenantAuthRoles: new Map(),
+  tenantMembershipRoleAssignments: new Map(),
   managementSystemTypes: new Map(),
   managementSystemRoles: new Map(),
   managementSystemTypeRoles: new Map(),
@@ -191,6 +235,11 @@ const cloneState = (state: HarnessState): HarnessState => ({
   tenants: new Map(state.tenants),
   platformUsers: new Map(state.platformUsers),
   platformUserTenants: new Map(state.platformUserTenants),
+  platformRoles: new Map(state.platformRoles),
+  userPlatformRoleAssignments: new Map(state.userPlatformRoleAssignments),
+  tenantMemberships: new Map(state.tenantMemberships),
+  tenantAuthRoles: new Map(state.tenantAuthRoles),
+  tenantMembershipRoleAssignments: new Map(state.tenantMembershipRoleAssignments),
   managementSystemTypes: new Map(state.managementSystemTypes),
   managementSystemRoles: new Map(state.managementSystemRoles),
   managementSystemTypeRoles: new Map(state.managementSystemTypeRoles),
@@ -243,7 +292,7 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    platformUser: {
+    user: {
       async upsert(args) {
         const existing = state.platformUsers.get(args.where.email);
         if (existing) {
@@ -263,24 +312,108 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    platformUserTenant: {
+    platformRole: {
       async upsert(args) {
-        const key = `${args.where.platformUserId_tenantId.platformUserId}:${args.where.platformUserId_tenantId.tenantId}`;
-        const existing = state.platformUserTenants.get(key);
+        const existing = state.platformRoles.get(args.where.roleCode);
         if (existing) {
-          const updated: PlatformUserTenantRow = {
+          const updated: PlatformRoleRow = {
             ...existing,
-            role: args.update.role
+            ...args.update,
+            description: args.update.description ?? null
           };
-          state.platformUserTenants.set(key, updated);
+          state.platformRoles.set(updated.roleCode, updated);
           return updated;
         }
 
-        const created: PlatformUserTenantRow = {
-          id: createId("platform-user-tenant", key),
-          ...args.create
+        const created: PlatformRoleRow = {
+          id: createId("platform-role", args.create.roleCode),
+          ...args.create,
+          description: args.create.description ?? null
         };
-        state.platformUserTenants.set(key, created);
+        state.platformRoles.set(created.roleCode, created);
+        return created;
+      }
+    },
+    userPlatformRoleAssignment: {
+      async upsert(args) {
+        const key = `${args.where.userId_platformRoleId.userId}:${args.where.userId_platformRoleId.platformRoleId}`;
+        const existing = state.userPlatformRoleAssignments.get(key);
+        if (existing) return existing;
+
+        const created: UserPlatformRoleAssignmentRow = {
+          id: createId("user-platform-role-assignment", key),
+          userId: args.create.userId,
+          platformRoleId: args.create.platformRoleId
+        };
+        state.userPlatformRoleAssignments.set(key, created);
+        return created;
+      }
+    },
+    tenantMembership: {
+      async upsert(args) {
+        const key = `${args.where.userId_tenantId.userId}:${args.where.userId_tenantId.tenantId}`;
+        const existing = state.tenantMemberships.get(key);
+        if (existing) {
+          const updated: TenantMembershipRow = {
+            ...existing,
+            role: args.update.role ?? existing.role
+          };
+          state.tenantMemberships.set(key, updated);
+          return updated;
+        }
+
+        const created: TenantMembershipRow = {
+          id: createId("tenant-membership", key),
+          userId: args.create.userId,
+          tenantId: args.create.tenantId,
+          role: args.create.role ?? null
+        };
+        state.tenantMemberships.set(key, created);
+        return created;
+      }
+    },
+    tenantRole: {
+      async upsert(args) {
+        const existing = state.tenantAuthRoles.get(args.where.roleCode);
+        if (existing) {
+          const updated: TenantAuthRoleRow = {
+            ...existing,
+            ...args.update,
+            description: args.update.description ?? null
+          };
+          state.tenantAuthRoles.set(updated.roleCode, updated);
+          return updated;
+        }
+
+        const created: TenantAuthRoleRow = {
+          id: createId("tenant-auth-role", args.create.roleCode),
+          ...args.create,
+          description: args.create.description ?? null
+        };
+        state.tenantAuthRoles.set(created.roleCode, created);
+        return created;
+      }
+    },
+    tenantMembershipRoleAssignment: {
+      async upsert(args) {
+        const key = `${args.where.tenantMembershipId_tenantRoleId.tenantMembershipId}:${args.where.tenantMembershipId_tenantRoleId.tenantRoleId}`;
+        const existing = state.tenantMembershipRoleAssignments.get(key);
+        if (existing) {
+          const updated: TenantMembershipRoleAssignmentRow = {
+            ...existing,
+            isPrimary: args.update.isPrimary
+          };
+          state.tenantMembershipRoleAssignments.set(key, updated);
+          return updated;
+        }
+
+        const created: TenantMembershipRoleAssignmentRow = {
+          id: createId("tenant-membership-role-assignment", key),
+          tenantMembershipId: args.create.tenantMembershipId,
+          tenantRoleId: args.create.tenantRoleId,
+          isPrimary: args.create.isPrimary
+        };
+        state.tenantMembershipRoleAssignments.set(key, created);
         return created;
       }
     },

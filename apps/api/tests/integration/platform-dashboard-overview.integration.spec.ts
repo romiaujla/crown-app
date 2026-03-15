@@ -3,14 +3,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DashboardMetricWindowEnum } from "@crown/types";
 import { TenantStatus } from "../../src/domain/status-enums.js";
 
-const platformUserCount = vi.fn();
+const userCount = vi.fn();
 const tenantCount = vi.fn();
 const tenantGroupBy = vi.fn();
 
 vi.mock("../../src/db/prisma.js", () => ({
   prisma: {
-    platformUser: {
-      count: platformUserCount
+    user: {
+      count: userCount
     },
     tenant: {
       count: tenantCount,
@@ -27,7 +27,7 @@ describe("platform dashboard overview integration", () => {
   });
 
   it("returns deterministic zero-filled counts for every tenant status and metric window", async () => {
-    platformUserCount.mockResolvedValue(12);
+    userCount.mockResolvedValue(12);
     tenantCount.mockImplementation(async (args?: { where?: { createdAt?: { gte?: Date; lt?: Date; lte?: Date } } }) => {
       if (!args?.where?.createdAt) {
         return 3;
@@ -93,7 +93,7 @@ describe("platform dashboard overview integration", () => {
   });
 
   it("returns an all-zero status breakdown and zeroed metric windows when no tenants exist", async () => {
-    platformUserCount.mockResolvedValue(0);
+    userCount.mockResolvedValue(0);
     tenantCount.mockResolvedValue(0);
     tenantGroupBy.mockResolvedValue([]);
 
@@ -123,7 +123,7 @@ describe("platform dashboard overview integration", () => {
   });
 
   it("rounds growth rates from the immediately preceding trailing window", async () => {
-    platformUserCount.mockResolvedValue(4);
+    userCount.mockResolvedValue(4);
     tenantCount.mockImplementation(async (args?: { where?: { createdAt?: { gte?: Date; lt?: Date; lte?: Date } } }) => {
       if (!args?.where?.createdAt) {
         return 4;

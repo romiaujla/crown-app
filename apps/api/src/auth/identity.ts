@@ -7,14 +7,37 @@ export type AuthIdentityRecord = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
-  role: RoleEnum;
-  tenantLinks: Array<{
+  platformRoleCodes: RoleEnum[];
+  tenantMemberships: Array<{
     tenantId: string;
-    role: RoleEnum;
+    roleCodes: RoleEnum[];
+    primaryRoleCode: RoleEnum | null;
   }>;
 };
 
-type PlatformUserLookup = {
+type RawAuthIdentityRecord = {
+  id: string;
+  email: string;
+  username: string | null;
+  passwordHash: string | null;
+  accountStatus: PlatformUserAccountStatus;
+  platformRoleAssignments: Array<{
+    platformRole: {
+      roleCode: RoleEnum;
+    };
+  }>;
+  tenantMemberships: Array<{
+    tenantId: string;
+    roleAssignments: Array<{
+      isPrimary: boolean;
+      tenantRole: {
+        roleCode: RoleEnum;
+      };
+    }>;
+  }>;
+};
+
+type UserLookup = {
   findFirst(args: {
     where: {
       OR: Array<{
@@ -23,19 +46,56 @@ type PlatformUserLookup = {
       }>;
     };
     include: {
-      tenantLinks: {
-        select: {
-          tenantId: true;
-          role: true;
+      platformRoleAssignments: {
+        include: {
+          platformRole: {
+            select: {
+              roleCode: true;
+            };
+          };
+        };
+      };
+      tenantMemberships: {
+        include: {
+          roleAssignments: {
+            include: {
+              tenantRole: {
+                select: {
+                  roleCode: true;
+                };
+              };
+            };
+          };
         };
       };
     };
-  }): Promise<AuthIdentityRecord | null>;
+  }): Promise<RawAuthIdentityRecord | null>;
 };
 
 export type AuthIdentityPrismaClient = {
-  platformUser: PlatformUserLookup;
+  user: UserLookup;
 };
+
+const toAuthIdentityRecord = (record: RawAuthIdentityRecord): AuthIdentityRecord => ({
+  id: record.id,
+  email: record.email,
+  username: record.username,
+  passwordHash: record.passwordHash,
+  accountStatus: record.accountStatus,
+  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.platformRole.roleCode),
+  tenantMemberships: record.tenantMemberships.map((membership) => {
+    const roleCodes = membership.roleAssignments.map((assignment) => assignment.tenantRole.roleCode);
+    const primaryRoleCode =
+      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.tenantRole.roleCode ??
+      (roleCodes.length === 1 ? roleCodes[0] : null);
+
+    return {
+      tenantId: membership.tenantId,
+      roleCodes,
+      primaryRoleCode
+    };
+  })
+});
 
 export const normalizeLoginIdentifier = (identifier: string): string => identifier.trim().toLowerCase();
 
@@ -45,17 +105,35 @@ export const findAuthIdentityByIdentifier = async (
 ): Promise<AuthIdentityRecord | null> => {
   const normalizedIdentifier = normalizeLoginIdentifier(identifier);
 
-  return prisma.platformUser.findFirst({
+  const record = await prisma.user.findFirst({
     where: {
       OR: [{ email: normalizedIdentifier }, { username: normalizedIdentifier }]
     },
     include: {
-      tenantLinks: {
-        select: {
-          tenantId: true,
-          role: true
+      platformRoleAssignments: {
+        include: {
+          platformRole: {
+            select: {
+              roleCode: true
+            }
+          }
+        }
+      },
+      tenantMemberships: {
+        include: {
+          roleAssignments: {
+            include: {
+              tenantRole: {
+                select: {
+                  roleCode: true
+                }
+              }
+            }
+          }
         }
       }
     }
   });
+
+  return record ? toAuthIdentityRecord(record) : null;
 };

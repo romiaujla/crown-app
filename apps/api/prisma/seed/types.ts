@@ -20,7 +20,7 @@ export type SeedTenantDelegate = {
   }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: TenantStatus }>;
 };
 
-export type SeedPlatformUserDelegate = {
+export type SeedUserDelegate = {
   upsert(args: {
     where: { email: string };
     create: {
@@ -45,16 +45,62 @@ export type SeedPlatformUserDelegate = {
     passwordHash: string | null;
     accountStatus: PlatformUserAccountStatus;
     displayName: string;
-    role: string;
+    role: string | null;
   }>;
 };
 
-export type SeedPlatformUserTenantDelegate = {
+export type SeedPlatformRoleDelegate = {
   upsert(args: {
-    where: { platformUserId_tenantId: { platformUserId: string; tenantId: string } };
-    create: { platformUserId: string; tenantId: string; role: string };
-    update: { role: string };
-  }): Promise<{ id: string; platformUserId: string; tenantId: string; role: string }>;
+    where: { roleCode: "super_admin" };
+    create: {
+      roleCode: "super_admin";
+      displayName: string;
+      description?: string | null;
+    };
+    update: {
+      displayName: string;
+      description?: string | null;
+    };
+  }): Promise<{ id: string; roleCode: string; displayName: string; description: string | null }>;
+};
+
+export type SeedUserPlatformRoleAssignmentDelegate = {
+  upsert(args: {
+    where: { userId_platformRoleId: { userId: string; platformRoleId: string } };
+    create: { userId: string; platformRoleId: string; isPrimary?: boolean };
+    update: Record<string, never>;
+  }): Promise<{ id: string; userId: string; platformRoleId: string }>;
+};
+
+export type SeedTenantMembershipDelegate = {
+  upsert(args: {
+    where: { userId_tenantId: { userId: string; tenantId: string } };
+    create: { userId: string; tenantId: string; role?: string };
+    update: { role?: string };
+  }): Promise<{ id: string; userId: string; tenantId: string; role: string | null }>;
+};
+
+export type SeedTenantAuthRoleDelegate = {
+  upsert(args: {
+    where: { roleCode: "tenant_admin" | "tenant_user" };
+    create: {
+      roleCode: "tenant_admin" | "tenant_user";
+      displayName: string;
+      description?: string | null;
+    };
+    update: {
+      displayName: string;
+      description?: string | null;
+    };
+  }): Promise<{ id: string; roleCode: string; displayName: string; description: string | null }>;
+};
+
+export type SeedTenantMembershipRoleAssignmentDelegate = {
+  upsert(args: {
+    where: { tenantMembershipId_tenantRoleId: { tenantMembershipId: string; tenantRoleId: string } };
+    create: { tenantMembershipId: string; tenantRoleId: string; isPrimary: boolean };
+    update: { isPrimary: boolean };
+  }): Promise<{ id: string; tenantMembershipId: string; tenantRoleId: string; isPrimary: boolean }>;
 };
 
 export type SeedManagementSystemTypeDelegate = {
@@ -124,8 +170,12 @@ export type SeedManagementSystemTypeRoleDelegate = {
 
 export type SeedPrismaClient = {
   tenant: SeedTenantDelegate;
-  platformUser: SeedPlatformUserDelegate;
-  platformUserTenant: SeedPlatformUserTenantDelegate;
+  user: SeedUserDelegate;
+  platformRole: SeedPlatformRoleDelegate;
+  userPlatformRoleAssignment: SeedUserPlatformRoleAssignmentDelegate;
+  tenantMembership: SeedTenantMembershipDelegate;
+  tenantRole: SeedTenantAuthRoleDelegate;
+  tenantMembershipRoleAssignment: SeedTenantMembershipRoleAssignmentDelegate;
   managementSystemType: SeedManagementSystemTypeDelegate;
   role: SeedRoleDelegate;
   managementSystemTypeRole: SeedManagementSystemTypeRoleDelegate;

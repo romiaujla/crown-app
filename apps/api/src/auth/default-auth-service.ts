@@ -63,8 +63,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
-    role: RoleEnum.SUPER_ADMIN,
-    tenantLinks: []
+    platformRoleCodes: [RoleEnum.SUPER_ADMIN],
+    tenantMemberships: []
   },
   {
     id: "user-tenant-admin",
@@ -74,8 +74,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin",
-    role: RoleEnum.TENANT_ADMIN,
-    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_ADMIN }]
+    platformRoleCodes: [],
+    tenantMemberships: [{ tenantId: "tenant-acme", roleCodes: [RoleEnum.TENANT_ADMIN], primaryRoleCode: RoleEnum.TENANT_ADMIN }]
   },
   {
     id: "user-tenant-user",
@@ -85,8 +85,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
-    role: RoleEnum.TENANT_USER,
-    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_USER }]
+    platformRoleCodes: [],
+    tenantMemberships: [{ tenantId: "tenant-acme", roleCodes: [RoleEnum.TENANT_USER], primaryRoleCode: RoleEnum.TENANT_USER }]
   },
   {
     id: "user-disabled",
@@ -96,8 +96,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.disabled,
     displayName: "Disabled User",
-    role: RoleEnum.TENANT_USER,
-    tenantLinks: [{ tenantId: "tenant-acme", role: RoleEnum.TENANT_USER }]
+    platformRoleCodes: [],
+    tenantMemberships: [{ tenantId: "tenant-acme", roleCodes: [RoleEnum.TENANT_USER], primaryRoleCode: RoleEnum.TENANT_USER }]
   },
   {
     id: "user-tenant-user-orphan",
@@ -107,8 +107,8 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User Orphan",
-    role: RoleEnum.TENANT_USER,
-    tenantLinks: []
+    platformRoleCodes: [],
+    tenantMemberships: []
   },
   {
     id: "user-tenant-admin-multi",
@@ -118,10 +118,10 @@ const directorySeed: DirectorySeedUser[] = [
     passwordHash: "",
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant Admin Multi",
-    role: RoleEnum.TENANT_ADMIN,
-    tenantLinks: [
-      { tenantId: "tenant-acme", role: RoleEnum.TENANT_ADMIN },
-      { tenantId: "tenant-zenith", role: RoleEnum.TENANT_ADMIN }
+    platformRoleCodes: [],
+    tenantMemberships: [
+      { tenantId: "tenant-acme", roleCodes: [RoleEnum.TENANT_ADMIN], primaryRoleCode: RoleEnum.TENANT_ADMIN },
+      { tenantId: "tenant-zenith", roleCodes: [RoleEnum.TENANT_ADMIN], primaryRoleCode: RoleEnum.TENANT_ADMIN }
     ]
   }
 ] as const;
@@ -145,10 +145,33 @@ const createDirectoryClient = async () => {
   return {
     users,
     prisma: {
-      platformUser: {
+      user: {
         async findFirst(args: {
           where: { OR: Array<{ email?: string; username?: string }> };
-          include: { tenantLinks: { select: { tenantId: true; role: true } } };
+          include: {
+            platformRoleAssignments: {
+              include: {
+                platformRole: {
+                  select: {
+                    roleCode: true;
+                  };
+                };
+              };
+            };
+            tenantMemberships: {
+              include: {
+                roleAssignments: {
+                  include: {
+                    tenantRole: {
+                      select: {
+                        roleCode: true;
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          };
         }) {
           const requested = args.where.OR.map((condition) => ({
             email: condition.email?.toLowerCase(),
@@ -162,7 +185,45 @@ const createDirectoryClient = async () => {
                   (condition.email && user.email.toLowerCase() === condition.email) ||
                   (condition.username && user.username?.toLowerCase() === condition.username)
               )
-            ) ?? null
+            )
+              ? {
+                  ...(users.find((user) =>
+                    requested.some(
+                      (condition) =>
+                        (condition.email && user.email.toLowerCase() === condition.email) ||
+                        (condition.username && user.username?.toLowerCase() === condition.username)
+                    )
+                  ) as DirectorySeedUser),
+                  platformRoleAssignments: (users
+                    .find((user) =>
+                      requested.some(
+                        (condition) =>
+                          (condition.email && user.email.toLowerCase() === condition.email) ||
+                          (condition.username && user.username?.toLowerCase() === condition.username)
+                      )
+                    )
+                    ?.platformRoleCodes ?? []
+                  ).map((roleCode) => ({
+                    platformRole: { roleCode }
+                  })),
+                  tenantMemberships: (users
+                    .find((user) =>
+                      requested.some(
+                        (condition) =>
+                          (condition.email && user.email.toLowerCase() === condition.email) ||
+                          (condition.username && user.username?.toLowerCase() === condition.username)
+                      )
+                    )
+                    ?.tenantMemberships ?? []
+                  ).map((membership) => ({
+                    tenantId: membership.tenantId,
+                    roleAssignments: membership.roleCodes.map((roleCode) => ({
+                      isPrimary: membership.primaryRoleCode === roleCode,
+                      tenantRole: { roleCode }
+                    }))
+                  }))
+                }
+              : null
           );
         }
       }
@@ -179,7 +240,7 @@ const toCurrentUserContext = (user: DirectoryUser, role: JwtClaims["role"], tena
     email: user.email,
     username: user.username,
     displayName: user.displayName,
-    role: user.role,
+    role,
     accountStatus: user.accountStatus
   },
   roleContext: {

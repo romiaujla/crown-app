@@ -5,7 +5,7 @@ import { TenantStatus } from "../../src/domain/status-enums.js";
 
 const tenantFindUnique = vi.fn();
 const tenantUpdate = vi.fn();
-const platformUserTenantDeleteMany = vi.fn();
+const tenantMembershipDeleteMany = vi.fn();
 const tenantSchemaVersionDeleteMany = vi.fn();
 
 vi.mock("../../src/db/prisma.js", () => ({
@@ -14,8 +14,8 @@ vi.mock("../../src/db/prisma.js", () => ({
       findUnique: tenantFindUnique,
       update: tenantUpdate
     },
-    platformUserTenant: {
-      deleteMany: platformUserTenantDeleteMany
+    tenantMembership: {
+      deleteMany: tenantMembershipDeleteMany
     },
     tenantSchemaVersion: {
       deleteMany: tenantSchemaVersionDeleteMany
@@ -113,7 +113,7 @@ describe("tenant soft deprovision integration", () => {
       createdAt: new Date(),
       updatedAt: new Date()
     });
-    platformUserTenantDeleteMany.mockResolvedValue({ count: 2 });
+    tenantMembershipDeleteMany.mockResolvedValue({ count: 2 });
     tenantSchemaVersionDeleteMany.mockResolvedValue({ count: 3 });
     const connect = vi.fn(async () => undefined);
     const end = vi.fn(async () => undefined);
@@ -140,7 +140,7 @@ describe("tenant soft deprovision integration", () => {
 
     expect(result.status).toBe("hard_deprovisioned");
     expect(query).toHaveBeenCalledTimes(2);
-    expect(platformUserTenantDeleteMany).toHaveBeenCalledWith({ where: { tenantId: "tenant-acme" } });
+    expect(tenantMembershipDeleteMany).toHaveBeenCalledWith({ where: { tenantId: "tenant-acme" } });
     expect(tenantSchemaVersionDeleteMany).toHaveBeenCalledWith({ where: { tenantId: "tenant-acme" } });
     expect(tenantUpdate).toHaveBeenCalledWith({
       where: { id: "tenant-acme" },
@@ -183,7 +183,7 @@ describe("tenant soft deprovision integration", () => {
       message: "Tenant schema is already missing",
       tenantId: "tenant-acme"
     });
-    expect(platformUserTenantDeleteMany).not.toHaveBeenCalled();
+    expect(tenantMembershipDeleteMany).not.toHaveBeenCalled();
     expect(tenantSchemaVersionDeleteMany).not.toHaveBeenCalled();
     expect(tenantUpdate).not.toHaveBeenCalled();
   });
