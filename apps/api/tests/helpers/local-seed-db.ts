@@ -1,12 +1,12 @@
 import { RoleCodeEnum } from "@crown/types";
-import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS, LOCAL_SEED_RESET_TABLES } from "../../prisma/seed/constants.js";
-import type { SeedPrismaClient, SeedSqlClient, SeedQueryResult } from "../../prisma/seed/types.js";
+import { LOCAL_SEED_RESET_TABLES, LOCAL_SEED_TENANT, LOCAL_SEED_USERS } from "../../prisma/seed/constants.js";
+import type { SeedPrismaClient, SeedQueryResult, SeedSqlClient } from "../../prisma/seed/types.js";
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 import {
   PlatformUserAccountStatus as PlatformUserAccountStatusValues,
   TenantStatus as TenantStatusValues
 } from "../../src/domain/status-enums.js";
+import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 
 type TenantRow = {
   id: string;
@@ -23,14 +23,12 @@ type PlatformUserRow = {
   passwordHash: string;
   accountStatus: PlatformUserAccountStatus;
   displayName: string;
-  role: string;
 };
 
 type PlatformUserTenantRow = {
   id: string;
   platformUserId: string;
   tenantId: string;
-  role: string;
 };
 
 type ControlPlaneRoleRow = {
@@ -52,7 +50,6 @@ type TenantMembershipRow = {
   id: string;
   userId: string;
   tenantId: string;
-  role: string | null;
 };
 
 type TenantMembershipRoleAssignmentRow = {
@@ -338,19 +335,14 @@ export const createSeedTestHarness = (): {
         const key = `${args.where.userId_tenantId.userId}:${args.where.userId_tenantId.tenantId}`;
         const existing = state.tenantMemberships.get(key);
         if (existing) {
-          const updated: TenantMembershipRow = {
-            ...existing,
-            role: args.update.role ?? existing.role
-          };
-          state.tenantMemberships.set(key, updated);
-          return updated;
+          state.tenantMemberships.set(key, existing);
+          return existing;
         }
 
         const created: TenantMembershipRow = {
           id: createId("tenant-membership", key),
           userId: args.create.userId,
-          tenantId: args.create.tenantId,
-          role: args.create.role ?? null
+          tenantId: args.create.tenantId
         };
         state.tenantMemberships.set(key, created);
         return created;
@@ -429,8 +421,8 @@ export const createSeedTestHarness = (): {
   };
 
   const client: SeedSqlClient = {
-    async connect() {},
-    async end() {},
+    async connect() { },
+    async end() { },
     async query(text: string, values: readonly unknown[] = []): Promise<SeedQueryResult> {
       queries.push(text.trim().replace(/\s+/g, " "));
       const normalized = text.trim().replace(/\s+/g, " ").toUpperCase();
@@ -701,8 +693,7 @@ export const createSeedTestHarness = (): {
         username: "other.user",
         passwordHash: "scrypt$other$hash",
         accountStatus: PlatformUserAccountStatusValues.active,
-        displayName: "Other User",
-        role: "viewer"
+        displayName: "Other User"
       };
       state.tenants.set(unrelatedTenant.slug, unrelatedTenant);
       state.platformUsers.set(unrelatedUser.email, unrelatedUser);

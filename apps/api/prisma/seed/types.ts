@@ -29,14 +29,12 @@ export type SeedUserDelegate = {
       passwordHash: string;
       accountStatus: PlatformUserAccountStatus;
       displayName: string;
-      role: string;
     };
     update: {
       username: string;
       passwordHash: string;
       accountStatus: PlatformUserAccountStatus;
       displayName: string;
-      role: string;
     };
   }): Promise<{
     id: string;
@@ -45,7 +43,6 @@ export type SeedUserDelegate = {
     passwordHash: string | null;
     accountStatus: PlatformUserAccountStatus;
     displayName: string;
-    role: string | null;
   }>;
 };
 
@@ -60,9 +57,9 @@ export type SeedUserPlatformRoleAssignmentDelegate = {
 export type SeedTenantMembershipDelegate = {
   upsert(args: {
     where: { userId_tenantId: { userId: string; tenantId: string } };
-    create: { userId: string; tenantId: string; role?: string };
-    update: { role?: string };
-  }): Promise<{ id: string; userId: string; tenantId: string; role: string | null }>;
+    create: { userId: string; tenantId: string };
+    update: Record<string, never>;
+  }): Promise<{ id: string; userId: string; tenantId: string }>;
 };
 
 export type SeedTenantMembershipRoleAssignmentDelegate = {
