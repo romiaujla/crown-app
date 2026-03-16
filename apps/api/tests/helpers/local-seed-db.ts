@@ -1,12 +1,12 @@
 import { RoleCodeEnum } from "@crown/types";
-import { LOCAL_SEED_TENANT, LOCAL_SEED_USERS, LOCAL_SEED_RESET_TABLES } from "../../prisma/seed/constants.js";
-import type { SeedPrismaClient, SeedSqlClient, SeedQueryResult } from "../../prisma/seed/types.js";
+import { LOCAL_SEED_RESET_TABLES, LOCAL_SEED_TENANT, LOCAL_SEED_USERS } from "../../prisma/seed/constants.js";
+import type { SeedPrismaClient, SeedQueryResult, SeedSqlClient } from "../../prisma/seed/types.js";
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 import {
   PlatformUserAccountStatus as PlatformUserAccountStatusValues,
   TenantStatus as TenantStatusValues
 } from "../../src/domain/status-enums.js";
+import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
 
 type TenantRow = {
   id: string;
@@ -23,14 +23,40 @@ type PlatformUserRow = {
   passwordHash: string;
   accountStatus: PlatformUserAccountStatus;
   displayName: string;
-  role: string;
 };
 
 type PlatformUserTenantRow = {
   id: string;
   platformUserId: string;
   tenantId: string;
-  role: string;
+};
+
+type ControlPlaneRoleRow = {
+  id: string;
+  roleCode: string;
+  scope: "platform" | "tenant";
+  authClass: "super_admin" | "tenant_admin" | "tenant_user";
+  displayName: string;
+  description: string | null;
+};
+
+type UserPlatformRoleAssignmentRow = {
+  id: string;
+  userId: string;
+  roleId: string;
+};
+
+type TenantMembershipRow = {
+  id: string;
+  userId: string;
+  tenantId: string;
+};
+
+type TenantMembershipRoleAssignmentRow = {
+  id: string;
+  tenantMembershipId: string;
+  roleId: string;
+  isPrimary: boolean;
 };
 
 type ManagementSystemTypeRow = {
@@ -40,13 +66,6 @@ type ManagementSystemTypeRow = {
   displayName: string;
   description: string | null;
   availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum;
-};
-
-type ManagementSystemRoleRow = {
-  id: string;
-  roleCode: string;
-  displayName: string;
-  description: string | null;
 };
 
 type ManagementSystemTypeRoleRow = {
@@ -151,8 +170,11 @@ type HarnessState = {
   tenants: Map<string, TenantRow>;
   platformUsers: Map<string, PlatformUserRow>;
   platformUserTenants: Map<string, PlatformUserTenantRow>;
+  controlPlaneRoles: Map<string, ControlPlaneRoleRow>;
+  userPlatformRoleAssignments: Map<string, UserPlatformRoleAssignmentRow>;
+  tenantMemberships: Map<string, TenantMembershipRow>;
+  tenantMembershipRoleAssignments: Map<string, TenantMembershipRoleAssignmentRow>;
   managementSystemTypes: Map<string, ManagementSystemTypeRow>;
-  managementSystemRoles: Map<string, ManagementSystemRoleRow>;
   managementSystemTypeRoles: Map<string, ManagementSystemTypeRoleRow>;
   referenceDataSets: Map<string, ReferenceDataRow>;
   organizations: Map<string, OrganizationRow>;
@@ -171,8 +193,11 @@ const createState = (): HarnessState => ({
   tenants: new Map(),
   platformUsers: new Map(),
   platformUserTenants: new Map(),
+  controlPlaneRoles: new Map(),
+  userPlatformRoleAssignments: new Map(),
+  tenantMemberships: new Map(),
+  tenantMembershipRoleAssignments: new Map(),
   managementSystemTypes: new Map(),
-  managementSystemRoles: new Map(),
   managementSystemTypeRoles: new Map(),
   referenceDataSets: new Map(),
   organizations: new Map(),
@@ -191,8 +216,11 @@ const cloneState = (state: HarnessState): HarnessState => ({
   tenants: new Map(state.tenants),
   platformUsers: new Map(state.platformUsers),
   platformUserTenants: new Map(state.platformUserTenants),
+  controlPlaneRoles: new Map(state.controlPlaneRoles),
+  userPlatformRoleAssignments: new Map(state.userPlatformRoleAssignments),
+  tenantMemberships: new Map(state.tenantMemberships),
+  tenantMembershipRoleAssignments: new Map(state.tenantMembershipRoleAssignments),
   managementSystemTypes: new Map(state.managementSystemTypes),
-  managementSystemRoles: new Map(state.managementSystemRoles),
   managementSystemTypeRoles: new Map(state.managementSystemTypeRoles),
   referenceDataSets: new Map(state.referenceDataSets),
   organizations: new Map(state.organizations),
@@ -243,7 +271,7 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    platformUser: {
+    user: {
       async upsert(args) {
         const existing = state.platformUsers.get(args.where.email);
         if (existing) {
@@ -263,24 +291,86 @@ export const createSeedTestHarness = (): {
         return created;
       }
     },
-    platformUserTenant: {
+    role: {
       async upsert(args) {
-        const key = `${args.where.platformUserId_tenantId.platformUserId}:${args.where.platformUserId_tenantId.tenantId}`;
-        const existing = state.platformUserTenants.get(key);
+        const existing = state.controlPlaneRoles.get(args.where.roleCode);
         if (existing) {
-          const updated: PlatformUserTenantRow = {
+          const updated: ControlPlaneRoleRow = {
             ...existing,
-            role: args.update.role
+            ...args.update,
+            description: args.update.description ?? null
           };
-          state.platformUserTenants.set(key, updated);
+          state.controlPlaneRoles.set(updated.roleCode, updated);
           return updated;
         }
 
-        const created: PlatformUserTenantRow = {
-          id: createId("platform-user-tenant", key),
-          ...args.create
+        const created: ControlPlaneRoleRow = {
+          id: createId("control-plane-role", args.create.roleCode),
+          ...args.create,
+          description: args.create.description ?? null
         };
-        state.platformUserTenants.set(key, created);
+        state.controlPlaneRoles.set(created.roleCode, created);
+        return created;
+      }
+    },
+    userPlatformRoleAssignment: {
+      async upsert(args) {
+        const uniqueKey = args.where.userId_roleId as { userId: string; roleId: string };
+        const createInput = args.create as { userId: string; roleId: string };
+        const key = `${uniqueKey.userId}:${uniqueKey.roleId}`;
+        const existing = state.userPlatformRoleAssignments.get(key);
+        if (existing) return existing;
+
+        const created: UserPlatformRoleAssignmentRow = {
+          id: createId("user-platform-role-assignment", key),
+          userId: createInput.userId,
+          roleId: createInput.roleId
+        };
+        state.userPlatformRoleAssignments.set(key, created);
+        return created;
+      }
+    },
+    tenantMembership: {
+      async upsert(args) {
+        const key = `${args.where.userId_tenantId.userId}:${args.where.userId_tenantId.tenantId}`;
+        const existing = state.tenantMemberships.get(key);
+        if (existing) {
+          state.tenantMemberships.set(key, existing);
+          return existing;
+        }
+
+        const created: TenantMembershipRow = {
+          id: createId("tenant-membership", key),
+          userId: args.create.userId,
+          tenantId: args.create.tenantId
+        };
+        state.tenantMemberships.set(key, created);
+        return created;
+      }
+    },
+    tenantMembershipRoleAssignment: {
+      async upsert(args) {
+        const uniqueKey = args.where.tenantMembershipId_roleId as { tenantMembershipId: string; roleId: string };
+        const createInput = args.create as { tenantMembershipId: string; roleId: string; isPrimary: boolean };
+        const updateInput = args.update as { isPrimary: boolean };
+        const key = `${uniqueKey.tenantMembershipId}:${uniqueKey.roleId}`;
+        const existing = state.tenantMembershipRoleAssignments.get(key);
+        if (existing) {
+          const updated: TenantMembershipRoleAssignmentRow = {
+            ...existing,
+            isPrimary: updateInput.isPrimary
+          };
+          state.tenantMembershipRoleAssignments.set(key, updated);
+          return updated;
+        }
+
+        const created: TenantMembershipRoleAssignmentRow = {
+          id: createId("tenant-membership-role-assignment", key),
+          tenantMembershipId: createInput.tenantMembershipId,
+          roleId: createInput.roleId,
+          isPrimary: createInput.isPrimary
+        };
+        state.tenantMembershipRoleAssignments.set(key, created);
         return created;
       }
     },
@@ -304,28 +394,6 @@ export const createSeedTestHarness = (): {
           description: args.create.description ?? null
         };
         state.managementSystemTypes.set(key, created);
-        return created;
-      }
-    },
-    role: {
-      async upsert(args) {
-        const existing = state.managementSystemRoles.get(args.where.roleCode);
-        if (existing) {
-          const updated: ManagementSystemRoleRow = {
-            ...existing,
-            ...args.update,
-            description: args.update.description ?? null
-          };
-          state.managementSystemRoles.set(updated.roleCode, updated);
-          return updated;
-        }
-
-        const created: ManagementSystemRoleRow = {
-          id: createId("management-system-role", args.create.roleCode),
-          ...args.create,
-          description: args.create.description ?? null
-        };
-        state.managementSystemRoles.set(created.roleCode, created);
         return created;
       }
     },
@@ -353,8 +421,8 @@ export const createSeedTestHarness = (): {
   };
 
   const client: SeedSqlClient = {
-    async connect() {},
-    async end() {},
+    async connect() { },
+    async end() { },
     async query(text: string, values: readonly unknown[] = []): Promise<SeedQueryResult> {
       queries.push(text.trim().replace(/\s+/g, " "));
       const normalized = text.trim().replace(/\s+/g, " ").toUpperCase();
@@ -625,8 +693,7 @@ export const createSeedTestHarness = (): {
         username: "other.user",
         passwordHash: "scrypt$other$hash",
         accountStatus: PlatformUserAccountStatusValues.active,
-        displayName: "Other User",
-        role: "viewer"
+        displayName: "Other User"
       };
       state.tenants.set(unrelatedTenant.slug, unrelatedTenant);
       state.platformUsers.set(unrelatedUser.email, unrelatedUser);
@@ -656,13 +723,13 @@ export const createSeedTestHarness = (): {
         managementSystemTypeKeys: Array.from(state.managementSystemTypes.values())
           .map((type) => `${type.typeCode}:${type.version}`)
           .sort(),
-        managementSystemRoleCodes: Array.from(state.managementSystemRoles.keys()).sort(),
+        managementSystemRoleCodes: Array.from(state.controlPlaneRoles.keys()).sort(),
         managementSystemTypeRoleKeys: Array.from(state.managementSystemTypeRoles.values())
           .map((typeRole) => {
             const managementSystemType = Array.from(state.managementSystemTypes.values()).find(
               (type) => type.id === typeRole.managementSystemTypeId
             );
-            const role = Array.from(state.managementSystemRoles.values()).find((candidate) => candidate.id === typeRole.roleId);
+            const role = Array.from(state.controlPlaneRoles.values()).find((candidate) => candidate.id === typeRole.roleId);
 
             return `${managementSystemType?.typeCode ?? "unknown"}:${managementSystemType?.version ?? "unknown"}:${role?.roleCode ?? "unknown"}:${typeRole.isDefault}`;
           })
@@ -768,21 +835,23 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
   ].sort(),
   managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
   managementSystemRoleCodes: [
+    RoleCodeEnum.ADMIN,
     RoleCodeEnum.ACCOUNTANT,
     RoleCodeEnum.DISPATCHER,
     RoleCodeEnum.DRIVER,
     RoleCodeEnum.HUMAN_RESOURCES,
-    RoleCodeEnum.TENANT_ADMIN
-  ],
+    RoleCodeEnum.TENANT_ADMIN,
+    "super_admin"
+  ].sort(),
   managementSystemTypeRoleKeys: [
-    `dealership:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
-    `inventory:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
+    `dealership:1.0:${RoleCodeEnum.ADMIN}:true`,
+    `inventory:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.ACCOUNTANT}:false`,
+    `transportation:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.DISPATCHER}:true`,
     `transportation:1.0:${RoleCodeEnum.DRIVER}:true`,
-    `transportation:1.0:${RoleCodeEnum.HUMAN_RESOURCES}:false`,
-    `transportation:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`
-  ],
+    `transportation:1.0:${RoleCodeEnum.HUMAN_RESOURCES}:false`
+  ].sort(),
   organizationCodes: expectedOrganizationCodes,
   locationCodes: expectedLocationCodes,
   personCodes: expectedPersonCodes,

@@ -16,12 +16,13 @@ export type AuthPlatformUser = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
-  role: RoleEnum;
+  platformRoleCodes: RoleEnum[];
 };
 
 export type AuthTenantMembership = {
   tenantId: string;
-  role: RoleEnum;
+  roleCodes: RoleEnum[];
+  primaryRoleCode: RoleEnum | null;
 };
 
 export type SuperAdminAuthResolutionResult = {
@@ -49,14 +50,14 @@ export type AuthResolutionResult =
   | AuthResolutionFailureResult;
 
 export const resolveAuthenticatedRoleContext = (
-  platformUser: AuthPlatformUser & { tenantLinks: AuthTenantMembership[] }
+  platformUser: AuthPlatformUser & { tenantMemberships: AuthTenantMembership[] }
 ): AuthResolutionResult => {
   if (isDisabledAccountStatus(platformUser.accountStatus)) {
     return { ok: false, reason: AuthResolutionFailureReasonEnum.DISABLED_ACCOUNT };
   }
   if (!platformUser.passwordHash) return { ok: false, reason: AuthResolutionFailureReasonEnum.MISSING_PASSWORD };
 
-  if (platformUser.role === RoleEnum.SUPER_ADMIN) {
+  if (platformUser.platformRoleCodes.includes(RoleEnum.SUPER_ADMIN)) {
     return {
       ok: true,
       platformUserId: platformUser.id,
@@ -65,7 +66,7 @@ export const resolveAuthenticatedRoleContext = (
     };
   }
 
-  const tenantMemberships = platformUser.tenantLinks.filter((tenantMembership) => tenantMembership.role === platformUser.role);
+  const tenantMemberships = platformUser.tenantMemberships.filter((tenantMembership) => tenantMembership.roleCodes.length > 0);
 
   if (tenantMemberships.length === 0) {
     return { ok: false, reason: AuthResolutionFailureReasonEnum.MISSING_TENANT_MEMBERSHIP };
@@ -75,14 +76,16 @@ export const resolveAuthenticatedRoleContext = (
   }
 
   const [tenantMembership] = tenantMemberships;
-  if (tenantMembership.role !== platformUser.role) {
-    return { ok: false, reason: AuthResolutionFailureReasonEnum.ROLE_MISMATCH };
-  }
+  const resolvedRole =
+    tenantMembership.primaryRoleCode ??
+    (tenantMembership.roleCodes.includes(RoleEnum.TENANT_ADMIN) ? RoleEnum.TENANT_ADMIN : tenantMembership.roleCodes[0]);
+  const normalizedResolvedRole = resolvedRole as RoleEnum.TENANT_ADMIN | RoleEnum.TENANT_USER | null;
+  if (!normalizedResolvedRole) return { ok: false, reason: AuthResolutionFailureReasonEnum.ROLE_MISMATCH };
 
   return {
     ok: true,
     platformUserId: platformUser.id,
-    resolvedRole: tenantMembership.role,
+    resolvedRole: normalizedResolvedRole,
     tenantId: tenantMembership.tenantId
   };
 };

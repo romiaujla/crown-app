@@ -34,7 +34,7 @@ export const LOCAL_SEED_USERS = {
     password: SEEDED_AUTH_PASSWORDS.tenantUser,
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
-    role: "tenant_user"
+    role: RoleCodeEnum.DISPATCHER
   }
 } as const;
 
@@ -66,27 +66,51 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
 
 export const LOCAL_SEED_ROLES = [
   {
+    roleCode: "super_admin",
+    scope: "platform",
+    authClass: "super_admin",
+    displayName: "Super Admin",
+    description: "Platform-wide operator role."
+  },
+  {
     roleCode: RoleCodeEnum.TENANT_ADMIN,
+    scope: "tenant",
+    authClass: "tenant_admin",
+    displayName: "Tenant Admin",
+    description: "Tenant shell administrator role."
+  },
+  {
+    roleCode: RoleCodeEnum.ADMIN,
+    scope: "tenant",
+    authClass: "tenant_user",
     displayName: "Admin",
-    description: "Baseline administrator role shared across management-system types."
+    description: "Management-system administrator role inside the tenant workspace."
   },
   {
     roleCode: RoleCodeEnum.DISPATCHER,
+    scope: "tenant",
+    authClass: "tenant_user",
     displayName: "Dispatcher",
     description: "Coordinates transportation loads and assignments."
   },
   {
     roleCode: RoleCodeEnum.ACCOUNTANT,
+    scope: "tenant",
+    authClass: "tenant_user",
     displayName: "Accountant",
     description: "Handles financial workflows for the tenant."
   },
   {
     roleCode: RoleCodeEnum.HUMAN_RESOURCES,
+    scope: "tenant",
+    authClass: "tenant_user",
     displayName: "Human Resources",
     description: "Handles people and staffing workflows for the tenant."
   },
   {
     roleCode: RoleCodeEnum.DRIVER,
+    scope: "tenant",
+    authClass: "tenant_user",
     displayName: "Driver",
     description: "Executes assigned transportation work in the tenant workspace."
   }
@@ -96,7 +120,7 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
   {
     managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: "1.0",
-    roleCode: RoleCodeEnum.TENANT_ADMIN,
+    roleCode: RoleCodeEnum.ADMIN,
     isDefault: true
   },
   {
@@ -126,13 +150,13 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
   {
     managementSystemTypeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
     managementSystemTypeVersion: "1.0",
-    roleCode: RoleCodeEnum.TENANT_ADMIN,
+    roleCode: RoleCodeEnum.ADMIN,
     isDefault: true
   },
   {
     managementSystemTypeCode: ManagementSystemTypeCodeEnum.INVENTORY,
     managementSystemTypeVersion: "1.0",
-    roleCode: RoleCodeEnum.TENANT_ADMIN,
+    roleCode: RoleCodeEnum.ADMIN,
     isDefault: true
   }
 ] as const;

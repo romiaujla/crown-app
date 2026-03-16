@@ -4,13 +4,12 @@ import {
   TenantStatusEnum,
   type DashboardOverviewResponse
 } from "@crown/types";
-import { RoleEnum } from "../../auth/claims.js";
 import { prisma } from "../../db/prisma.js";
 import { TenantStatus } from "../../domain/status-enums.js";
 
 type DashboardOverviewPrismaClient = {
-  platformUser: {
-    count(args: { where: { role: RoleEnum.TENANT_USER } }): Promise<number>;
+  user: {
+    count(args?: { where?: unknown }): Promise<number>;
   };
   tenant: {
     count(args?: {
@@ -84,9 +83,19 @@ export const getPlatformDashboardOverview = async (
   );
 
   const [tenantUserCount, totalTenantCount, groupedStatusCounts] = await Promise.all([
-    db.platformUser.count({
+    db.user.count({
       where: {
-        role: RoleEnum.TENANT_USER
+        tenantMemberships: {
+          some: {
+            roleAssignments: {
+              some: {
+                role: {
+                  authClass: "tenant_user"
+                }
+              }
+            }
+          }
+        }
       }
     }),
     db.tenant.count(),

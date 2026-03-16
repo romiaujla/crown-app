@@ -23,8 +23,8 @@ describe("auth credential foundation", () => {
         username: "seed.super.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: RoleEnum.SUPER_ADMIN,
-        tenantLinks: []
+        platformRoleCodes: [RoleEnum.SUPER_ADMIN],
+        tenantMemberships: []
       }
     );
 
@@ -44,11 +44,12 @@ describe("auth credential foundation", () => {
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: RoleEnum.TENANT_ADMIN,
-        tenantLinks: [
+        platformRoleCodes: [],
+        tenantMemberships: [
           {
             tenantId: "tenant-acme-local",
-            role: RoleEnum.TENANT_ADMIN
+            roleCodes: [RoleEnum.TENANT_ADMIN],
+            primaryRoleCode: RoleEnum.TENANT_ADMIN
           }
         ]
       }
@@ -71,11 +72,12 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.disabled,
-          role: RoleEnum.TENANT_USER,
-          tenantLinks: [
+          platformRoleCodes: [],
+          tenantMemberships: [
             {
               tenantId: "tenant-acme-local",
-              role: RoleEnum.TENANT_USER
+              roleCodes: [RoleEnum.TENANT_USER],
+              primaryRoleCode: RoleEnum.TENANT_USER
             }
           ]
         }
@@ -93,8 +95,8 @@ describe("auth credential foundation", () => {
           username: "seed.tenant.user",
           passwordHash: "scrypt$salt$hash",
           accountStatus: PlatformUserAccountStatus.active,
-          role: RoleEnum.TENANT_USER,
-          tenantLinks: []
+          platformRoleCodes: [],
+          tenantMemberships: []
         }
       )
     ).toEqual({
@@ -111,15 +113,17 @@ describe("auth credential foundation", () => {
         username: "seed.tenant.admin",
         passwordHash: "scrypt$salt$hash",
         accountStatus: PlatformUserAccountStatus.active,
-        role: RoleEnum.TENANT_ADMIN,
-        tenantLinks: [
+        platformRoleCodes: [],
+        tenantMemberships: [
           {
             tenantId: "tenant-acme-local",
-            role: RoleEnum.TENANT_ADMIN
+            roleCodes: [RoleEnum.TENANT_ADMIN],
+            primaryRoleCode: RoleEnum.TENANT_ADMIN
           },
           {
             tenantId: "tenant-zenith-local",
-            role: RoleEnum.TENANT_ADMIN
+            roleCodes: [RoleEnum.TENANT_ADMIN],
+            primaryRoleCode: RoleEnum.TENANT_ADMIN
           }
         ]
       })
@@ -132,7 +136,7 @@ describe("auth credential foundation", () => {
   it("looks up identities by email or username", async () => {
     const capturedIdentifiers: string[] = [];
     const prisma = {
-      platformUser: {
+      user: {
         async findFirst(args: {
           where: {
             OR: Array<{
@@ -152,8 +156,18 @@ describe("auth credential foundation", () => {
             username: "seed.tenant.user",
             passwordHash: "scrypt$salt$hash",
             accountStatus: PlatformUserAccountStatus.active,
-            role: RoleEnum.TENANT_USER,
-            tenantLinks: [{ tenantId: "tenant-acme-local", role: RoleEnum.TENANT_USER }]
+            platformRoleAssignments: [],
+            tenantMemberships: [
+              {
+                tenantId: "tenant-acme-local",
+                roleAssignments: [
+                  {
+                    isPrimary: true,
+                    role: { authClass: RoleEnum.TENANT_USER }
+                  }
+                ]
+              }
+            ]
           };
         }
       }
