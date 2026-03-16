@@ -54,7 +54,6 @@ model User {
   passwordHash  String?                   @map("password_hash")
   accountStatus PlatformUserAccountStatus @default(active) @map("account_status")
   displayName   String                    @map("display_name")
-  role          String?
   createdAt     DateTime                  @default(now()) @map("created_at")
   updatedAt     DateTime                  @updatedAt @map("updated_at")
 
@@ -123,8 +122,8 @@ model Role {
   updatedAt   DateTime          @updatedAt @map("updated_at")
 
   managementSystemTypes ManagementSystemTypeRole[]
-  userAssignments       UserPlatformRoleAssignment[]      @relation("UserRoleAssignments")
-  membershipAssignments TenantMembershipRoleAssignment[]  @relation("TenantMembershipRoleAssignments")
+  userAssignments       UserPlatformRoleAssignment[]     @relation("UserRoleAssignments")
+  membershipAssignments TenantMembershipRoleAssignment[] @relation("TenantMembershipRoleAssignments")
 
   @@map("roles")
 }
@@ -145,18 +144,17 @@ model ManagementSystemTypeRole {
 }
 
 model TenantMembership {
-  id             String   @id @default(cuid())
-  userId         String   @map("user_id")
-  tenantId       String   @map("tenant_id")
+  id               String                     @id @default(cuid())
+  userId           String                     @map("user_id")
+  tenantId         String                     @map("tenant_id")
   membershipStatus TenantMembershipStatusEnum @default(active) @map("membership_status")
-  joinedAt        DateTime @default(now()) @map("joined_at")
-  endedAt         DateTime? @map("ended_at")
-  role            String?
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  joinedAt         DateTime                   @default(now()) @map("joined_at")
+  endedAt          DateTime?                  @map("ended_at")
+  createdAt        DateTime                   @default(now()) @map("created_at")
+  updatedAt        DateTime                   @updatedAt @map("updated_at")
 
-  user            User                            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant          Tenant                          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user            User                             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant          Tenant                           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   roleAssignments TenantMembershipRoleAssignment[]
 
   @@unique([userId, tenantId])

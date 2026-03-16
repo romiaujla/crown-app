@@ -1,4 +1,4 @@
-import type { SeedControlPlaneBaseline, SeedPrismaClient } from "./types.js";
+import { hashPassword } from "../../src/auth/passwords.js";
 import {
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES,
@@ -6,7 +6,7 @@ import {
   LOCAL_SEED_TENANT,
   LOCAL_SEED_USERS
 } from "./constants.js";
-import { hashPassword } from "../../src/auth/passwords.js";
+import type { SeedControlPlaneBaseline, SeedPrismaClient } from "./types.js";
 
 type EnsureControlPlaneBaselineOptions = {
   prisma: SeedPrismaClient;
@@ -47,15 +47,13 @@ export const ensureControlPlaneBaseline = async ({
       username: LOCAL_SEED_USERS.superAdmin.username,
       passwordHash: superAdminPasswordHash,
       accountStatus: LOCAL_SEED_USERS.superAdmin.accountStatus,
-      displayName: LOCAL_SEED_USERS.superAdmin.displayName,
-      role: LOCAL_SEED_USERS.superAdmin.role
+      displayName: LOCAL_SEED_USERS.superAdmin.displayName
     },
     update: {
       username: LOCAL_SEED_USERS.superAdmin.username,
       passwordHash: superAdminPasswordHash,
       accountStatus: LOCAL_SEED_USERS.superAdmin.accountStatus,
-      displayName: LOCAL_SEED_USERS.superAdmin.displayName,
-      role: LOCAL_SEED_USERS.superAdmin.role
+      displayName: LOCAL_SEED_USERS.superAdmin.displayName
     }
   });
 
@@ -68,15 +66,13 @@ export const ensureControlPlaneBaseline = async ({
       username: LOCAL_SEED_USERS.tenantAdmin.username,
       passwordHash: tenantAdminPasswordHash,
       accountStatus: LOCAL_SEED_USERS.tenantAdmin.accountStatus,
-      displayName: LOCAL_SEED_USERS.tenantAdmin.displayName,
-      role: LOCAL_SEED_USERS.tenantAdmin.role
+      displayName: LOCAL_SEED_USERS.tenantAdmin.displayName
     },
     update: {
       username: LOCAL_SEED_USERS.tenantAdmin.username,
       passwordHash: tenantAdminPasswordHash,
       accountStatus: LOCAL_SEED_USERS.tenantAdmin.accountStatus,
-      displayName: LOCAL_SEED_USERS.tenantAdmin.displayName,
-      role: LOCAL_SEED_USERS.tenantAdmin.role
+      displayName: LOCAL_SEED_USERS.tenantAdmin.displayName
     }
   });
 
@@ -89,15 +85,13 @@ export const ensureControlPlaneBaseline = async ({
       username: LOCAL_SEED_USERS.tenantUser.username,
       passwordHash: tenantUserPasswordHash,
       accountStatus: LOCAL_SEED_USERS.tenantUser.accountStatus,
-      displayName: LOCAL_SEED_USERS.tenantUser.displayName,
-      role: LOCAL_SEED_USERS.tenantUser.role
+      displayName: LOCAL_SEED_USERS.tenantUser.displayName
     },
     update: {
       username: LOCAL_SEED_USERS.tenantUser.username,
       passwordHash: tenantUserPasswordHash,
       accountStatus: LOCAL_SEED_USERS.tenantUser.accountStatus,
-      displayName: LOCAL_SEED_USERS.tenantUser.displayName,
-      role: LOCAL_SEED_USERS.tenantUser.role
+      displayName: LOCAL_SEED_USERS.tenantUser.displayName
     }
   });
 
@@ -110,12 +104,9 @@ export const ensureControlPlaneBaseline = async ({
     },
     create: {
       userId: superAdmin.id,
-      tenantId: tenant.id,
-      role: "super_admin"
+      tenantId: tenant.id
     },
-    update: {
-      role: "super_admin"
-    }
+    update: {}
   });
 
   const tenantAdminMembership = await prisma.tenantMembership.upsert({
@@ -127,12 +118,9 @@ export const ensureControlPlaneBaseline = async ({
     },
     create: {
       userId: tenantAdmin.id,
-      tenantId: tenant.id,
-      role: "tenant_admin"
+      tenantId: tenant.id
     },
-    update: {
-      role: "tenant_admin"
-    }
+    update: {}
   });
 
   const tenantUserMembership = await prisma.tenantMembership.upsert({
@@ -144,12 +132,9 @@ export const ensureControlPlaneBaseline = async ({
     },
     create: {
       userId: tenantUser.id,
-      tenantId: tenant.id,
-      role: LOCAL_SEED_USERS.tenantUser.role
+      tenantId: tenant.id
     },
-    update: {
-      role: LOCAL_SEED_USERS.tenantUser.role
-    }
+    update: {}
   });
 
   const roles = new Map<string, string>();
