@@ -1,12 +1,15 @@
 # Backlog Map
 
 ## Epic
+
 - `CROWN-1`: Crown MVP Foundation
 
 ## Epic Status
+
 - `CROWN-1`: Completed
 
 ## Child issues
+
 - `CROWN-2`: Architecture and Planning Baseline
 - `CROWN-3`: Monorepo Scaffold and Toolchain Setup
 - `CROWN-4`: Global Auth + RBAC foundation
@@ -17,6 +20,7 @@
 - `CROWN-9`: CI quality gates and test harness hardening
 
 ## Next Epics
+
 - `CROWN-23`: Detailed Tenant DB Schema Expansion and Local Seed Baseline
 - `CROWN-24`: Identity and Role-Based Login Experiences (super admin, tenant admin, tenant user)
 - `CROWN-25`: Super-Admin Capability Expansion (platform schemas, routes, components)
@@ -29,6 +33,7 @@
 - `CROWN-50`: Management System Module Registry and Enablement
 
 ## Milestone Sequence (Proposed)
+
 - Milestone 1: Detailed DB schema scaffold + local seed baseline (must complete before login work)
 - Milestone 2: Access and identity bootstrap (role-based login journeys)
 - Milestone 3: Administrative control surfaces (super admin + tenant admin capabilities)
@@ -40,6 +45,7 @@
 - Milestone 9: Future schema-management GUI on top of governance foundations
 
 ## Additional Notes
+
 - `CROWN-36` is a prerequisite foundation for future schema-management GUI work in `CROWN-42`.
 - `CROWN-43` depends on the tenant schema baseline from `CROWN-23` and the governance direction from `CROWN-36`.
 - `CROWN-50` captures the shared `apps/web` strategy for management-system-specific routes such as `app/tms` and `app/dms`, rather than early separate deployable apps.

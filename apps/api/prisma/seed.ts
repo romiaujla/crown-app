@@ -1,15 +1,27 @@
-import { Client } from "pg";
+import { Client } from 'pg';
 
-import { env } from "../src/config/env.js";
-import { prisma } from "../src/db/prisma.js";
+import { env } from '../src/config/env.js';
+import { prisma } from '../src/db/prisma.js';
 
-import { bootstrapCanonicalTenantSchema } from "./seed/bootstrap.js";
-import { LOCAL_SEED_TENANT } from "./seed/constants.js";
-import { ensureControlPlaneBaseline } from "./seed/control-plane.js";
-import { loadCanonicalBaseline } from "./seed/load.js";
-import { createSeedExecutionSummary, formatSeedExecutionSummary } from "./seed/reporting.js";
-import { assertTenantSchemaReady, resetTenantDomainTables, setTenantSearchPath, tenantSchemaHasFoundationalTables } from "./seed/reset.js";
-import { SeedExecutionError, type SeedBootstrapContext, type SeedExecutionSummary, type SeedPhaseName, type SeedPrismaClient, type SeedSqlClient } from "./seed/types.js";
+import { bootstrapCanonicalTenantSchema } from './seed/bootstrap.js';
+import { LOCAL_SEED_TENANT } from './seed/constants.js';
+import { ensureControlPlaneBaseline } from './seed/control-plane.js';
+import { loadCanonicalBaseline } from './seed/load.js';
+import { createSeedExecutionSummary, formatSeedExecutionSummary } from './seed/reporting.js';
+import {
+  assertTenantSchemaReady,
+  resetTenantDomainTables,
+  setTenantSearchPath,
+  tenantSchemaHasFoundationalTables,
+} from './seed/reset.js';
+import {
+  SeedExecutionError,
+  type SeedBootstrapContext,
+  type SeedExecutionSummary,
+  type SeedPhaseName,
+  type SeedPrismaClient,
+  type SeedSqlClient,
+} from './seed/types.js';
 
 type RunLocalSeedOptions = {
   prismaClient?: SeedPrismaClient;
@@ -24,7 +36,9 @@ const maybeFail = (failAtPhase: SeedPhaseName | undefined, phase: SeedPhaseName)
   }
 };
 
-export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<SeedExecutionSummary> => {
+export const runLocalSeed = async (
+  options: RunLocalSeedOptions = {},
+): Promise<SeedExecutionSummary> => {
   const prismaClient = options.prismaClient ?? prisma;
   const ownedPgClient = options.client ? null : new Client({ connectionString: env.DATABASE_URL });
   const client: SeedSqlClient =
@@ -36,7 +50,7 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
         ownedPgClient!.query(text, values ? [...values] : undefined) as unknown as Promise<{
           rows: Record<string, unknown>[];
           rowCount?: number | null;
-        }>
+        }>,
     } satisfies SeedSqlClient);
   const ownsClient = !options.client;
   const bootstrapTenantSchema = options.bootstrapTenantSchema ?? bootstrapCanonicalTenantSchema;
@@ -47,10 +61,10 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
 
   try {
     const controlPlane = await ensureControlPlaneBaseline({
-      prisma: prismaClient
+      prisma: prismaClient,
     });
 
-    maybeFail(options.failAtPhase, "after-control-plane");
+    maybeFail(options.failAtPhase, 'after-control-plane');
 
     const schemaReady = await tenantSchemaHasFoundationalTables(client, controlPlane.schemaName);
     if (!schemaReady) {
@@ -58,31 +72,38 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
         tenantId: controlPlane.tenantId,
         tenantSlug: controlPlane.tenantSlug,
         schemaName: controlPlane.schemaName,
-        client
+        client,
       });
     }
 
-    await client.query("BEGIN");
+    await client.query('BEGIN');
 
     try {
       await setTenantSearchPath(client, controlPlane.schemaName);
       await assertTenantSchemaReady(client);
       await resetTenantDomainTables(client);
 
-      maybeFail(options.failAtPhase, "after-reset");
+      maybeFail(options.failAtPhase, 'after-reset');
 
       const loadedCounts = await loadCanonicalBaseline({
         client,
-        failAtPhase: options.failAtPhase
+        failAtPhase: options.failAtPhase,
       });
 
-      maybeFail(options.failAtPhase, "after-load");
+      maybeFail(options.failAtPhase, 'after-load');
 
-      await client.query("COMMIT");
+      await client.query('COMMIT');
 
-      return createSeedExecutionSummary(controlPlane.tenantSlug, controlPlane.schemaName, loadedCounts);
+      return createSeedExecutionSummary(
+        controlPlane.tenantSlug,
+        controlPlane.schemaName,
+        loadedCounts,
+        controlPlane.tenantId,
+        controlPlane.platformUserIds,
+        controlPlane.edgeCaseUserIds,
+      );
     } catch (error) {
-      await client.query("ROLLBACK");
+      await client.query('ROLLBACK');
       throw error;
     }
   } finally {
@@ -97,11 +118,12 @@ const main = async (): Promise<void> => {
   console.info(formatSeedExecutionSummary(summary));
 };
 
-const isDirectExecution = process.argv[1] !== undefined && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/"));
+const isDirectExecution =
+  process.argv[1] !== undefined && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
 
 if (isDirectExecution) {
   main().catch((error: unknown) => {
-    const message = error instanceof Error ? error.message : "Local seed execution failed";
+    const message = error instanceof Error ? error.message : 'Local seed execution failed';
     console.error(message);
     process.exitCode = 1;
   });

@@ -14,13 +14,16 @@
     "db:setup": "pnpm postgres && pnpm db:push",
     "build": "turbo run build",
     "lint": "turbo run lint",
+    "format:check": "prettier --check .",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "validate:pr-title": "node scripts/validate-pr-title.mjs",
     "specify.audit": "node scripts/specify-audit.mjs",
     "specify.drift": "node scripts/specify-drift.mjs",
     "prepare": "husky",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "test:web": "pnpm --filter @crown/web test",
+    "test:api": "pnpm --filter @crown/api test"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
@@ -30,6 +33,7 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "conventional-changelog-conventionalcommits": "^9.2.0",
     "husky": "^9.1.7",
+    "prettier": "^3.8.1",
     "semantic-release": "^24.1.0",
     "turbo": "^2.0.0"
   }

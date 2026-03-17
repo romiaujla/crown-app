@@ -32,7 +32,7 @@ The implementation should remain infrastructure-focused. It should modernize Pri
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `chore/CROWN-35-prisma-7-upgrade` matches the constitution for a Task.
 - Commit/PR convention: PASS. Work on this branch should continue to use `chore: CROWN-35 - ...` commit subjects and squash-safe PR titles.

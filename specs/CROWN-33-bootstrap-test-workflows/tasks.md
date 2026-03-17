@@ -17,8 +17,8 @@
 
 **Purpose**: Align the repository workflow surfaces that the integrated bootstrap path will use
 
-- [X] T001 Review and align repository bootstrap command surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
-- [X] T002 [P] Review the current local setup and seed guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
+- [x] T001 Review and align repository bootstrap command surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
+- [x] T002 [P] Review the current local setup and seed guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Create a repository-level local bootstrap script that sequences control-plane setup and canonical seed preparation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/bootstrap-local-env.mjs`
-- [X] T004 [P] Add a root bootstrap command for the canonical local workflow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json`
-- [X] T005 [P] Add reusable bootstrap test helpers for command ordering and preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/bootstrap-workflow.ts`
-- [X] T006 Create focused workflow validation entrypoints for bootstrap integration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [x] T003 Create a repository-level local bootstrap script that sequences control-plane setup and canonical seed preparation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/bootstrap-local-env.mjs`
+- [x] T004 [P] Add a root bootstrap command for the canonical local workflow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json`
+- [x] T005 [P] Add reusable bootstrap test helpers for command ordering and preserved-boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/bootstrap-workflow.ts`
+- [x] T006 Create focused workflow validation entrypoints for bootstrap integration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 **Checkpoint**: Repository bootstrap orchestration, bootstrap command surface, and validation helpers are ready for story-specific workflow integration
 
@@ -45,13 +45,13 @@
 
 ### Tests for User Story 1
 
-- [X] T007 [P] [US1] Add validation for empty-environment bootstrap ordering and partial-state reruns in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [x] T007 [P] [US1] Add validation for empty-environment bootstrap ordering and partial-state reruns in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Implement the root bootstrap workflow sequencing for database setup and canonical seed preparation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/bootstrap-local-env.mjs`
-- [X] T009 [US1] Wire the documented local bootstrap command and setup flow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
-- [X] T010 [US1] Align API-local setup guidance with the canonical bootstrap order in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
+- [x] T008 [US1] Implement the root bootstrap workflow sequencing for database setup and canonical seed preparation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/scripts/bootstrap-local-env.mjs`
+- [x] T009 [US1] Wire the documented local bootstrap command and setup flow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/package.json` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`
+- [x] T010 [US1] Align API-local setup guidance with the canonical bootstrap order in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
 
 **Checkpoint**: User Story 1 is complete when maintainers have one repeatable bootstrap command and matching guidance for reaching the canonical local baseline
 
@@ -65,13 +65,13 @@
 
 ### Tests for User Story 2
 
-- [X] T011 [P] [US2] Extend workflow validation to assert reusable baseline preparation outputs in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [x] T011 [P] [US2] Extend workflow validation to assert reusable baseline preparation outputs in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Add automation-neutral bootstrap and test-preparation guidance to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
-- [X] T013 [US2] Refine the bootstrap workflow contract for future e2e and container-based reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/contracts/bootstrap-workflow-contract.md`
-- [X] T014 [US2] Align the bootstrap workflow data model and plan notes with shared baseline reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/plan.md`
+- [x] T012 [US2] Add automation-neutral bootstrap and test-preparation guidance to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
+- [x] T013 [US2] Refine the bootstrap workflow contract for future e2e and container-based reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/contracts/bootstrap-workflow-contract.md`
+- [x] T014 [US2] Align the bootstrap workflow data model and plan notes with shared baseline reuse in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/plan.md`
 
 **Checkpoint**: User Story 2 is complete when local and future automated preparation clearly share one canonical baseline contract
 
@@ -85,13 +85,13 @@
 
 ### Tests for User Story 3
 
-- [X] T015 [P] [US3] Extend workflow validation for preserved unrelated tenant data and rerun boundary behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
+- [x] T015 [P] [US3] Extend workflow validation for preserved unrelated tenant data and rerun boundary behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/local-bootstrap-workflow.spec.ts`
 
 ### Implementation for User Story 3
 
-- [X] T016 [US3] Document canonical versus unrelated tenant rerun expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
-- [X] T017 [US3] Refine foundational multi-tenant coverage assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/contracts/bootstrap-workflow-contract.md`
-- [X] T018 [US3] Align research and quickstart guidance with preserved-boundary and later validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/research.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
+- [x] T016 [US3] Document canonical versus unrelated tenant rerun expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
+- [x] T017 [US3] Refine foundational multi-tenant coverage assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/contracts/bootstrap-workflow-contract.md`
+- [x] T018 [US3] Align research and quickstart guidance with preserved-boundary and later validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/research.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
 
 **Checkpoint**: User Story 3 is complete when rerun boundaries and foundational multi-tenant expectations are explicit for later validation work
 
@@ -101,10 +101,10 @@
 
 **Purpose**: Final validation and readiness checks across the integrated bootstrap workflow
 
-- [X] T019 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T020 [P] Run targeted API workflow tests with `pnpm --filter @crown/api exec vitest run tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T021 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T022 Perform final terminology and workflow-boundary consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
+- [x] T019 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T020 [P] Run targeted API workflow tests with `pnpm --filter @crown/api exec vitest run tests/integration/local-bootstrap-workflow.spec.ts` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T021 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T022 Perform final terminology and workflow-boundary consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/README.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-33-bootstrap-test-workflows/quickstart.md`
 
 ---
 

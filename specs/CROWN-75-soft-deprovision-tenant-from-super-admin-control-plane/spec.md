@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-75` - "API | Soft deprovision tenant from the super-admin control plane"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Soft Deprovision A Tenant Without Deleting Its Data (Priority: P1)
 
@@ -61,7 +61,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 - Tenant-scoped users still hold valid-looking JWT claims for a tenant that has since become inactive, and this story must avoid widening into logout or token-revocation behavior.
 - Soft deprovision must not drop the tenant schema, tenant migration history, or control-plane records.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -76,7 +76,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 - **FR-009**: The implementation MUST remain additive and limited to tenant-management backend behavior for this story.
 - **FR-010**: The manual OpenAPI source MUST document the soft deprovision route surface and its non-destructive behavior.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Lifecycle Status**: The platform-level tenant state used to determine whether a tenant is active or inactive.
 - **Soft Deprovision Operation**: The super-admin action that transitions a tenant out of active use without deleting data.
@@ -94,7 +94,7 @@ As a maintainer, I want the API contract to make soft deprovision clearly differ
 - Existing tenant provisioning and control-plane tenant routing in `apps/api`.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

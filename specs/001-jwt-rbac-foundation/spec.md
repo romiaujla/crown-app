@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "Global auth and RBAC foundation: implement app-managed JWT auth baseline and RBAC role model for super admin and tenant roles with auth route and middleware contracts"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Enforce Platform-Level Access (Priority: P1)
 
@@ -58,7 +58,7 @@ As a tenant user, I can perform only user-level operations within my tenant and 
 - A validly authenticated user accesses an undefined route and receives a route-not-found response, not an authorization success.
 - An unauthenticated request reaches a protected route and must be rejected as unauthenticated.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -75,7 +75,7 @@ As a tenant user, I can perform only user-level operations within my tenant and 
 - **FR-011**: The system MUST return consistent, role-safe denial responses that do not expose sensitive authorization internals.
 - **FR-012**: The system MUST document role-to-operation mappings and tenant-scope rules in a form usable for implementation and test case derivation.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Authenticated Identity**: Represents the verified caller context with attributes `sub`, `role`, and `tenant_id`.
 - **Role Policy**: Represents the allowed operation categories for each role (`super_admin`, `tenant_admin`, `tenant_user`).
@@ -95,7 +95,7 @@ As a tenant user, I can perform only user-level operations within my tenant and 
 - Tenant context is available on requests for tenant-scoped operations.
 - QA acceptance tests can execute role-based and tenant-based access scenarios for each protected operation category.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

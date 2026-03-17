@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-32"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Reset And Reload The Canonical Local Baseline (Priority: P1)
 
@@ -57,7 +57,7 @@ The maintainer can rerun the local seed workflow repeatedly, including after an 
 - How does the workflow behave when required baseline records already exist with the expected stable lookup keys?
 - How are seeded records handled when the canonical baseline grows over time but earlier lookup keys must remain stable?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -77,7 +77,7 @@ The maintainer can rerun the local seed workflow repeatedly, including after an 
 - **FR-014**: The local seed workflow MUST be documented clearly enough that maintainers can identify what data is reset, what data is restored, and what baseline records are expected afterward.
 - **FR-015**: The seeded baseline MUST be extendable so later stories can add canonical records without changing the meaning of previously established stable lookup keys.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Local Seed Workflow**: The repeatable development action that clears the approved reset scope and reloads the canonical baseline.
 - **Canonical Baseline Dataset**: The seeded local dataset that represents the expected clean starting point for the seeded tenant workspace.
@@ -93,7 +93,7 @@ The maintainer can rerun the local seed workflow repeatedly, including after an 
 - Local maintainers need a single supported rerun path rather than manual instructions for partial in-place repair.
 - Later stories may extend the canonical baseline, but they should build on the same stable identifiers and reset contract established here.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

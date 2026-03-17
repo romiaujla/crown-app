@@ -1,21 +1,21 @@
-import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { JwtClaims } from "./claims.js";
-import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "./claims.js";
+import type { PlatformUserAccountStatus } from '../domain/status-enums.js';
+import type { JwtClaims } from './claims.js';
+import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from './claims.js';
 
 export enum AuthTargetAppEnum {
-  PLATFORM = "platform",
-  TENANT = "tenant"
+  PLATFORM = 'platform',
+  TENANT = 'tenant',
 }
 
 export enum AuthRoutingStatusEnum {
-  ALLOWED = "allowed",
-  ACCESS_DENIED = "access_denied",
-  SELECTION_REQUIRED = "selection_required"
+  ALLOWED = 'allowed',
+  ACCESS_DENIED = 'access_denied',
+  SELECTION_REQUIRED = 'selection_required',
 }
 
 export enum AuthRoutingReasonCodeEnum {
-  MISSING_ACTIVE_TENANT_MEMBERSHIP = "missing_active_tenant_membership",
-  MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS = "multiple_active_tenant_memberships"
+  MISSING_ACTIVE_TENANT_MEMBERSHIP = 'missing_active_tenant_membership',
+  MULTIPLE_ACTIVE_TENANT_MEMBERSHIPS = 'multiple_active_tenant_memberships',
 }
 
 export type AuthPrincipal = {

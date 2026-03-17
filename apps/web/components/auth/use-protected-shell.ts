@@ -1,24 +1,29 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { useAuth } from "@/components/auth/auth-provider";
-import { buildLoginHref, buildUnauthorizedHref, captureReturnPath, resolveProtectedPath } from "@/lib/routing/auth-routing";
-import { AuthStateStatusEnum, type CurrentUserResponse } from "@/lib/auth/types";
+import { useAuth } from '@/components/auth/auth-provider';
+import {
+  buildLoginHref,
+  buildUnauthorizedHref,
+  captureReturnPath,
+  resolveProtectedPath,
+} from '@/lib/routing/auth-routing';
+import { AuthStateStatusEnum, type CurrentUserResponse } from '@/lib/auth/types';
 
 type ProtectedShellState =
   | {
-      kind: "bootstrapping";
+      kind: 'bootstrapping';
     }
   | {
-      kind: "unauthenticated";
+      kind: 'unauthenticated';
     }
   | {
-      kind: "redirecting";
+      kind: 'redirecting';
     }
   | {
-      kind: "ready";
+      kind: 'ready';
       currentUser: CurrentUserResponse;
     };
 
@@ -27,7 +32,9 @@ export const useProtectedShell = (pathname: string): ProtectedShellState => {
   const { state } = useAuth();
 
   const protectedPathDecision =
-    state.status === AuthStateStatusEnum.AUTHENTICATED ? resolveProtectedPath(pathname, state.currentUser) : null;
+    state.status === AuthStateStatusEnum.AUTHENTICATED
+      ? resolveProtectedPath(pathname, state.currentUser)
+      : null;
 
   useEffect(() => {
     if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) return;
@@ -38,30 +45,30 @@ export const useProtectedShell = (pathname: string): ProtectedShellState => {
       return;
     }
 
-    if (protectedPathDecision?.kind === "redirect") {
+    if (protectedPathDecision?.kind === 'redirect') {
       router.replace(protectedPathDecision.path);
       return;
     }
 
-    if (protectedPathDecision?.kind === "unauthorized") {
+    if (protectedPathDecision?.kind === 'unauthorized') {
       router.replace(buildUnauthorizedHref(protectedPathDecision.reason));
     }
   }, [pathname, protectedPathDecision, router, state]);
 
   if (state.status === AuthStateStatusEnum.BOOTSTRAPPING) {
-    return { kind: "bootstrapping" };
+    return { kind: 'bootstrapping' };
   }
 
   if (state.status === AuthStateStatusEnum.UNAUTHENTICATED) {
-    return { kind: "unauthenticated" };
+    return { kind: 'unauthenticated' };
   }
 
-  if (protectedPathDecision?.kind !== "allow") {
-    return { kind: "redirecting" };
+  if (protectedPathDecision?.kind !== 'allow') {
+    return { kind: 'redirecting' };
   }
 
   return {
-    kind: "ready",
-    currentUser: state.currentUser
+    kind: 'ready',
+    currentUser: state.currentUser,
   };
 };

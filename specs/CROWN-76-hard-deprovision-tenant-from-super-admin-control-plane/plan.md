@@ -31,7 +31,7 @@ Extend the existing super-admin tenant deprovision endpoint so the request can e
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-76-hard-deprovision-tenant` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work on this branch should use `feat: CROWN-76 - ...` commit subjects and a squash-safe PR title.

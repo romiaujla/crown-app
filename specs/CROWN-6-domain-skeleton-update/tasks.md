@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the feature workspace and align spec artifacts with the Jira-linked implementation branch.
 
-- [X] T001 Update spec metadata and compatibility alias references in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/checklists/requirements.md
-- [X] T002 Create a migration-audit working note in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md for the current tenant baseline inventory
+- [x] T001 Update spec metadata and compatibility alias references in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/checklists/requirements.md
+- [x] T002 Create a migration-audit working note in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md for the current tenant baseline inventory
 
 ---
 
@@ -22,11 +22,11 @@
 
 **⚠️ CRITICAL**: No user story work starts before this phase is complete.
 
-- [X] T003 Audit existing tenant-domain references across architecture docs, contracts, and migrations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/api-boundaries.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/multi-tenant-model.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/
-- [X] T004 [P] Define the final management-system baseline entity mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
-- [X] T005 [P] Define artifact disposition rules and compatibility handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
-- [X] T006 [P] Define tenant-domain boundary rules for non-CRM terminology in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-boundaries.md
-- [X] T007 Update the implementation summary and baseline decisions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/plan.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
+- [x] T003 Audit existing tenant-domain references across architecture docs, contracts, and migrations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/api-boundaries.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/multi-tenant-model.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/
+- [x] T004 [P] Define the final management-system baseline entity mapping in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
+- [x] T005 [P] Define artifact disposition rules and compatibility handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
+- [x] T006 [P] Define tenant-domain boundary rules for non-CRM terminology in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-boundaries.md
+- [x] T007 Update the implementation summary and baseline decisions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/plan.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
 
 **Checkpoint**: Domain baseline and compatibility rules are defined; user stories can proceed.
 
@@ -40,16 +40,16 @@
 
 ### Tests for User Story 1
 
-- [X] T008 [P] [US1] Add a contract-style audit completeness checklist in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
-- [X] T009 [P] [US1] Add quickstart validation steps for the audit review in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
+- [x] T008 [P] [US1] Add a contract-style audit completeness checklist in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
+- [x] T009 [P] [US1] Add quickstart validation steps for the audit review in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
 
 ### Implementation for User Story 1
 
-- [X] T010 [P] [US1] Document the current tenant migration artifact inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
-- [X] T011 [P] [US1] Document the current tenant API/domain language inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
-- [X] T012 [US1] Record disposition decisions for `accounts`, `contacts`, `deals`, and `activities` in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
-- [X] T013 [US1] Record compatibility handling for pre-pivot tenant environments in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
-- [X] T014 [US1] Update the feature summary and audit outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md
+- [x] T010 [P] [US1] Document the current tenant migration artifact inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
+- [x] T011 [P] [US1] Document the current tenant API/domain language inventory in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
+- [x] T012 [US1] Record disposition decisions for `accounts`, `contacts`, `deals`, and `activities` in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
+- [x] T013 [US1] Record compatibility handling for pre-pivot tenant environments in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
+- [x] T014 [US1] Update the feature summary and audit outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md
 
 **Checkpoint**: User Story 1 is independently complete when every pre-pivot artifact has a documented handling path.
 
@@ -63,16 +63,16 @@
 
 ### Tests for User Story 2
 
-- [X] T015 [P] [US2] Add baseline applicability examples for multiple tenant system types in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-boundaries.md
-- [X] T016 [P] [US2] Add validation steps for multi-tenant example review in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
+- [x] T015 [P] [US2] Add baseline applicability examples for multiple tenant system types in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-boundaries.md
+- [x] T016 [P] [US2] Add validation steps for multi-tenant example review in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
 
 ### Implementation for User Story 2
 
-- [X] T017 [P] [US2] Replace CRM-oriented tenant entity definitions with management-system baseline entities in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
-- [X] T018 [P] [US2] Update tenant-scoped API boundary language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/api-boundaries.md
-- [X] T019 [P] [US2] Update tenant schema baseline language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/multi-tenant-model.md
-- [X] T020 [US2] Update the feature requirements and success criteria to reflect the approved management-system baseline in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md
-- [X] T021 [US2] Update backlog/domain references from CRM domain skeleton wording in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/mvp-scope.md
+- [x] T017 [P] [US2] Replace CRM-oriented tenant entity definitions with management-system baseline entities in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/data-model.md
+- [x] T018 [P] [US2] Update tenant-scoped API boundary language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/api-boundaries.md
+- [x] T019 [P] [US2] Update tenant schema baseline language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/multi-tenant-model.md
+- [x] T020 [US2] Update the feature requirements and success criteria to reflect the approved management-system baseline in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/spec.md
+- [x] T021 [US2] Update backlog/domain references from CRM domain skeleton wording in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/mvp-scope.md
 
 **Checkpoint**: User Story 2 is independently complete when the baseline is domain-neutral and validated across multiple tenant system types.
 
@@ -86,16 +86,16 @@
 
 ### Tests for User Story 3
 
-- [X] T022 [P] [US3] Add transition review scenarios for existing tenants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
-- [X] T023 [P] [US3] Add migration compatibility acceptance rules in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
+- [x] T022 [P] [US3] Add transition review scenarios for existing tenants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
+- [x] T023 [P] [US3] Add migration compatibility acceptance rules in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/contracts/tenant-domain-audit-contract.md
 
 ### Implementation for User Story 3
 
-- [X] T024 [P] [US3] Define the target replacement migration set and compatibility notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
-- [X] T025 [P] [US3] Update baseline tenant migration filenames and table definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/001_accounts.sql, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/002_contacts.sql, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/003_deals.sql, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/004_activities.sql
-- [X] T026 [US3] Update provisioning contract examples and applied version documentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-migration-runner-contract.md
-- [X] T027 [US3] Update tenant migration loader and dependent tests for renamed baseline artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migration-loader.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
-- [X] T028 [US3] Update compatibility guidance and operator-facing transition notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
+- [x] T024 [P] [US3] Define the target replacement migration set and compatibility notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/research.md
+- [x] T025 [P] [US3] Update baseline tenant migration filenames and table definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/001_accounts.sql, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/002_contacts.sql, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/003_deals.sql, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/004_activities.sql
+- [x] T026 [US3] Update provisioning contract examples and applied version documentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/contracts/tenant-migration-runner-contract.md
+- [x] T027 [US3] Update tenant migration loader and dependent tests for renamed baseline artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/migration-loader.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
+- [x] T028 [US3] Update compatibility guidance and operator-facing transition notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
 
 **Checkpoint**: User Story 3 is independently complete when old and new tenant baseline handling is fully documented and reflected in migration artifacts.
 
@@ -105,10 +105,10 @@
 
 **Purpose**: Final validation across stories and close remaining cross-cutting updates.
 
-- [X] T029 [P] Update auth and provisioning specs that still describe tenant-scoped CRM operations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/spec.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/spec.md
-- [X] T030 [P] Update architecture and planning artifacts that still reference CRM-only tenant operations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/plan.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/plan.md
-- [X] T031 Run quickstart validation and record final notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
-- [X] T032 Run targeted validation for tenant-domain pivot changes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
+- [x] T029 [P] Update auth and provisioning specs that still describe tenant-scoped CRM operations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/spec.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/spec.md
+- [x] T030 [P] Update architecture and planning artifacts that still reference CRM-only tenant operations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-jwt-rbac-foundation/plan.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/005-crown-5/plan.md
+- [x] T031 Run quickstart validation and record final notes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/quickstart.md
+- [x] T032 Run targeted validation for tenant-domain pivot changes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-bootstrap-migrations.spec.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/tenant-schema-versioning.spec.ts
 
 ---
 

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-116` - "API | Super admin dashboard overview widgets contract"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Retrieve Tenant Summary Overview Data (Priority: P1)
 
@@ -62,7 +62,7 @@ As a future dashboard maintainer, I want the overview response structured so new
 - Requests from non-super-admin roles must be denied before any platform summary data is exposed.
 - Recent tenant changes, activity streams, or unrelated tenant-management data must not leak into this contract.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -78,7 +78,7 @@ As a future dashboard maintainer, I want the overview response structured so new
 - **FR-010**: The API contract MUST be documented in the repository’s manual OpenAPI source.
 - **FR-011**: The implementation MUST stay scoped to the dashboard overview contract and supporting endpoint behavior rather than unrelated platform APIs.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Dashboard Overview Response**: The top-level API payload returned for the super-admin dashboard overview route.
 - **Tenant Summary Widget**: The initial overview widget that contains total tenant count, tenant user count, and per-status tenant counts.
@@ -99,7 +99,7 @@ As a future dashboard maintainer, I want the overview response structured so new
 - Current `Tenant` persistence model and `TenantStatus` enum in `apps/api`.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

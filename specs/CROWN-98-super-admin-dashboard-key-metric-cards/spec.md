@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-98` - "UI | Super admin dashboard key metric cards"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Review Core Platform Counts At A Glance (Priority: P1)
 
@@ -63,7 +63,7 @@ As a platform maintainer, I want the new metric cards to fit the existing protec
 - The overview request can fail after the protected shell has already resolved and the page must remain usable.
 - The metric-card area must remain understandable without adding separate activity-feed, billing, or system-health widgets.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -79,7 +79,7 @@ As a platform maintainer, I want the new metric cards to fit the existing protec
 - **FR-010**: The story MUST preserve the existing super-admin-only access boundary enforced by the current protected-shell flow.
 - **FR-011**: The implementation MUST remain limited to the existing platform dashboard page, directly supporting UI helpers, aligned tests, and the `CROWN-98` feature artifacts.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Dashboard Metric Card**: A single visual summary card showing one current platform metric or one family of related windowed metrics.
 - **Metric Card Group**: The dashboard overview area that presents the first-generation super-admin metric cards together.
@@ -98,7 +98,7 @@ As a platform maintainer, I want the new metric cards to fit the existing protec
 - `CROWN-93` for the baseline dashboard overview widget pattern already present in the web client.
 - `CROWN-119` for the API contract that supplies total users, new-tenant windows, and growth-rate windows.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

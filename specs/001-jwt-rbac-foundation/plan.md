@@ -21,7 +21,7 @@ Define an executable auth and authorization contract baseline for Crown by forma
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 Reference constitution: `docs/process/engineering-constitution.md`
 

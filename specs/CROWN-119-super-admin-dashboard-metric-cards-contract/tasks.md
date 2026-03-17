@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story artifacts and confirm the current dashboard overview baseline before editing code.
 
-- [X] T001 Create the `CROWN-119` Spec Kit artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/
-- [X] T002 [P] Review the existing dashboard overview contract, service, route, tests, and OpenAPI docs in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
+- [x] T001 Create the `CROWN-119` Spec Kit artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/
+- [x] T002 [P] Review the existing dashboard overview contract, service, route, tests, and OpenAPI docs in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Extend the dashboard overview response schemas with ordered metric-window entries in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
-- [X] T004 [P] Implement trailing-window and comparison-window aggregation helpers in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
-- [X] T005 [P] Align the shared web overview schema with the API contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts
+- [x] T003 Extend the dashboard overview response schemas with ordered metric-window entries in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
+- [x] T004 [P] Implement trailing-window and comparison-window aggregation helpers in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
+- [x] T005 [P] Align the shared web overview schema with the API contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts
 
 **Checkpoint**: The route contract and aggregation service can express deterministic week/month/year metrics.
 
@@ -38,14 +38,14 @@
 
 ### Tests for User Story 1
 
-- [X] T006 [P] [US1] Extend the route contract tests for the new metric-card fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
-- [X] T007 [P] [US1] Add aggregation coverage for week/month/year new-tenant counts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
+- [x] T006 [P] [US1] Extend the route contract tests for the new metric-card fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T007 [P] [US1] Add aggregation coverage for week/month/year new-tenant counts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Return `new_tenant_counts` from the overview service in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
-- [X] T009 [US1] Keep the existing route wiring and response parsing aligned with the expanded contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
-- [X] T010 [US1] Update the feature contract notes for the new metric-card count fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/contracts/dashboard-metric-cards-contract.md
+- [x] T008 [US1] Return `new_tenant_counts` from the overview service in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
+- [x] T009 [US1] Keep the existing route wiring and response parsing aligned with the expanded contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
+- [x] T010 [US1] Update the feature contract notes for the new metric-card count fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/contracts/dashboard-metric-cards-contract.md
 
 **Checkpoint**: The overview response returns the total counts and deterministic new-tenant windows required by `CROWN-98`.
 
@@ -59,14 +59,14 @@
 
 ### Tests for User Story 2
 
-- [X] T011 [P] [US2] Extend the route contract tests for the growth-rate fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
-- [X] T012 [P] [US2] Add integration coverage for comparison-window growth-rate math and divide-by-zero handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
+- [x] T011 [P] [US2] Extend the route contract tests for the growth-rate fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T012 [P] [US2] Add integration coverage for comparison-window growth-rate math and divide-by-zero handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T013 [US2] Return `tenant_growth_rates` from the overview service in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
-- [X] T014 [US2] Document the window definitions and growth-rate formula in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/research.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/data-model.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/contracts/dashboard-metric-cards-contract.md
-- [X] T015 [US2] Update the manual OpenAPI schemas and route description for the new metric-card windows in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
+- [x] T013 [US2] Return `tenant_growth_rates` from the overview service in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
+- [x] T014 [US2] Document the window definitions and growth-rate formula in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/research.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/data-model.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/contracts/dashboard-metric-cards-contract.md
+- [x] T015 [US2] Update the manual OpenAPI schemas and route description for the new metric-card windows in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
 
 **Checkpoint**: The overview route exposes documented growth-rate metrics with deterministic window semantics.
 
@@ -80,12 +80,12 @@
 
 ### Tests for User Story 3
 
-- [X] T016 [P] [US3] Confirm unauthorized and forbidden-role route coverage still passes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T016 [P] [US3] Confirm unauthorized and forbidden-role route coverage still passes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T017 [US3] Review the route scope and preserve the existing auth/authorization middleware in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
-- [X] T018 [US3] Capture validation guidance in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/quickstart.md
+- [x] T017 [US3] Review the route scope and preserve the existing auth/authorization middleware in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
+- [x] T018 [US3] Capture validation guidance in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/quickstart.md
 
 **Checkpoint**: Access control and route scope remain stable while the metric-card contract expands.
 
@@ -95,11 +95,11 @@
 
 **Purpose**: Validate the implementation and prepare the branch for review-safe delivery.
 
-- [X] T019 [P] Run focused API tests in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
-- [X] T020 [P] Run API typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
-- [X] T021 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [X] T022 Review the final implementation against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md
-- [X] T023 Create the PR for `feat/CROWN-119-super-admin-dashboard-metric-cards-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/tasks.md
+- [x] T019 [P] Run focused API tests in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
+- [x] T020 [P] Run API typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
+- [x] T021 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [x] T022 Review the final implementation against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md
+- [x] T023 Create the PR for `feat/CROWN-119-super-admin-dashboard-metric-cards-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/tasks.md
 
 ---
 

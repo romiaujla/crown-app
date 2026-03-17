@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the upstream model inputs and current migration baseline before foundational migration changes begin
 
-- [X] T001 Review the approved tenant-domain source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T002 [P] Review the current tenant migration baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/` and record carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
+- [x] T001 Review the approved tenant-domain source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T002 [P] Review the current tenant migration baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/` and record carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Consolidate the `core` versus `tenant_<tenant_slug>` placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
-- [X] T004 [P] Normalize foundational migration scope boundaries and exclusions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T005 [P] Align downstream migration guarantees and placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
-- [X] T006 Reconcile the migration-backed table set with the approved `CROWN-29` model in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T003 Consolidate the `core` versus `tenant_<tenant_slug>` placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
+- [x] T004 [P] Normalize foundational migration scope boundaries and exclusions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T005 [P] Align downstream migration guarantees and placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
+- [x] T006 Reconcile the migration-backed table set with the approved `CROWN-29` model in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
 
 **Checkpoint**: Foundational migration rules are stable and downstream handoff constraints are aligned
 
@@ -45,15 +45,15 @@
 
 ### Validation for User Story 1
 
-- [X] T007 [P] [US1] Cross-check foundational tenant table coverage and placement in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T008 [P] [US1] Cross-check migration-backed table definitions and relationships in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T007 [P] [US1] Cross-check foundational tenant table coverage and placement in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T008 [P] [US1] Cross-check migration-backed table definitions and relationships in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Refine the foundational tenant table list and schema placement definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
-- [X] T010 [US1] Refine relationship, state, and validation guidance for migration-backed tables in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
-- [X] T011 [US1] Align migration requirements and success criteria with the finalized table set in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T012 [US1] Update foundational migration decisions and alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
+- [x] T009 [US1] Refine the foundational tenant table list and schema placement definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T010 [US1] Refine relationship, state, and validation guidance for migration-backed tables in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T011 [US1] Align migration requirements and success criteria with the finalized table set in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T012 [US1] Update foundational migration decisions and alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
 
 **Checkpoint**: User Story 1 is fully reviewable and establishes the foundational migration-backed tenant baseline
 
@@ -67,15 +67,15 @@
 
 ### Validation for User Story 2
 
-- [X] T013 [P] [US2] Review foundational boundary and migration-safety requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T014 [P] [US2] Review migration delta narrative and shared-versus-tenant boundary notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T013 [P] [US2] Review foundational boundary and migration-safety requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T014 [P] [US2] Review migration delta narrative and shared-versus-tenant boundary notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Refine the migration delta summary and baseline replacement narrative in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
-- [X] T016 [US2] Refine foundational-boundary edge cases and assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T017 [US2] Update migration-safety decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
-- [X] T018 [US2] Align the plan summary and constraints with the finalized foundational migration boundary in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
+- [x] T015 [US2] Refine the migration delta summary and baseline replacement narrative in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`
+- [x] T016 [US2] Refine foundational-boundary edge cases and assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T017 [US2] Update migration-safety decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
+- [x] T018 [US2] Align the plan summary and constraints with the finalized foundational migration boundary in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
 
 **Checkpoint**: User Story 2 clearly explains the migration delta and keeps the story constrained to foundational schema work
 
@@ -89,15 +89,15 @@
 
 ### Validation for User Story 3
 
-- [X] T019 [P] [US3] Review downstream consumer guarantees and placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
-- [X] T020 [P] [US3] Review downstream usage guidance and completion signals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
+- [x] T019 [P] [US3] Review downstream consumer guarantees and placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
+- [x] T020 [P] [US3] Review downstream usage guidance and completion signals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Refine downstream migration handoff guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
-- [X] T022 [US3] Refine downstream usage guidance for seed and bootstrap stories in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
-- [X] T023 [US3] Update handoff-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
-- [X] T024 [US3] Reconcile the final downstream handoff with `CROWN-29` references in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
+- [x] T021 [US3] Refine downstream migration handoff guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
+- [x] T022 [US3] Refine downstream usage guidance for seed and bootstrap stories in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
+- [x] T023 [US3] Update handoff-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`
+- [x] T024 [US3] Reconcile the final downstream handoff with `CROWN-29` references in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/plan.md`
 
 **Checkpoint**: All user stories are independently reviewable and downstream stories have a stable migration handoff
 
@@ -107,10 +107,10 @@
 
 **Purpose**: Final consistency, validation, and readiness checks across all migration design artifacts
 
-- [X] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
-- [X] T027 Perform final terminology and placement consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
-- [X] T028 Confirm the final migration handoff still aligns to `CROWN-29` placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
+- [x] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/quickstart.md`
+- [x] T027 Perform final terminology and placement consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
+- [x] T028 Confirm the final migration handoff still aligns to `CROWN-29` placement rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/research.md`
 
 ---
 

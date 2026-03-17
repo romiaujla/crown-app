@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-import { useAuth } from "./auth-provider";
-import { consumeValidatedReturnPath, toRecommendedPath } from "../../lib/routing/auth-routing";
+import { useAuth } from './auth-provider';
+import { consumeValidatedReturnPath, toRecommendedPath } from '../../lib/routing/auth-routing';
 
 type LoginFormProps = {
   reason: string | null;
 };
 
 const reasonMessage: Record<string, string> = {
-  "session-expired": "Your session expired. Sign in again to continue."
+  'session-expired': 'Your session expired. Sign in again to continue.',
 };
 
 export const LoginForm = ({ reason }: LoginFormProps) => {
@@ -23,8 +23,8 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
   const { signIn } = useAuth();
   const identifierInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [fieldErrors, setFieldErrors] = useState<{ identifier?: string; password?: string }>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,8 +39,8 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
     event.preventDefault();
 
     const nextFieldErrors: typeof fieldErrors = {};
-    if (!identifier.trim()) nextFieldErrors.identifier = "Enter your email or username.";
-    if (!password.trim()) nextFieldErrors.password = "Enter your password.";
+    if (!identifier.trim()) nextFieldErrors.identifier = 'Enter your email or username.';
+    if (!password.trim()) nextFieldErrors.password = 'Enter your password.';
 
     setFieldErrors(nextFieldErrors);
     setFormError(null);
@@ -62,7 +62,8 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
         return;
       }
 
-      const nextPath = consumeValidatedReturnPath(result.currentUser) ?? toRecommendedPath(result.currentUser);
+      const nextPath =
+        consumeValidatedReturnPath(result.currentUser) ?? toRecommendedPath(result.currentUser);
       router.replace(nextPath);
     } finally {
       setIsSubmitting(false);
@@ -84,7 +85,7 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
         <Label htmlFor="identifier">Email or username</Label>
         <Input
           id="identifier"
-          aria-invalid={fieldErrors.identifier ? "true" : "false"}
+          aria-invalid={fieldErrors.identifier ? 'true' : 'false'}
           autoComplete="username"
           name="identifier"
           placeholder="name@crown.test"
@@ -92,14 +93,16 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
           onChange={(event) => setIdentifier(event.target.value)}
           value={identifier}
         />
-        {fieldErrors.identifier ? <p className="text-sm text-destructive">{fieldErrors.identifier}</p> : null}
+        {fieldErrors.identifier ? (
+          <p className="text-sm text-destructive">{fieldErrors.identifier}</p>
+        ) : null}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
         <Input
           id="password"
-          aria-invalid={fieldErrors.password ? "true" : "false"}
+          aria-invalid={fieldErrors.password ? 'true' : 'false'}
           autoComplete="current-password"
           name="password"
           onChange={(event) => setPassword(event.target.value)}
@@ -108,11 +111,13 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
           type="password"
           value={password}
         />
-        {fieldErrors.password ? <p className="text-sm text-destructive">{fieldErrors.password}</p> : null}
+        {fieldErrors.password ? (
+          <p className="text-sm text-destructive">{fieldErrors.password}</p>
+        ) : null}
       </div>
 
       <Button className="w-full" disabled={isSubmitting} type="submit">
-        {isSubmitting ? "Signing in..." : "Sign in"}
+        {isSubmitting ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>
   );

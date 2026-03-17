@@ -1,23 +1,23 @@
 module.exports = {
-  branches: ["main"],
-  tagFormat: "v${version}",
+  branches: ['main'],
+  tagFormat: 'v${version}',
   plugins: [
     [
-      "@semantic-release/commit-analyzer",
+      '@semantic-release/commit-analyzer',
       {
-        preset: "conventionalcommits",
+        preset: 'conventionalcommits',
         releaseRules: [
-          { type: "feat", release: "minor" },
-          { type: "fix", release: "patch" },
-          { type: "hotfix", release: "patch" },
-          { type: "minor", release: "minor" },
-          { type: "major", release: "major" },
-          { type: "no-release", release: false },
-          { type: "chore", release: false }
-        ]
-      }
+          { type: 'feat', release: 'minor' },
+          { type: 'fix', release: 'patch' },
+          { type: 'hotfix', release: 'patch' },
+          { type: 'minor', release: 'minor' },
+          { type: 'major', release: 'major' },
+          { type: 'no-release', release: false },
+          { type: 'chore', release: false },
+        ],
+      },
     ],
-    "@semantic-release/release-notes-generator",
-    "@semantic-release/github"
-  ]
+    '@semantic-release/release-notes-generator',
+    '@semantic-release/github',
+  ],
 };

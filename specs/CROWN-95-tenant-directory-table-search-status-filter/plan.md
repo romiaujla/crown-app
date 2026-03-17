@@ -33,7 +33,7 @@ Replace the current `Tenants` placeholder in the super-admin control plane with 
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. `CROWN-95` is a Story and the branch matches `feat/CROWN-95-<slug>`.
 - Planning gate: PASS. `spec.md` exists and is committed before implementation planning advances.

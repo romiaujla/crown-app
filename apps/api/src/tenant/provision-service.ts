@@ -1,27 +1,51 @@
-import { Client } from "pg";
+import { Client } from 'pg';
 
-import { env } from "../config/env.js";
-import { prisma } from "../db/prisma.js";
-import { TenantStatus } from "../domain/status-enums.js";
+import { env } from '../config/env.js';
+import { prisma } from '../db/prisma.js';
+import { TenantStatus } from '../domain/status-enums.js';
 
-import { loadTenantMigrations } from "./migration-loader.js";
-import { executeTenantMigrations } from "./migrator.js";
-import { deriveTenantSchemaName, normalizeSlug, validateSlug } from "./slug.js";
-import type { ProvisionTenantInput, ProvisionTenantResult } from "./types.js";
+import { loadTenantMigrations } from './migration-loader.js';
+import { executeTenantMigrations } from './migrator.js';
+import { deriveTenantSchemaName, normalizeSlug, validateSlug } from './slug.js';
+import type { ProvisionTenantInput, ProvisionTenantResult } from './types.js';
 
 const quoteIdentifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
 
 const isUniqueConstraintError = (error: unknown): error is { code: string } =>
-  typeof error === "object" && error !== null && "code" in error && (error as { code: string }).code === "P2002";
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  (error as { code: string }).code === 'P2002';
 
-export const provisionTenant = async (input: ProvisionTenantInput): Promise<ProvisionTenantResult> => {
+const CURRENT_TYPE_VERSION = '1.0';
+const TENANT_ADMIN_ROLE_CODE = 'tenant_admin';
+
+export const provisionTenant = async (
+  input: ProvisionTenantInput,
+): Promise<ProvisionTenantResult> => {
   const normalizedName = input.name.trim();
   const normalizedSlug = normalizeSlug(input.slug);
 
   if (!normalizedName || !validateSlug(normalizedSlug)) {
     return {
-      status: "conflict",
-      message: "invalid tenant provisioning input"
+      status: 'conflict',
+      message: 'invalid tenant provisioning input',
+    };
+  }
+
+  const managementSystemType = await prisma.managementSystemType.findUnique({
+    where: {
+      typeCode_version: {
+        typeCode: input.managementSystemTypeCode,
+        version: CURRENT_TYPE_VERSION,
+      },
+    },
+  });
+
+  if (!managementSystemType) {
+    return {
+      status: 'conflict',
+      message: 'invalid management system type code',
     };
   }
 
@@ -34,20 +58,24 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
         name: normalizedName,
         slug: normalizedSlug,
         schemaName,
-        status: TenantStatus.provisioning
-      }
+        status: TenantStatus.provisioning,
+      },
     });
   } catch (error) {
     if (!isUniqueConstraintError(error)) throw error;
 
     const existing = await prisma.tenant.findUnique({
-      where: { slug: normalizedSlug }
+      where: { slug: normalizedSlug },
     });
 
-    if (!existing || existing.schemaName !== schemaName || existing.status === TenantStatus.active) {
+    if (
+      !existing ||
+      existing.schemaName !== schemaName ||
+      existing.status === TenantStatus.active
+    ) {
       return {
-        status: "conflict",
-        message: "tenant slug already exists"
+        status: 'conflict',
+        message: 'tenant slug already exists',
       };
     }
 
@@ -63,13 +91,13 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
     const migrations = await loadTenantMigrations();
     if (!migrations.length) {
       return {
-        status: "failed",
-        errorCode: "migration_failed",
-        message: "No tenant migrations were found",
+        status: 'failed',
+        errorCode: 'migration_failed',
+        message: 'No tenant migrations were found',
         tenantId: tenant.id,
         slug: normalizedSlug,
         schemaName,
-        appliedVersions: []
+        appliedVersions: [],
       };
     }
 
@@ -78,42 +106,66 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
         tenantId: tenant.id,
         schemaName,
         actorSub: input.actorSub,
-        migrations
+        migrations,
       },
-      { client }
+      { client },
     );
 
-    if (migrationResult.status === "failed") {
+    if (migrationResult.status === 'failed') {
       await prisma.tenant.update({
         where: { id: tenant.id },
-        data: { status: TenantStatus.provisioning_failed }
+        data: { status: TenantStatus.provisioning_failed },
       });
 
       return {
-        status: "failed",
-        errorCode: "migration_failed",
-        message: migrationResult.message ?? "baseline migration execution failed",
+        status: 'failed',
+        errorCode: 'migration_failed',
+        message: migrationResult.message ?? 'baseline migration execution failed',
         failedVersion: migrationResult.failedVersion,
         tenantId: tenant.id,
         slug: normalizedSlug,
         schemaName,
-        appliedVersions: migrationResult.appliedVersions
+        appliedVersions: migrationResult.appliedVersions,
       };
     }
 
     const updatedTenant = await prisma.tenant.update({
       where: { id: tenant.id },
-      data: { status: TenantStatus.active }
+      data: { status: TenantStatus.active },
     });
 
+    const tenantAdminRole = await prisma.role.findUnique({
+      where: { roleCode: TENANT_ADMIN_ROLE_CODE },
+    });
+
+    if (tenantAdminRole) {
+      const membership = await prisma.tenantMembership.create({
+        data: {
+          userId: input.actorSub,
+          tenantId: updatedTenant.id,
+          membershipStatus: 'active',
+        },
+      });
+
+      await prisma.tenantMembershipRoleAssignment.create({
+        data: {
+          tenantMembershipId: membership.id,
+          roleId: tenantAdminRole.id,
+          assignmentStatus: 'active',
+          isPrimary: true,
+        },
+      });
+    }
+
     return {
-      status: "provisioned",
+      status: 'provisioned',
       tenantId: updatedTenant.id,
       slug: updatedTenant.slug,
       schemaName: updatedTenant.schemaName,
       appliedVersions: migrationResult.appliedVersions,
       skippedVersions: migrationResult.skippedVersions,
-      tenant: updatedTenant
+      managementSystemTypeCode: input.managementSystemTypeCode,
+      tenant: updatedTenant,
     };
   } finally {
     await client.end();

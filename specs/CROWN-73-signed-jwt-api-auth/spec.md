@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-73` - "Implement signed JWT issuance and verification for API auth"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Issue signed access tokens on login (Priority: P1)
 
@@ -59,7 +59,7 @@ As a maintainer, I want the API auth layer to define its JWT signing configurati
 - A token is well-signed but expired and must still be rejected consistently.
 - Existing tests or helpers still generate placeholder `alg: none` tokens and need to move to signed fixtures without widening story scope.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -72,14 +72,14 @@ As a maintainer, I want the API auth layer to define its JWT signing configurati
 - **FR-007**: The system MUST keep persistent refresh sessions, refresh-token storage, and logout revocation behavior out of scope for this story.
 - **FR-008**: The system MUST update auth helpers and tests that currently depend on placeholder token generation so validation reflects the signed-token runtime behavior.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Signed Access Token**: The JWT issued after successful login whose integrity depends on the configured signing secret and expected algorithm.
 - **JWT Signing Configuration**: The environment-backed access-token signing settings used for issue and verify behavior.
 - **Verified Auth Claims**: The claims payload accepted by middleware only after signature and expiration validation succeeds.
 - **Token Validation Failure**: The set of malformed, tampered, expired, or misconfigured-token outcomes that map to the existing auth error contract.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

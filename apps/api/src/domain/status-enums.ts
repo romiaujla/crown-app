@@ -1,5 +1,5 @@
-import { PlatformUserAccountStatus, TenantStatus } from "../generated/prisma/enums.js";
-import { z } from "zod";
+import { PlatformUserAccountStatus, TenantStatus } from '../generated/prisma/enums.js';
+import { z } from 'zod';
 
 export { PlatformUserAccountStatus, TenantStatus };
 

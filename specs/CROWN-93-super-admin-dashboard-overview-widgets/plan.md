@@ -31,7 +31,7 @@ Replace the static super-admin dashboard placeholder cards in `apps/web` with a 
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-93-ui-super-admin-dashboard-overview-widgets` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work on this branch should use `feat: CROWN-93 - ...` commit subjects and a squash-safe PR title.

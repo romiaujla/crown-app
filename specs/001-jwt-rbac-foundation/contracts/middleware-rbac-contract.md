@@ -22,17 +22,17 @@ Define request evaluation rules for protected routes before business handlers ex
 
 ## Decision Matrix
 
-| Claims Valid | Role         | Namespace | Tenant Match Required | Tenant Match | Decision | Reason Category     |
-|--------------|--------------|-----------|------------------------|--------------|----------|---------------------|
-| No           | Any/Unknown  | Any       | N/A                    | N/A          | Deny     | invalid_claims      |
-| Yes          | super_admin  | platform  | No                     | N/A          | Allow    | N/A                 |
-| Yes          | tenant_admin | platform  | No                     | N/A          | Deny     | forbidden_role      |
-| Yes          | tenant_user  | platform  | No                     | N/A          | Deny     | forbidden_role      |
-| Yes          | tenant_admin | tenant    | Yes                    | Yes          | Allow    | N/A                 |
-| Yes          | tenant_admin | tenant    | Yes                    | No           | Deny     | forbidden_tenant    |
-| Yes          | tenant_user  | tenant    | Yes                    | Yes          | Allow    | N/A                 |
-| Yes          | tenant_user  | tenant    | Yes                    | No           | Deny     | forbidden_tenant    |
-| Yes          | super_admin  | tenant    | No                     | N/A          | Allow    | N/A                 |
+| Claims Valid | Role         | Namespace | Tenant Match Required | Tenant Match | Decision | Reason Category  |
+| ------------ | ------------ | --------- | --------------------- | ------------ | -------- | ---------------- |
+| No           | Any/Unknown  | Any       | N/A                   | N/A          | Deny     | invalid_claims   |
+| Yes          | super_admin  | platform  | No                    | N/A          | Allow    | N/A              |
+| Yes          | tenant_admin | platform  | No                    | N/A          | Deny     | forbidden_role   |
+| Yes          | tenant_user  | platform  | No                    | N/A          | Deny     | forbidden_role   |
+| Yes          | tenant_admin | tenant    | Yes                   | Yes          | Allow    | N/A              |
+| Yes          | tenant_admin | tenant    | Yes                   | No           | Deny     | forbidden_tenant |
+| Yes          | tenant_user  | tenant    | Yes                   | Yes          | Allow    | N/A              |
+| Yes          | tenant_user  | tenant    | Yes                   | No           | Deny     | forbidden_tenant |
+| Yes          | super_admin  | tenant    | No                    | N/A          | Allow    | N/A              |
 
 ## Response Contract
 

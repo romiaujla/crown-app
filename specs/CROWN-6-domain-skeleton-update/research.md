@@ -48,21 +48,21 @@
 
 ### Current Migration Artifacts
 
-| Artifact | Source | Current Meaning | Pivot Fit | Recommended Disposition |
-|----------|--------|-----------------|-----------|--------------------------|
-| `accounts` | `apps/api/tenant-migrations/0001_base/001_accounts.sql` | CRM account/customer organization table | Partially reusable | Generalize to `organizations` |
-| `contacts` | `apps/api/tenant-migrations/0001_base/002_contacts.sql` | CRM contact/person table tied to an account | Partially reusable | Generalize to `people` |
-| `deals` | `apps/api/tenant-migrations/0001_base/003_deals.sql` | CRM pipeline opportunity table | CRM-specific | Replace with `work_items` |
-| `activities` | `apps/api/tenant-migrations/0001_base/004_activities.sql` | Event history tied to deals and contacts | Broadly reusable with narrower links | Generalize to `activity_records` |
+| Artifact     | Source                                                    | Current Meaning                             | Pivot Fit                            | Recommended Disposition          |
+| ------------ | --------------------------------------------------------- | ------------------------------------------- | ------------------------------------ | -------------------------------- |
+| `accounts`   | `apps/api/tenant-migrations/0001_base/001_accounts.sql`   | CRM account/customer organization table     | Partially reusable                   | Generalize to `organizations`    |
+| `contacts`   | `apps/api/tenant-migrations/0001_base/002_contacts.sql`   | CRM contact/person table tied to an account | Partially reusable                   | Generalize to `people`           |
+| `deals`      | `apps/api/tenant-migrations/0001_base/003_deals.sql`      | CRM pipeline opportunity table              | CRM-specific                         | Replace with `work_items`        |
+| `activities` | `apps/api/tenant-migrations/0001_base/004_activities.sql` | Event history tied to deals and contacts    | Broadly reusable with narrower links | Generalize to `activity_records` |
 
 ### Current Documentation and Contract Artifacts
 
-| Artifact | Source | Current Meaning | Pivot Fit | Recommended Disposition |
-|----------|--------|-----------------|-----------|--------------------------|
-| `tenant-scoped CRM operations` | `docs/architecture/api-boundaries.md` | Describes all tenant APIs as CRM operations | CRM-specific | Replace with management-system tenant operations |
-| Tenant schema list `accounts`, `contacts`, `deals`, `activities` | `docs/architecture/multi-tenant-model.md` | Declares CRM-shaped baseline as canonical tenant schema | CRM-specific | Replace with management-system baseline entities |
-| `Bootstrap Baseline CRM Tables` | `specs/005-crown-5/spec.md` | Frames bootstrap tables as CRM domain baseline | CRM-specific | Replace with management-system baseline framing |
-| Migration versions `0001_base.001_accounts`, `0001_base.002_contacts` | `specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml` and `specs/005-crown-5/contracts/tenant-migration-runner-contract.md` | Exposes CRM-shaped migration identifiers in public planning artifacts | CRM-specific | Replace with new baseline version identifiers |
+| Artifact                                                              | Source                                                                                                                               | Current Meaning                                                       | Pivot Fit    | Recommended Disposition                          |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------ | ------------------------------------------------ |
+| `tenant-scoped CRM operations`                                        | `docs/architecture/api-boundaries.md`                                                                                                | Describes all tenant APIs as CRM operations                           | CRM-specific | Replace with management-system tenant operations |
+| Tenant schema list `accounts`, `contacts`, `deals`, `activities`      | `docs/architecture/multi-tenant-model.md`                                                                                            | Declares CRM-shaped baseline as canonical tenant schema               | CRM-specific | Replace with management-system baseline entities |
+| `Bootstrap Baseline CRM Tables`                                       | `specs/005-crown-5/spec.md`                                                                                                          | Frames bootstrap tables as CRM domain baseline                        | CRM-specific | Replace with management-system baseline framing  |
+| Migration versions `0001_base.001_accounts`, `0001_base.002_contacts` | `specs/005-crown-5/contracts/tenant-provisioning.openapi.yaml` and `specs/005-crown-5/contracts/tenant-migration-runner-contract.md` | Exposes CRM-shaped migration identifiers in public planning artifacts | CRM-specific | Replace with new baseline version identifiers    |
 
 ### Current Tenant API and Domain Language Inventory
 

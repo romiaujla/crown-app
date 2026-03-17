@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story task set and confirm the current dashboard overview baseline plus the `CROWN-119` contract dependency.
 
-- [X] T001 Create the `CROWN-98` Spec Kit artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/
-- [X] T002 [P] Review the current dashboard implementation and the `CROWN-119` overview contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md
+- [x] T001 Create the `CROWN-98` Spec Kit artifacts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/
+- [x] T002 [P] Review the current dashboard implementation and the `CROWN-119` overview contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/types.ts, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-119-super-admin-dashboard-metric-cards-contract/spec.md
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Refactor the dashboard overview section structure in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx so primary metric cards and supporting status content can coexist cleanly
-- [X] T004 [P] Add reusable dashboard metric-label and value-formatting helpers in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T005 [P] Review the existing Playwright overview fixture for coverage of the metric-card fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T003 Refactor the dashboard overview section structure in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx so primary metric cards and supporting status content can coexist cleanly
+- [x] T004 [P] Add reusable dashboard metric-label and value-formatting helpers in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T005 [P] Review the existing Playwright overview fixture for coverage of the metric-card fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 **Checkpoint**: The dashboard page has a stable structure and formatting helpers for the metric-card UI.
 
@@ -38,13 +38,13 @@
 
 ### Tests for User Story 1
 
-- [X] T006 [P] [US1] Add Playwright assertions for the total-tenant and total-user metric cards in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T006 [P] [US1] Add Playwright assertions for the total-tenant and total-user metric cards in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T007 [US1] Render the total-tenants metric card in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T008 [US1] Render the total-users metric card in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T009 [US1] Update supporting dashboard copy so the metric-card section clearly communicates platform scale in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T007 [US1] Render the total-tenants metric card in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T008 [US1] Render the total-users metric card in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T009 [US1] Update supporting dashboard copy so the metric-card section clearly communicates platform scale in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
 
 **Checkpoint**: The dashboard foregrounds the requested headline platform totals.
 
@@ -58,14 +58,14 @@
 
 ### Tests for User Story 2
 
-- [X] T010 [P] [US2] Extend Playwright coverage for the new-tenant window values in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [X] T011 [P] [US2] Extend Playwright coverage for the tenant-growth-rate values and labels in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T010 [P] [US2] Extend Playwright coverage for the new-tenant window values in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T011 [P] [US2] Extend Playwright coverage for the tenant-growth-rate values and labels in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Render the grouped new-tenant metric card with week/month/year entries in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T013 [US2] Render the grouped tenant-growth-rate metric card with percentage formatting in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T014 [US2] Align the dashboard labels and supporting copy with the `CROWN-119` trailing-window definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/contracts/dashboard-metric-cards-ui-contract.md
+- [x] T012 [US2] Render the grouped new-tenant metric card with week/month/year entries in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T013 [US2] Render the grouped tenant-growth-rate metric card with percentage formatting in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T014 [US2] Align the dashboard labels and supporting copy with the `CROWN-119` trailing-window definitions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/contracts/dashboard-metric-cards-ui-contract.md
 
 **Checkpoint**: The dashboard displays the full set of requested trend metrics with clear definitions.
 
@@ -79,14 +79,14 @@
 
 ### Tests for User Story 3
 
-- [X] T015 [P] [US3] Extend Playwright coverage for the metric-card loading and error states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [X] T016 [P] [US3] Add responsive assertions for the metric-card area in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T015 [P] [US3] Extend Playwright coverage for the metric-card loading and error states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T016 [P] [US3] Add responsive assertions for the metric-card area in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T017 [US3] Refine the success, loading, and error layouts for the metric-card area in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T018 [US3] Keep the tenant-status breakdown as supporting context below the primary metric cards in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
-- [X] T019 [US3] Capture final validation guidance for the metric-card dashboard behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/quickstart.md
+- [x] T017 [US3] Refine the success, loading, and error layouts for the metric-card area in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T018 [US3] Keep the tenant-status breakdown as supporting context below the primary metric cards in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx
+- [x] T019 [US3] Capture final validation guidance for the metric-card dashboard behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/quickstart.md
 
 **Checkpoint**: The overview area remains resilient, readable, and safely scoped to the protected super-admin dashboard.
 
@@ -96,11 +96,11 @@
 
 **Purpose**: Validate the implementation and prepare the branch for review-safe delivery.
 
-- [X] T020 [P] Run focused web Playwright coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [X] T021 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [X] T022 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [X] T023 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md
-- [X] T024 Create the PR for `feat/CROWN-98-super-admin-dashboard-key-metric-cards` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/tasks.md
+- [x] T020 [P] Run focused web Playwright coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [x] T021 [P] Run web typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [x] T022 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [x] T023 Review the final dashboard behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md
+- [x] T024 Create the PR for `feat/CROWN-98-super-admin-dashboard-key-metric-cards` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-98-super-admin-dashboard-key-metric-cards/tasks.md
 
 ---
 

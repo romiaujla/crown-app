@@ -21,7 +21,7 @@ Implement a platform-scoped provisioning flow for `CROWN-5` that validates tenan
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 Reference constitution: `docs/process/engineering-constitution.md` (canonical; `.specify/memory/constitution.md` is placeholder/uninitialized).
 

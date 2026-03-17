@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-115` - "UI | Move authenticated profile actions into dashboard left menu"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Open Profile Actions From The Left Navigation (Priority: P1)
 
@@ -63,7 +63,7 @@ As an authenticated dashboard user, I want logout available from the same profil
 - The profile menu should not hide the logout path behind navigation to a different page.
 - Existing logout behavior must remain consistent for both platform and tenant dashboard shells if they share the same shell component.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -78,7 +78,7 @@ As an authenticated dashboard user, I want logout available from the same profil
 - **FR-009**: The logout action delivered through the profile menu MUST preserve the existing browser-session sign-out outcome.
 - **FR-010**: The implementation MUST stay limited to dashboard UI updates and MUST NOT widen into unrelated authentication, profile-editing, or account-management flows.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Shell Profile Entry**: The compact dashboard-shell control that combines the user's initials avatar and menu trigger inside the left navigation area.
 - **Profile Menu State**: The open or closed UI state for the compact profile menu or popover.
@@ -97,7 +97,7 @@ As an authenticated dashboard user, I want logout available from the same profil
 - Existing logout flow in the web auth provider and button wiring.
 - Current platform and tenant protected-route flows from the earlier web authentication stories.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
