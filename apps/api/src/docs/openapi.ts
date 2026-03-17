@@ -212,7 +212,7 @@ export const authDocsDocument = {
       },
       TenantProvisionRequest: {
         type: "object",
-        required: ["name", "slug"],
+        required: ["name", "slug", "management_system_type_code"],
         properties: {
           name: {
             type: "string",
@@ -223,12 +223,17 @@ export const authDocsDocument = {
             type: "string",
             pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
             description: "Lowercase kebab-case tenant slug."
+          },
+          management_system_type_code: {
+            type: "string",
+            enum: managementSystemTypeCodeValues,
+            description: "Management system type to apply as the tenant role template."
           }
         }
       },
       TenantProvisionResponse: {
         type: "object",
-        required: ["tenant_id", "slug", "schema_name", "applied_versions", "status"],
+        required: ["tenant_id", "slug", "schema_name", "applied_versions", "management_system_type_code", "status"],
         properties: {
           tenant_id: { type: "string" },
           slug: { type: "string" },
@@ -236,6 +241,10 @@ export const authDocsDocument = {
           applied_versions: {
             type: "array",
             items: { type: "string" }
+          },
+          management_system_type_code: {
+            type: "string",
+            enum: managementSystemTypeCodeValues
           },
           status: {
             type: "string",

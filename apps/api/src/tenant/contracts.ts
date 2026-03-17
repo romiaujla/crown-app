@@ -1,4 +1,4 @@
-import { DeprovisionTypeEnum, DeprovisionTypeSchema } from "@crown/types";
+import { DeprovisionTypeEnum, DeprovisionTypeSchema, ManagementSystemTypeCodeSchema } from "@crown/types";
 import { z } from "zod";
 
 import { TenantStatusSchema } from "../domain/status-enums.js";
@@ -12,7 +12,8 @@ export const TenantProvisionRequestSchema = z.object({
     .trim()
     .min(1)
     .max(48)
-    .regex(SLUG_REGEX, "slug must be lowercase kebab-case")
+    .regex(SLUG_REGEX, "slug must be lowercase kebab-case"),
+  management_system_type_code: ManagementSystemTypeCodeSchema
 });
 
 export const TenantProvisionResponseSchema = z.object({
@@ -20,6 +21,7 @@ export const TenantProvisionResponseSchema = z.object({
   slug: z.string(),
   schema_name: z.string(),
   applied_versions: z.array(z.string()),
+  management_system_type_code: ManagementSystemTypeCodeSchema,
   status: z.literal("provisioned")
 });
 
