@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-137` - "API | Tenant slug availability lookup endpoint"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Check Whether A Tenant Slug Is Available (Priority: P1)
 
@@ -62,7 +62,7 @@ As a maintainer, I want the slug-availability route to expose a simple response 
 - The same caller repeats lookups rapidly for the same slug during a debounced typing flow.
 - Future tenant-create fields such as tenant name, management-system type selection, or role selection must remain out of scope for this lookup contract.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -79,7 +79,7 @@ As a maintainer, I want the slug-availability route to expose a simple response 
 - **FR-011**: The manual OpenAPI source MUST document the slug-availability endpoint and its request and response contract.
 - **FR-012**: The story MUST remain limited to slug lookup behavior and MUST NOT widen into tenant-create UI implementation, full provisioning submission, or broader tenant-create validation workflows unrelated to slug availability.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Slug Availability Request**: The one-slug request payload used by the create flow to ask whether a candidate tenant slug is available.
 - **Tenant Slug Availability Result**: The success payload that communicates the evaluated slug and whether it is currently available for tenant creation.
@@ -102,7 +102,7 @@ As a maintainer, I want the slug-availability route to expose a simple response 
 - Shared contract package in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/92d2/crown-app/packages/types/src/index.ts`.
 - Manual OpenAPI documentation in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-crm/.codex/worktrees/92d2/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

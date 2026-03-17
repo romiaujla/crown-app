@@ -7,6 +7,7 @@ import { PlatformUserAccountStatus, TenantStatus } from '../../src/domain/status
 import {
   ManagementSystemTypeAvailabilityStatusEnum,
   RoleAuthClassEnum,
+  RoleScopeEnum,
 } from '../../src/generated/prisma/enums.js';
 import { deriveTenantSchemaName } from '../../src/tenant/slug.js';
 
@@ -104,49 +105,49 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES = [
 export const LOCAL_SEED_ROLES = [
   {
     roleCode: 'super_admin',
-    scope: 'platform',
+    scope: RoleScopeEnum.platform,
     authClass: RoleAuthClassEnum.super_admin,
     displayName: 'Super Admin',
     description: 'Platform-wide operator role.',
   },
   {
     roleCode: RoleCodeEnum.TENANT_ADMIN,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_admin,
     displayName: 'Tenant Admin',
     description: 'Tenant shell administrator role.',
   },
   {
     roleCode: RoleCodeEnum.ADMIN,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_user,
     displayName: 'Admin',
     description: 'Management-system administrator role inside the tenant workspace.',
   },
   {
     roleCode: RoleCodeEnum.DISPATCHER,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_user,
     displayName: 'Dispatcher',
     description: 'Coordinates transportation loads and assignments.',
   },
   {
     roleCode: RoleCodeEnum.ACCOUNTANT,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_user,
     displayName: 'Accountant',
     description: 'Handles financial workflows for the tenant.',
   },
   {
     roleCode: RoleCodeEnum.HUMAN_RESOURCES,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_user,
     displayName: 'Human Resources',
     description: 'Handles people and staffing workflows for the tenant.',
   },
   {
     roleCode: RoleCodeEnum.DRIVER,
-    scope: 'tenant',
+    scope: RoleScopeEnum.tenant,
     authClass: RoleAuthClassEnum.tenant_user,
     displayName: 'Driver',
     description: 'Executes assigned transportation work in the tenant workspace.',

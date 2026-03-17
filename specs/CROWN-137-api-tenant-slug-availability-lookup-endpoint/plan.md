@@ -31,7 +31,7 @@ Add a protected tenant-slug availability lookup endpoint for the super-admin ten
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-137-api-tenant-slug-availability-lookup-endpoint` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work on this branch should use `feat: CROWN-137 - ...` commit subjects and a squash-safe PR title.

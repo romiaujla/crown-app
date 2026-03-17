@@ -534,12 +534,60 @@ test('tenant directory action links route to stable detail, add, and edit entry 
 
   await expect(page).toHaveURL(/\/platform\/tenants\/new$/);
   await expect(page.getByRole('heading', { name: 'Add Tenant', level: 3 })).toBeVisible();
+  await expect(page.getByTestId('tenant-create-stepper')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Tenant create workflow' })).toBeVisible();
 
   await page.goto('/platform/tenants');
   await page.getByRole('link', { name: /Edit/ }).first().click();
 
   await expect(page).toHaveURL(/\/platform\/tenants\/northwind-tms\/edit$/);
   await expect(page.getByRole('heading', { name: 'Edit Tenant', level: 3 })).toBeVisible();
+});
+
+test('tenant create shell advances through placeholder steps and protects entered progress on cancel', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await expect(page.getByText('Step 1 of 4')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Back' })).toBeDisabled();
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByText('Step 2 of 4')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Role selection' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
+
+  await page.getByLabel('Tenant info placeholder notes').fill('Northwind expansion workspace');
+
+  page.once('dialog', async (dialog) => {
+    expect(dialog.message()).toContain('Discard the tenant setup progress');
+    await dialog.dismiss();
+  });
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  await expect(page).toHaveURL(/\/platform\/tenants\/new$/);
+
+  page.once('dialog', async (dialog) => {
+    expect(dialog.message()).toContain('Discard the tenant setup progress');
+    await dialog.accept();
+  });
+  await page.getByRole('button', { name: 'Cancel' }).click();
+  await expect(page).toHaveURL(/\/platform\/tenants$/);
+});
+
+test('tenant create shell allows clean cancel when no step data has been entered', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+  await page.getByRole('button', { name: 'Cancel' }).click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants$/);
 });
 
 test('tenant directory shows a contained error state when the directory API fails', async ({
