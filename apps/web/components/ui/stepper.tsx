@@ -50,7 +50,8 @@ export const Stepper = ({
   return (
     <ol
       aria-label="Progress"
-      className={cn('mx-auto flex w-full max-w-3xl items-start gap-0', className)}
+      className={cn('mx-auto grid w-full max-w-3xl', className)}
+      style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}
     >
       {steps.map((step, index) => {
         const isCompleted = index < normalizedCurrentStep;
@@ -69,7 +70,7 @@ export const Stepper = ({
         );
 
         const connectorClassName = cn(
-          'mt-3.5 h-px flex-1 transition-colors duration-200',
+          'absolute top-3.5 left-[calc(50%+1rem)] right-[calc(-50%+1rem)] h-px transition-colors duration-200',
           isCompleted ? 'bg-[#22C55E]' : 'bg-[#ADD8E6]/50',
         );
 
@@ -102,25 +103,23 @@ export const Stepper = ({
         return (
           <li
             aria-current={isCurrent ? 'step' : undefined}
-            className="group relative flex min-w-0 flex-1 items-start"
+            className="relative flex flex-col items-center"
             data-step-state={stepState}
             key={`${step.title}-${index}`}
           >
-            <div className="flex min-w-0 flex-1 flex-col items-center">
-              {clickable ? (
-                <button
-                  aria-label={step.a11yLabel ?? `Step ${index + 1}: ${step.title}`}
-                  className="flex flex-col items-center gap-1 rounded-lg p-1 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 focus-visible:ring-offset-1"
-                  onClick={() => onStepClick?.(index)}
-                  type="button"
-                >
-                  {content}
-                </button>
-              ) : (
-                content
-              )}
-            </div>
             {!isLast ? <span aria-hidden="true" className={connectorClassName} /> : null}
+            {clickable ? (
+              <button
+                aria-label={step.a11yLabel ?? `Step ${index + 1}: ${step.title}`}
+                className="flex flex-col items-center gap-1 rounded-lg p-1 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 focus-visible:ring-offset-1"
+                onClick={() => onStepClick?.(index)}
+                type="button"
+              >
+                {content}
+              </button>
+            ) : (
+              content
+            )}
           </li>
         );
       })}
