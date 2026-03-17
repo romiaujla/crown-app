@@ -27,7 +27,7 @@ describe("prisma local seed baseline", () => {
     expect(firstRun.loadedCounts.organizations).toBe(3);
     expect(firstRun.loadedCounts.loads).toBe(2);
     expect(harness.snapshot()).toMatchObject({
-      tenantSlugs: ["acme-local", "other-tenant"],
+      tenantSlugs: ["acme-local", "other-tenant", "zenith-local"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
       platformUsernames: ["other.user", ...expectedSeededUsernames].sort(),
       managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
@@ -54,7 +54,7 @@ describe("prisma local seed baseline", () => {
     expect(secondRun.schemaName).toBe(expectedCanonicalTenantSchemaName);
     expect(harness.snapshot()).toMatchObject({
       ...expectedCanonicalSnapshot,
-      tenantSlugs: ["acme-local", "other-tenant"],
+      tenantSlugs: ["acme-local", "other-tenant", "zenith-local"],
       platformUserEmails: [...expectedSeededUserEmails, "other-user@test.local"].sort(),
       platformUsernames: [...expectedCanonicalSnapshot.platformUsernames, "other.user"].sort(),
       platformUserStatuses: [...expectedCanonicalSnapshot.platformUserStatuses, "other-user@test.local:active"].sort()

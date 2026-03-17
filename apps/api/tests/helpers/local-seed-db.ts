@@ -1,5 +1,5 @@
 import { RoleCodeEnum } from "@crown/types";
-import { LOCAL_SEED_RESET_TABLES, LOCAL_SEED_TENANT, LOCAL_SEED_USERS } from "../../prisma/seed/constants.js";
+import { LOCAL_SEED_EDGE_CASE_USERS, LOCAL_SEED_RESET_TABLES, LOCAL_SEED_SECONDARY_TENANT, LOCAL_SEED_TENANT, LOCAL_SEED_USERS } from "../../prisma/seed/constants.js";
 import type { SeedPrismaClient, SeedQueryResult, SeedSqlClient } from "../../prisma/seed/types.js";
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
 import {
@@ -787,12 +787,18 @@ export const expectedCanonicalTenantSchemaName = LOCAL_SEED_TENANT.schemaName;
 export const expectedSeededUserEmails = [
   LOCAL_SEED_USERS.superAdmin.email,
   LOCAL_SEED_USERS.tenantAdmin.email,
-  LOCAL_SEED_USERS.tenantUser.email
+  LOCAL_SEED_USERS.tenantUser.email,
+  LOCAL_SEED_EDGE_CASE_USERS.disabledUser.email,
+  LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.email,
+  LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.email
 ];
 export const expectedSeededUsernames = [
   LOCAL_SEED_USERS.superAdmin.username,
   LOCAL_SEED_USERS.tenantAdmin.username,
-  LOCAL_SEED_USERS.tenantUser.username
+  LOCAL_SEED_USERS.tenantUser.username,
+  LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username,
+  LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username,
+  LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username
 ];
 export const expectedReferenceDataCodes = ["asset-types", "load-modes", "location-types", "org-types"];
 export const expectedOrganizationCodes = ["ACME-CARRIER", "ACME-CUSTOMER", "ACME-SHIPPER"];
@@ -825,13 +831,16 @@ export const expectedCanonicalDeterministicLookupFields = [
 
 export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
   schemaReady: true,
-  tenantSlugs: [expectedCanonicalTenantSlug],
+  tenantSlugs: [expectedCanonicalTenantSlug, LOCAL_SEED_SECONDARY_TENANT.slug].sort(),
   platformUserEmails: [...expectedSeededUserEmails].sort(),
   platformUsernames: [...expectedSeededUsernames].sort(),
   platformUserStatuses: [
     `${LOCAL_SEED_USERS.superAdmin.email}:${LOCAL_SEED_USERS.superAdmin.accountStatus}`,
     `${LOCAL_SEED_USERS.tenantAdmin.email}:${LOCAL_SEED_USERS.tenantAdmin.accountStatus}`,
-    `${LOCAL_SEED_USERS.tenantUser.email}:${LOCAL_SEED_USERS.tenantUser.accountStatus}`
+    `${LOCAL_SEED_USERS.tenantUser.email}:${LOCAL_SEED_USERS.tenantUser.accountStatus}`,
+    `${LOCAL_SEED_EDGE_CASE_USERS.disabledUser.email}:${LOCAL_SEED_EDGE_CASE_USERS.disabledUser.accountStatus}`,
+    `${LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.email}:${LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.accountStatus}`,
+    `${LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.email}:${LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.accountStatus}`
   ].sort(),
   managementSystemTypeKeys: ["dealership:1.0", "inventory:1.0", "transportation:1.0"],
   managementSystemRoleCodes: [

@@ -26,12 +26,18 @@ const deterministicKeys = [
 export const createSeedExecutionSummary = (
   tenantSlug: string,
   schemaName: string,
-  loadedCounts: SeedLoadedCounts
+  loadedCounts: SeedLoadedCounts,
+  tenantId: string,
+  platformUserIds: { superAdmin: string; tenantAdmin: string; tenantUser: string },
+  edgeCaseUserIds: { disabledUser: string; tenantUserOrphan: string; tenantAdminMulti: string }
 ): SeedExecutionSummary => ({
+  tenantId,
   tenantSlug,
   schemaName,
   loadedCounts,
-  deterministicKeys
+  deterministicKeys,
+  platformUserIds,
+  edgeCaseUserIds
 });
 
 export const formatSeedExecutionSummary = (summary: SeedExecutionSummary): string => {

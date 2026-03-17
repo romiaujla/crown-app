@@ -1,8 +1,10 @@
 import { hashPassword } from "../../src/auth/passwords.js";
 import {
+  LOCAL_SEED_EDGE_CASE_USERS,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES,
   LOCAL_SEED_MANAGEMENT_SYSTEM_TYPES,
   LOCAL_SEED_ROLES,
+  LOCAL_SEED_SECONDARY_TENANT,
   LOCAL_SEED_TENANT,
   LOCAL_SEED_USERS
 } from "./constants.js";
@@ -15,10 +17,14 @@ type EnsureControlPlaneBaselineOptions = {
 export const ensureControlPlaneBaseline = async ({
   prisma
 }: EnsureControlPlaneBaselineOptions): Promise<SeedControlPlaneBaseline> => {
-  const [superAdminPasswordHash, tenantAdminPasswordHash, tenantUserPasswordHash] = await Promise.all([
+  const [superAdminPasswordHash, tenantAdminPasswordHash, tenantUserPasswordHash,
+    disabledUserPasswordHash, orphanUserPasswordHash, multiAdminPasswordHash] = await Promise.all([
     hashPassword(LOCAL_SEED_USERS.superAdmin.password, LOCAL_SEED_USERS.superAdmin.username),
     hashPassword(LOCAL_SEED_USERS.tenantAdmin.password, LOCAL_SEED_USERS.tenantAdmin.username),
-    hashPassword(LOCAL_SEED_USERS.tenantUser.password, LOCAL_SEED_USERS.tenantUser.username)
+    hashPassword(LOCAL_SEED_USERS.tenantUser.password, LOCAL_SEED_USERS.tenantUser.username),
+    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.disabledUser.password, LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username),
+    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.password, LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username),
+    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.password, LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username)
   ]);
 
   const tenant = await prisma.tenant.upsert({
@@ -271,6 +277,141 @@ export const ensureControlPlaneBaseline = async ({
     });
   }
 
+  // ── Edge-case users for auth contract tests ─────────────────────────────
+
+  const secondaryTenant = await prisma.tenant.upsert({
+    where: { slug: LOCAL_SEED_SECONDARY_TENANT.slug },
+    create: {
+      name: LOCAL_SEED_SECONDARY_TENANT.name,
+      slug: LOCAL_SEED_SECONDARY_TENANT.slug,
+      schemaName: LOCAL_SEED_SECONDARY_TENANT.schemaName,
+      status: LOCAL_SEED_SECONDARY_TENANT.status
+    },
+    update: {
+      name: LOCAL_SEED_SECONDARY_TENANT.name,
+      schemaName: LOCAL_SEED_SECONDARY_TENANT.schemaName,
+      status: LOCAL_SEED_SECONDARY_TENANT.status
+    }
+  });
+
+  const disabledUser = await prisma.user.upsert({
+    where: { email: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.email },
+    create: {
+      email: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.email,
+      username: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username,
+      passwordHash: disabledUserPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.displayName
+    },
+    update: {
+      username: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username,
+      passwordHash: disabledUserPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.disabledUser.displayName
+    }
+  });
+
+  // Disabled user still has a membership so the disabled-account check fires
+  // before any membership resolution.
+  const disabledUserMembership = await prisma.tenantMembership.upsert({
+    where: { userId_tenantId: { userId: disabledUser.id, tenantId: tenant.id } },
+    create: { userId: disabledUser.id, tenantId: tenant.id },
+    update: {}
+  });
+
+  await prisma.tenantMembershipRoleAssignment.upsert({
+    where: {
+      tenantMembershipId_roleId: {
+        tenantMembershipId: disabledUserMembership.id,
+        roleId: roles.get(LOCAL_SEED_USERS.tenantUser.role) as string
+      }
+    },
+    create: {
+      tenantMembershipId: disabledUserMembership.id,
+      roleId: roles.get(LOCAL_SEED_USERS.tenantUser.role) as string,
+      isPrimary: true
+    },
+    update: { isPrimary: true }
+  });
+
+  // Tenant user with no membership — triggers MISSING_TENANT_MEMBERSHIP
+  const tenantUserOrphan = await prisma.user.upsert({
+    where: { email: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.email },
+    create: {
+      email: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.email,
+      username: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username,
+      passwordHash: orphanUserPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.displayName
+    },
+    update: {
+      username: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username,
+      passwordHash: orphanUserPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.displayName
+    }
+  });
+
+  // Multi-tenant admin — membership in two tenants triggers MULTIPLE_TENANT_MEMBERSHIPS
+  const tenantAdminMulti = await prisma.user.upsert({
+    where: { email: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.email },
+    create: {
+      email: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.email,
+      username: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username,
+      passwordHash: multiAdminPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.displayName
+    },
+    update: {
+      username: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username,
+      passwordHash: multiAdminPasswordHash,
+      accountStatus: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.accountStatus,
+      displayName: LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.displayName
+    }
+  });
+
+  const multiMembership1 = await prisma.tenantMembership.upsert({
+    where: { userId_tenantId: { userId: tenantAdminMulti.id, tenantId: tenant.id } },
+    create: { userId: tenantAdminMulti.id, tenantId: tenant.id },
+    update: {}
+  });
+
+  await prisma.tenantMembershipRoleAssignment.upsert({
+    where: {
+      tenantMembershipId_roleId: {
+        tenantMembershipId: multiMembership1.id,
+        roleId: roles.get("tenant_admin") as string
+      }
+    },
+    create: {
+      tenantMembershipId: multiMembership1.id,
+      roleId: roles.get("tenant_admin") as string,
+      isPrimary: true
+    },
+    update: { isPrimary: true }
+  });
+
+  const multiMembership2 = await prisma.tenantMembership.upsert({
+    where: { userId_tenantId: { userId: tenantAdminMulti.id, tenantId: secondaryTenant.id } },
+    create: { userId: tenantAdminMulti.id, tenantId: secondaryTenant.id },
+    update: {}
+  });
+
+  await prisma.tenantMembershipRoleAssignment.upsert({
+    where: {
+      tenantMembershipId_roleId: {
+        tenantMembershipId: multiMembership2.id,
+        roleId: roles.get("tenant_admin") as string
+      }
+    },
+    create: {
+      tenantMembershipId: multiMembership2.id,
+      roleId: roles.get("tenant_admin") as string,
+      isPrimary: true
+    },
+    update: { isPrimary: true }
+  });
+
   return {
     tenantId: tenant.id,
     tenantSlug: tenant.slug,
@@ -279,6 +420,11 @@ export const ensureControlPlaneBaseline = async ({
       superAdmin: superAdmin.id,
       tenantAdmin: tenantAdmin.id,
       tenantUser: tenantUser.id
+    },
+    edgeCaseUserIds: {
+      disabledUser: disabledUser.id,
+      tenantUserOrphan: tenantUserOrphan.id,
+      tenantAdminMulti: tenantAdminMulti.id
     }
   };
 };

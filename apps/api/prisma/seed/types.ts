@@ -169,6 +169,11 @@ export type SeedControlPlaneBaseline = {
     tenantAdmin: string;
     tenantUser: string;
   };
+  edgeCaseUserIds: {
+    disabledUser: string;
+    tenantUserOrphan: string;
+    tenantAdminMulti: string;
+  };
 };
 
 export type SeedLoadedCounts = {
@@ -185,10 +190,21 @@ export type SeedLoadedCounts = {
 };
 
 export type SeedExecutionSummary = {
+  tenantId: string;
   tenantSlug: string;
   schemaName: string;
   loadedCounts: SeedLoadedCounts;
   deterministicKeys: string[];
+  platformUserIds: {
+    superAdmin: string;
+    tenantAdmin: string;
+    tenantUser: string;
+  };
+  edgeCaseUserIds: {
+    disabledUser: string;
+    tenantUserOrphan: string;
+    tenantAdminMulti: string;
+  };
 };
 
 export type SeedBootstrapContext = {

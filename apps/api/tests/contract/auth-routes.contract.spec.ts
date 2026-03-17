@@ -118,7 +118,7 @@ describe("auth routes contract", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.principal.role).toBe("tenant_user");
-    expect(response.body.role_context.tenant_id).toBe("tenant-acme");
+    expect(response.body.role_context.tenant_id).toBe(tenantUserClaims.tenant_id);
     expect(response.body.target_app).toBe("tenant");
     expect(response.body.routing).toEqual({
       status: AuthRoutingStatusEnum.ALLOWED,

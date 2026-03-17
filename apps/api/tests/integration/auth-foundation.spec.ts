@@ -156,6 +156,7 @@ describe("auth credential foundation", () => {
             username: "seed.tenant.user",
             passwordHash: "scrypt$salt$hash",
             accountStatus: PlatformUserAccountStatus.active,
+            displayName: "Tenant User",
             platformRoleAssignments: [],
             tenantMemberships: [
               {

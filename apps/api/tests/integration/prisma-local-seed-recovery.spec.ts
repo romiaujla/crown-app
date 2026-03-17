@@ -33,18 +33,17 @@ describe("prisma local seed recovery", () => {
     expect(recovered.loadedCounts.activityRecords).toBe(4);
     expect(harness.snapshot()).toEqual(baselineSnapshot);
     const expectedCanonicalSnapshot = createExpectedCanonicalSnapshot() as {
+      platformUserEmails: string[];
       platformUsernames: string[];
       platformUserStatuses: string[];
     };
     expect(harness.snapshot()).toMatchObject({
       ...expectedCanonicalSnapshot,
-      tenantSlugs: ["acme-local", "other-tenant"],
+      tenantSlugs: ["acme-local", "other-tenant", "zenith-local"],
       platformUserEmails: [
-        "other-user@test.local",
-        "super-admin@acme-local.test",
-        "tenant-admin@acme-local.test",
-        "tenant-user@acme-local.test"
-      ],
+        ...expectedCanonicalSnapshot.platformUserEmails as string[],
+        "other-user@test.local"
+      ].sort(),
       platformUsernames: [...expectedCanonicalSnapshot.platformUsernames, "other.user"].sort(),
       platformUserStatuses: [...expectedCanonicalSnapshot.platformUserStatuses, "other-user@test.local:active"].sort()
     });

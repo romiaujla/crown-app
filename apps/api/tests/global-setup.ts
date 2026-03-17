@@ -74,6 +74,16 @@ export default async function setup(): Promise<() => Promise<void>> {
         "Seed process completed successfully"
     );
 
+    // Expose seeded user IDs and tenant ID so test fixtures can build
+    // JWT claims that reference real database records.
+    process.env.SEED_SUPER_ADMIN_USER_ID = seedSummary.platformUserIds.superAdmin;
+    process.env.SEED_TENANT_ADMIN_USER_ID = seedSummary.platformUserIds.tenantAdmin;
+    process.env.SEED_TENANT_USER_ID = seedSummary.platformUserIds.tenantUser;
+    process.env.SEED_TENANT_ID = seedSummary.tenantId;
+    process.env.SEED_DISABLED_USER_ID = seedSummary.edgeCaseUserIds.disabledUser;
+    process.env.SEED_TENANT_USER_ORPHAN_ID = seedSummary.edgeCaseUserIds.tenantUserOrphan;
+    process.env.SEED_TENANT_ADMIN_MULTI_ID = seedSummary.edgeCaseUserIds.tenantAdminMulti;
+
     // ── 4. Close setup-only connections ─────────────────────────────────────
     // runLocalSeed does NOT call client.end() when a client is provided
     // (ownsClient = false in seed.ts).  Close everything explicitly so no

@@ -80,7 +80,7 @@ export const runLocalSeed = async (options: RunLocalSeedOptions = {}): Promise<S
 
       await client.query("COMMIT");
 
-      return createSeedExecutionSummary(controlPlane.tenantSlug, controlPlane.schemaName, loadedCounts);
+      return createSeedExecutionSummary(controlPlane.tenantSlug, controlPlane.schemaName, loadedCounts, controlPlane.tenantId, controlPlane.platformUserIds, controlPlane.edgeCaseUserIds);
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;

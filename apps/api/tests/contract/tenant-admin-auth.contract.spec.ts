@@ -9,7 +9,7 @@ describe("tenant admin auth contract", () => {
 
   it("allows tenant_admin for matching tenant", async () => {
     const response = await request(app)
-      .get("/api/v1/tenant/admin/tenant-acme")
+      .get(`/api/v1/tenant/admin/${tenantAdminClaims.tenant_id}`)
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(200);
