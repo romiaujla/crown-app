@@ -7,6 +7,7 @@ export type AuthIdentityRecord = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
+  displayName: string;
   platformRoleCodes: RoleEnum[];
   tenantMemberships: Array<{
     tenantId: string;
@@ -21,9 +22,10 @@ type RawAuthIdentityRecord = {
   username: string | null;
   passwordHash: string | null;
   accountStatus: PlatformUserAccountStatus;
+  displayName: string;
   platformRoleAssignments: Array<{
     role: {
-      authClass: RoleEnum;
+      authClass: string;
     };
   }>;
   tenantMemberships: Array<{
@@ -31,7 +33,7 @@ type RawAuthIdentityRecord = {
     roleAssignments: Array<{
       isPrimary: boolean;
       role: {
-        authClass: RoleEnum;
+        authClass: string;
       };
     }>;
   }>;
@@ -47,6 +49,7 @@ type UserLookup = {
     };
     include: {
       platformRoleAssignments: {
+        where: { assignmentStatus: "active" };
         include: {
           role: {
             select: {
@@ -56,8 +59,10 @@ type UserLookup = {
         };
       };
       tenantMemberships: {
+        where: { membershipStatus: "active" };
         include: {
           roleAssignments: {
+            where: { assignmentStatus: "active" };
             include: {
               role: {
                 select: {
@@ -82,11 +87,12 @@ const toAuthIdentityRecord = (record: RawAuthIdentityRecord): AuthIdentityRecord
   username: record.username,
   passwordHash: record.passwordHash,
   accountStatus: record.accountStatus,
-  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.role.authClass),
+  displayName: record.displayName,
+  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.role.authClass as RoleEnum),
   tenantMemberships: record.tenantMemberships.map((membership) => {
-    const roleCodes = membership.roleAssignments.map((assignment) => assignment.role.authClass);
+    const roleCodes = membership.roleAssignments.map((assignment) => assignment.role.authClass as RoleEnum);
     const primaryRoleCode =
-      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.role.authClass ??
+      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.role.authClass as RoleEnum | undefined ??
       (roleCodes.length === 1 ? roleCodes[0] : null);
 
     return {
@@ -111,6 +117,7 @@ export const findAuthIdentityByIdentifier = async (
     },
     include: {
       platformRoleAssignments: {
+        where: { assignmentStatus: "active" },
         include: {
           role: {
             select: {
@@ -120,8 +127,10 @@ export const findAuthIdentityByIdentifier = async (
         }
       },
       tenantMemberships: {
+        where: { membershipStatus: "active" },
         include: {
           roleAssignments: {
+            where: { assignmentStatus: "active" },
             include: {
               role: {
                 select: {

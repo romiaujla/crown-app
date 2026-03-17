@@ -9,7 +9,7 @@ describe("tenant user auth contract", () => {
 
   it("allows tenant_user for matching tenant user route", async () => {
     const response = await request(app)
-      .get("/api/v1/tenant/user/tenant-acme")
+      .get(`/api/v1/tenant/user/${tenantUserClaims.tenant_id}`)
       .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(200);

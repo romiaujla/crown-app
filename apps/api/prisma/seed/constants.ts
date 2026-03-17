@@ -1,13 +1,20 @@
 import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from "@crown/types";
+import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
-import { SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
+import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 
 export const LOCAL_SEED_TENANT = {
   name: "Acme Local Logistics",
   slug: "acme-local",
   schemaName: deriveTenantSchemaName("acme-local"),
+  status: TenantStatus.active
+} as const;
+
+export const LOCAL_SEED_SECONDARY_TENANT = {
+  name: "Zenith Logistics",
+  slug: "zenith-local",
+  schemaName: deriveTenantSchemaName("zenith-local"),
   status: TenantStatus.active
 } as const;
 
@@ -35,6 +42,30 @@ export const LOCAL_SEED_USERS = {
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Tenant User",
     role: RoleCodeEnum.DISPATCHER
+  }
+} as const;
+
+export const LOCAL_SEED_EDGE_CASE_USERS = {
+  disabledUser: {
+    email: "disabled-user@acme-local.test",
+    username: "disabled.user",
+    password: DEFAULT_SEEDED_PASSWORD,
+    accountStatus: PlatformUserAccountStatus.disabled,
+    displayName: "Disabled User"
+  },
+  tenantUserOrphan: {
+    email: "tenant-user-orphan@acme-local.test",
+    username: "tenant.user.orphan",
+    password: DEFAULT_SEEDED_PASSWORD,
+    accountStatus: PlatformUserAccountStatus.active,
+    displayName: "Tenant User Orphan"
+  },
+  tenantAdminMulti: {
+    email: "tenant-admin-multi@acme-local.test",
+    username: "tenant.admin.multi",
+    password: DEFAULT_SEEDED_PASSWORD,
+    accountStatus: PlatformUserAccountStatus.active,
+    displayName: "Tenant Admin Multi"
   }
 } as const;
 

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { RoleEnum } from "../../src/auth/claims.js";
-import { PlatformUserAccountStatus } from "../../src/domain/status-enums.js";
 import { findAuthIdentityByIdentifier } from "../../src/auth/identity.js";
 import { hashPassword, verifyPassword } from "../../src/auth/passwords.js";
 import { resolveAuthenticatedRoleContext } from "../../src/auth/role-resolution.js";
+import { PlatformUserAccountStatus } from "../../src/domain/status-enums.js";
 
 describe("auth credential foundation", () => {
   it("stores passwords as hashes that can be verified", async () => {
@@ -156,6 +156,7 @@ describe("auth credential foundation", () => {
             username: "seed.tenant.user",
             passwordHash: "scrypt$salt$hash",
             accountStatus: PlatformUserAccountStatus.active,
+            displayName: "Tenant User",
             platformRoleAssignments: [],
             tenantMemberships: [
               {

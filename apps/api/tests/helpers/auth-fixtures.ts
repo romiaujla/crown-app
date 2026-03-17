@@ -1,9 +1,6 @@
 import { RoleEnum, type JwtClaims } from "../../src/auth/claims.js";
-import {
-  AUTH_ACCESS_TOKEN_TTL_SECONDS,
-  AUTH_LOGIN_FIXTURES,
-  DISABLED_AUTH_TEST_USER
-} from "../../src/auth/default-auth-service.js";
+import { AUTH_ACCESS_TOKEN_TTL_SECONDS } from "../../src/auth/default-auth-service.js";
+import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 import { signAccessToken } from "../../src/auth/tokens.js";
 
 const futureExpiry = () => Math.floor(Date.now() / 1000) + AUTH_ACCESS_TOKEN_TTL_SECONDS;
@@ -23,44 +20,63 @@ export const createTamperedJwtToken = (claims: JwtClaims) => {
 };
 
 export const superAdminClaims: JwtClaims = {
-  sub: "user-super-admin",
+  sub: process.env.SEED_SUPER_ADMIN_USER_ID!,
   role: RoleEnum.SUPER_ADMIN,
   tenant_id: null,
   exp: futureExpiry()
 };
 
 export const tenantAdminClaims: JwtClaims = {
-  sub: "user-tenant-admin",
+  sub: process.env.SEED_TENANT_ADMIN_USER_ID!,
   role: RoleEnum.TENANT_ADMIN,
-  tenant_id: "tenant-acme",
+  tenant_id: process.env.SEED_TENANT_ID!,
   exp: futureExpiry()
 };
 
 export const tenantUserClaims: JwtClaims = {
-  sub: "user-tenant-user",
+  sub: process.env.SEED_TENANT_USER_ID!,
   role: RoleEnum.TENANT_USER,
-  tenant_id: "tenant-acme",
+  tenant_id: process.env.SEED_TENANT_ID!,
   exp: futureExpiry()
 };
 
 export const tenantUserWithoutMembershipClaims: JwtClaims = {
-  sub: "user-tenant-user-orphan",
+  sub: process.env.SEED_TENANT_USER_ORPHAN_ID!,
   role: RoleEnum.TENANT_USER,
-  tenant_id: "tenant-acme",
+  tenant_id: process.env.SEED_TENANT_ID!,
   exp: futureExpiry()
 };
 
 export const tenantAdminMultiTenantClaims: JwtClaims = {
-  sub: "user-tenant-admin-multi",
+  sub: process.env.SEED_TENANT_ADMIN_MULTI_ID!,
   role: RoleEnum.TENANT_ADMIN,
-  tenant_id: "tenant-acme",
+  tenant_id: process.env.SEED_TENANT_ID!,
   exp: futureExpiry()
 };
 
 export const loginFixtures = {
-  ...AUTH_LOGIN_FIXTURES,
+  superAdminByEmail: {
+    identifier: "super-admin@acme-local.test",
+    password: SEEDED_AUTH_PASSWORDS.superAdmin
+  },
+  superAdminByUsername: {
+    identifier: "super.admin",
+    password: SEEDED_AUTH_PASSWORDS.superAdmin
+  },
+  tenantAdminByEmail: {
+    identifier: "tenant-admin@acme-local.test",
+    password: SEEDED_AUTH_PASSWORDS.tenantAdmin
+  },
+  tenantUserWithoutMembership: {
+    identifier: "tenant-user-orphan@acme-local.test",
+    password: DEFAULT_SEEDED_PASSWORD
+  },
+  tenantAdminMultiTenant: {
+    identifier: "tenant-admin-multi@acme-local.test",
+    password: DEFAULT_SEEDED_PASSWORD
+  },
   disabledUser: {
-    identifier: DISABLED_AUTH_TEST_USER.email,
-    password: DISABLED_AUTH_TEST_USER.password
+    identifier: "disabled-user@acme-local.test",
+    password: DEFAULT_SEEDED_PASSWORD
   }
 } as const;
