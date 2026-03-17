@@ -40,6 +40,7 @@ Applies to all contributors (human and AI) across all repository directories.
 - Use UUID primary keys by default for new persistence models. Use separate stable business codes or slugs for deterministic fixtures, imports, and user-facing references rather than numeric or sequential record IDs.
 - Join or junction models must be named as the singular combination of the entities they connect (for example, `PlatformUserTenant`), and their database tables must use the corresponding plural `snake_case` form (for example, `platform_user_tenants`).
 - All public API request body properties and response body properties must use camelCase names. New or updated endpoint contracts using snake_case property names are non-compliant. Internal token fields such as JWT claims (`sub`, `exp`, `tenant_id`) are exempt when they follow an established RFC or cross-service convention.
+- Never pass resource identifiers (IDs) as URL path parameters or query parameters. All identifier-bearing lookups must use a POST with the identifier in the JSON request body. For example, use `POST /api/v1/platform/user` with `{ "userId": "..." }` instead of `GET /api/v1/platform/users/:userId`.
 - For database schema changes, update the Prisma schema/model definitions first, use Prisma to generate the migration SQL, inspect the generated SQL before applying it, and only hand-edit generated SQL when Prisma produces something unsafe or structurally incorrect.
 
 ## Branching Standard (Mandatory)

@@ -2,7 +2,12 @@ import {
   DashboardMetricWindowEnum,
   DeprovisionTypeEnum,
   ManagementSystemTypeCodeEnum,
+  PlatformUserAccountStatusEnum,
+  RoleAssignmentStatusEnum,
+  RoleAuthClassEnum,
   RoleCodeEnum,
+  RoleScopeEnum,
+  TenantMembershipStatusEnum,
   TenantStatusEnum,
 } from '@crown/types';
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from '../auth/claims.js';
@@ -26,6 +31,11 @@ const managementSystemTypeCodeValues = Object.values(ManagementSystemTypeCodeEnu
 const roleCodeValues = Object.values(RoleCodeEnum);
 const deprovisionTypeValues = Object.values(DeprovisionTypeEnum);
 const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
+const roleAuthClassValues = Object.values(RoleAuthClassEnum);
+const roleScopeValues = Object.values(RoleScopeEnum);
+const roleAssignmentStatusValues = Object.values(RoleAssignmentStatusEnum);
+const tenantMembershipStatusValues = Object.values(TenantMembershipStatusEnum);
+const platformUserAccountStatusEnumValues = Object.values(PlatformUserAccountStatusEnum);
 
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
@@ -66,6 +76,16 @@ export const authDocsDocument = {
       name: 'Platform Tenants',
       description:
         'Tenant reference-data, directory, provisioning, and deprovision routes protected for super admins.',
+    },
+    {
+      name: 'Platform Users',
+      description:
+        'User directory, detail, and membership management routes protected for super admins.',
+    },
+    {
+      name: 'Tenant Members',
+      description:
+        'Tenant member directory, role assignment, role revocation, and role catalog routes protected for tenant admins.',
     },
   ],
   components: {
@@ -564,6 +584,420 @@ export const authDocsDocument = {
           },
         },
       },
+      // ── Platform Users & Tenant Members schemas ──────────────────────────
+      RoleAuthClass: {
+        type: 'string',
+        enum: roleAuthClassValues,
+      },
+      RoleScope: {
+        type: 'string',
+        enum: roleScopeValues,
+      },
+      RoleAssignmentStatus: {
+        type: 'string',
+        enum: roleAssignmentStatusValues,
+      },
+      TenantMembershipStatus: {
+        type: 'string',
+        enum: tenantMembershipStatusValues,
+      },
+      PlatformUserAccountStatusEnum: {
+        type: 'string',
+        enum: platformUserAccountStatusEnumValues,
+      },
+      PlatformUserListItem: {
+        type: 'object',
+        required: [
+          'userId',
+          'email',
+          'username',
+          'displayName',
+          'accountStatus',
+          'platformRoles',
+          'tenantMembershipCount',
+          'createdAt',
+        ],
+        properties: {
+          userId: { type: 'string' },
+          email: { type: 'string', format: 'email' },
+          username: { type: 'string', nullable: true },
+          displayName: { type: 'string' },
+          accountStatus: { $ref: '#/components/schemas/PlatformUserAccountStatusEnum' },
+          platformRoles: { type: 'array', items: { type: 'string' } },
+          tenantMembershipCount: { type: 'integer', minimum: 0 },
+          createdAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      PlatformUserSearchFilter: {
+        type: 'object',
+        properties: {
+          search: { type: 'string', minLength: 1, maxLength: 200 },
+          accountStatus: { $ref: '#/components/schemas/PlatformUserAccountStatusEnum' },
+        },
+      },
+      PlatformUserSearchRequest: {
+        type: 'object',
+        properties: {
+          filters: { $ref: '#/components/schemas/PlatformUserSearchFilter' },
+          page: { type: 'integer', minimum: 1, default: 1 },
+          pageSize: { type: 'integer', minimum: 1, maximum: 100, default: 25 },
+        },
+      },
+      PlatformUserSearchData: {
+        type: 'object',
+        required: ['userList'],
+        properties: {
+          userList: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/PlatformUserListItem' },
+          },
+        },
+      },
+      PlatformUserSearchFilters: {
+        type: 'object',
+        required: ['search', 'accountStatus'],
+        properties: {
+          search: { type: 'string', nullable: true },
+          accountStatus: {
+            type: 'string',
+            nullable: true,
+            enum: platformUserAccountStatusEnumValues,
+          },
+        },
+      },
+      PlatformUserSearchMeta: {
+        type: 'object',
+        required: ['totalRecords', 'page', 'pageSize', 'filters'],
+        properties: {
+          totalRecords: { type: 'integer', minimum: 0 },
+          page: { type: 'integer', minimum: 1 },
+          pageSize: { type: 'integer', minimum: 1 },
+          filters: { $ref: '#/components/schemas/PlatformUserSearchFilters' },
+        },
+      },
+      PlatformUserSearchResponse: {
+        type: 'object',
+        required: ['data', 'meta'],
+        properties: {
+          data: { $ref: '#/components/schemas/PlatformUserSearchData' },
+          meta: { $ref: '#/components/schemas/PlatformUserSearchMeta' },
+        },
+      },
+      PlatformRoleAssignment: {
+        type: 'object',
+        required: [
+          'assignmentId',
+          'roleCode',
+          'displayName',
+          'authClass',
+          'assignmentStatus',
+          'assignedAt',
+        ],
+        properties: {
+          assignmentId: { type: 'string' },
+          roleCode: { type: 'string' },
+          displayName: { type: 'string' },
+          authClass: { $ref: '#/components/schemas/RoleAuthClass' },
+          assignmentStatus: { $ref: '#/components/schemas/RoleAssignmentStatus' },
+          assignedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      TenantMembershipRoleAssignmentSummary: {
+        type: 'object',
+        required: [
+          'assignmentId',
+          'roleCode',
+          'displayName',
+          'authClass',
+          'assignmentStatus',
+          'isPrimary',
+          'assignedAt',
+        ],
+        properties: {
+          assignmentId: { type: 'string' },
+          roleCode: { type: 'string' },
+          displayName: { type: 'string' },
+          authClass: { $ref: '#/components/schemas/RoleAuthClass' },
+          assignmentStatus: { $ref: '#/components/schemas/RoleAssignmentStatus' },
+          isPrimary: { type: 'boolean' },
+          assignedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      TenantMembershipSummary: {
+        type: 'object',
+        required: [
+          'membershipId',
+          'tenantId',
+          'tenantName',
+          'tenantSlug',
+          'membershipStatus',
+          'joinedAt',
+          'roleAssignments',
+        ],
+        properties: {
+          membershipId: { type: 'string' },
+          tenantId: { type: 'string' },
+          tenantName: { type: 'string' },
+          tenantSlug: { type: 'string' },
+          membershipStatus: { $ref: '#/components/schemas/TenantMembershipStatus' },
+          joinedAt: { type: 'string', format: 'date-time' },
+          roleAssignments: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantMembershipRoleAssignmentSummary' },
+          },
+        },
+      },
+      PlatformUserDetail: {
+        type: 'object',
+        required: [
+          'userId',
+          'email',
+          'username',
+          'displayName',
+          'accountStatus',
+          'createdAt',
+          'updatedAt',
+          'platformRoleAssignments',
+          'tenantMemberships',
+        ],
+        properties: {
+          userId: { type: 'string' },
+          email: { type: 'string', format: 'email' },
+          username: { type: 'string', nullable: true },
+          displayName: { type: 'string' },
+          accountStatus: { $ref: '#/components/schemas/PlatformUserAccountStatusEnum' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+          platformRoleAssignments: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/PlatformRoleAssignment' },
+          },
+          tenantMemberships: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantMembershipSummary' },
+          },
+        },
+      },
+      PlatformUserDetailRequest: {
+        type: 'object',
+        required: ['userId'],
+        properties: {
+          userId: { type: 'string', minLength: 1 },
+        },
+        additionalProperties: false,
+      },
+      PlatformUserDetailResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/PlatformUserDetail' },
+        },
+      },
+      CreateTenantMembershipRequest: {
+        type: 'object',
+        required: ['userId', 'tenantId', 'roleCode'],
+        properties: {
+          userId: { type: 'string', minLength: 1 },
+          tenantId: { type: 'string', minLength: 1 },
+          roleCode: { type: 'string', enum: roleCodeValues },
+        },
+      },
+      CreateTenantMembershipData: {
+        type: 'object',
+        required: [
+          'membershipId',
+          'userId',
+          'tenantId',
+          'roleCode',
+          'membershipStatus',
+          'assignmentStatus',
+          'isPrimary',
+        ],
+        properties: {
+          membershipId: { type: 'string' },
+          userId: { type: 'string' },
+          tenantId: { type: 'string' },
+          roleCode: { type: 'string' },
+          membershipStatus: { $ref: '#/components/schemas/TenantMembershipStatus' },
+          assignmentStatus: { $ref: '#/components/schemas/RoleAssignmentStatus' },
+          isPrimary: { type: 'boolean' },
+        },
+      },
+      CreateTenantMembershipResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/CreateTenantMembershipData' },
+        },
+      },
+      TenantMemberListItem: {
+        type: 'object',
+        required: [
+          'membershipId',
+          'userId',
+          'email',
+          'username',
+          'displayName',
+          'accountStatus',
+          'membershipStatus',
+          'joinedAt',
+          'roleAssignments',
+        ],
+        properties: {
+          membershipId: { type: 'string' },
+          userId: { type: 'string' },
+          email: { type: 'string', format: 'email' },
+          username: { type: 'string', nullable: true },
+          displayName: { type: 'string' },
+          accountStatus: { $ref: '#/components/schemas/PlatformUserAccountStatusEnum' },
+          membershipStatus: { $ref: '#/components/schemas/TenantMembershipStatus' },
+          joinedAt: { type: 'string', format: 'date-time' },
+          roleAssignments: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantMembershipRoleAssignmentSummary' },
+          },
+        },
+      },
+      TenantMemberSearchFilter: {
+        type: 'object',
+        properties: {
+          search: { type: 'string', minLength: 1, maxLength: 200 },
+          roleCode: { type: 'string', enum: roleCodeValues },
+        },
+      },
+      TenantMemberSearchRequest: {
+        type: 'object',
+        properties: {
+          filters: { $ref: '#/components/schemas/TenantMemberSearchFilter' },
+          page: { type: 'integer', minimum: 1, default: 1 },
+          pageSize: { type: 'integer', minimum: 1, maximum: 100, default: 25 },
+        },
+      },
+      TenantMemberSearchData: {
+        type: 'object',
+        required: ['memberList'],
+        properties: {
+          memberList: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantMemberListItem' },
+          },
+        },
+      },
+      TenantMemberSearchFilters: {
+        type: 'object',
+        required: ['search', 'roleCode'],
+        properties: {
+          search: { type: 'string', nullable: true },
+          roleCode: { type: 'string', nullable: true },
+        },
+      },
+      TenantMemberSearchMeta: {
+        type: 'object',
+        required: ['totalRecords', 'page', 'pageSize', 'filters'],
+        properties: {
+          totalRecords: { type: 'integer', minimum: 0 },
+          page: { type: 'integer', minimum: 1 },
+          pageSize: { type: 'integer', minimum: 1 },
+          filters: { $ref: '#/components/schemas/TenantMemberSearchFilters' },
+        },
+      },
+      TenantMemberSearchResponse: {
+        type: 'object',
+        required: ['data', 'meta'],
+        properties: {
+          data: { $ref: '#/components/schemas/TenantMemberSearchData' },
+          meta: { $ref: '#/components/schemas/TenantMemberSearchMeta' },
+        },
+      },
+      AssignTenantMemberRoleRequest: {
+        type: 'object',
+        required: ['membershipId', 'roleCode'],
+        properties: {
+          membershipId: { type: 'string', minLength: 1 },
+          roleCode: { type: 'string', enum: roleCodeValues },
+        },
+      },
+      AssignTenantMemberRoleData: {
+        type: 'object',
+        required: [
+          'assignmentId',
+          'membershipId',
+          'roleCode',
+          'displayName',
+          'assignmentStatus',
+          'isPrimary',
+          'assignedAt',
+        ],
+        properties: {
+          assignmentId: { type: 'string' },
+          membershipId: { type: 'string' },
+          roleCode: { type: 'string' },
+          displayName: { type: 'string' },
+          assignmentStatus: { $ref: '#/components/schemas/RoleAssignmentStatus' },
+          isPrimary: { type: 'boolean' },
+          assignedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      AssignTenantMemberRoleResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/AssignTenantMemberRoleData' },
+        },
+      },
+      RevokeTenantMemberRoleRequest: {
+        type: 'object',
+        required: ['membershipId', 'roleCode'],
+        properties: {
+          membershipId: { type: 'string', minLength: 1 },
+          roleCode: { type: 'string', enum: roleCodeValues },
+        },
+      },
+      RevokeTenantMemberRoleData: {
+        type: 'object',
+        required: ['assignmentId', 'membershipId', 'roleCode', 'assignmentStatus', 'endedAt'],
+        properties: {
+          assignmentId: { type: 'string' },
+          membershipId: { type: 'string' },
+          roleCode: { type: 'string' },
+          assignmentStatus: { $ref: '#/components/schemas/RoleAssignmentStatus' },
+          endedAt: { type: 'string', format: 'date-time' },
+        },
+      },
+      RevokeTenantMemberRoleResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/RevokeTenantMemberRoleData' },
+        },
+      },
+      TenantRoleItem: {
+        type: 'object',
+        required: ['roleCode', 'displayName', 'description', 'authClass', 'scope'],
+        properties: {
+          roleCode: { type: 'string' },
+          displayName: { type: 'string' },
+          description: { type: 'string', nullable: true },
+          authClass: { $ref: '#/components/schemas/RoleAuthClass' },
+          scope: { $ref: '#/components/schemas/RoleScope' },
+        },
+      },
+      TenantRoleListResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: {
+            type: 'object',
+            required: ['roles'],
+            properties: {
+              roles: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/TenantRoleItem' },
+              },
+            },
+          },
+        },
+      },
     },
   },
   paths: {
@@ -1012,6 +1446,334 @@ export const authDocsDocument = {
             'Tenant deprovision conflict',
             'conflict',
             'Tenant deprovision request conflicts with current tenant state',
+          ),
+        },
+      },
+    },
+    // ── Platform Users endpoints ─────────────────────────────────────────
+    '/api/v1/platform/users/search': {
+      post: {
+        tags: ['Platform Users'],
+        summary: 'Search platform users',
+        description:
+          'Protected super-admin route that returns the platform user directory with pagination. Accepts optional filters for search text and account status.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/PlatformUserSearchRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Platform user directory response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PlatformUserSearchResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid user search payload',
+            'validation_error',
+            'Invalid user search payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many user directory requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/platform/user': {
+      post: {
+        tags: ['Platform Users'],
+        summary: 'Get platform user detail',
+        description:
+          'Protected super-admin route that returns a single user profile with all platform role assignments and tenant memberships. The user identifier is provided in the request body.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/PlatformUserDetailRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Platform user detail response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PlatformUserDetailResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid user detail payload',
+            'validation_error',
+            'Invalid user detail payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '404': errorResponse('User not found', 'not_found', 'User not found'),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many user directory requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/membership': {
+      post: {
+        tags: ['Platform Users'],
+        summary: 'Create a tenant membership',
+        description:
+          'Protected super-admin route that creates a new tenant membership for a user with an initial role assignment. Validates user, tenant, and role existence before creation.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/CreateTenantMembershipRequest' },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Tenant membership created',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/CreateTenantMembershipResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant membership payload',
+            'validation_error',
+            'Invalid tenant membership payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '404': errorResponse('User, tenant, or role not found', 'not_found', 'User not found'),
+          '409': errorResponse(
+            'Membership already exists',
+            'conflict',
+            'User already has an active membership for this tenant',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many user management requests',
+          ),
+        },
+      },
+    },
+    // ── Tenant Members endpoints ─────────────────────────────────────────
+    '/api/v1/tenant/members/search': {
+      post: {
+        tags: ['Tenant Members'],
+        summary: 'Search tenant members',
+        description:
+          'Protected tenant-admin route that returns tenant members with pagination. Scoped to the authenticated tenant context. Accepts optional filters for search text and role code.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantMemberSearchRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant member directory response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantMemberSearchResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid member search payload',
+            'validation_error',
+            'Invalid member search payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse(
+            'No tenant context or insufficient role',
+            'forbidden_tenant',
+            'No tenant context available',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant member requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/tenant/members/roles': {
+      post: {
+        tags: ['Tenant Members'],
+        summary: 'Assign a role to a tenant member',
+        description:
+          'Protected tenant-admin route that assigns a role to a tenant member. Re-activates an existing inactive assignment for the same role instead of creating a duplicate.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/AssignTenantMemberRoleRequest' },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Role assigned to tenant member',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/AssignTenantMemberRoleResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid role assignment payload',
+            'validation_error',
+            'Invalid role assignment payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse(
+            'No tenant context or insufficient role',
+            'forbidden_tenant',
+            'No tenant context available',
+          ),
+          '404': errorResponse(
+            'Membership or role not found',
+            'not_found',
+            'Tenant membership not found',
+          ),
+          '409': errorResponse(
+            'Role already assigned',
+            'conflict',
+            'Member already has an active assignment for this role',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant member management requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/tenant/members/roles/revoke': {
+      post: {
+        tags: ['Tenant Members'],
+        summary: 'Revoke a role from a tenant member',
+        description:
+          'Protected tenant-admin route that revokes a role from a tenant member. Prevents revoking the last active role assignment to maintain at least one active role per member.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/RevokeTenantMemberRoleRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Role revoked from tenant member',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/RevokeTenantMemberRoleResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid role revocation payload or last role guard',
+            'validation_error',
+            'Invalid role revocation payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse(
+            'No tenant context or insufficient role',
+            'forbidden_tenant',
+            'No tenant context available',
+          ),
+          '404': errorResponse(
+            'Membership or role assignment not found',
+            'not_found',
+            'Tenant membership not found',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant member management requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/tenant/roles': {
+      get: {
+        tags: ['Tenant Members'],
+        summary: 'List tenant role catalog',
+        description:
+          'Protected tenant-admin route that returns all roles with scope "tenant". Used to populate role selection dropdowns.',
+        security: bearerSecurity,
+        responses: {
+          '200': {
+            description: 'Tenant role catalog response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantRoleListResponse' },
+              },
+            },
+          },
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse(
+            'No tenant context or insufficient role',
+            'forbidden_tenant',
+            'No tenant context available',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant member requests',
           ),
         },
       },
