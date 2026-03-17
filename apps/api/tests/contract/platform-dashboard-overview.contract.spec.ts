@@ -17,25 +17,25 @@ import {
 
 const createOverviewPayload = (): DashboardOverviewResponse => ({
   widgets: {
-    tenant_summary: {
-      total_tenant_count: 3,
-      tenant_user_count: 12,
-      tenant_status_counts: [
+    tenantSummary: {
+      totalTenantCount: 3,
+      tenantUserCount: 12,
+      tenantStatusCounts: [
         { status: TenantStatusEnum.ACTIVE, count: 1 },
         { status: TenantStatusEnum.INACTIVE, count: 1 },
         { status: TenantStatusEnum.PROVISIONING, count: 1 },
         { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 },
         { status: TenantStatusEnum.HARD_DEPROVISIONED, count: 0 },
       ],
-      new_tenant_counts: [
+      newTenantCounts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },
         { window: DashboardMetricWindowEnum.MONTH, count: 2 },
         { window: DashboardMetricWindowEnum.YEAR, count: 3 },
       ],
-      tenant_growth_rates: [
-        { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
-        { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
-        { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 },
+      tenantGrowthRates: [
+        { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 100 },
+        { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 33.33 },
+        { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 50 },
       ],
     },
   },
@@ -53,26 +53,26 @@ describe('platform dashboard overview contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.widgets.tenant_summary.total_tenant_count).toBe(3);
-    expect(response.body.widgets.tenant_summary.tenant_user_count).toBe(12);
-    expect(response.body.widgets.tenant_summary.tenant_status_counts).toEqual([
+    expect(response.body.widgets.tenantSummary.totalTenantCount).toBe(3);
+    expect(response.body.widgets.tenantSummary.tenantUserCount).toBe(12);
+    expect(response.body.widgets.tenantSummary.tenantStatusCounts).toEqual([
       { status: 'active', count: 1 },
       { status: 'inactive', count: 1 },
       { status: 'provisioning', count: 1 },
       { status: 'provisioning_failed', count: 0 },
       { status: 'hard_deprovisioned', count: 0 },
     ]);
-    expect(response.body.widgets.tenant_summary.new_tenant_counts).toEqual([
+    expect(response.body.widgets.tenantSummary.newTenantCounts).toEqual([
       { window: DashboardMetricWindowEnum.WEEK, count: 1 },
       { window: DashboardMetricWindowEnum.MONTH, count: 2 },
       { window: DashboardMetricWindowEnum.YEAR, count: 3 },
     ]);
-    expect(response.body.widgets.tenant_summary.tenant_growth_rates).toEqual([
-      { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
-      { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
-      { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 },
+    expect(response.body.widgets.tenantSummary.tenantGrowthRates).toEqual([
+      { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 100 },
+      { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 33.33 },
+      { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 50 },
     ]);
-    expect(response.body.widgets.tenant_summary.recent_activity).toBeUndefined();
+    expect(response.body.widgets.tenantSummary.recentActivity).toBeUndefined();
   });
 
   it('returns 401 for missing token', async () => {
@@ -84,7 +84,7 @@ describe('platform dashboard overview contract', () => {
     const response = await request(app).get('/api/v1/platform/dashboard/overview');
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('unauthenticated');
+    expect(response.body.errorCode).toBe('unauthenticated');
     expect(getOverview).not.toHaveBeenCalled();
   });
 
@@ -99,7 +99,7 @@ describe('platform dashboard overview contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
     expect(getOverview).not.toHaveBeenCalled();
   });
 
@@ -114,7 +114,7 @@ describe('platform dashboard overview contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
     expect(getOverview).not.toHaveBeenCalled();
   });
 });

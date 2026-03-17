@@ -35,7 +35,7 @@ const errorResponse = (description: string, errorCode: string, message: string) 
       examples: {
         default: {
           value: {
-            error_code: errorCode,
+            errorCode: errorCode,
             message,
           },
         },
@@ -134,9 +134,9 @@ export const authDocsDocument = {
       },
       ErrorResponse: {
         type: 'object',
-        required: ['error_code', 'message'],
+        required: ['errorCode', 'message'],
         properties: {
-          error_code: {
+          errorCode: {
             type: 'string',
             enum: authErrorCodeValues,
           },
@@ -146,18 +146,18 @@ export const authDocsDocument = {
       },
       AuthRouting: {
         type: 'object',
-        required: ['status', 'target_app', 'reason_code'],
+        required: ['status', 'targetApp', 'reasonCode'],
         properties: {
           status: {
             type: 'string',
             enum: authRoutingStatusValues,
           },
-          target_app: {
+          targetApp: {
             type: 'string',
             nullable: true,
             enum: authTargetAppValues,
           },
-          reason_code: {
+          reasonCode: {
             type: 'string',
             nullable: true,
             enum: authRoutingReasonCodeValues,
@@ -166,22 +166,22 @@ export const authDocsDocument = {
       },
       CurrentUserPrincipal: {
         type: 'object',
-        required: ['id', 'email', 'username', 'display_name', 'role', 'account_status'],
+        required: ['id', 'email', 'username', 'displayName', 'role', 'accountStatus'],
         properties: {
           id: { type: 'string' },
           email: { type: 'string', format: 'email' },
           username: { type: 'string', nullable: true },
-          display_name: { type: 'string' },
+          displayName: { type: 'string' },
           role: { $ref: '#/components/schemas/Role' },
-          account_status: { $ref: '#/components/schemas/PlatformUserAccountStatus' },
+          accountStatus: { $ref: '#/components/schemas/PlatformUserAccountStatus' },
         },
       },
       CurrentUserRoleContext: {
         type: 'object',
-        required: ['role', 'tenant_id'],
+        required: ['role', 'tenantId'],
         properties: {
           role: { $ref: '#/components/schemas/Role' },
-          tenant_id: { type: 'string', nullable: true },
+          tenantId: { type: 'string', nullable: true },
         },
       },
       CurrentUserTenant: {
@@ -204,12 +204,12 @@ export const authDocsDocument = {
       },
       CurrentUserResponse: {
         type: 'object',
-        required: ['principal', 'role_context', 'tenant', 'target_app', 'routing'],
+        required: ['principal', 'roleContext', 'tenant', 'targetApp', 'routing'],
         properties: {
           principal: { $ref: '#/components/schemas/CurrentUserPrincipal' },
-          role_context: { $ref: '#/components/schemas/CurrentUserRoleContext' },
+          roleContext: { $ref: '#/components/schemas/CurrentUserRoleContext' },
           tenant: { $ref: '#/components/schemas/CurrentUserTenant' },
-          target_app: {
+          targetApp: {
             type: 'string',
             enum: authTargetAppValues,
           },
@@ -218,16 +218,16 @@ export const authDocsDocument = {
       },
       AccessTokenResponse: {
         type: 'object',
-        required: ['access_token', 'claims', 'current_user'],
+        required: ['accessToken', 'claims', 'currentUser'],
         properties: {
-          access_token: { type: 'string' },
+          accessToken: { type: 'string' },
           claims: { $ref: '#/components/schemas/JwtClaims' },
-          current_user: { $ref: '#/components/schemas/CurrentUserResponse' },
+          currentUser: { $ref: '#/components/schemas/CurrentUserResponse' },
         },
       },
       TenantProvisionRequest: {
         type: 'object',
-        required: ['name', 'slug', 'management_system_type_code'],
+        required: ['name', 'slug', 'managementSystemTypeCode'],
         properties: {
           name: {
             type: 'string',
@@ -239,7 +239,7 @@ export const authDocsDocument = {
             pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
             description: 'Lowercase kebab-case tenant slug.',
           },
-          management_system_type_code: {
+          managementSystemTypeCode: {
             type: 'string',
             enum: managementSystemTypeCodeValues,
             description: 'Management system type to apply as the tenant role template.',
@@ -249,22 +249,22 @@ export const authDocsDocument = {
       TenantProvisionResponse: {
         type: 'object',
         required: [
-          'tenant_id',
+          'tenantId',
           'slug',
-          'schema_name',
-          'applied_versions',
-          'management_system_type_code',
+          'schemaName',
+          'appliedVersions',
+          'managementSystemTypeCode',
           'status',
         ],
         properties: {
-          tenant_id: { type: 'string' },
+          tenantId: { type: 'string' },
           slug: { type: 'string' },
-          schema_name: { type: 'string' },
-          applied_versions: {
+          schemaName: { type: 'string' },
+          appliedVersions: {
             type: 'array',
             items: { type: 'string' },
           },
-          management_system_type_code: {
+          managementSystemTypeCode: {
             type: 'string',
             enum: managementSystemTypeCodeValues,
           },
@@ -420,20 +420,20 @@ export const authDocsDocument = {
       },
       DeprovisionTenantRequest: {
         type: 'object',
-        required: ['tenant_id'],
+        required: ['tenantId'],
         properties: {
-          tenant_id: { type: 'string' },
+          tenantId: { type: 'string' },
           deprovisionType: { $ref: '#/components/schemas/DeprovisionType' },
         },
       },
       SoftDeprovisionTenantResponse: {
         type: 'object',
-        required: ['tenant_id', 'slug', 'schema_name', 'previous_status', 'status', 'operation'],
+        required: ['tenantId', 'slug', 'schemaName', 'previousStatus', 'status', 'operation'],
         properties: {
-          tenant_id: { type: 'string' },
+          tenantId: { type: 'string' },
           slug: { type: 'string' },
-          schema_name: { type: 'string' },
-          previous_status: {
+          schemaName: { type: 'string' },
+          previousStatus: {
             type: 'string',
             enum: tenantStatusValues,
           },
@@ -449,12 +449,12 @@ export const authDocsDocument = {
       },
       HardDeprovisionTenantResponse: {
         type: 'object',
-        required: ['tenant_id', 'slug', 'schema_name', 'previous_status', 'status', 'operation'],
+        required: ['tenantId', 'slug', 'schemaName', 'previousStatus', 'status', 'operation'],
         properties: {
-          tenant_id: { type: 'string' },
+          tenantId: { type: 'string' },
           slug: { type: 'string' },
-          schema_name: { type: 'string' },
-          previous_status: {
+          schemaName: { type: 'string' },
+          previousStatus: {
             type: 'string',
             enum: tenantStatusValues,
           },
@@ -503,12 +503,12 @@ export const authDocsDocument = {
       },
       TenantGrowthRateMetric: {
         type: 'object',
-        required: ['window', 'growth_rate_percentage'],
+        required: ['window', 'growthRatePercentage'],
         properties: {
           window: {
             $ref: '#/components/schemas/DashboardMetricWindow',
           },
-          growth_rate_percentage: {
+          growthRatePercentage: {
             type: 'number',
             description:
               'Percentage change between the current trailing window and the immediately preceding equal-length window, rounded to two decimals.',
@@ -518,32 +518,32 @@ export const authDocsDocument = {
       TenantSummaryWidget: {
         type: 'object',
         required: [
-          'total_tenant_count',
-          'tenant_user_count',
-          'tenant_status_counts',
-          'new_tenant_counts',
-          'tenant_growth_rates',
+          'totalTenantCount',
+          'tenantUserCount',
+          'tenantStatusCounts',
+          'newTenantCounts',
+          'tenantGrowthRates',
         ],
         properties: {
-          total_tenant_count: {
+          totalTenantCount: {
             type: 'integer',
             minimum: 0,
           },
-          tenant_user_count: {
+          tenantUserCount: {
             type: 'integer',
             minimum: 0,
           },
-          tenant_status_counts: {
+          tenantStatusCounts: {
             type: 'array',
             items: { $ref: '#/components/schemas/TenantStatusCountEntry' },
           },
-          new_tenant_counts: {
+          newTenantCounts: {
             type: 'array',
             description:
               'Ordered `week`, `month`, and `year` trailing-window tenant creation counts.',
             items: { $ref: '#/components/schemas/NewTenantCountMetric' },
           },
-          tenant_growth_rates: {
+          tenantGrowthRates: {
             type: 'array',
             description:
               'Ordered `week`, `month`, and `year` percentage changes comparing the current trailing window to the immediately preceding equal-length window.',
@@ -557,9 +557,9 @@ export const authDocsDocument = {
         properties: {
           widgets: {
             type: 'object',
-            required: ['tenant_summary'],
+            required: ['tenantSummary'],
             properties: {
-              tenant_summary: { $ref: '#/components/schemas/TenantSummaryWidget' },
+              tenantSummary: { $ref: '#/components/schemas/TenantSummaryWidget' },
             },
           },
         },
@@ -618,29 +618,29 @@ export const authDocsDocument = {
                 examples: {
                   disabledAccount: {
                     value: {
-                      error_code: 'disabled_account',
+                      errorCode: 'disabled_account',
                       message: 'Account is disabled',
                     },
                   },
                   tenantMembershipRequired: {
                     value: {
-                      error_code: 'tenant_membership_required',
+                      errorCode: 'tenant_membership_required',
                       message: 'An active tenant membership is required for this user',
                       routing: {
                         status: 'access_denied',
-                        target_app: null,
-                        reason_code: 'missing_active_tenant_membership',
+                        targetApp: null,
+                        reasonCode: 'missing_active_tenant_membership',
                       },
                     },
                   },
                   tenantSelectionRequired: {
                     value: {
-                      error_code: 'tenant_selection_required',
+                      errorCode: 'tenant_selection_required',
                       message: 'Tenant selection is required and is not yet supported',
                       routing: {
                         status: 'selection_required',
-                        target_app: null,
-                        reason_code: 'multiple_active_tenant_memberships',
+                        targetApp: null,
+                        reasonCode: 'multiple_active_tenant_memberships',
                       },
                     },
                   },
@@ -680,23 +680,23 @@ export const authDocsDocument = {
                 examples: {
                   tenantMembershipRequired: {
                     value: {
-                      error_code: 'tenant_membership_required',
+                      errorCode: 'tenant_membership_required',
                       message: 'An active tenant membership is required for this user',
                       routing: {
                         status: 'access_denied',
-                        target_app: null,
-                        reason_code: 'missing_active_tenant_membership',
+                        targetApp: null,
+                        reasonCode: 'missing_active_tenant_membership',
                       },
                     },
                   },
                   tenantSelectionRequired: {
                     value: {
-                      error_code: 'tenant_selection_required',
+                      errorCode: 'tenant_selection_required',
                       message: 'Tenant selection is required and is not yet supported',
                       routing: {
                         status: 'selection_required',
-                        target_app: null,
-                        reason_code: 'multiple_active_tenant_memberships',
+                        targetApp: null,
+                        reasonCode: 'multiple_active_tenant_memberships',
                       },
                     },
                   },

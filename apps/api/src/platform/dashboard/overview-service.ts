@@ -114,20 +114,20 @@ export const getPlatformDashboardOverview = async (
 
   return DashboardOverviewResponseSchema.parse({
     widgets: {
-      tenant_summary: {
-        total_tenant_count: totalTenantCount,
-        tenant_user_count: tenantUserCount,
-        tenant_status_counts: tenantStatusOrder.map((status) => ({
+      tenantSummary: {
+        totalTenantCount: totalTenantCount,
+        tenantUserCount: tenantUserCount,
+        tenantStatusCounts: tenantStatusOrder.map((status) => ({
           status,
           count: statusCountMap.get(status) ?? 0,
         })),
-        new_tenant_counts: windowCounts.map(({ currentCount, window }) => ({
+        newTenantCounts: windowCounts.map(({ currentCount, window }) => ({
           window,
           count: currentCount,
         })),
-        tenant_growth_rates: windowCounts.map(({ currentCount, previousCount, window }) => ({
+        tenantGrowthRates: windowCounts.map(({ currentCount, previousCount, window }) => ({
           window,
-          growth_rate_percentage: calculateGrowthRatePercentage(currentCount, previousCount),
+          growthRatePercentage: calculateGrowthRatePercentage(currentCount, previousCount),
         })),
       },
     },

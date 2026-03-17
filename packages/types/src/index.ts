@@ -182,21 +182,21 @@ export type NewTenantCountMetric = z.infer<typeof NewTenantCountMetricSchema>;
 
 export const TenantGrowthRateMetricSchema = z.object({
   window: DashboardMetricWindowSchema,
-  growth_rate_percentage: z.number(),
+  growthRatePercentage: z.number(),
 });
 export type TenantGrowthRateMetric = z.infer<typeof TenantGrowthRateMetricSchema>;
 
 export const TenantSummaryWidgetSchema = z.object({
-  total_tenant_count: z.number().int().nonnegative(),
-  tenant_user_count: z.number().int().nonnegative(),
-  tenant_status_counts: z.array(TenantStatusCountEntrySchema),
-  new_tenant_counts: z.array(NewTenantCountMetricSchema),
-  tenant_growth_rates: z.array(TenantGrowthRateMetricSchema),
+  totalTenantCount: z.number().int().nonnegative(),
+  tenantUserCount: z.number().int().nonnegative(),
+  tenantStatusCounts: z.array(TenantStatusCountEntrySchema),
+  newTenantCounts: z.array(NewTenantCountMetricSchema),
+  tenantGrowthRates: z.array(TenantGrowthRateMetricSchema),
 });
 export type TenantSummaryWidget = z.infer<typeof TenantSummaryWidgetSchema>;
 
 export const DashboardOverviewWidgetsSchema = z.object({
-  tenant_summary: TenantSummaryWidgetSchema,
+  tenantSummary: TenantSummaryWidgetSchema,
 });
 export type DashboardOverviewWidgets = z.infer<typeof DashboardOverviewWidgetsSchema>;
 

@@ -24,7 +24,7 @@ describe('tenant user rbac integration', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_tenant');
+    expect(response.body.errorCode).toBe('forbidden_tenant');
   });
 
   it('denies tenant-user escalation to tenant-admin auth class', async () => {
@@ -34,7 +34,7 @@ describe('tenant user rbac integration', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 
   it('denies malformed claims', async () => {
@@ -50,6 +50,6 @@ describe('tenant user rbac integration', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('invalid_claims');
+    expect(response.body.errorCode).toBe('invalid_claims');
   });
 });

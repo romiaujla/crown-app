@@ -8,9 +8,9 @@ import { signAccessToken } from '../auth/tokens.js';
 import { authenticate } from '../middleware/authenticate.js';
 
 import {
+  AccessTokenResponseSchema,
   LoginRequestSchema,
   LogoutRequestSchema,
-  AccessTokenResponseSchema,
 } from '../auth/contracts.js';
 import { sendAuthError } from '../types/errors.js';
 
@@ -24,13 +24,13 @@ const toCurrentUserResponse = (currentUser: CurrentUserContext) =>
       id: currentUser.principal.id,
       email: currentUser.principal.email,
       username: currentUser.principal.username ?? null,
-      display_name: currentUser.principal.displayName,
+      displayName: currentUser.principal.displayName,
       role: currentUser.principal.role,
-      account_status: currentUser.principal.accountStatus,
+      accountStatus: currentUser.principal.accountStatus,
     },
-    role_context: {
+    roleContext: {
       role: currentUser.roleContext.role,
-      tenant_id: currentUser.roleContext.tenantId ?? null,
+      tenantId: currentUser.roleContext.tenantId ?? null,
     },
     tenant: currentUser.tenant
       ? {
@@ -40,11 +40,11 @@ const toCurrentUserResponse = (currentUser: CurrentUserContext) =>
           role: currentUser.tenant.role,
         }
       : null,
-    target_app: currentUser.targetApp,
+    targetApp: currentUser.targetApp,
     routing: {
       status: currentUser.routing.status,
-      target_app: currentUser.routing.targetApp,
-      reason_code: currentUser.routing.reasonCode,
+      targetApp: currentUser.routing.targetApp,
+      reasonCode: currentUser.routing.reasonCode,
     },
   });
 
@@ -63,9 +63,9 @@ export const createAuthRouter = (options: AuthRouterOptions = {}) => {
     }
 
     const response = AccessTokenResponseSchema.parse({
-      access_token: signAccessToken(result.claims),
+      accessToken: signAccessToken(result.claims),
       claims: result.claims,
-      current_user: toCurrentUserResponse(result.currentUser),
+      currentUser: toCurrentUserResponse(result.currentUser),
     });
 
     return res.status(200).json(response);

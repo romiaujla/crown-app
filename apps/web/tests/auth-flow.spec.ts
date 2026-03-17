@@ -33,25 +33,25 @@ type TenantDirectoryFixture = TenantDirectoryListResponse;
 
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
   widgets: {
-    tenant_summary: {
-      total_tenant_count: 5,
-      tenant_user_count: 12,
-      tenant_status_counts: [
+    tenantSummary: {
+      totalTenantCount: 5,
+      tenantUserCount: 12,
+      tenantStatusCounts: [
         { status: TenantStatusEnum.ACTIVE, count: 3 },
         { status: TenantStatusEnum.INACTIVE, count: 1 },
         { status: TenantStatusEnum.PROVISIONING, count: 0 },
         { status: TenantStatusEnum.PROVISIONING_FAILED, count: 0 },
         { status: TenantStatusEnum.HARD_DEPROVISIONED, count: 1 },
       ],
-      new_tenant_counts: [
+      newTenantCounts: [
         { window: DashboardMetricWindowEnum.WEEK, count: 1 },
         { window: DashboardMetricWindowEnum.MONTH, count: 2 },
         { window: DashboardMetricWindowEnum.YEAR, count: 4 },
       ],
-      tenant_growth_rates: [
-        { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
-        { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 33.33 },
-        { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 50 },
+      tenantGrowthRates: [
+        { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 100 },
+        { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 33.33 },
+        { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 50 },
       ],
     },
   },
@@ -138,20 +138,20 @@ const buildCurrentUser = (persona: Persona) => {
       id: `${persona}-user`,
       email: `${persona}@crown.test`,
       username: persona,
-      display_name: persona === 'super_admin' ? 'Platform Operator' : 'Northwind User',
+      displayName: persona === 'super_admin' ? 'Platform Operator' : 'Northwind User',
       role: persona,
-      account_status: 'active',
+      accountStatus: 'active',
     },
-    role_context: {
+    roleContext: {
       role: persona,
-      tenant_id: tenant?.id ?? null,
+      tenantId: tenant?.id ?? null,
     },
     tenant,
-    target_app: persona === 'super_admin' ? 'platform' : 'tenant',
+    targetApp: persona === 'super_admin' ? 'platform' : 'tenant',
     routing: {
       status: 'allowed',
-      target_app: persona === 'super_admin' ? 'platform' : 'tenant',
-      reason_code: null,
+      targetApp: persona === 'super_admin' ? 'platform' : 'tenant',
+      reasonCode: null,
     },
   };
 };
@@ -178,7 +178,7 @@ const setupAuthRoutes = async (
         body:
           options.overviewStatus && options.overviewStatus !== 200
             ? JSON.stringify({
-                error_code: 'overview_unavailable',
+                errorCode: 'overview_unavailable',
                 message: 'Dashboard overview is unavailable.',
               })
             : JSON.stringify(options.overviewResponse ?? buildDashboardOverview()),
@@ -192,7 +192,7 @@ const setupAuthRoutes = async (
       if (options.tenantDirectoryStatus && options.tenantDirectoryStatus !== 200) {
         await route.fulfill({
           body: JSON.stringify({
-            error_code: 'tenant_directory_unavailable',
+            errorCode: 'tenant_directory_unavailable',
             message: 'Tenant directory is unavailable.',
           }),
           contentType: 'application/json',
@@ -224,7 +224,7 @@ const setupAuthRoutes = async (
       if (!options.loginPersona) {
         await route.fulfill({
           body: JSON.stringify({
-            error_code: 'invalid_credentials',
+            errorCode: 'invalid_credentials',
             message: 'Invalid username/email or password.',
           }),
           contentType: 'application/json',
@@ -238,9 +238,9 @@ const setupAuthRoutes = async (
       const claims = createAccessTokenPayload(options.loginPersona);
       await route.fulfill({
         body: JSON.stringify({
-          access_token: accessToken,
+          accessToken: accessToken,
           claims,
-          current_user: currentUser,
+          currentUser: currentUser,
         }),
         contentType: 'application/json',
         status: 200,
@@ -252,7 +252,7 @@ const setupAuthRoutes = async (
       if (options.meStatus && options.meStatus !== 200) {
         await route.fulfill({
           body: JSON.stringify({
-            error_code: 'unauthenticated',
+            errorCode: 'unauthenticated',
             message: 'Session is no longer valid.',
           }),
           contentType: 'application/json',
@@ -265,7 +265,7 @@ const setupAuthRoutes = async (
       if (!persona) {
         await route.fulfill({
           body: JSON.stringify({
-            error_code: 'unauthenticated',
+            errorCode: 'unauthenticated',
             message: 'Missing bearer token.',
           }),
           contentType: 'application/json',
@@ -816,9 +816,9 @@ test('session expiry warning appears before timed logout and redirects to login'
     if (url.endsWith('/login')) {
       await route.fulfill({
         body: JSON.stringify({
-          access_token: accessToken,
+          accessToken: accessToken,
           claims,
-          current_user: buildCurrentUser('tenant_user'),
+          currentUser: buildCurrentUser('tenant_user'),
         }),
         contentType: 'application/json',
         status: 200,

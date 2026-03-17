@@ -175,7 +175,7 @@ export const PlatformShellFrame = ({
       sectionTitle={sectionTitle}
       title="Crown Control Plane"
       tone="platform"
-      userDisplayName={currentUser.principal.display_name}
+      userDisplayName={currentUser.principal.displayName}
       userRole={currentUser.principal.role}
     />
   );

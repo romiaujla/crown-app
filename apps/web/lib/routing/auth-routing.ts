@@ -31,14 +31,14 @@ const isUnauthorizedPath = (path: string) => trimPath(path).startsWith(UNAUTHORI
 
 const isAllowedPathForUser = (path: string, currentUser: CurrentUserResponse) => {
   if (currentUser.routing.status !== 'allowed') return false;
-  if (isPlatformPath(path)) return currentUser.target_app === 'platform';
-  if (isTenantPath(path)) return currentUser.target_app === 'tenant' && currentUser.tenant !== null;
+  if (isPlatformPath(path)) return currentUser.targetApp === 'platform';
+  if (isTenantPath(path)) return currentUser.targetApp === 'tenant' && currentUser.tenant !== null;
   if (path === '/') return true;
   return false;
 };
 
 export const toRecommendedPath = (currentUser: CurrentUserResponse) =>
-  currentUser.target_app === 'platform' ? PLATFORM_PATH : TENANT_PATH;
+  currentUser.targetApp === 'platform' ? PLATFORM_PATH : TENANT_PATH;
 
 export const captureReturnPath = (path: string) => {
   if (!path || isLoginPath(path) || isUnauthorizedPath(path)) return;
@@ -68,7 +68,7 @@ export const resolveProtectedPath = (
   if (currentUser.routing.status !== 'allowed') {
     return {
       kind: 'unauthorized',
-      reason: currentUser.routing.reason_code ?? 'route_not_allowed',
+      reason: currentUser.routing.reasonCode ?? 'route_not_allowed',
     };
   }
 
