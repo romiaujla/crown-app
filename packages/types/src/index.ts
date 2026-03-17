@@ -346,6 +346,13 @@ export const PlatformUserDetailSchema = z.object({
 });
 export type PlatformUserDetail = z.infer<typeof PlatformUserDetailSchema>;
 
+export const PlatformUserDetailRequestSchema = z
+  .object({
+    userId: z.string().min(1),
+  })
+  .strict();
+export type PlatformUserDetailRequest = z.infer<typeof PlatformUserDetailRequestSchema>;
+
 export const PlatformUserDetailResponseSchema = z.object({
   data: PlatformUserDetailSchema,
 });

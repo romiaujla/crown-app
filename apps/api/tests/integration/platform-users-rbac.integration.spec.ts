@@ -29,8 +29,9 @@ describe('platform users rbac integration', () => {
 
   it('denies tenant_admin from viewing platform user detail', async () => {
     const response = await request(app)
-      .get('/api/v1/platform/users/user-123')
-      .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`);
+      .post('/api/v1/platform/user')
+      .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`)
+      .send({ userId: 'user-123' });
 
     expect(response.status).toBe(403);
     expect(response.body.errorCode).toBe('forbidden_role');

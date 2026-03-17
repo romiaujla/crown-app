@@ -778,6 +778,14 @@ export const authDocsDocument = {
           },
         },
       },
+      PlatformUserDetailRequest: {
+        type: 'object',
+        required: ['userId'],
+        properties: {
+          userId: { type: 'string', minLength: 1 },
+        },
+        additionalProperties: false,
+      },
       PlatformUserDetailResponse: {
         type: 'object',
         required: ['data'],
@@ -1486,22 +1494,21 @@ export const authDocsDocument = {
         },
       },
     },
-    '/api/v1/platform/users/{userId}': {
-      get: {
+    '/api/v1/platform/user': {
+      post: {
         tags: ['Platform Users'],
         summary: 'Get platform user detail',
         description:
-          'Protected super-admin route that returns a single user profile with all platform role assignments and tenant memberships.',
+          'Protected super-admin route that returns a single user profile with all platform role assignments and tenant memberships. The user identifier is provided in the request body.',
         security: bearerSecurity,
-        parameters: [
-          {
-            name: 'userId',
-            in: 'path',
-            required: true,
-            schema: { type: 'string' },
-            description: 'The user identifier.',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/PlatformUserDetailRequest' },
+            },
           },
-        ],
+        },
         responses: {
           '200': {
             description: 'Platform user detail response',
@@ -1512,9 +1519,9 @@ export const authDocsDocument = {
             },
           },
           '400': errorResponse(
-            'Missing userId parameter',
+            'Invalid user detail payload',
             'validation_error',
-            'Missing userId parameter',
+            'Invalid user detail payload',
           ),
           '401': errorResponse(
             'Unauthenticated request',

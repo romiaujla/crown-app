@@ -1,4 +1,8 @@
-import { CreateTenantMembershipRequestSchema, PlatformUserSearchRequestSchema } from '@crown/types';
+import {
+  CreateTenantMembershipRequestSchema,
+  PlatformUserDetailRequestSchema,
+  PlatformUserSearchRequestSchema,
+} from '@crown/types';
 import { Router, type RequestHandler } from 'express';
 
 import { AuthErrorCodeEnum, RoleEnum } from '../auth/claims.js';
@@ -59,23 +63,23 @@ export const createPlatformUsersRouter = (options: PlatformUsersRouterOptions = 
     },
   );
 
-  router.get(
-    '/platform/users/:userId',
+  router.post(
+    '/platform/user',
     authenticate,
     authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     searchRateLimitMiddleware,
     async (req, res) => {
-      const { userId } = req.params;
-      if (!userId) {
+      const parsed = PlatformUserDetailRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
         return sendAuthError(
           res,
           400,
           AuthErrorCodeEnum.VALIDATION_ERROR,
-          'Missing userId parameter',
+          'Invalid user detail payload',
         );
       }
 
-      const response = await getPlatformUserDetail(userId);
+      const response = await getPlatformUserDetail(parsed.data.userId);
       if (!response) {
         return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, 'User not found');
       }
