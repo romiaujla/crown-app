@@ -23,6 +23,7 @@ describe("tenant schema versioning integration", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
     rows.length = 0;
 
     findUnique.mockImplementation(async ({ where }: { where: { tenantId_version: { tenantId: string; version: string } } }) => {

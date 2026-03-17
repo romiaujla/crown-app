@@ -7,6 +7,9 @@ export default defineConfig({
     passWithNoTests: true,
     setupFiles: ["tests/setup.ts"],
     hookTimeout: 120000,
-    testTimeout: 120000
+    testTimeout: 120000,
+    threads: {
+      singleThread: true
+    }
   }
 });
