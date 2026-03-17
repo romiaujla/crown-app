@@ -10,7 +10,7 @@ describe("tenant admin rbac integration", () => {
   it("allows matching tenant scope", async () => {
     const response = await request(app)
       .post("/api/v1/tenant/access")
-      .send({ authClass: "tenant_admin", tenantId: "tenant-acme" })
+      .send({ authClass: "tenant_admin", tenantId: tenantAdminClaims.tenant_id })
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(200);

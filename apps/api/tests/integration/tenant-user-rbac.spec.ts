@@ -10,7 +10,7 @@ describe("tenant user rbac integration", () => {
   it("allows tenant-user auth class on matching tenant", async () => {
     const response = await request(app)
       .post("/api/v1/tenant/access")
-      .send({ authClass: "tenant_user", tenantId: "tenant-acme" })
+      .send({ authClass: "tenant_user", tenantId: tenantUserClaims.tenant_id })
       .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(200);
@@ -30,7 +30,7 @@ describe("tenant user rbac integration", () => {
   it("denies tenant-user escalation to tenant-admin auth class", async () => {
     const response = await request(app)
       .post("/api/v1/tenant/access")
-      .send({ authClass: "tenant_admin", tenantId: "tenant-acme" })
+      .send({ authClass: "tenant_admin", tenantId: tenantUserClaims.tenant_id })
       .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
@@ -43,7 +43,7 @@ describe("tenant user rbac integration", () => {
 
     const response = await request(app)
       .post("/api/v1/tenant/access")
-      .send({ authClass: "tenant_user", tenantId: "tenant-acme" })
+      .send({ authClass: "tenant_user", tenantId: tenantUserClaims.tenant_id })
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(401);
