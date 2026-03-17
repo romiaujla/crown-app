@@ -4,6 +4,7 @@ import { z } from "zod";
 import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
 import { authenticate } from "../middleware/authenticate.js";
 import { authorize } from "../middleware/authorize.js";
+import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
 import { sendAuthError } from "../types/errors.js";
 
 export const authorizationRouter = Router();
@@ -13,11 +14,23 @@ const TenantAccessRequestSchema = z.object({
   tenantId: z.string().min(1)
 });
 
-authorizationRouter.get("/platform/ping", authenticate, authorize({ namespace: "platform" }), (_req, res) => {
-  res.status(200).json({ ok: true, namespace: "platform" });
+const authorizationRateLimitMiddleware = createRateLimitMiddleware({
+  windowMs: 60_000,
+  maxRequests: 100,
+  message: "Too many authorization requests"
 });
 
-authorizationRouter.post("/tenant/access", authenticate, (req, res, next) => {
+authorizationRouter.get(
+  "/platform/ping",
+  authenticate,
+  authorize({ namespace: "platform" }),
+  authorizationRateLimitMiddleware,
+  (_req, res) => {
+    res.status(200).json({ ok: true, namespace: "platform" });
+  }
+);
+
+authorizationRouter.post("/tenant/access", authenticate, authorizationRateLimitMiddleware, (req, res, next) => {
   const parsed = TenantAccessRequestSchema.safeParse(req.body);
   if (!parsed.success) {
     return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant access payload");
