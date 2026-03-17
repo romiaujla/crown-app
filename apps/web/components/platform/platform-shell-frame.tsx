@@ -1,6 +1,5 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import {
   Activity,
   BadgeDollarSign,
@@ -13,6 +12,7 @@ import {
   Users,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import type { ReactNode } from 'react';
 
 import { StatusPanel } from '@/components/auth/status-panel';
 import { useProtectedShell } from '@/components/auth/use-protected-shell';

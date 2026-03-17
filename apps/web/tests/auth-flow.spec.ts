@@ -1,10 +1,10 @@
-import { expect, test, type Page } from '@playwright/test';
 import {
   DashboardMetricWindowEnum,
   TenantStatusEnum,
   type DashboardOverviewResponse,
   type TenantDirectoryListResponse,
 } from '@crown/types';
+import { expect, test, type Page } from '@playwright/test';
 
 const API_BASE_URL = 'http://localhost:4000';
 const ACCESS_TOKEN_STORAGE_KEY = 'crown.auth.access_token';

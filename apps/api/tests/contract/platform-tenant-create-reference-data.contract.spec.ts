@@ -1,7 +1,7 @@
 import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from '@crown/types';
+import type { RequestHandler } from 'express';
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
-import type { RequestHandler } from 'express';
 
 import { buildApp } from '../../src/app.js';
 import { createPlatformTenantsRouter } from '../../src/routes/platform-tenants.js';

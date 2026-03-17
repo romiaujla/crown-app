@@ -21,7 +21,9 @@
     "specify.audit": "node scripts/specify-audit.mjs",
     "specify.drift": "node scripts/specify-drift.mjs",
     "prepare": "husky",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "test:web": "pnpm --filter @crown/web test",
+    "test:api": "pnpm --filter @crown/api test"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
