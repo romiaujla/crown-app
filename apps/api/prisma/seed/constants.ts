@@ -165,11 +165,11 @@ export const LOCAL_SEED_RESET_TABLES = [
   "activity_records",
   "load_stops",
   "loads",
-  "equipment_assets",
   "tenant_role_assignments",
-  "tenant_role_definitions",
   "people",
   "locations",
+  "equipment_assets",
   "organizations",
+  "tenant_role_definitions",
   "reference_data_sets"
 ] as const;

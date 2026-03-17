@@ -19,6 +19,7 @@ vi.mock("../../src/db/prisma.js", () => ({
 describe("tenant migration bootstrap integration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
     findUnique.mockResolvedValue(null);
     create.mockResolvedValue({});
   });

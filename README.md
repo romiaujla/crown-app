@@ -104,6 +104,49 @@ Local auth reference:
   - `pnpm db:generate`
   - Prisma 7 no longer relies on the older implicit generation default, so run this after Prisma schema or package changes if you need to refresh the generated client manually.
 
+## Running Tests
+
+Tests automatically provision an ephemeral PostgreSQL container for you. No manual database setup is required.
+
+### Prerequisites
+- Docker must be installed and running
+  - macOS/Windows: Start Docker Desktop
+  - Linux: Ensure Docker daemon is running (`systemctl start docker` or equivalent for your system)
+
+### Commands
+- Run all tests:
+  - `pnpm test`
+- Run tests in watch mode:
+  - `cd apps/api && pnpm test:watch`
+- Run specific test file:
+  - `pnpm test <path/to/test.spec.ts>`
+
+### What Happens
+When you run tests:
+1. A PostgreSQL container starts automatically (typically < 2 seconds)
+2. The database schema is initialized via Prisma migrations
+3. Seed data is applied to populate canonical test fixtures
+4. Tests run against the container database
+5. The container is automatically destroyed after tests complete
+
+### Troubleshooting
+
+**Docker daemon not running**
+- macOS: Start Docker Desktop from Applications
+- Windows: Start Docker Desktop
+- Linux: Run `sudo systemctl start docker` (or equivalent for your distro)
+
+**Tests still failing after Docker is running**
+- Verify Docker is running: `docker ps`
+- Rebuild the Prisma client: `cd apps/api && pnpm db:generate`
+- Check container logs: `docker logs <container-id>`
+
+**Container cleanup issues**
+- List running test containers: `docker ps -a | grep postgres`
+- Manually stop containers: `docker stop <container-id>`
+
+For detailed troubleshooting and advanced configuration, see [docs/testing-setup.md](docs/testing-setup.md).
+
 ## Commit and Release Convention
 - Branch naming by Jira issue type:
   - Task: `chore/CROWN-123-short-name`
