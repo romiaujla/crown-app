@@ -7,10 +7,10 @@ import {
   type TenantDirectoryListResponse,
 } from '@crown/types';
 import {
-  type AccessTokenClaims,
   AccessTokenResponseSchema,
   AuthErrorResponseSchema,
   CurrentUserResponseSchema,
+  type AccessTokenClaims,
   type CurrentUserResponse,
 } from './types';
 

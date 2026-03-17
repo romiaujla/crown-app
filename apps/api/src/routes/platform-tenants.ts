@@ -1,10 +1,10 @@
 import {
   DeprovisionTypeEnum,
   TenantCreateReferenceDataRequestSchema,
-  type TenantCreateReferenceDataFilter,
-  type TenantCreateReferenceDataResponse,
   TenantDirectoryListRequestSchema,
   TenantStatusEnum,
+  type TenantCreateReferenceDataFilter,
+  type TenantCreateReferenceDataResponse,
   type TenantDirectoryListResponse,
 } from '@crown/types';
 import { Router, type RequestHandler } from 'express';
@@ -15,6 +15,8 @@ import { authorize } from '../middleware/authorize.js';
 import { createRateLimitMiddleware } from '../middleware/rate-limit.js';
 import { sendAuthError } from '../types/errors.js';
 
+import { getPlatformTenantDirectory } from '../platform/tenants/directory-service.js';
+import { getPlatformTenantCreateReferenceData } from '../platform/tenants/reference-data-service.js';
 import {
   DeprovisionTenantRequestSchema,
   HardDeprovisionTenantResponseSchema,
@@ -22,8 +24,6 @@ import {
   TenantProvisionRequestSchema,
   TenantProvisionResponseSchema,
 } from '../tenant/contracts.js';
-import { getPlatformTenantCreateReferenceData } from '../platform/tenants/reference-data-service.js';
-import { getPlatformTenantDirectory } from '../platform/tenants/directory-service.js';
 import { deprovisionTenant } from '../tenant/lifecycle-service.js';
 import { provisionTenant } from '../tenant/provision-service.js';
 import type { DeprovisionTenantResult } from '../tenant/types.js';

@@ -1,6 +1,6 @@
+import type { RequestHandler } from 'express';
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
-import type { RequestHandler } from 'express';
 
 import { buildApp } from '../../src/app.js';
 import { TenantStatus } from '../../src/domain/status-enums.js';
