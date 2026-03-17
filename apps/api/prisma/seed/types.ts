@@ -1,5 +1,5 @@
 import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
+import type { ManagementSystemTypeAvailabilityStatusEnum, RoleAuthClassEnum, RoleScopeEnum } from "../../src/generated/prisma/enums.js";
 
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
@@ -101,22 +101,22 @@ export type SeedRoleDelegate = {
     where: { roleCode: string };
     create: {
       roleCode: string;
-      scope: "platform" | "tenant";
-      authClass: "super_admin" | "tenant_admin" | "tenant_user";
+      scope: RoleScopeEnum;
+      authClass: RoleAuthClassEnum;
       displayName: string;
       description?: string | null;
     };
     update: {
-      scope: "platform" | "tenant";
-      authClass: "super_admin" | "tenant_admin" | "tenant_user";
+      scope: RoleScopeEnum;
+      authClass: RoleAuthClassEnum;
       displayName: string;
       description?: string | null;
     };
   }): Promise<{
     id: string;
     roleCode: string;
-    scope: "platform" | "tenant";
-    authClass: "super_admin" | "tenant_admin" | "tenant_user";
+    scope: RoleScopeEnum;
+    authClass: RoleAuthClassEnum;
     displayName: string;
     description: string | null;
   }>;

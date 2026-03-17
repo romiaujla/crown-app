@@ -38,7 +38,7 @@ If this checklist is incomplete, implementation is blocked.
 ## Epic `CROWN-24`: Identity and Role-Based Login Experiences
 
 ### Problem
-The product needs explicit role-based login and post-login routing behavior for `super_admin`, `tenant_admin`, and `tenant_user` personas.
+The product needs explicit auth-class-based login and post-login routing behavior for `super_admin`, `tenant_admin`, and `tenant_user` auth_class personas (derived from the normalized `roles` table).
 
 ### Goal
 Deliver clear and enforceable login journeys that route each role to the correct platform or tenant experience with no role confusion.
@@ -47,7 +47,7 @@ Deliver clear and enforceable login journeys that route each role to the correct
 As a Crown user with one of the supported roles, I want role-aware authentication and entry routing so that I land in the correct workspace and only see allowed functionality.
 
 ### Acceptance Criteria
-- Login supports `super_admin`, `tenant_admin`, and `tenant_user` personas.
+- Login supports `super_admin`, `tenant_admin`, and `tenant_user` auth_class personas.
 - Post-login routing sends each role to the correct shell and default landing route.
 - Unauthorized route access is denied consistently at API and UI boundaries.
 - Session and claim validation behavior is documented for each role path.
@@ -99,7 +99,7 @@ Implement tenant-user RBAC behaviors aligned to TMS role responsibilities and re
 As a tenant user in a specific role, I want permissions that match my operational responsibilities so that I can perform allowed work and cannot execute restricted actions.
 
 ### Acceptance Criteria
-- RBAC matrix defines capabilities for at least `tenant_admin`, `dispatcher`, and `driver`.
+- RBAC matrix defines capabilities for at least `tenant_admin` (auth_class), `dispatcher` (role_code), and `driver` (role_code).
 - Dispatcher workflows include job creation and assignment management.
 - Driver restrictions include inability to self-unassign from assigned jobs.
 - Restricted actions return clear and testable authorization outcomes.
