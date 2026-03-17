@@ -5,11 +5,14 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts", "tests/**/*.spec.ts"],
     passWithNoTests: true,
-    setupFiles: ["tests/setup.ts"],
+    globalSetup: ["tests/global-setup.ts"],
     hookTimeout: 120000,
     testTimeout: 120000,
-    threads: {
-      singleThread: true
+    pool: "threads",
+    poolOptions: {
+      threads: {
+        singleThread: true
+      }
     }
   }
 });
