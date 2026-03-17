@@ -21,7 +21,7 @@ Replace the mixed natural-language workflow contract with canonical tagged comma
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `fix/CROWN-80-enforce-start-implementing-spec-kit-workflow` matches the constitution for a Bug.
 - Commit/PR convention: PASS. Work on this branch will use `fix: CROWN-80 - ...` subjects and a squash-safe PR title.

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import type { LucideIcon } from "lucide-react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import type { LucideIcon } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 
-import { LogoutButton } from "@/components/auth/logout-button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { LogoutButton } from '@/components/auth/logout-button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 type NavigationCardItem = {
   title: string;
@@ -29,7 +29,7 @@ type OverviewCard = {
 };
 
 type SharedWorkspaceShellProps = {
-  tone: "platform" | "tenant";
+  tone: 'platform' | 'tenant';
   shellLabel?: string;
   title: string;
   description: string;
@@ -42,7 +42,7 @@ type SharedWorkspaceShellProps = {
 };
 
 type CardLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
-  layout?: "cards";
+  layout?: 'cards';
   navigationTitle: string;
   navigationItems: readonly NavigationCardItem[];
   overviewEyebrow: string;
@@ -54,7 +54,7 @@ type CardLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
 };
 
 type SidebarLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
-  layout: "sidebar";
+  layout: 'sidebar';
   navigationTitle: string;
   navigationItems: readonly SidebarNavigationItem[];
   activeNavigationKey: string;
@@ -69,39 +69,36 @@ type WorkspaceShellProps = CardLayoutWorkspaceShellProps | SidebarLayoutWorkspac
 
 const toneClasses = {
   platform: {
-    hero: "border-amber-200/70 bg-white/85",
-    accent: "text-primary",
-    panel: "border-amber-200/80 bg-amber-50/90",
-    section: "border-white/70 bg-white/82",
-    empty: "border-orange-200/70 bg-orange-50/80"
+    hero: 'border-amber-200/70 bg-white/85',
+    accent: 'text-primary',
+    panel: 'border-amber-200/80 bg-amber-50/90',
+    section: 'border-white/70 bg-white/82',
+    empty: 'border-orange-200/70 bg-orange-50/80',
   },
   tenant: {
-    hero: "border-emerald-200/80 bg-emerald-50/85",
-    accent: "text-emerald-700",
-    panel: "border-emerald-200/80 bg-emerald-100/80",
-    section: "border-emerald-100/80 bg-white/82",
-    empty: "border-emerald-200/80 bg-emerald-50/90"
-  }
+    hero: 'border-emerald-200/80 bg-emerald-50/85',
+    accent: 'text-emerald-700',
+    panel: 'border-emerald-200/80 bg-emerald-100/80',
+    section: 'border-emerald-100/80 bg-white/82',
+    empty: 'border-emerald-200/80 bg-emerald-50/90',
+  },
 } as const;
 
 const buildInitials = (displayName: string) => {
-  const words = displayName
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
+  const words = displayName.trim().split(/\s+/).filter(Boolean);
 
-  if (words.length === 0) return "U";
+  if (words.length === 0) return 'U';
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
 
-  return `${words[0][0] ?? ""}${words.at(-1)?.[0] ?? ""}`.toUpperCase();
+  return `${words[0][0] ?? ''}${words.at(-1)?.[0] ?? ''}`.toUpperCase();
 };
 
 const formatRoleLabel = (role: string) =>
   role
-    .split("_")
+    .split('_')
     .filter(Boolean)
     .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
-    .join(" ");
+    .join(' ');
 
 export const WorkspaceShell = ({
   tone,
@@ -133,28 +130,30 @@ export const WorkspaceShell = ({
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         setIsProfileMenuOpen(false);
       }
     };
 
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isProfileMenuOpen]);
 
   return (
     <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex w-full flex-col gap-6">
-        {layoutProps.layout === "sidebar" ? null : (
+        {layoutProps.layout === 'sidebar' ? null : (
           <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
             <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">Authenticated as</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
+                  Authenticated as
+                </p>
                 <p className="text-lg font-semibold text-stone-950">{userDisplayName}</p>
               </div>
               <LogoutButton />
@@ -163,33 +162,56 @@ export const WorkspaceShell = ({
         )}
 
         {hideHero ? null : (
-          <Card className={cn("border shadow-2xl shadow-stone-950/10 backdrop-blur", style.hero)}>
+          <Card className={cn('border shadow-2xl shadow-stone-950/10 backdrop-blur', style.hero)}>
             <CardContent className="grid gap-6 p-6 lg:grid-cols-[1.8fr_minmax(0,0.9fr)] lg:items-end">
               <div className="space-y-4">
                 {shellLabel ? (
-                  <p className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>{shellLabel}</p>
+                  <p
+                    className={cn(
+                      'text-xs font-semibold uppercase tracking-[0.28em]',
+                      style.accent,
+                    )}
+                  >
+                    {shellLabel}
+                  </p>
                 ) : null}
                 <div className="space-y-3">
-                  <h1 className="text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">{title}</h1>
+                  <h1 className="text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+                    {title}
+                  </h1>
                   <p className="max-w-3xl text-base leading-7 text-stone-600">{description}</p>
                 </div>
               </div>
-              <Card className={cn("border shadow-none", style.panel)}>
+              <Card className={cn('border shadow-none', style.panel)}>
                 <CardHeader className="space-y-2">
-                  <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.22em]", style.accent)}>
+                  <CardDescription
+                    className={cn(
+                      'text-xs font-semibold uppercase tracking-[0.22em]',
+                      style.accent,
+                    )}
+                  >
                     {contextLabel}
                   </CardDescription>
-                  <CardTitle className="text-2xl font-semibold capitalize text-stone-950">{contextValue}</CardTitle>
+                  <CardTitle className="text-2xl font-semibold capitalize text-stone-950">
+                    {contextValue}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-0 text-sm leading-6 text-stone-600">{contextNote}</CardContent>
+                <CardContent className="pt-0 text-sm leading-6 text-stone-600">
+                  {contextNote}
+                </CardContent>
               </Card>
             </CardContent>
           </Card>
         )}
 
-        {layoutProps.layout === "sidebar" ? (
+        {layoutProps.layout === 'sidebar' ? (
           <div className="platform-shell-grid grid gap-6">
-            <Card className={cn("sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
+            <Card
+              className={cn(
+                'sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur',
+                style.section,
+              )}
+            >
               <CardContent className="sidebar-shell-card__content px-3 pb-3 pt-5">
                 <nav aria-label={layoutProps.navigationTitle}>
                   <ul className="sidebar-nav m-0 flex list-none flex-col gap-2 p-0">
@@ -200,13 +222,17 @@ export const WorkspaceShell = ({
                       return (
                         <li key={item.key}>
                           <Link
-                            aria-current={isActive ? "page" : undefined}
+                            aria-current={isActive ? 'page' : undefined}
                             aria-label={item.title}
                             className={cn(
-                              "sidebar-nav__item relative flex items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-stone-600 transition hover:border-stone-200 hover:bg-white/90 hover:text-stone-950",
-                              isActive && cn("border-white/80 bg-white text-stone-950 shadow-sm", style.accent)
+                              'sidebar-nav__item relative flex items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-stone-600 transition hover:border-stone-200 hover:bg-white/90 hover:text-stone-950',
+                              isActive &&
+                                cn(
+                                  'border-white/80 bg-white text-stone-950 shadow-sm',
+                                  style.accent,
+                                ),
                             )}
-                            data-active={isActive ? "true" : "false"}
+                            data-active={isActive ? 'true' : 'false'}
                             href={item.href}
                             onPointerUp={(event) => {
                               event.currentTarget.blur();
@@ -215,8 +241,8 @@ export const WorkspaceShell = ({
                           >
                             <span
                               className={cn(
-                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-stone-700",
-                                isActive && "bg-white text-stone-950"
+                                'flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-stone-700',
+                                isActive && 'bg-white text-stone-950',
                               )}
                             >
                               <Icon aria-hidden="true" className="h-5 w-5" />
@@ -257,7 +283,11 @@ export const WorkspaceShell = ({
                       <span className="sidebar-profile__role">{roleLabel}</span>
                     </span>
                     <span aria-hidden="true" className="sidebar-profile__chevron">
-                      {isProfileMenuOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                      {isProfileMenuOpen ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
                     </span>
                   </button>
 
@@ -275,12 +305,17 @@ export const WorkspaceShell = ({
               </CardContent>
             </Card>
 
-            <Card className={cn("border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
+            <Card
+              className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.section)}
+            >
               <CardHeader className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1 space-y-2 sm:space-y-3">
                     <CardDescription
-                      className={cn("text-[0.65rem] font-semibold uppercase tracking-[0.22em] sm:text-xs sm:tracking-[0.28em]", style.accent)}
+                      className={cn(
+                        'text-[0.65rem] font-semibold uppercase tracking-[0.22em] sm:text-xs sm:tracking-[0.28em]',
+                        style.accent,
+                      )}
                     >
                       {layoutProps.sectionEyebrow}
                     </CardDescription>
@@ -295,7 +330,9 @@ export const WorkspaceShell = ({
                       ) : null}
                     </div>
                   </div>
-                  {layoutProps.sectionActions ? <div className="shrink-0 pt-1">{layoutProps.sectionActions}</div> : null}
+                  {layoutProps.sectionActions ? (
+                    <div className="shrink-0 pt-1">{layoutProps.sectionActions}</div>
+                  ) : null}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">{layoutProps.sectionContent}</CardContent>
@@ -303,58 +340,90 @@ export const WorkspaceShell = ({
           </div>
         ) : (
           <>
-            <Card className={cn("border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
+            <Card
+              className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.section)}
+            >
               <CardHeader className="space-y-2">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
+                <CardDescription
+                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                >
                   Primary navigation
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.navigationTitle}</CardTitle>
+                <CardTitle className="text-3xl tracking-tight text-stone-950">
+                  {layoutProps.navigationTitle}
+                </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-3">
                 {layoutProps.navigationItems.map((item) => (
                   <Card key={item.title} className="border-white/70 bg-white/90 shadow-sm">
                     <CardHeader className="space-y-3">
-                      <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.22em]", style.accent)}>
+                      <CardDescription
+                        className={cn(
+                          'text-xs font-semibold uppercase tracking-[0.22em]',
+                          style.accent,
+                        )}
+                      >
                         {item.eyebrow}
                       </CardDescription>
                       <CardTitle className="text-xl text-stone-950">{item.title}</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">{item.description}</CardContent>
+                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">
+                      {item.description}
+                    </CardContent>
                   </Card>
                 ))}
               </CardContent>
             </Card>
 
-            <Card className={cn("border shadow-lg shadow-stone-950/5 backdrop-blur", style.section)}>
+            <Card
+              className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.section)}
+            >
               <CardHeader className="space-y-2">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
+                <CardDescription
+                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                >
                   {layoutProps.overviewEyebrow}
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.overviewTitle}</CardTitle>
+                <CardTitle className="text-3xl tracking-tight text-stone-950">
+                  {layoutProps.overviewTitle}
+                </CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-3">
                 {layoutProps.overviewCards.map((card) => (
                   <Card key={card.title} className="border-white/70 bg-white/90 shadow-sm">
                     <CardHeader className="space-y-3">
-                      <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.22em]", style.accent)}>
+                      <CardDescription
+                        className={cn(
+                          'text-xs font-semibold uppercase tracking-[0.22em]',
+                          style.accent,
+                        )}
+                      >
                         {card.title}
                       </CardDescription>
                       <CardTitle className="text-2xl text-stone-950">{card.value}</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">{card.detail}</CardContent>
+                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">
+                      {card.detail}
+                    </CardContent>
                   </Card>
                 ))}
               </CardContent>
             </Card>
 
-            <Card className={cn("border shadow-lg shadow-stone-950/5 backdrop-blur", style.empty)}>
+            <Card className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.empty)}>
               <CardHeader className="space-y-2">
-                <CardDescription className={cn("text-xs font-semibold uppercase tracking-[0.28em]", style.accent)}>
+                <CardDescription
+                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                >
                   {layoutProps.emptyEyebrow}
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">{layoutProps.emptyTitle}</CardTitle>
+                <CardTitle className="text-3xl tracking-tight text-stone-950">
+                  {layoutProps.emptyTitle}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="pt-0 text-base leading-7 text-stone-600">{layoutProps.emptyDescription}</CardContent>
+              <CardContent className="pt-0 text-base leading-7 text-stone-600">
+                {layoutProps.emptyDescription}
+              </CardContent>
             </Card>
           </>
         )}

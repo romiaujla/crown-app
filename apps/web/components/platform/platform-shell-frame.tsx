@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react';
 import {
   Activity,
   BadgeDollarSign,
@@ -10,92 +10,101 @@ import {
   LayoutDashboard,
   Settings,
   Shield,
-  Users
-} from "lucide-react";
-import { usePathname } from "next/navigation";
+  Users,
+} from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
-import { StatusPanel } from "@/components/auth/status-panel";
-import { useProtectedShell } from "@/components/auth/use-protected-shell";
-import { WorkspaceShell } from "@/components/auth/workspace-shell";
-import { Card, CardContent } from "@/components/ui/card";
+import { StatusPanel } from '@/components/auth/status-panel';
+import { useProtectedShell } from '@/components/auth/use-protected-shell';
+import { WorkspaceShell } from '@/components/auth/workspace-shell';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const platformNavigation = [
   {
-    key: "dashboard",
-    title: "Dashboard",
-    href: "/platform",
+    key: 'dashboard',
+    title: 'Dashboard',
+    href: '/platform',
     icon: LayoutDashboard,
-    eyebrow: "Platform overview",
-    description: "Review Crown's platform posture, tenant readiness, and next setup steps from the control-plane home."
+    eyebrow: 'Platform overview',
+    description:
+      "Review Crown's platform posture, tenant readiness, and next setup steps from the control-plane home.",
   },
   {
-    key: "tenants",
-    title: "Tenants",
-    href: "/platform/tenants",
+    key: 'tenants',
+    title: 'Tenants',
+    href: '/platform/tenants',
     icon: Building2,
-    eyebrow: "Tenant management",
-    description: "Review tenant readiness, provisioning status, and lifecycle actions from one platform entry point."
+    eyebrow: 'Tenant management',
+    description:
+      'Review tenant readiness, provisioning status, and lifecycle actions from one platform entry point.',
   },
   {
-    key: "users",
-    title: "Users",
-    href: "/platform?section=users",
+    key: 'users',
+    title: 'Users',
+    href: '/platform?section=users',
     icon: Users,
-    eyebrow: "Identity oversight",
-    description: "Review operator access, account hygiene, and user-related follow-up without leaving the control plane."
+    eyebrow: 'Identity oversight',
+    description:
+      'Review operator access, account hygiene, and user-related follow-up without leaving the control plane.',
   },
   {
-    key: "activity",
-    title: "Activity",
-    href: "/platform?section=activity",
+    key: 'activity',
+    title: 'Activity',
+    href: '/platform?section=activity',
     icon: Activity,
-    eyebrow: "Recent platform activity",
-    description: "Track operational events, platform follow-up, and the latest control-plane changes from one stream."
+    eyebrow: 'Recent platform activity',
+    description:
+      'Track operational events, platform follow-up, and the latest control-plane changes from one stream.',
   },
   {
-    key: "system-health",
-    title: "System Health",
-    href: "/platform?section=system-health",
+    key: 'system-health',
+    title: 'System Health',
+    href: '/platform?section=system-health',
     icon: HeartPulse,
-    eyebrow: "Operational posture",
-    description: "Monitor service posture, readiness indicators, and environment follow-up work for the platform."
+    eyebrow: 'Operational posture',
+    description:
+      'Monitor service posture, readiness indicators, and environment follow-up work for the platform.',
   },
   {
-    key: "security",
-    title: "Security",
-    href: "/platform?section=security",
+    key: 'security',
+    title: 'Security',
+    href: '/platform?section=security',
     icon: Shield,
-    eyebrow: "Security posture",
-    description: "Review security-focused controls, audits, and platform hardening work as the control plane evolves."
+    eyebrow: 'Security posture',
+    description:
+      'Review security-focused controls, audits, and platform hardening work as the control plane evolves.',
   },
   {
-    key: "billing",
-    title: "Billing",
-    href: "/platform?section=billing",
+    key: 'billing',
+    title: 'Billing',
+    href: '/platform?section=billing',
     icon: BadgeDollarSign,
-    eyebrow: "Commercial controls",
-    description: "Track billing readiness, commercial workflows, and platform-wide financial administration from one area."
+    eyebrow: 'Commercial controls',
+    description:
+      'Track billing readiness, commercial workflows, and platform-wide financial administration from one area.',
   },
   {
-    key: "audit-log",
-    title: "Audit Log",
-    href: "/platform?section=audit-log",
+    key: 'audit-log',
+    title: 'Audit Log',
+    href: '/platform?section=audit-log',
     icon: FileText,
-    eyebrow: "Platform traceability",
-    description: "Review change history, governance evidence, and audit-oriented activity as those capabilities come online."
+    eyebrow: 'Platform traceability',
+    description:
+      'Review change history, governance evidence, and audit-oriented activity as those capabilities come online.',
   },
   {
-    key: "settings",
-    title: "Settings",
-    href: "/platform?section=settings",
+    key: 'settings',
+    title: 'Settings',
+    href: '/platform?section=settings',
     icon: Settings,
-    eyebrow: "Platform defaults",
-    description: "Adjust global platform settings, conventions, and future control-plane defaults as they are delivered."
-  }
+    eyebrow: 'Platform defaults',
+    description:
+      'Adjust global platform settings, conventions, and future control-plane defaults as they are delivered.',
+  },
 ] as const;
 
 type PlatformShellFrameProps = {
-  activeNavigationKey: (typeof platformNavigation)[number]["key"];
+  activeNavigationKey: (typeof platformNavigation)[number]['key'];
   sectionEyebrow: string;
   sectionTitle: string;
   sectionDescription?: string;
@@ -115,12 +124,12 @@ export const PlatformShellFrame = ({
   sectionTitle,
   sectionDescription,
   sectionActions,
-  sectionContent
+  sectionContent,
 }: PlatformShellFrameProps) => {
   const pathname = usePathname();
   const protectedShell = useProtectedShell(pathname);
 
-  if (protectedShell.kind === "bootstrapping") {
+  if (protectedShell.kind === 'bootstrapping') {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -133,7 +142,7 @@ export const PlatformShellFrame = ({
     );
   }
 
-  if (protectedShell.kind !== "ready") {
+  if (protectedShell.kind !== 'ready') {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel

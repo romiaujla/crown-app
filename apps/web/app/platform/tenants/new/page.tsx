@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlatformShellFrame } from "@/components/platform/platform-shell-frame";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PlatformShellFrame } from '@/components/platform/platform-shell-frame';
 
 const PlatformTenantCreateEntryPage = () => (
   <PlatformShellFrame
@@ -13,8 +13,8 @@ const PlatformTenantCreateEntryPage = () => (
           <CardTitle className="text-2xl text-stone-950">Tenant creation coming soon</CardTitle>
         </CardHeader>
         <CardContent className="pt-0 text-sm leading-7 text-stone-600">
-          This route is a stable entry point for the future tenant-creation workflow. The creation form and provisioning
-          flow are tracked in follow-up scope.
+          This route is a stable entry point for the future tenant-creation workflow. The creation
+          form and provisioning flow are tracked in follow-up scope.
         </CardContent>
       </Card>
     }

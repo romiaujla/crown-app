@@ -13,11 +13,11 @@ Expand the tenant provisioning flow to accept a `management_system_type_code`, l
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
-| `packages/types/src/index.ts` | No changes — `ManagementSystemTypeCodeSchema` already exists and will be used by the API contract. |
+| File                               | Change                                                                                                                                                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/types/src/index.ts`      | No changes — `ManagementSystemTypeCodeSchema` already exists and will be used by the API contract.                                                                                                      |
 | `apps/api/src/tenant/contracts.ts` | Add `management_system_type_code` field (validated via `ManagementSystemTypeCodeSchema`) to `TenantProvisionRequestSchema`. Add `management_system_type_code` field to `TenantProvisionResponseSchema`. |
-| `apps/api/src/tenant/types.ts` | Add `managementSystemTypeCode` to `ProvisionTenantInput`. Add `managementSystemTypeCode` to `ProvisionTenantSuccessResult`. |
+| `apps/api/src/tenant/types.ts`     | Add `managementSystemTypeCode` to `ProvisionTenantInput`. Add `managementSystemTypeCode` to `ProvisionTenantSuccessResult`.                                                                             |
 
 ### Design Details
 
@@ -33,8 +33,8 @@ The request schema gains a required `management_system_type_code` field using th
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                       | Change                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/tenant/provision-service.ts` | After tenant record + schema + migration creation, look up the `ManagementSystemType` by `typeCode` (version `1.0`), resolve the `tenant_admin` role by `roleCode`, create `TenantMembership` and `TenantMembershipRoleAssignment` records. Return `managementSystemTypeCode` in the success result. Return a validation error if the management system type is not found. |
 
 ### Design Details
@@ -60,8 +60,8 @@ The request schema gains a required `management_system_type_code` field using th
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                      | Change                                                                                                                                                                                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/routes/platform-tenants.ts` | Pass `managementSystemTypeCode` from the parsed request body (as `management_system_type_code`) into the provision function call. Map `result.managementSystemTypeCode` into the response object for `TenantProvisionResponseSchema.parse()`. |
 
 ### Design Details
@@ -72,13 +72,14 @@ The route handler maps the snake_case request field to camelCase for the service
 const result = await provision({
   ...parsed.data,
   managementSystemTypeCode: parsed.data.management_system_type_code,
-  actorSub: req.auth?.sub ?? "unknown-actor"
+  actorSub: req.auth?.sub ?? 'unknown-actor',
 });
 ```
 
 The response mapping adds:
+
 ```typescript
-management_system_type_code: result.managementSystemTypeCode
+management_system_type_code: result.managementSystemTypeCode;
 ```
 
 ### Validation
@@ -91,8 +92,8 @@ management_system_type_code: result.managementSystemTypeCode
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                           | Change                                                                                                                                                                                                |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/docs/openapi.ts` | Add `management_system_type_code` to the `TenantProvisionRequest` schema (required, enum of management system type codes). Add `management_system_type_code` to the `TenantProvisionResponse` schema. |
 
 ### Validation
@@ -105,10 +106,10 @@ management_system_type_code: result.managementSystemTypeCode
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
-| `apps/api/tests/integration/tenant-provisioning.spec.ts` | Add `managementSystemTypeCode` to all `provisionTenant()` call inputs. Add Prisma mocks for `managementSystemType.findUnique`, `role.findUnique`, `tenantMembership.create`, `tenantMembershipRoleAssignment.create`. Verify membership and role assignment creation in success path. Add test case for invalid management system type code. |
-| `apps/api/tests/contract/platform-tenant-provision.contract.spec.ts` | Add `management_system_type_code` to all request payloads. Update response assertions to include `management_system_type_code`. Add test for missing `management_system_type_code` returning 400. |
+| File                                                                 | Change                                                                                                                                                                                                                                                                                                                                       |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/tests/integration/tenant-provisioning.spec.ts`             | Add `managementSystemTypeCode` to all `provisionTenant()` call inputs. Add Prisma mocks for `managementSystemType.findUnique`, `role.findUnique`, `tenantMembership.create`, `tenantMembershipRoleAssignment.create`. Verify membership and role assignment creation in success path. Add test case for invalid management system type code. |
+| `apps/api/tests/contract/platform-tenant-provision.contract.spec.ts` | Add `management_system_type_code` to all request payloads. Update response assertions to include `management_system_type_code`. Add test for missing `management_system_type_code` returning 400.                                                                                                                                            |
 
 ### Validation
 

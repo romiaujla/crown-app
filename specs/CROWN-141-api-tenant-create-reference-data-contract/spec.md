@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-141` - "API | Tenant create reference-data contract for management-system types and default roles"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Load Supported Management-System Types For Tenant Create (Priority: P1)
 
@@ -62,7 +62,7 @@ As a maintainer, I want the tenant-create reference-data route to use shared API
 - The admin role exists as shared code `tenant_admin` while the UI-facing label remains `Admin`.
 - Later tenant provisioning submission fields remain out of scope and must not leak into this read-only reference-data contract.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -79,7 +79,7 @@ As a maintainer, I want the tenant-create reference-data route to use shared API
 - **FR-011**: The API MUST source role display labels from persisted role records so the contract reflects the shared role catalog rather than duplicated route-local constants.
 - **FR-012**: The manual OpenAPI source MUST document the tenant-create reference-data route and response contract.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Create Reference-Data Response**: The top-level API payload that delivers supported management-system types and their role options for tenant creation.
 - **Tenant Create Management-System Type**: A supported management-system type returned to the tenant-create flow, including identity, display metadata, and onboarding role options.
@@ -100,7 +100,7 @@ As a maintainer, I want the tenant-create reference-data route to use shared API
 - Shared contract package in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

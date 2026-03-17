@@ -1,7 +1,7 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { StatusPanel } from "@/components/auth/status-panel";
-import { UnauthorizedPageContent } from "@/components/auth/unauthorized-page-content";
+import { StatusPanel } from '@/components/auth/status-panel';
+import { UnauthorizedPageContent } from '@/components/auth/unauthorized-page-content';
 
 const UnauthorizedPage = () => (
   <Suspense

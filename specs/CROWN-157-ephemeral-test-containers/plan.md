@@ -266,7 +266,7 @@ DATABASE_URL="<container connection>" npx tsx prisma db seed
 Or via Prisma Client:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient({ datasources: { db: { url } } });
 // Then run seed script
 ```
@@ -296,16 +296,16 @@ By phase completion, verify:
 ## Open Questions / Risks
 
 1. **Docker Availability**: Testcontainers requires Docker; what about environments without it?
-   - *Mitigation*: Clear documentation about Docker requirement; consider CI/CD-only setup if needed
+   - _Mitigation_: Clear documentation about Docker requirement; consider CI/CD-only setup if needed
 
 2. **Performance**: Container startup overhead on M1 Macs or CI runners?
-   - *Mitigation*: Target < 10 seconds total overhead; measure and optimize if needed
+   - _Mitigation_: Target < 10 seconds total overhead; measure and optimize if needed
 
 3. **Parallel Test Execution**: How does Testcontainers handle concurrent test runs?
-   - *Mitigation*: Testcontainers auto-allocates unique ports; verify no conflicts in CI
+   - _Mitigation_: Testcontainers auto-allocates unique ports; verify no conflicts in CI
 
 4. **Debugging**: How do developers inspect the test database during execution?
-   - *Mitigation*: Document connection details output during test setup; provide option to keep container running for debugging
+   - _Mitigation_: Document connection details output during test setup; provide option to keep container running for debugging
 
 ## References & Resources
 

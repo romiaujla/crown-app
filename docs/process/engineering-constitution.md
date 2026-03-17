@@ -1,18 +1,22 @@
 # Engineering Constitution
 
 ## Purpose
+
 This document is the canonical engineering policy for Crown. It defines mandatory standards for coding, branching, commits, Jira hygiene, review, and release behavior.
 
 ## Scope
+
 Applies to all contributors (human and AI) across all repository directories.
 
 ## Core Principles
+
 - Ship in small, reviewable increments.
 - Keep planning and implementation traceable to Jira work items.
 - Prefer deterministic, automated quality gates over manual checks.
 - Treat standards as defaults; exceptions require explicit documented rationale.
 
 ## Coding Standards
+
 - Use TypeScript strict mode for new code where applicable.
 - For reusable finite state or value sets in TypeScript, prefer named enums over ad hoc string unions or inline string tuples.
 - When two or more features share the same finite state or value set, define one base enum and reuse it instead of duplicating lookalike enums in multiple modules.
@@ -38,28 +42,36 @@ Applies to all contributors (human and AI) across all repository directories.
 - For database schema changes, update the Prisma schema/model definitions first, use Prisma to generate the migration SQL, inspect the generated SQL before applying it, and only hand-edit generated SQL when Prisma produces something unsafe or structurally incorrect.
 
 ## Branching Standard (Mandatory)
+
 Branch naming maps to Jira issue type:
+
 - Task -> `chore/CROWN-<id>-<slug>`
 - Story -> `feat/CROWN-<id>-<slug>`
 - Bug -> `fix/CROWN-<id>-<slug>`
 - Hotfix -> `hotfix/CROWN-<id>-<slug>`
 
 ## Commit Standard (Mandatory)
+
 Commit format:
+
 - `<type>: CROWN-<id> - <message>`
 
 Type mapping derives from branch prefix:
+
 - `chore` branch -> `chore` commit prefix
 - `feat` branch -> `feat` commit prefix
 - `fix` branch -> `fix` commit prefix
 - `hotfix` branch -> `hotfix` commit prefix
 
 Commit-message hook enforcement is implemented in:
+
 - `.husky/commit-msg`
 - `scripts/commit-msg-rewrite.mjs`
 
 ## Jira Standard (Mandatory)
+
 For all non-subtask issues, use Lean template:
+
 - `## Problem`
 - `## Goal`
 - `## User Story`
@@ -68,7 +80,9 @@ For all non-subtask issues, use Lean template:
 Implementation details belong in repository docs and should be linked from Jira.
 
 ## Planning Gate (Mandatory for Major Features)
+
 Before implementation of major features, complete Spec Kit artifacts:
+
 1. `/constitution`
 2. `/specify`
 3. `/plan`
@@ -77,6 +91,7 @@ Before implementation of major features, complete Spec Kit artifacts:
 PRs for major features must reference these artifacts.
 
 ## Pull Request Standard
+
 - When squash merge is used, the PR title must match the commit format exactly: `<type>: CROWN-<id> - <message>`.
 - PR title format is release-significant because GitHub squash merge uses the PR title as the commit subject on `main`.
 - PR description includes summary, Jira linkage, and validation notes.
@@ -84,6 +99,7 @@ PRs for major features must reference these artifacts.
 - Keep PR scope aligned with Jira scope; split when scope drifts.
 
 ## Release and Versioning Standard
+
 - Trunk branch is `main`.
 - Semantic-release is the source of truth for tags/versioning.
 - Commit types drive release impact under release config.
@@ -96,6 +112,7 @@ PRs for major features must reference these artifacts.
 - On this repository, release publication must not require direct commits to protected `main`; releases are driven by tags and GitHub Releases rather than changelog/version write-backs.
 
 ## Ownership and Change Control
+
 - Primary owner: engineering lead for process/governance.
 - Any change to this constitution requires:
   - Jira issue
@@ -103,7 +120,9 @@ PRs for major features must reference these artifacts.
   - approval from designated owner/reviewer
 
 ## Precedence
+
 Order of precedence for repository rules:
+
 1. This constitution (`docs/process/engineering-constitution.md`)
 2. `AGENTS.md` (agent operational instructions)
 3. `docs/process/spec-kit-workflow.md` (execution workflow details)

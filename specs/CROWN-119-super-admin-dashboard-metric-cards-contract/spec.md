@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-119` - "API | Super admin dashboard key metric cards contract"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Retrieve The Dashboard Metric Card Totals And New-Tenant Windows (Priority: P1)
 
@@ -64,7 +64,7 @@ As a platform API maintainer, I want the expanded overview contract to remain li
 - The same tenant must only count once in the window that contains its `createdAt` timestamp.
 - The route contract should stay forward-compatible for future widgets without breaking the existing `widgets.tenant_summary` envelope.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -84,7 +84,7 @@ As a platform API maintainer, I want the expanded overview contract to remain li
 - **FR-014**: The manual OpenAPI source in `apps/api/src/docs/openapi.ts` MUST be updated to match the expanded route contract.
 - **FR-015**: The implementation MUST remain limited to the existing dashboard overview route, contract, service aggregation logic, and directly aligned consumer typings/tests.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Dashboard Metric Window**: A named trailing time window for the overview metric cards with one of three allowed values: `week`, `month`, or `year`.
 - **New Tenant Count Metric**: A windowed count of tenants created during the current trailing window.
@@ -104,7 +104,7 @@ As a platform API maintainer, I want the expanded overview contract to remain li
 - `CROWN-98` as the dashboard UI consumer that depends on the expanded contract.
 - Existing `Tenant.createdAt` persistence in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

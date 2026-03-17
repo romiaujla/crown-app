@@ -1,7 +1,7 @@
-import type { NextFunction, Request, Response, RequestHandler } from "express";
+import type { NextFunction, Request, Response, RequestHandler } from 'express';
 
-import { AuthErrorCodeEnum } from "../auth/claims.js";
-import { sendAuthError } from "../types/errors.js";
+import { AuthErrorCodeEnum } from '../auth/claims.js';
+import { sendAuthError } from '../types/errors.js';
 
 type RateLimitOptions = {
   errorCode?: AuthErrorCodeEnum;
@@ -18,10 +18,10 @@ type RateLimitState = {
 
 export const createRateLimitMiddleware = ({
   errorCode = AuthErrorCodeEnum.RATE_LIMITED,
-  keyGenerator = (req) => req.auth?.sub ?? req.ip ?? "anonymous",
+  keyGenerator = (req) => req.auth?.sub ?? req.ip ?? 'anonymous',
   maxRequests,
   message,
-  windowMs
+  windowMs,
 }: RateLimitOptions): RequestHandler => {
   const state = new Map<string, RateLimitState>();
 
@@ -36,7 +36,10 @@ export const createRateLimitMiddleware = ({
     }
 
     if (existing.count >= maxRequests) {
-      res.setHeader("Retry-After", Math.max(1, Math.ceil((existing.resetAt - now) / 1000)).toString());
+      res.setHeader(
+        'Retry-After',
+        Math.max(1, Math.ceil((existing.resetAt - now) / 1000)).toString(),
+      );
       return sendAuthError(res, 429, errorCode, message);
     }
 

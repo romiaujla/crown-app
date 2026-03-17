@@ -1,11 +1,11 @@
-import { AccessTokenClaimsSchema, type AccessTokenClaims } from "./types";
+import { AccessTokenClaimsSchema, type AccessTokenClaims } from './types';
 
 const decodeTokenPayload = (token: string): unknown => {
-  const parts = token.split(".");
-  if (parts.length < 2) throw new Error("Malformed token");
+  const parts = token.split('.');
+  if (parts.length < 2) throw new Error('Malformed token');
 
-  const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-  const normalized = payload.padEnd(Math.ceil(payload.length / 4) * 4, "=");
+  const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
   return JSON.parse(atob(normalized));
 };
 

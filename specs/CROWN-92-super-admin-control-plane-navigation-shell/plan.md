@@ -21,7 +21,7 @@ Extend the existing super-admin shell in `apps/web` into a route-aware control-p
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. `CROWN-92` is a Story and the branch matches the `feat/CROWN-<id>-<slug>` convention.
 - Planning gate: PASS. `spec.md` exists before implementation planning.

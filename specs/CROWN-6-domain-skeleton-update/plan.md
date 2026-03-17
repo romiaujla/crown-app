@@ -21,7 +21,7 @@ Audit the existing tenant-domain baseline introduced by tenant provisioning work
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 Pre-Phase-0 gate:
 

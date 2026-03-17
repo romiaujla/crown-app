@@ -13,6 +13,7 @@
 **Phase**: 1
 **Files**: `apps/api/src/auth/identity.ts`
 **Scope**:
+
 - Add `where: { assignmentStatus: "active" }` filter to `platformRoleAssignments` include in the Prisma query shape.
 - Add `where: { membershipStatus: "active" }` filter to `tenantMemberships` include.
 - Add `where: { assignmentStatus: "active" }` filter to nested `roleAssignments` include within `tenantMemberships`.
@@ -27,6 +28,7 @@
 **Phase**: 2
 **Files**: `apps/api/src/auth/prisma-auth-service.ts` (new)
 **Scope**:
+
 - Implement `login(identifier, password)` using `findAuthIdentityByIdentifier(prisma, identifier)`, `verifyPassword`, and `resolveAuthenticatedRoleContext`.
 - Implement `resolveCurrentUser(claims)` by querying user by ID with the same active-filtered include shape, running role resolution, and validating claim consistency.
 - Add a private `findTenantById` helper that queries `prisma.tenant.findUnique` for tenant context.
@@ -43,6 +45,7 @@
 **Phase**: 2
 **Files**: `apps/api/src/auth/default-auth-service.ts`
 **Scope**:
+
 - Remove `directorySeed`, `DirectoryUser`, `DirectorySeedUser`, `createDirectoryClient`, `directoryPromise`, `DEFAULT_TENANT`.
 - Remove `AUTH_LOGIN_FIXTURES` and `DISABLED_AUTH_TEST_USER` exports.
 - Re-export `defaultAuthService` from the new `prisma-auth-service.ts`.
@@ -57,6 +60,7 @@
 **Phase**: 3
 **Files**: `apps/api/tests/helpers/auth-fixtures.ts`
 **Scope**:
+
 - Define `loginFixtures` inline with seeded persona credentials sourced from `seeded-credentials.ts`.
 - Remove imports of `AUTH_LOGIN_FIXTURES` and `DISABLED_AUTH_TEST_USER` from `default-auth-service.ts`.
 - Update any test files that reference the old exports to use the new test-local fixtures.
@@ -70,6 +74,7 @@
 **Phase**: 4
 **Files**: `apps/api/tests/integration/auth-login.spec.ts` (new)
 **Scope**:
+
 - Super admin login by email → validates 200, JWT claims, current-user context with `targetApp: "platform"`.
 - Super admin login by username → validates same claims.
 - Tenant admin login → validates 200, JWT claims with `tenant_id`, current-user with real tenant slug/name.
@@ -88,6 +93,7 @@
 **Phase**: 4
 **Files**: `apps/api/tests/integration/auth-me.spec.ts` (new)
 **Scope**:
+
 - Super admin `/me` → validates full `CurrentUserResponseSchema`.
 - Tenant admin `/me` → validates real tenant data in response.
 - Tenant user `/me` → validates real tenant data in response.
@@ -103,6 +109,7 @@
 **Phase**: 5
 **Files**: (none — validation only)
 **Scope**:
+
 - Run `pnpm --filter api typecheck`.
 - Run `pnpm --filter api test` (full suite).
 - Run `pnpm specify.audit`.

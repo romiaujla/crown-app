@@ -3,11 +3,15 @@ import {
   DeprovisionTypeEnum,
   ManagementSystemTypeCodeEnum,
   RoleCodeEnum,
-  TenantStatusEnum
-} from "@crown/types";
-import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from "../auth/claims.js";
-import { AuthRoutingReasonCodeEnum, AuthRoutingStatusEnum, AuthTargetAppEnum } from "../auth/service.js";
-import { PlatformUserAccountStatus } from "../domain/status-enums.js";
+  TenantStatusEnum,
+} from '@crown/types';
+import { AuthErrorCodeEnum, RoleEnum, TenantRoleEnum } from '../auth/claims.js';
+import {
+  AuthRoutingReasonCodeEnum,
+  AuthRoutingStatusEnum,
+  AuthTargetAppEnum,
+} from '../auth/service.js';
+import { PlatformUserAccountStatus } from '../domain/status-enums.js';
 
 const bearerSecurity = [{ bearerAuth: [] }];
 const authErrorCodeValues = Object.values(AuthErrorCodeEnum);
@@ -26,909 +30,991 @@ const dashboardMetricWindowValues = Object.values(DashboardMetricWindowEnum);
 const errorResponse = (description: string, errorCode: string, message: string) => ({
   description,
   content: {
-    "application/json": {
-      schema: { $ref: "#/components/schemas/ErrorResponse" },
+    'application/json': {
+      schema: { $ref: '#/components/schemas/ErrorResponse' },
       examples: {
         default: {
           value: {
             error_code: errorCode,
-            message
-          }
-        }
-      }
-    }
-  }
+            message,
+          },
+        },
+      },
+    },
+  },
 });
 
 export const authDocsDocument = {
-  openapi: "3.0.3",
+  openapi: '3.0.3',
   info: {
-    title: "Crown API Docs",
-    version: "0.1.0",
-    description: "Local/dev-first Swagger UI for the auth-bearing API surface."
+    title: 'Crown API Docs',
+    version: '0.1.0',
+    description: 'Local/dev-first Swagger UI for the auth-bearing API surface.',
   },
-  servers: [{ url: "/" }],
+  servers: [{ url: '/' }],
   tags: [
-    { name: "Auth", description: "Authentication and current-user endpoints." },
-    { name: "Authorization", description: "Protected route examples for platform and tenant access." },
-    { name: "Platform Dashboard", description: "Super-admin dashboard overview widgets and summary data." },
+    { name: 'Auth', description: 'Authentication and current-user endpoints.' },
     {
-      name: "Platform Tenants",
-      description: "Tenant reference-data, directory, provisioning, and deprovision routes protected for super admins."
-    }
+      name: 'Authorization',
+      description: 'Protected route examples for platform and tenant access.',
+    },
+    {
+      name: 'Platform Dashboard',
+      description: 'Super-admin dashboard overview widgets and summary data.',
+    },
+    {
+      name: 'Platform Tenants',
+      description:
+        'Tenant reference-data, directory, provisioning, and deprovision routes protected for super admins.',
+    },
   ],
   components: {
     securitySchemes: {
       bearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT"
-      }
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
     },
     schemas: {
       Role: {
-        type: "string",
+        type: 'string',
         enum: roleValues,
         description:
-          "The auth_class dimension from the normalized roles table. Maps platform and tenant role assignments to the JWT claim level: super_admin (platform operator), tenant_admin (tenant shell admin), tenant_user (tenant workspace member)."
+          'The auth_class dimension from the normalized roles table. Maps platform and tenant role assignments to the JWT claim level: super_admin (platform operator), tenant_admin (tenant shell admin), tenant_user (tenant workspace member).',
       },
       PlatformUserAccountStatus: {
-        type: "string",
-        enum: platformUserAccountStatusValues
+        type: 'string',
+        enum: platformUserAccountStatusValues,
       },
       JwtClaims: {
-        type: "object",
+        type: 'object',
         description:
-          "Access-token claims. The role field is derived from the roles.auth_class column via the normalized role-assignment tables during authentication.",
-        required: ["sub", "role", "tenant_id", "exp"],
+          'Access-token claims. The role field is derived from the roles.auth_class column via the normalized role-assignment tables during authentication.',
+        required: ['sub', 'role', 'tenant_id', 'exp'],
         properties: {
-          sub: { type: "string" },
-          role: { $ref: "#/components/schemas/Role" },
-          tenant_id: { type: "string", nullable: true },
+          sub: { type: 'string' },
+          role: { $ref: '#/components/schemas/Role' },
+          tenant_id: { type: 'string', nullable: true },
           exp: {
-            type: "integer",
-            format: "int64",
-            description: "Unix timestamp in seconds when the access token expires."
-          }
-        }
+            type: 'integer',
+            format: 'int64',
+            description: 'Unix timestamp in seconds when the access token expires.',
+          },
+        },
       },
       LoginRequest: {
-        type: "object",
-        required: ["identifier", "password"],
+        type: 'object',
+        required: ['identifier', 'password'],
         properties: {
           identifier: {
-            type: "string",
+            type: 'string',
             minLength: 3,
-            description: "Username or email address."
+            description: 'Username or email address.',
           },
           password: {
-            type: "string",
-            minLength: 8
-          }
-        }
+            type: 'string',
+            minLength: 8,
+          },
+        },
       },
       TenantAccessRequest: {
-        type: "object",
-        required: ["authClass", "tenantId"],
+        type: 'object',
+        required: ['authClass', 'tenantId'],
         properties: {
           authClass: {
-            type: "string",
-            enum: tenantRoleValues
+            type: 'string',
+            enum: tenantRoleValues,
           },
           tenantId: {
-            type: "string",
-            minLength: 1
-          }
-        }
+            type: 'string',
+            minLength: 1,
+          },
+        },
       },
       ErrorResponse: {
-        type: "object",
-        required: ["error_code", "message"],
+        type: 'object',
+        required: ['error_code', 'message'],
         properties: {
           error_code: {
-            type: "string",
-            enum: authErrorCodeValues
+            type: 'string',
+            enum: authErrorCodeValues,
           },
-          message: { type: "string" },
-          routing: { $ref: "#/components/schemas/AuthRouting" }
-        }
+          message: { type: 'string' },
+          routing: { $ref: '#/components/schemas/AuthRouting' },
+        },
       },
       AuthRouting: {
-        type: "object",
-        required: ["status", "target_app", "reason_code"],
+        type: 'object',
+        required: ['status', 'target_app', 'reason_code'],
         properties: {
           status: {
-            type: "string",
-            enum: authRoutingStatusValues
+            type: 'string',
+            enum: authRoutingStatusValues,
           },
           target_app: {
-            type: "string",
+            type: 'string',
             nullable: true,
-            enum: authTargetAppValues
+            enum: authTargetAppValues,
           },
           reason_code: {
-            type: "string",
+            type: 'string',
             nullable: true,
-            enum: authRoutingReasonCodeValues
-          }
-        }
+            enum: authRoutingReasonCodeValues,
+          },
+        },
       },
       CurrentUserPrincipal: {
-        type: "object",
-        required: ["id", "email", "username", "display_name", "role", "account_status"],
+        type: 'object',
+        required: ['id', 'email', 'username', 'display_name', 'role', 'account_status'],
         properties: {
-          id: { type: "string" },
-          email: { type: "string", format: "email" },
-          username: { type: "string", nullable: true },
-          display_name: { type: "string" },
-          role: { $ref: "#/components/schemas/Role" },
-          account_status: { $ref: "#/components/schemas/PlatformUserAccountStatus" }
-        }
+          id: { type: 'string' },
+          email: { type: 'string', format: 'email' },
+          username: { type: 'string', nullable: true },
+          display_name: { type: 'string' },
+          role: { $ref: '#/components/schemas/Role' },
+          account_status: { $ref: '#/components/schemas/PlatformUserAccountStatus' },
+        },
       },
       CurrentUserRoleContext: {
-        type: "object",
-        required: ["role", "tenant_id"],
+        type: 'object',
+        required: ['role', 'tenant_id'],
         properties: {
-          role: { $ref: "#/components/schemas/Role" },
-          tenant_id: { type: "string", nullable: true }
-        }
+          role: { $ref: '#/components/schemas/Role' },
+          tenant_id: { type: 'string', nullable: true },
+        },
       },
       CurrentUserTenant: {
         nullable: true,
         oneOf: [
           {
-            type: "object",
-            required: ["id", "slug", "name", "role"],
+            type: 'object',
+            required: ['id', 'slug', 'name', 'role'],
             properties: {
-              id: { type: "string" },
-              slug: { type: "string" },
-              name: { type: "string" },
+              id: { type: 'string' },
+              slug: { type: 'string' },
+              name: { type: 'string' },
               role: {
-                type: "string",
-                enum: tenantRoleValues
-              }
-            }
-          }
-        ]
+                type: 'string',
+                enum: tenantRoleValues,
+              },
+            },
+          },
+        ],
       },
       CurrentUserResponse: {
-        type: "object",
-        required: ["principal", "role_context", "tenant", "target_app", "routing"],
+        type: 'object',
+        required: ['principal', 'role_context', 'tenant', 'target_app', 'routing'],
         properties: {
-          principal: { $ref: "#/components/schemas/CurrentUserPrincipal" },
-          role_context: { $ref: "#/components/schemas/CurrentUserRoleContext" },
-          tenant: { $ref: "#/components/schemas/CurrentUserTenant" },
+          principal: { $ref: '#/components/schemas/CurrentUserPrincipal' },
+          role_context: { $ref: '#/components/schemas/CurrentUserRoleContext' },
+          tenant: { $ref: '#/components/schemas/CurrentUserTenant' },
           target_app: {
-            type: "string",
-            enum: authTargetAppValues
+            type: 'string',
+            enum: authTargetAppValues,
           },
-          routing: { $ref: "#/components/schemas/AuthRouting" }
-        }
+          routing: { $ref: '#/components/schemas/AuthRouting' },
+        },
       },
       AccessTokenResponse: {
-        type: "object",
-        required: ["access_token", "claims", "current_user"],
+        type: 'object',
+        required: ['access_token', 'claims', 'current_user'],
         properties: {
-          access_token: { type: "string" },
-          claims: { $ref: "#/components/schemas/JwtClaims" },
-          current_user: { $ref: "#/components/schemas/CurrentUserResponse" }
-        }
+          access_token: { type: 'string' },
+          claims: { $ref: '#/components/schemas/JwtClaims' },
+          current_user: { $ref: '#/components/schemas/CurrentUserResponse' },
+        },
       },
       TenantProvisionRequest: {
-        type: "object",
-        required: ["name", "slug", "management_system_type_code"],
+        type: 'object',
+        required: ['name', 'slug', 'management_system_type_code'],
         properties: {
           name: {
-            type: "string",
+            type: 'string',
             minLength: 2,
-            maxLength: 120
+            maxLength: 120,
           },
           slug: {
-            type: "string",
-            pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-            description: "Lowercase kebab-case tenant slug."
+            type: 'string',
+            pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+            description: 'Lowercase kebab-case tenant slug.',
           },
           management_system_type_code: {
-            type: "string",
+            type: 'string',
             enum: managementSystemTypeCodeValues,
-            description: "Management system type to apply as the tenant role template."
-          }
-        }
+            description: 'Management system type to apply as the tenant role template.',
+          },
+        },
       },
       TenantProvisionResponse: {
-        type: "object",
-        required: ["tenant_id", "slug", "schema_name", "applied_versions", "management_system_type_code", "status"],
+        type: 'object',
+        required: [
+          'tenant_id',
+          'slug',
+          'schema_name',
+          'applied_versions',
+          'management_system_type_code',
+          'status',
+        ],
         properties: {
-          tenant_id: { type: "string" },
-          slug: { type: "string" },
-          schema_name: { type: "string" },
+          tenant_id: { type: 'string' },
+          slug: { type: 'string' },
+          schema_name: { type: 'string' },
           applied_versions: {
-            type: "array",
-            items: { type: "string" }
+            type: 'array',
+            items: { type: 'string' },
           },
           management_system_type_code: {
-            type: "string",
-            enum: managementSystemTypeCodeValues
+            type: 'string',
+            enum: managementSystemTypeCodeValues,
           },
           status: {
-            type: "string",
-            enum: ["provisioned"]
-          }
-        }
+            type: 'string',
+            enum: ['provisioned'],
+          },
+        },
       },
       TenantDirectoryListItem: {
-        type: "object",
-        required: ["tenantId", "name", "slug", "schemaName", "status", "createdAt", "updatedAt"],
+        type: 'object',
+        required: ['tenantId', 'name', 'slug', 'schemaName', 'status', 'createdAt', 'updatedAt'],
         properties: {
-          tenantId: { type: "string" },
-          name: { type: "string" },
-          slug: { type: "string" },
-          schemaName: { type: "string" },
+          tenantId: { type: 'string' },
+          name: { type: 'string' },
+          slug: { type: 'string' },
+          schemaName: { type: 'string' },
           status: {
-            type: "string",
-            enum: tenantStatusValues
+            type: 'string',
+            enum: tenantStatusValues,
           },
           createdAt: {
-            type: "string",
-            format: "date-time"
+            type: 'string',
+            format: 'date-time',
           },
           updatedAt: {
-            type: "string",
-            format: "date-time"
-          }
-        }
+            type: 'string',
+            format: 'date-time',
+          },
+        },
       },
       TenantDirectoryListFilter: {
-        type: "object",
+        type: 'object',
         properties: {
           name: {
-            type: "string",
+            type: 'string',
             minLength: 1,
-            maxLength: 120
+            maxLength: 120,
           },
           status: {
-            type: "string",
-            enum: tenantStatusValues
-          }
-        }
+            type: 'string',
+            enum: tenantStatusValues,
+          },
+        },
       },
       TenantDirectoryListRequest: {
-        type: "object",
-        required: ["filters"],
+        type: 'object',
+        required: ['filters'],
         properties: {
-          filters: { $ref: "#/components/schemas/TenantDirectoryListFilter" }
-        }
+          filters: { $ref: '#/components/schemas/TenantDirectoryListFilter' },
+        },
       },
       TenantDirectoryListFilters: {
-        type: "object",
-        required: ["name", "status"],
+        type: 'object',
+        required: ['name', 'status'],
         properties: {
-          name: { type: "string", nullable: true },
+          name: { type: 'string', nullable: true },
           status: {
-            type: "string",
+            type: 'string',
             nullable: true,
-            enum: tenantStatusValues
-          }
-        }
+            enum: tenantStatusValues,
+          },
+        },
       },
       TenantDirectoryListMeta: {
-        type: "object",
-        required: ["totalRecords", "filters"],
+        type: 'object',
+        required: ['totalRecords', 'filters'],
         properties: {
           totalRecords: {
-            type: "integer",
-            minimum: 0
+            type: 'integer',
+            minimum: 0,
           },
-          filters: { $ref: "#/components/schemas/TenantDirectoryListFilters" }
-        }
+          filters: { $ref: '#/components/schemas/TenantDirectoryListFilters' },
+        },
       },
       TenantDirectoryListData: {
-        type: "object",
-        required: ["tenantList"],
+        type: 'object',
+        required: ['tenantList'],
         properties: {
           tenantList: {
-            type: "array",
-            items: { $ref: "#/components/schemas/TenantDirectoryListItem" }
-          }
-        }
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantDirectoryListItem' },
+          },
+        },
       },
       TenantDirectoryListResponse: {
-        type: "object",
-        required: ["data", "meta"],
+        type: 'object',
+        required: ['data', 'meta'],
         properties: {
-          data: { $ref: "#/components/schemas/TenantDirectoryListData" },
-          meta: { $ref: "#/components/schemas/TenantDirectoryListMeta" }
-        }
+          data: { $ref: '#/components/schemas/TenantDirectoryListData' },
+          meta: { $ref: '#/components/schemas/TenantDirectoryListMeta' },
+        },
       },
       TenantCreateRoleOption: {
-        type: "object",
-        required: ["roleCode", "displayName", "description", "isDefault", "isRequired"],
+        type: 'object',
+        required: ['roleCode', 'displayName', 'description', 'isDefault', 'isRequired'],
         properties: {
-          roleCode: { type: "string", enum: roleCodeValues },
-          displayName: { type: "string" },
-          description: { type: "string", nullable: true },
-          isDefault: { type: "boolean" },
-          isRequired: { type: "boolean" }
-        }
+          roleCode: { type: 'string', enum: roleCodeValues },
+          displayName: { type: 'string' },
+          description: { type: 'string', nullable: true },
+          isDefault: { type: 'boolean' },
+          isRequired: { type: 'boolean' },
+        },
       },
       TenantCreateManagementSystemType: {
-        type: "object",
-        required: ["typeCode", "version", "displayName", "description", "roleOptions"],
+        type: 'object',
+        required: ['typeCode', 'version', 'displayName', 'description', 'roleOptions'],
         properties: {
-          typeCode: { type: "string", enum: managementSystemTypeCodeValues },
-          version: { type: "string" },
-          displayName: { type: "string" },
-          description: { type: "string", nullable: true },
+          typeCode: { type: 'string', enum: managementSystemTypeCodeValues },
+          version: { type: 'string' },
+          displayName: { type: 'string' },
+          description: { type: 'string', nullable: true },
           roleOptions: {
-            type: "array",
-            items: { $ref: "#/components/schemas/TenantCreateRoleOption" }
-          }
-        }
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantCreateRoleOption' },
+          },
+        },
       },
       TenantCreateReferenceDataFilter: {
-        type: "object",
+        type: 'object',
         properties: {
-          typeCode: { type: "string", enum: managementSystemTypeCodeValues }
-        }
+          typeCode: { type: 'string', enum: managementSystemTypeCodeValues },
+        },
       },
       TenantCreateReferenceDataRequest: {
-        type: "object",
-        required: ["filter"],
+        type: 'object',
+        required: ['filter'],
         properties: {
-          filter: { $ref: "#/components/schemas/TenantCreateReferenceDataFilter" }
-        }
+          filter: { $ref: '#/components/schemas/TenantCreateReferenceDataFilter' },
+        },
       },
       TenantCreateReferenceDataData: {
-        type: "object",
-        required: ["managementSystemTypeList"],
+        type: 'object',
+        required: ['managementSystemTypeList'],
         properties: {
           managementSystemTypeList: {
-            type: "array",
-            items: { $ref: "#/components/schemas/TenantCreateManagementSystemType" }
-          }
-        }
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantCreateManagementSystemType' },
+          },
+        },
       },
       TenantCreateReferenceDataResponse: {
-        type: "object",
-        required: ["data"],
+        type: 'object',
+        required: ['data'],
         properties: {
-          data: { $ref: "#/components/schemas/TenantCreateReferenceDataData" }
-        }
+          data: { $ref: '#/components/schemas/TenantCreateReferenceDataData' },
+        },
       },
       DeprovisionType: {
-        type: "string",
+        type: 'string',
         enum: deprovisionTypeValues,
-        default: DeprovisionTypeEnum.SOFT
+        default: DeprovisionTypeEnum.SOFT,
       },
       DeprovisionTenantRequest: {
-        type: "object",
-        required: ["tenant_id"],
+        type: 'object',
+        required: ['tenant_id'],
         properties: {
-          tenant_id: { type: "string" },
-          deprovisionType: { $ref: "#/components/schemas/DeprovisionType" }
-        }
+          tenant_id: { type: 'string' },
+          deprovisionType: { $ref: '#/components/schemas/DeprovisionType' },
+        },
       },
       SoftDeprovisionTenantResponse: {
-        type: "object",
-        required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
+        type: 'object',
+        required: ['tenant_id', 'slug', 'schema_name', 'previous_status', 'status', 'operation'],
         properties: {
-          tenant_id: { type: "string" },
-          slug: { type: "string" },
-          schema_name: { type: "string" },
+          tenant_id: { type: 'string' },
+          slug: { type: 'string' },
+          schema_name: { type: 'string' },
           previous_status: {
-            type: "string",
-            enum: tenantStatusValues
+            type: 'string',
+            enum: tenantStatusValues,
           },
           status: {
-            type: "string",
-            enum: ["inactive"]
+            type: 'string',
+            enum: ['inactive'],
           },
           operation: {
-            type: "string",
-            enum: ["soft_deprovisioned"]
-          }
-        }
+            type: 'string',
+            enum: ['soft_deprovisioned'],
+          },
+        },
       },
       HardDeprovisionTenantResponse: {
-        type: "object",
-        required: ["tenant_id", "slug", "schema_name", "previous_status", "status", "operation"],
+        type: 'object',
+        required: ['tenant_id', 'slug', 'schema_name', 'previous_status', 'status', 'operation'],
         properties: {
-          tenant_id: { type: "string" },
-          slug: { type: "string" },
-          schema_name: { type: "string" },
+          tenant_id: { type: 'string' },
+          slug: { type: 'string' },
+          schema_name: { type: 'string' },
           previous_status: {
-            type: "string",
-            enum: tenantStatusValues
+            type: 'string',
+            enum: tenantStatusValues,
           },
           status: {
-            type: "string",
-            enum: ["hard_deprovisioned"]
+            type: 'string',
+            enum: ['hard_deprovisioned'],
           },
           operation: {
-            type: "string",
-            enum: ["hard_deprovisioned"]
-          }
-        }
+            type: 'string',
+            enum: ['hard_deprovisioned'],
+          },
+        },
       },
       TenantStatusCountEntry: {
-        type: "object",
-        required: ["status", "count"],
+        type: 'object',
+        required: ['status', 'count'],
         properties: {
           status: {
-            type: "string",
-            enum: tenantStatusValues
+            type: 'string',
+            enum: tenantStatusValues,
           },
           count: {
-            type: "integer",
-            minimum: 0
-          }
-        }
+            type: 'integer',
+            minimum: 0,
+          },
+        },
       },
       DashboardMetricWindow: {
-        type: "string",
-        enum: dashboardMetricWindowValues
+        type: 'string',
+        enum: dashboardMetricWindowValues,
       },
       NewTenantCountMetric: {
-        type: "object",
-        required: ["window", "count"],
+        type: 'object',
+        required: ['window', 'count'],
         properties: {
           window: {
-            $ref: "#/components/schemas/DashboardMetricWindow"
+            $ref: '#/components/schemas/DashboardMetricWindow',
           },
           count: {
-            type: "integer",
+            type: 'integer',
             minimum: 0,
-            description: "Count of tenants created inside the current trailing window ending at request time."
-          }
-        }
+            description:
+              'Count of tenants created inside the current trailing window ending at request time.',
+          },
+        },
       },
       TenantGrowthRateMetric: {
-        type: "object",
-        required: ["window", "growth_rate_percentage"],
+        type: 'object',
+        required: ['window', 'growth_rate_percentage'],
         properties: {
           window: {
-            $ref: "#/components/schemas/DashboardMetricWindow"
+            $ref: '#/components/schemas/DashboardMetricWindow',
           },
           growth_rate_percentage: {
-            type: "number",
+            type: 'number',
             description:
-              "Percentage change between the current trailing window and the immediately preceding equal-length window, rounded to two decimals."
-          }
-        }
+              'Percentage change between the current trailing window and the immediately preceding equal-length window, rounded to two decimals.',
+          },
+        },
       },
       TenantSummaryWidget: {
-        type: "object",
+        type: 'object',
         required: [
-          "total_tenant_count",
-          "tenant_user_count",
-          "tenant_status_counts",
-          "new_tenant_counts",
-          "tenant_growth_rates"
+          'total_tenant_count',
+          'tenant_user_count',
+          'tenant_status_counts',
+          'new_tenant_counts',
+          'tenant_growth_rates',
         ],
         properties: {
           total_tenant_count: {
-            type: "integer",
-            minimum: 0
+            type: 'integer',
+            minimum: 0,
           },
           tenant_user_count: {
-            type: "integer",
-            minimum: 0
+            type: 'integer',
+            minimum: 0,
           },
           tenant_status_counts: {
-            type: "array",
-            items: { $ref: "#/components/schemas/TenantStatusCountEntry" }
+            type: 'array',
+            items: { $ref: '#/components/schemas/TenantStatusCountEntry' },
           },
           new_tenant_counts: {
-            type: "array",
-            description: "Ordered `week`, `month`, and `year` trailing-window tenant creation counts.",
-            items: { $ref: "#/components/schemas/NewTenantCountMetric" }
+            type: 'array',
+            description:
+              'Ordered `week`, `month`, and `year` trailing-window tenant creation counts.',
+            items: { $ref: '#/components/schemas/NewTenantCountMetric' },
           },
           tenant_growth_rates: {
-            type: "array",
+            type: 'array',
             description:
-              "Ordered `week`, `month`, and `year` percentage changes comparing the current trailing window to the immediately preceding equal-length window.",
-            items: { $ref: "#/components/schemas/TenantGrowthRateMetric" }
-          }
-        }
+              'Ordered `week`, `month`, and `year` percentage changes comparing the current trailing window to the immediately preceding equal-length window.',
+            items: { $ref: '#/components/schemas/TenantGrowthRateMetric' },
+          },
+        },
       },
       DashboardOverviewResponse: {
-        type: "object",
-        required: ["widgets"],
+        type: 'object',
+        required: ['widgets'],
         properties: {
           widgets: {
-            type: "object",
-            required: ["tenant_summary"],
+            type: 'object',
+            required: ['tenant_summary'],
             properties: {
-              tenant_summary: { $ref: "#/components/schemas/TenantSummaryWidget" }
-            }
-          }
-        }
-      }
-    }
+              tenant_summary: { $ref: '#/components/schemas/TenantSummaryWidget' },
+            },
+          },
+        },
+      },
+    },
   },
   paths: {
-    "/api/v1/auth/login": {
+    '/api/v1/auth/login': {
       post: {
-        tags: ["Auth"],
-        summary: "Authenticate with username or email",
-        description: "Returns a signed JWT access token, decoded claims, and the current-user context.",
+        tags: ['Auth'],
+        summary: 'Authenticate with username or email',
+        description:
+          'Returns a signed JWT access token, decoded claims, and the current-user context.',
         requestBody: {
           required: true,
           content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/LoginRequest" },
+            'application/json': {
+              schema: { $ref: '#/components/schemas/LoginRequest' },
               examples: {
                 username: {
                   value: {
-                    identifier: "super.admin",
-                    password: "SeedSuperAdmin123!"
-                  }
+                    identifier: 'super.admin',
+                    password: 'SeedSuperAdmin123!',
+                  },
                 },
                 email: {
                   value: {
-                    identifier: "super-admin@acme-local.test",
-                    password: "SeedSuperAdmin123!"
-                  }
-                }
-              }
-            }
-          }
+                    identifier: 'super-admin@acme-local.test',
+                    password: 'SeedSuperAdmin123!',
+                  },
+                },
+              },
+            },
+          },
         },
         responses: {
-          "200": {
-            description: "Authenticated response",
+          '200': {
+            description: 'Authenticated response',
             content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/AccessTokenResponse" }
-              }
-            }
+              'application/json': {
+                schema: { $ref: '#/components/schemas/AccessTokenResponse' },
+              },
+            },
           },
-          "400": errorResponse("Invalid login payload", "validation_error", "Invalid login payload"),
-          "401": errorResponse("Invalid credentials", "invalid_credentials", "Invalid credentials"),
-          "403": {
-            description: "Account disabled or routing unavailable",
+          '400': errorResponse(
+            'Invalid login payload',
+            'validation_error',
+            'Invalid login payload',
+          ),
+          '401': errorResponse('Invalid credentials', 'invalid_credentials', 'Invalid credentials'),
+          '403': {
+            description: 'Account disabled or routing unavailable',
             content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
                 examples: {
                   disabledAccount: {
                     value: {
-                      error_code: "disabled_account",
-                      message: "Account is disabled"
-                    }
+                      error_code: 'disabled_account',
+                      message: 'Account is disabled',
+                    },
                   },
                   tenantMembershipRequired: {
                     value: {
-                      error_code: "tenant_membership_required",
-                      message: "An active tenant membership is required for this user",
+                      error_code: 'tenant_membership_required',
+                      message: 'An active tenant membership is required for this user',
                       routing: {
-                        status: "access_denied",
+                        status: 'access_denied',
                         target_app: null,
-                        reason_code: "missing_active_tenant_membership"
-                      }
-                    }
+                        reason_code: 'missing_active_tenant_membership',
+                      },
+                    },
                   },
                   tenantSelectionRequired: {
                     value: {
-                      error_code: "tenant_selection_required",
-                      message: "Tenant selection is required and is not yet supported",
+                      error_code: 'tenant_selection_required',
+                      message: 'Tenant selection is required and is not yet supported',
                       routing: {
-                        status: "selection_required",
+                        status: 'selection_required',
                         target_app: null,
-                        reason_code: "multiple_active_tenant_memberships"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                        reason_code: 'multiple_active_tenant_memberships',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
-    "/api/v1/auth/me": {
+    '/api/v1/auth/me': {
       get: {
-        tags: ["Auth"],
-        summary: "Resolve the current authenticated user",
+        tags: ['Auth'],
+        summary: 'Resolve the current authenticated user',
         description:
-          "Returns principal, role context, tenant context when applicable, and the target app. Authenticated tenant users without a single active tenant membership receive a structured routing 403 response.",
+          'Returns principal, role context, tenant context when applicable, and the target app. Authenticated tenant users without a single active tenant membership receive a structured routing 403 response.',
         security: bearerSecurity,
         responses: {
-          "200": {
-            description: "Current-user response",
+          '200': {
+            description: 'Current-user response',
             content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/CurrentUserResponse" }
-              }
-            }
+              'application/json': {
+                schema: { $ref: '#/components/schemas/CurrentUserResponse' },
+              },
+            },
           },
-          "401": errorResponse("Missing or invalid bearer token", "unauthenticated", "Missing bearer token"),
-          "403": {
-            description: "Authenticated user cannot be routed into a supported app target",
+          '401': errorResponse(
+            'Missing or invalid bearer token',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': {
+            description: 'Authenticated user cannot be routed into a supported app target',
             content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
                 examples: {
                   tenantMembershipRequired: {
                     value: {
-                      error_code: "tenant_membership_required",
-                      message: "An active tenant membership is required for this user",
+                      error_code: 'tenant_membership_required',
+                      message: 'An active tenant membership is required for this user',
                       routing: {
-                        status: "access_denied",
+                        status: 'access_denied',
                         target_app: null,
-                        reason_code: "missing_active_tenant_membership"
-                      }
-                    }
+                        reason_code: 'missing_active_tenant_membership',
+                      },
+                    },
                   },
                   tenantSelectionRequired: {
                     value: {
-                      error_code: "tenant_selection_required",
-                      message: "Tenant selection is required and is not yet supported",
+                      error_code: 'tenant_selection_required',
+                      message: 'Tenant selection is required and is not yet supported',
                       routing: {
-                        status: "selection_required",
+                        status: 'selection_required',
                         target_app: null,
-                        reason_code: "multiple_active_tenant_memberships"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                        reason_code: 'multiple_active_tenant_memberships',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
-    "/api/v1/auth/logout": {
+    '/api/v1/auth/logout': {
       post: {
-        tags: ["Auth"],
-        summary: "Logout the current client session",
-        description: "Stateless logout. Clients should discard the stored token locally.",
+        tags: ['Auth'],
+        summary: 'Logout the current client session',
+        description: 'Stateless logout. Clients should discard the stored token locally.',
         requestBody: {
           required: false,
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
-                additionalProperties: false
+                type: 'object',
+                additionalProperties: false,
               },
               examples: {
                 empty: {
-                  value: {}
-                }
-              }
-            }
-          }
+                  value: {},
+                },
+              },
+            },
+          },
         },
         responses: {
-          "204": {
-            description: "Logout accepted with no response body"
+          '204': {
+            description: 'Logout accepted with no response body',
           },
-          "400": errorResponse("Invalid logout payload", "validation_error", "Invalid logout payload")
-        }
-      }
-    },
-    "/api/v1/platform/ping": {
-      get: {
-        tags: ["Authorization"],
-        summary: "Check platform-only access",
-        description: "Protected example route for the platform namespace.",
-        security: bearerSecurity,
-        responses: {
-          "200": {
-            description: "Platform access allowed",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  required: ["ok", "namespace"],
-                  properties: {
-                    ok: { type: "boolean" },
-                    namespace: { type: "string", enum: ["platform"] }
-                  }
-                }
-              }
-            }
-          },
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
-        }
-      }
-    },
-    "/api/v1/platform/dashboard/overview": {
-      get: {
-        tags: ["Platform Dashboard"],
-        summary: "Get super-admin dashboard overview widgets",
-        description:
-          "Protected super-admin route that returns dashboard summary metrics, including tenant totals, tenant-status counts, trailing new-tenant windows, and trailing growth-rate windows.",
-        security: bearerSecurity,
-        responses: {
-          "200": {
-            description: "Dashboard overview widgets",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/DashboardOverviewResponse" }
-              }
-            }
-          },
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
-        }
-      }
-    },
-    "/api/v1/platform/tenants/search": {
-      post: {
-        tags: ["Platform Tenants"],
-        summary: "Search tenants for the control plane",
-        description:
-          "Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Accepts a request body with `filters.name` and `filters.status`.",
-        security: bearerSecurity,
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/TenantDirectoryListRequest" }
-            }
-          }
-        },
-        responses: {
-          "200": {
-            description: "Tenant directory response",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/TenantDirectoryListResponse" }
-              }
-            }
-          },
-          "400": errorResponse("Invalid tenant directory filter", "validation_error", "Invalid tenant directory filter"),
-          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
-        }
-      }
-    },
-    "/api/v1/platform/tenant/reference-data": {
-      post: {
-        tags: ["Platform Tenants"],
-        summary: "Get tenant-create reference data",
-        description:
-          "Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow. Accepts an optional request body filter for a single management-system type.",
-        security: bearerSecurity,
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/TenantCreateReferenceDataRequest" }
-            }
-          }
-        },
-        responses: {
-          "200": {
-            description: "Tenant-create reference data response",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/TenantCreateReferenceDataResponse" }
-              }
-            }
-          },
-          "400": errorResponse(
-            "Invalid tenant create reference-data filter",
-            "validation_error",
-            "Invalid tenant create reference-data filter"
+          '400': errorResponse(
+            'Invalid logout payload',
+            'validation_error',
+            'Invalid logout payload',
           ),
-          "429": errorResponse("Rate limited request", "rate_limited", "Too many tenant directory requests"),
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role")
-        }
-      }
-    },
-    "/api/v1/tenant/access": {
-      post: {
-        tags: ["Authorization"],
-        summary: "Check tenant access",
-        description: "Protected route for tenant access checks scoped by auth class and tenant identifier.",
-        security: bearerSecurity,
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/TenantAccessRequest" }
-            }
-          }
         },
+      },
+    },
+    '/api/v1/platform/ping': {
+      get: {
+        tags: ['Authorization'],
+        summary: 'Check platform-only access',
+        description: 'Protected example route for the platform namespace.',
+        security: bearerSecurity,
         responses: {
-          "200": {
-            description: "Tenant access allowed",
+          '200': {
+            description: 'Platform access allowed',
             content: {
-              "application/json": {
+              'application/json': {
                 schema: {
-                  type: "object",
-                  required: ["ok", "namespace"],
+                  type: 'object',
+                  required: ['ok', 'namespace'],
                   properties: {
-                    ok: { type: "boolean" },
-                    namespace: { type: "string", enum: ["tenant-admin", "tenant-user"] }
-                  }
-                }
-              }
-            }
+                    ok: { type: 'boolean' },
+                    namespace: { type: 'string', enum: ['platform'] },
+                  },
+                },
+              },
+            },
           },
-          "400": errorResponse("Invalid tenant access payload", "validation_error", "Invalid tenant access payload"),
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Tenant or role not allowed", "forbidden_role", "Insufficient role")
-        }
-      }
-    },
-    "/api/v1/platform/tenant": {
-      post: {
-        tags: ["Platform Tenants"],
-        summary: "Provision a tenant",
-        description: "Protected super-admin route used to create and provision a tenant.",
-        security: bearerSecurity,
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/TenantProvisionRequest" }
-            }
-          }
-        },
-        responses: {
-          "201": {
-            description: "Tenant provisioned",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/TenantProvisionResponse" }
-              }
-            }
-          },
-          "400": errorResponse(
-            "Invalid tenant provisioning payload",
-            "validation_error",
-            "Invalid tenant provisioning payload"
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
           ),
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
-          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
-          "409": errorResponse("Tenant slug conflict", "conflict", "tenant slug already exists")
-        }
-      }
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
     },
-    "/api/v1/platform/tenant/deprovision": {
-      post: {
-        tags: ["Platform Tenants"],
-        summary: "Soft or hard deprovision a tenant",
+    '/api/v1/platform/dashboard/overview': {
+      get: {
+        tags: ['Platform Dashboard'],
+        summary: 'Get super-admin dashboard overview widgets',
         description:
-          "Protected super-admin route used to soft deprovision a tenant by default or hard deprovision it when `deprovisionType` is `hard`. Hard deprovision drops the tenant schema and tenant-scoped metadata but retains the tenant record in `hard_deprovisioned`.",
+          'Protected super-admin route that returns dashboard summary metrics, including tenant totals, tenant-status counts, trailing new-tenant windows, and trailing growth-rate windows.',
+        security: bearerSecurity,
+        responses: {
+          '200': {
+            description: 'Dashboard overview widgets',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/DashboardOverviewResponse' },
+              },
+            },
+          },
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/platform/tenants/search': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Search tenants for the control plane',
+        description:
+          'Protected super-admin route that returns the tenant directory in the agreed `data` plus `meta` envelope. Accepts a request body with `filters.name` and `filters.status`.',
         security: bearerSecurity,
         requestBody: {
           required: true,
           content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/DeprovisionTenantRequest" }
-            }
-          }
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantDirectoryListRequest' },
+            },
+          },
         },
         responses: {
-          "200": {
-            description: "Tenant deprovisioned",
+          '200': {
+            description: 'Tenant directory response',
             content: {
-              "application/json": {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantDirectoryListResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant directory filter',
+            'validation_error',
+            'Invalid tenant directory filter',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant directory requests',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/reference-data': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Get tenant-create reference data',
+        description:
+          'Protected super-admin route that returns supported management-system types and their role options for the tenant-create flow. Accepts an optional request body filter for a single management-system type.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantCreateReferenceDataRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant-create reference data response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantCreateReferenceDataResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant create reference-data filter',
+            'validation_error',
+            'Invalid tenant create reference-data filter',
+          ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant directory requests',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/tenant/access': {
+      post: {
+        tags: ['Authorization'],
+        summary: 'Check tenant access',
+        description:
+          'Protected route for tenant access checks scoped by auth class and tenant identifier.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantAccessRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant access allowed',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['ok', 'namespace'],
+                  properties: {
+                    ok: { type: 'boolean' },
+                    namespace: { type: 'string', enum: ['tenant-admin', 'tenant-user'] },
+                  },
+                },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant access payload',
+            'validation_error',
+            'Invalid tenant access payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Tenant or role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/platform/tenant': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Provision a tenant',
+        description: 'Protected super-admin route used to create and provision a tenant.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantProvisionRequest' },
+            },
+          },
+        },
+        responses: {
+          '201': {
+            description: 'Tenant provisioned',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantProvisionResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant provisioning payload',
+            'validation_error',
+            'Invalid tenant provisioning payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '429': errorResponse('Rate limited', 'rate_limited', 'Too many tenant mutation requests'),
+          '409': errorResponse('Tenant slug conflict', 'conflict', 'tenant slug already exists'),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/deprovision': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Soft or hard deprovision a tenant',
+        description:
+          'Protected super-admin route used to soft deprovision a tenant by default or hard deprovision it when `deprovisionType` is `hard`. Hard deprovision drops the tenant schema and tenant-scoped metadata but retains the tenant record in `hard_deprovisioned`.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/DeprovisionTenantRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant deprovisioned',
+            content: {
+              'application/json': {
                 schema: {
                   oneOf: [
-                    { $ref: "#/components/schemas/SoftDeprovisionTenantResponse" },
-                    { $ref: "#/components/schemas/HardDeprovisionTenantResponse" }
-                  ]
-                }
-              }
-            }
+                    { $ref: '#/components/schemas/SoftDeprovisionTenantResponse' },
+                    { $ref: '#/components/schemas/HardDeprovisionTenantResponse' },
+                  ],
+                },
+              },
+            },
           },
-          "400": errorResponse("Invalid tenant deprovision payload", "validation_error", "Invalid tenant deprovision payload"),
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Role not allowed", "forbidden_role", "Insufficient role"),
-          "429": errorResponse("Rate limited", "rate_limited", "Too many tenant mutation requests"),
-          "404": errorResponse("Tenant not found", "not_found", "Tenant was not found"),
-          "409": errorResponse("Tenant deprovision conflict", "conflict", "Tenant deprovision request conflicts with current tenant state")
-        }
-      }
-    }
-  }
+          '400': errorResponse(
+            'Invalid tenant deprovision payload',
+            'validation_error',
+            'Invalid tenant deprovision payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '429': errorResponse('Rate limited', 'rate_limited', 'Too many tenant mutation requests'),
+          '404': errorResponse('Tenant not found', 'not_found', 'Tenant was not found'),
+          '409': errorResponse(
+            'Tenant deprovision conflict',
+            'conflict',
+            'Tenant deprovision request conflicts with current tenant state',
+          ),
+        },
+      },
+    },
+  },
 };

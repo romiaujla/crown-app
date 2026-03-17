@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "crown-30"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Expand The Foundational Tenant Migration Baseline (Priority: P1)
 
@@ -56,7 +56,7 @@ The maintainer produces a tenant migration set that downstream seed and bootstra
 - How is a reference-data-backed table handled when it appears reusable across tenants but is still tenant-owned?
 - What happens when the current minimal baseline uses a table name or shape that conflicts with the approved foundational TMS model?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -70,7 +70,7 @@ The maintainer produces a tenant migration set that downstream seed and bootstra
 - **FR-008**: The migration set MUST make the delta from the previous minimal baseline reviewable for maintainers.
 - **FR-009**: Foundational tenant migration SQL MUST be generated from Prisma-authored tenant schema definitions and inspected before use as the canonical migration baseline.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Schema Migration Set**: The ordered tenant-domain migration files that define foundational TMS tables inside `tenant_<tenant_slug>`.
 - **Foundational TMS Entity Table**: A tenant-domain table representing an approved `CROWN-29` entity such as organizations, locations, people, loads, stops, equipment assets, or activity records.
@@ -84,7 +84,7 @@ The maintainer produces a tenant migration set that downstream seed and bootstra
 - Tenant reference data remains tenant-scoped unless later governance explicitly promotes a catalog to a truly global shared concern.
 - Downstream stories `CROWN-31` through `CROWN-34` will consume this migration baseline for seed design, seed implementation, bootstrap, and validation.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

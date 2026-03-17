@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-153` - "DB | Normalize control-plane schema for users, memberships, and role assignments"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Persist The Normalized Identity And Direct User Role Model (Priority: P1)
 
@@ -61,7 +61,7 @@ As a maintainer, I want the normalized schema migration to preserve management-s
 - Existing seed data and auth resolution still expect legacy role values during rollout.
 - A management-system type exposes a tenant role that no user has been assigned yet.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -95,7 +95,7 @@ As a maintainer, I want the normalized schema migration to preserve management-s
 - The shared role catalog can carry both management-system meaning and auth metadata as long as runtime auth still resolves to the current `super_admin` / `tenant_admin` / `tenant_user` behavior.
 - Focused validation can rely on Prisma schema generation, migration review, and targeted typecheck/test coverage rather than a full repository-wide rewrite of every auth consumer in this story.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

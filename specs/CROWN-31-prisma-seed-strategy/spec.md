@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "crown-31"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Define A Resettable Local Seed Baseline (Priority: P1)
 
@@ -56,7 +56,7 @@ The maintainer defines how the seed process should behave when a rerun is interr
 - How is the baseline handled when a deterministic fixture must remain stable but related seeded records change over time?
 - What happens when a seed rerun fails after data has been cleared but before the full representative baseline is reloaded?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -77,7 +77,7 @@ The maintainer defines how the seed process should behave when a rerun is interr
 - **FR-015**: The strategy MUST define that reruns start from the same canonical baseline and do not rely on partial in-place repair of previously failed seeded rows.
 - **FR-016**: The strategy MUST define ordering guidance that allows later implementation to reset and reload data without violating relationship dependencies from `CROWN-29` and `CROWN-30`.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Seed Baseline**: The agreed clean dataset and structural state that local and future test environments are expected to reproduce.
 - **Reset Scope**: The boundary that identifies which data is cleared and which data remains outside the seed reset path.
@@ -93,7 +93,7 @@ The maintainer defines how the seed process should behave when a rerun is interr
 - The first canonical baseline can focus on one representative transportation-management tenant and grow later without changing the reset contract.
 - The seed reset path should preserve migration-state knowledge for the seeded tenant rather than forcing schema recreation on every rerun.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

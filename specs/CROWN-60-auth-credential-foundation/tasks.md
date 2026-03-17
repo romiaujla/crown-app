@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the placeholder auth, schema, and seed surfaces that `CROWN-60` must replace or extend
 
-- [X] T001 Review current placeholder auth and claim surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/auth.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/contracts.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/claims.ts`
-- [X] T002 [P] Review current control-plane identity and seed surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [x] T001 Review current placeholder auth and claim surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/auth.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/contracts.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/claims.ts`
+- [x] T002 [P] Review current control-plane identity and seed surfaces in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Extend the `PlatformUser` auth model with username, hashed password, and account-status fields in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
-- [X] T004 Generate and review the control-plane migration SQL for the new auth fields in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
-- [X] T005 [P] Add shared auth-foundation types and account-status support in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/claims.ts` and related auth-support modules under `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/`
-- [X] T006 [P] Add password-hashing utilities and supporting auth test helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/`
+- [x] T003 Extend the `PlatformUser` auth model with username, hashed password, and account-status fields in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/schema.prisma`
+- [x] T004 Generate and review the control-plane migration SQL for the new auth fields in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/migrations/`
+- [x] T005 [P] Add shared auth-foundation types and account-status support in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/claims.ts` and related auth-support modules under `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/`
+- [x] T006 [P] Add password-hashing utilities and supporting auth test helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/`
 
 **Checkpoint**: Control-plane auth fields, migration assets, and shared auth-support primitives are ready for story work
 
@@ -45,14 +45,14 @@
 
 ### Tests for User Story 1
 
-- [X] T007 [P] [US1] Add focused auth-foundation persistence coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts` and related seed validation tests
-- [X] T008 [P] [US1] Add control-plane schema assertions for credential-backed users in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts` and any focused auth data validation spec
+- [x] T007 [P] [US1] Add focused auth-foundation persistence coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts` and related seed validation tests
+- [x] T008 [P] [US1] Add control-plane schema assertions for credential-backed users in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts` and any focused auth data validation spec
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Extend canonical seed user definitions with deterministic usernames, passwords, status, and the missing tenant-user persona in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
-- [X] T010 [US1] Update control-plane seeding to persist auth-capable users and tenant links in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
-- [X] T011 [US1] Align seed support types with the new auth-capable user shape in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
+- [x] T009 [US1] Extend canonical seed user definitions with deterministic usernames, passwords, status, and the missing tenant-user persona in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
+- [x] T010 [US1] Update control-plane seeding to persist auth-capable users and tenant links in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [x] T011 [US1] Align seed support types with the new auth-capable user shape in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
 
 **Checkpoint**: The canonical seed baseline produces auth-capable identities for all supported personas
 
@@ -66,14 +66,14 @@
 
 ### Tests for User Story 2
 
-- [X] T012 [P] [US2] Add auth role-resolution coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/` for super-admin, tenant-admin, tenant-user, disabled-account, and invalid-membership outcomes
-- [X] T013 [P] [US2] Add focused auth-support unit or contract-style validation for lookup and denial semantics in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/` or `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
+- [x] T012 [P] [US2] Add auth role-resolution coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/` for super-admin, tenant-admin, tenant-user, disabled-account, and invalid-membership outcomes
+- [x] T013 [P] [US2] Add focused auth-support unit or contract-style validation for lookup and denial semantics in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/` or `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/`
 
 ### Implementation for User Story 2
 
-- [X] T014 [US2] Implement credential-identity lookup and role-resolution support in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/`
-- [X] T015 [US2] Align auth route placeholders and supporting contracts with the new foundation types only where needed to avoid contradictory assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/auth.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/contracts.ts`
-- [X] T016 [US2] Add or update deterministic auth fixtures for test claims and resolved identities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/auth-fixtures.ts`
+- [x] T014 [US2] Implement credential-identity lookup and role-resolution support in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/`
+- [x] T015 [US2] Align auth route placeholders and supporting contracts with the new foundation types only where needed to avoid contradictory assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/auth.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/contracts.ts`
+- [x] T016 [US2] Add or update deterministic auth fixtures for test claims and resolved identities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/auth-fixtures.ts`
 
 **Checkpoint**: Internal auth foundation logic can resolve supported personas and clear denial states without relying on hard-coded placeholder identities
 
@@ -87,12 +87,12 @@
 
 ### Tests for User Story 3
 
-- [X] T017 [P] [US3] Extend documentation-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/quickstart.md` and any focused auth-foundation validation notes
+- [x] T017 [P] [US3] Extend documentation-facing validation expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/quickstart.md` and any focused auth-foundation validation notes
 
 ### Implementation for User Story 3
 
-- [X] T018 [US3] Update the auth strategy and architecture guidance to reflect access-token-only foundation scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/adr/ADR-0003-auth-strategy.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`
-- [X] T019 [US3] Align `CROWN-60` artifacts with the finalized foundation contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/research.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/contracts/auth-credential-foundation-contract.md`
+- [x] T018 [US3] Update the auth strategy and architecture guidance to reflect access-token-only foundation scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/adr/ADR-0003-auth-strategy.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`
+- [x] T019 [US3] Align `CROWN-60` artifacts with the finalized foundation contract in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/research.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/contracts/auth-credential-foundation-contract.md`
 
 **Checkpoint**: The repository documents and Spec Kit artifacts match the shipped access-token-only auth foundation scope
 
@@ -102,10 +102,10 @@
 
 **Purpose**: Run focused validation and final consistency checks across the auth foundation
 
-- [X] T020 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T021 [P] Run focused auth and seed validation with `pnpm --filter @crown/api exec vitest run tests/contract/auth-routes.contract.spec.ts tests/integration/prisma-local-seed.spec.ts` plus any new auth-foundation coverage from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T022 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T023 Perform final terminology and scope-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/tasks.md`
+- [x] T020 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T021 [P] Run focused auth and seed validation with `pnpm --filter @crown/api exec vitest run tests/contract/auth-routes.contract.spec.ts tests/integration/prisma-local-seed.spec.ts` plus any new auth-foundation coverage from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T022 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T023 Perform final terminology and scope-consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/auth-rbac.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/spec.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-60-auth-credential-foundation/tasks.md`
 
 ---
 

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-61` - "Define API auth foundation for login, logout, and current-user context"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Sign in with username or email (Priority: P1)
 
@@ -62,7 +62,7 @@ As a Crown developer, I need protected-route auth middleware and a stateless log
 - A token is syntactically valid but carries claims that do not satisfy the current auth contract version.
 - Logout is called without server-side session state and must remain idempotent from the client's perspective.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -79,14 +79,14 @@ As a Crown developer, I need protected-route auth middleware and a stateless log
 - **FR-011**: The system MUST keep persistent refresh sessions and server-side refresh-token revocation out of scope for this issue.
 - **FR-012**: The system MUST support routing decisions between the control-plane app and tenant app from the current-user response contract.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Login Identifier**: The user-supplied credential identifier that may be either a username or an email.
 - **Authenticated Principal**: The resolved user identity returned by login and current-user flows, including role and account status context.
 - **Current User Context**: The authenticated response shape containing principal details, tenant membership details when relevant, and the recommended application target.
 - **Auth Error Contract**: The consistent response structure used for unauthenticated, invalid-credential, disabled-account, and role-mismatch outcomes.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

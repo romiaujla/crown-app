@@ -23,7 +23,7 @@ Deliver the first real `apps/web` shell for Crown's platform operator experience
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. Planning work is on `feat/CROWN-7-platform-super-admin`, which matches the repository constitution for a Story.
 - Spec-kit planning gate: PASS. `spec.md` exists and this plan completes the required pre-implementation artifact sequence.

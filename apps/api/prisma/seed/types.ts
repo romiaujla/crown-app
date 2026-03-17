@@ -1,5 +1,9 @@
-import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import type { ManagementSystemTypeAvailabilityStatusEnum, RoleAuthClassEnum, RoleScopeEnum } from "../../src/generated/prisma/enums.js";
+import type { PlatformUserAccountStatus, TenantStatus } from '../../src/domain/status-enums.js';
+import type {
+  ManagementSystemTypeAvailabilityStatusEnum,
+  RoleAuthClassEnum,
+  RoleScopeEnum,
+} from '../../src/generated/prisma/enums.js';
 
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
@@ -153,12 +157,12 @@ export type SeedPrismaClient = {
 };
 
 export type SeedPhaseName =
-  | "after-control-plane"
-  | "after-reset"
-  | "after-reference-data"
-  | "after-organizations"
-  | "after-operations"
-  | "after-load";
+  | 'after-control-plane'
+  | 'after-reset'
+  | 'after-reference-data'
+  | 'after-organizations'
+  | 'after-operations'
+  | 'after-load';
 
 export type SeedControlPlaneBaseline = {
   tenantId: string;
@@ -219,7 +223,7 @@ export class SeedExecutionError extends Error {
 
   constructor(message: string, phase?: SeedPhaseName) {
     super(message);
-    this.name = "SeedExecutionError";
+    this.name = 'SeedExecutionError';
     this.phase = phase;
   }
 }
@@ -234,5 +238,5 @@ export const createEmptyLoadedCounts = (): SeedLoadedCounts => ({
   equipmentAssets: 0,
   loads: 0,
   loadStops: 0,
-  activityRecords: 0
+  activityRecords: 0,
 });

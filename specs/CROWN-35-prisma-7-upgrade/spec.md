@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-35"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Run Existing Prisma Workflows On The Supported Prisma 7 Baseline (Priority: P1)
 
@@ -57,7 +57,7 @@ The maintainer can understand any new development expectations introduced by Pri
 - How should the repository handle Prisma 7 configuration requirements without breaking current workspace command surfaces?
 - What happens when local seed, bootstrap, or tenant migration workflows rely on the existing PostgreSQL client integration model?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -72,7 +72,7 @@ The maintainer can understand any new development expectations introduced by Pri
 - **FR-009**: The upgrade validation MUST prove that focused Prisma-powered repository workflows still behave as expected after the upgrade.
 - **FR-010**: The resulting Prisma setup MUST be maintainable for future local and automated workflows without requiring contributors to rediscover version-specific caveats.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Prisma Baseline**: The repository’s supported Prisma CLI, Prisma client, and related configuration model.
 - **Prisma Client Generation Contract**: The repository-specific expectation for where the generated Prisma client comes from and how it is refreshed.
@@ -88,7 +88,7 @@ The maintainer can understand any new development expectations introduced by Pri
 - The canonical local seed, bootstrap, and tenant migration workflows should keep their current behavioral contract even if the underlying Prisma setup changes.
 - This task is an infrastructure upgrade and documentation exercise, not a redesign of domain, seed, or bootstrap behavior.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

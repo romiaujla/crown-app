@@ -13,6 +13,7 @@
 **Phase**: 1
 **Files**: `apps/api/src/tenant/contracts.ts`
 **Scope**:
+
 - Add `management_system_type_code` (required, validated by `ManagementSystemTypeCodeSchema` from `@crown/types`) to `TenantProvisionRequestSchema`.
 - Add `management_system_type_code` (required, validated by `ManagementSystemTypeCodeSchema`) to `TenantProvisionResponseSchema`.
 - Update inferred types: `TenantProvisionRequest`, `TenantProvisionResponse`.
@@ -26,6 +27,7 @@
 **Phase**: 1
 **Files**: `apps/api/src/tenant/types.ts`
 **Scope**:
+
 - Add `managementSystemTypeCode: string` to `ProvisionTenantInput`.
 - Add `managementSystemTypeCode: string` to `ProvisionTenantSuccessResult`.
 
@@ -38,6 +40,7 @@
 **Phase**: 2
 **Files**: `apps/api/src/tenant/provision-service.ts`
 **Scope**:
+
 - Import `prisma` models for `managementSystemType`, `role`, `tenantMembership`, `tenantMembershipRoleAssignment`.
 - At the start of `provisionTenant`, look up `ManagementSystemType` by `typeCode` + version `1.0`. If not found, return `{ status: "conflict", message: "invalid management system type code" }`.
 - After setting the tenant to `active` status, look up the `tenant_admin` role by `roleCode`.
@@ -54,6 +57,7 @@
 **Phase**: 3
 **Files**: `apps/api/src/routes/platform-tenants.ts`
 **Scope**:
+
 - Pass `managementSystemTypeCode: parsed.data.management_system_type_code` into the provision function call alongside existing fields.
 - Map `result.managementSystemTypeCode` as `management_system_type_code` into the `TenantProvisionResponseSchema.parse()` call.
 
@@ -66,6 +70,7 @@
 **Phase**: 4
 **Files**: `apps/api/src/docs/openapi.ts`
 **Scope**:
+
 - Add `management_system_type_code` to the `TenantProvisionRequest` component schema (`required`, `type: "string"`, `enum` of management system type codes).
 - Add `management_system_type_code` to the `TenantProvisionResponse` component schema.
 
@@ -78,6 +83,7 @@
 **Phase**: 5
 **Files**: `apps/api/tests/integration/tenant-provisioning.spec.ts`
 **Scope**:
+
 - Add `managementSystemTypeCode: "transportation"` to all `provisionTenant()` call inputs.
 - Add Prisma mocks for `managementSystemType.findUnique`, `role.findUnique`, `tenantMembership.create`, `tenantMembershipRoleAssignment.create`.
 - Add assertions verifying `tenantMembership.create` and `tenantMembershipRoleAssignment.create` are called with correct arguments on success.
@@ -93,6 +99,7 @@
 **Phase**: 5
 **Files**: `apps/api/tests/contract/platform-tenant-provision.contract.spec.ts`
 **Scope**:
+
 - Add `management_system_type_code: "transportation"` to all `send()` payloads.
 - Update `createProvisioned()` helper to include `managementSystemTypeCode` in the result.
 - Add response assertion checking `management_system_type_code` is in the 201 body.
@@ -107,6 +114,7 @@
 **Phase**: 6
 **Files**: (none — validation only)
 **Scope**:
+
 - Run `pnpm --filter api typecheck`.
 - Run `pnpm --filter api test` (full suite).
 - Verify no lint violations.

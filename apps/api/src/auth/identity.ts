@@ -1,5 +1,5 @@
-import type { PlatformUserAccountStatus } from "../domain/status-enums.js";
-import type { RoleEnum } from "./claims.js";
+import type { PlatformUserAccountStatus } from '../domain/status-enums.js';
+import type { RoleEnum } from './claims.js';
 
 export type AuthIdentityRecord = {
   id: string;
@@ -49,7 +49,7 @@ type UserLookup = {
     };
     include: {
       platformRoleAssignments: {
-        where: { assignmentStatus: "active" };
+        where: { assignmentStatus: 'active' };
         include: {
           role: {
             select: {
@@ -59,10 +59,10 @@ type UserLookup = {
         };
       };
       tenantMemberships: {
-        where: { membershipStatus: "active" };
+        where: { membershipStatus: 'active' };
         include: {
           roleAssignments: {
-            where: { assignmentStatus: "active" };
+            where: { assignmentStatus: 'active' };
             include: {
               role: {
                 select: {
@@ -88,60 +88,66 @@ const toAuthIdentityRecord = (record: RawAuthIdentityRecord): AuthIdentityRecord
   passwordHash: record.passwordHash,
   accountStatus: record.accountStatus,
   displayName: record.displayName,
-  platformRoleCodes: record.platformRoleAssignments.map((assignment) => assignment.role.authClass as RoleEnum),
+  platformRoleCodes: record.platformRoleAssignments.map(
+    (assignment) => assignment.role.authClass as RoleEnum,
+  ),
   tenantMemberships: record.tenantMemberships.map((membership) => {
-    const roleCodes = membership.roleAssignments.map((assignment) => assignment.role.authClass as RoleEnum);
+    const roleCodes = membership.roleAssignments.map(
+      (assignment) => assignment.role.authClass as RoleEnum,
+    );
     const primaryRoleCode =
-      membership.roleAssignments.find((assignment) => assignment.isPrimary)?.role.authClass as RoleEnum | undefined ??
-      (roleCodes.length === 1 ? roleCodes[0] : null);
+      (membership.roleAssignments.find((assignment) => assignment.isPrimary)?.role.authClass as
+        | RoleEnum
+        | undefined) ?? (roleCodes.length === 1 ? roleCodes[0] : null);
 
     return {
       tenantId: membership.tenantId,
       roleCodes,
-      primaryRoleCode
+      primaryRoleCode,
     };
-  })
+  }),
 });
 
-export const normalizeLoginIdentifier = (identifier: string): string => identifier.trim().toLowerCase();
+export const normalizeLoginIdentifier = (identifier: string): string =>
+  identifier.trim().toLowerCase();
 
 export const findAuthIdentityByIdentifier = async (
   prisma: AuthIdentityPrismaClient,
-  identifier: string
+  identifier: string,
 ): Promise<AuthIdentityRecord | null> => {
   const normalizedIdentifier = normalizeLoginIdentifier(identifier);
 
   const record = await prisma.user.findFirst({
     where: {
-      OR: [{ email: normalizedIdentifier }, { username: normalizedIdentifier }]
+      OR: [{ email: normalizedIdentifier }, { username: normalizedIdentifier }],
     },
     include: {
       platformRoleAssignments: {
-        where: { assignmentStatus: "active" },
+        where: { assignmentStatus: 'active' },
         include: {
           role: {
             select: {
-              authClass: true
-            }
-          }
-        }
+              authClass: true,
+            },
+          },
+        },
       },
       tenantMemberships: {
-        where: { membershipStatus: "active" },
+        where: { membershipStatus: 'active' },
         include: {
           roleAssignments: {
-            where: { assignmentStatus: "active" },
+            where: { assignmentStatus: 'active' },
             include: {
               role: {
                 select: {
-                  authClass: true
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  authClass: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 
   return record ? toAuthIdentityRecord(record) : null;

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-import { SessionExpiryNotification } from "@/components/auth/session-expiry-notification";
-import { parseAccessTokenClaims } from "@/lib/auth/token";
+import { SessionExpiryNotification } from '@/components/auth/session-expiry-notification';
+import { parseAccessTokenClaims } from '@/lib/auth/token';
 
-import { getCurrentUser, login, logout } from "../../lib/auth/api";
+import { getCurrentUser, login, logout } from '../../lib/auth/api';
 import {
   clearStoredAccessToken,
   clearStoredLoginReason,
@@ -13,9 +13,13 @@ import {
   getStoredLoginReason,
   getStoredAccessToken,
   storeStoredLoginReason,
-  storeAccessToken
-} from "../../lib/auth/storage";
-import { AuthReasonEnum, AuthStateStatusEnum, type CurrentUserResponse } from "../../lib/auth/types";
+  storeAccessToken,
+} from '../../lib/auth/storage';
+import {
+  AuthReasonEnum,
+  AuthStateStatusEnum,
+  type CurrentUserResponse,
+} from '../../lib/auth/types';
 
 type AuthReason = AuthReasonEnum | null;
 
@@ -59,15 +63,16 @@ const clearAuthStorage = () => {
   clearStoredReturnPath();
 };
 
-const AUTH_EXPIRY_WARNING_MS = Number(process.env.NEXT_PUBLIC_AUTH_EXPIRY_WARNING_MS ?? "60000");
+const AUTH_EXPIRY_WARNING_MS = Number(process.env.NEXT_PUBLIC_AUTH_EXPIRY_WARNING_MS ?? '60000');
 
-const getSecondsRemaining = (expiresAtMs: number) => Math.max(1, Math.ceil((expiresAtMs - Date.now()) / 1000));
+const getSecondsRemaining = (expiresAtMs: number) =>
+  Math.max(1, Math.ceil((expiresAtMs - Date.now()) / 1000));
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AuthState>({
     status: AuthStateStatusEnum.BOOTSTRAPPING,
     currentUser: null,
-    reason: null
+    reason: null,
   });
   const [warningExpiryMs, setWarningExpiryMs] = useState<number | null>(null);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
@@ -83,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setState({
         status: AuthStateStatusEnum.UNAUTHENTICATED,
         currentUser: null,
-        reason: AuthReasonEnum.SESSION_EXPIRED
+        reason: AuthReasonEnum.SESSION_EXPIRED,
       });
     }
   };
@@ -98,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setState({
             status: AuthStateStatusEnum.UNAUTHENTICATED,
             currentUser: null,
-            reason: null
+            reason: null,
           });
         }
         return;
@@ -112,7 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setState({
             status: AuthStateStatusEnum.UNAUTHENTICATED,
             currentUser: null,
-            reason: AuthReasonEnum.SESSION_EXPIRED
+            reason: AuthReasonEnum.SESSION_EXPIRED,
           });
         }
         return;
@@ -124,7 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setState({
             status: AuthStateStatusEnum.AUTHENTICATED,
             currentUser,
-            reason: null
+            reason: null,
           });
         }
       } catch {
@@ -134,7 +139,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setState({
             status: AuthStateStatusEnum.UNAUTHENTICATED,
             currentUser: null,
-            reason: AuthReasonEnum.SESSION_EXPIRED
+            reason: AuthReasonEnum.SESSION_EXPIRED,
           });
         }
       }
@@ -203,14 +208,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setState({
         status: AuthStateStatusEnum.AUTHENTICATED,
         currentUser: result.currentUser,
-        reason: null
+        reason: null,
       });
       setWarningExpiryMs(null);
       setSecondsRemaining(0);
 
       return {
         ok: true,
-        currentUser: result.currentUser
+        currentUser: result.currentUser,
       };
     },
     async signOut() {
@@ -223,15 +228,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setState({
           status: AuthStateStatusEnum.UNAUTHENTICATED,
           currentUser: null,
-          reason: null
+          reason: null,
         });
       }
-    }
+    },
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {warningExpiryMs !== null ? <SessionExpiryNotification secondsRemaining={secondsRemaining} /> : null}
+      {warningExpiryMs !== null ? (
+        <SessionExpiryNotification secondsRemaining={secondsRemaining} />
+      ) : null}
       {children}
     </AuthContext.Provider>
   );
@@ -240,7 +247,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const value = useContext(AuthContext);
   if (!value) {
-    throw new Error("AuthProvider is required");
+    throw new Error('AuthProvider is required');
   }
 
   return value;

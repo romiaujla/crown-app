@@ -13,8 +13,8 @@ Replace the in-memory directory mock in `default-auth-service.ts` with real Pris
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                            | Change                                                                                                                                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/auth/identity.ts` | Add `where` clauses to filter `TenantMembership` by `membershipStatus: "active"`, `TenantMembershipRoleAssignment` by `assignmentStatus: "active"`, and `UserPlatformRoleAssignment` by `assignmentStatus: "active"` in the Prisma include/query shape. |
 
 ### Design Details
@@ -38,9 +38,9 @@ The `UserLookup` type alias and `RawAuthIdentityRecord` type will be updated to 
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
-| `apps/api/src/auth/prisma-auth-service.ts` | **New file.** Implements the `AuthService` interface using the real Prisma client and the existing `findAuthIdentityByIdentifier`, `verifyPassword`, `resolveAuthenticatedRoleContext`, `signAccessToken`, and service types. |
+| File                                        | Change                                                                                                                                                                                                                                                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/auth/prisma-auth-service.ts`  | **New file.** Implements the `AuthService` interface using the real Prisma client and the existing `findAuthIdentityByIdentifier`, `verifyPassword`, `resolveAuthenticatedRoleContext`, `signAccessToken`, and service types.                                                               |
 | `apps/api/src/auth/default-auth-service.ts` | Replace the module export to delegate to the Prisma-backed implementation. Remove the in-memory directory (`directorySeed`, `createDirectoryClient`, `directoryPromise`), the hardcoded `DEFAULT_TENANT`, and the fixture-only `AUTH_LOGIN_FIXTURES` and `DISABLED_AUTH_TEST_USER` exports. |
 
 ### Design Details
@@ -89,8 +89,8 @@ A small private helper (`findTenantById`) queries `prisma.tenant.findUnique({ wh
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                      | Change                                                                                                                                                                                             |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/tests/helpers/auth-fixtures.ts` | Move login fixture credentials (identifiers + passwords) here from the removed `AUTH_LOGIN_FIXTURES`. Source passwords from `seeded-credentials.ts` directly. Move `DISABLED_AUTH_TEST_USER` here. |
 
 ### Design Details
@@ -99,12 +99,27 @@ The test helpers already import from `default-auth-service.ts` for `AUTH_LOGIN_F
 
 ```typescript
 export const loginFixtures = {
-  superAdminByEmail: { identifier: "super-admin@acme-local.test", password: SEEDED_AUTH_PASSWORDS.superAdmin },
-  tenantAdminByEmail: { identifier: "tenant-admin@acme-local.test", password: SEEDED_AUTH_PASSWORDS.tenantAdmin },
-  tenantUserByEmail: { identifier: "tenant-user@acme-local.test", password: SEEDED_AUTH_PASSWORDS.tenantUser },
-  disabledUser: { identifier: "disabled-user@acme-local.test", password: DEFAULT_SEEDED_PASSWORD },
-  tenantUserWithoutMembership: { identifier: "tenant-user-orphan@acme-local.test", password: DEFAULT_SEEDED_PASSWORD },
-  tenantAdminMultiTenant: { identifier: "tenant-admin-multi@acme-local.test", password: DEFAULT_SEEDED_PASSWORD }
+  superAdminByEmail: {
+    identifier: 'super-admin@acme-local.test',
+    password: SEEDED_AUTH_PASSWORDS.superAdmin,
+  },
+  tenantAdminByEmail: {
+    identifier: 'tenant-admin@acme-local.test',
+    password: SEEDED_AUTH_PASSWORDS.tenantAdmin,
+  },
+  tenantUserByEmail: {
+    identifier: 'tenant-user@acme-local.test',
+    password: SEEDED_AUTH_PASSWORDS.tenantUser,
+  },
+  disabledUser: { identifier: 'disabled-user@acme-local.test', password: DEFAULT_SEEDED_PASSWORD },
+  tenantUserWithoutMembership: {
+    identifier: 'tenant-user-orphan@acme-local.test',
+    password: DEFAULT_SEEDED_PASSWORD,
+  },
+  tenantAdminMultiTenant: {
+    identifier: 'tenant-admin-multi@acme-local.test',
+    password: DEFAULT_SEEDED_PASSWORD,
+  },
 } as const;
 ```
 
@@ -118,10 +133,10 @@ export const loginFixtures = {
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                            | Change                                                                                                                          |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/tests/integration/auth-login.spec.ts` | **New file.** Integration tests for `POST /api/v1/auth/login` covering all seeded personas against the ephemeral test database. |
-| `apps/api/tests/integration/auth-me.spec.ts` | **New file.** Integration tests for `GET /api/v1/auth/me` covering all seeded personas against the ephemeral test database. |
+| `apps/api/tests/integration/auth-me.spec.ts`    | **New file.** Integration tests for `GET /api/v1/auth/me` covering all seeded personas against the ephemeral test database.     |
 
 ### Design Details
 

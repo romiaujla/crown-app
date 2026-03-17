@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the upstream model and migration inputs before finalizing the seed strategy
 
-- [X] T001 Review the approved tenant-domain source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T002 [P] Review the migration baseline source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
+- [x] T001 Review the approved tenant-domain source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T002 [P] Review the migration baseline source of truth in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-30-tenant-schema-migrations/contracts/tenant-migration-handoff-contract.md`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Consolidate `CROWN-30` schema-baseline assumptions and seed-strategy scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/plan.md`
-- [X] T004 [P] Normalize foundational seed-scope boundaries and exclusions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T005 [P] Align downstream seed-strategy guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
-- [X] T006 Reconcile the seed strategy entities and baseline areas with `CROWN-29` and `CROWN-30` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T003 Consolidate `CROWN-30` schema-baseline assumptions and seed-strategy scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/plan.md`
+- [x] T004 [P] Normalize foundational seed-scope boundaries and exclusions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T005 [P] Align downstream seed-strategy guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
+- [x] T006 Reconcile the seed strategy entities and baseline areas with `CROWN-29` and `CROWN-30` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
 
 **Checkpoint**: Foundational seed-strategy boundaries are stable and downstream handoff constraints are aligned
 
@@ -45,15 +45,15 @@
 
 ### Validation for User Story 1
 
-- [X] T007 [P] [US1] Cross-check reset-scope requirements and baseline expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T008 [P] [US1] Cross-check seeded baseline areas and reset-boundary entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T007 [P] [US1] Cross-check reset-scope requirements and baseline expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T008 [P] [US1] Cross-check seeded baseline areas and reset-boundary entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Refine the reset-scope boundary and retained-data rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
-- [X] T010 [US1] Refine control-plane and tenant-domain baseline scope expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
-- [X] T011 [US1] Align resettable-baseline requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T012 [US1] Update reset-scope decisions and alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
+- [x] T009 [US1] Refine the reset-scope boundary and retained-data rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T010 [US1] Refine control-plane and tenant-domain baseline scope expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T011 [US1] Align resettable-baseline requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T012 [US1] Update reset-scope decisions and alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
 
 **Checkpoint**: The canonical resettable baseline is explicit and independently reviewable
 
@@ -67,15 +67,15 @@
 
 ### Validation for User Story 2
 
-- [X] T013 [P] [US2] Review deterministic fixture requirements and representative-data expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T014 [P] [US2] Review deterministic fixture keys and ordering-rule entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T013 [P] [US2] Review deterministic fixture requirements and representative-data expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T014 [P] [US2] Review deterministic fixture keys and ordering-rule entities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Refine deterministic fixture key rules and lookup boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
-- [X] T016 [US2] Refine representative baseline-data scope and ordering expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
-- [X] T017 [US2] Update deterministic fixture decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
-- [X] T018 [US2] Align fixture-focused requirements and assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T015 [US2] Refine deterministic fixture key rules and lookup boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T016 [US2] Refine representative baseline-data scope and ordering expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`
+- [x] T017 [US2] Update deterministic fixture decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
+- [x] T018 [US2] Align fixture-focused requirements and assumptions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
 
 **Checkpoint**: Stable fixture identifiers and baseline-data expectations are explicit and independently reviewable
 
@@ -89,15 +89,15 @@
 
 ### Validation for User Story 3
 
-- [X] T019 [P] [US3] Review rerun-safety and recovery requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T020 [P] [US3] Review recovery-expectation entities and downstream usage guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
+- [x] T019 [P] [US3] Review rerun-safety and recovery requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T020 [P] [US3] Review recovery-expectation entities and downstream usage guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Refine rerun-safety, partial-failure, and recovery expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
-- [X] T022 [US3] Refine downstream handoff guarantees for local and future containerized execution in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
-- [X] T023 [US3] Update recovery-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
-- [X] T024 [US3] Reconcile the final rerun/recovery strategy with implementation-readiness guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
+- [x] T021 [US3] Refine rerun-safety, partial-failure, and recovery expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md`
+- [x] T022 [US3] Refine downstream handoff guarantees for local and future containerized execution in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
+- [x] T023 [US3] Update recovery-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`
+- [x] T024 [US3] Reconcile the final rerun/recovery strategy with implementation-readiness guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
 
 **Checkpoint**: Rerun safety and recovery expectations are explicit and independently reviewable
 
@@ -107,10 +107,10 @@
 
 **Purpose**: Final consistency, validation, and readiness checks across all seed-strategy artifacts
 
-- [X] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
-- [X] T027 Perform final terminology and deterministic-boundary consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
-- [X] T028 Confirm the final seed strategy still aligns to `CROWN-29` and `CROWN-30` handoff guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
+- [x] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/quickstart.md`
+- [x] T027 Perform final terminology and deterministic-boundary consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
+- [x] T028 Confirm the final seed strategy still aligns to `CROWN-29` and `CROWN-30` handoff guarantees in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/research.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-31-prisma-seed-strategy/contracts/prisma-seed-strategy-handoff-contract.md`
 
 ---
 

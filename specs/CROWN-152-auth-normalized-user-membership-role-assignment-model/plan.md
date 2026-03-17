@@ -21,7 +21,7 @@ Define the normalized target auth model needed by `CROWN-149` so follow-up schem
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-152-auth-normalized-user-membership-role-assignment-model` matches the constitution for a Story.
 - Commit/PR convention: PASS. Later phase commits and the final PR title should use `feat: CROWN-152 - ...`.

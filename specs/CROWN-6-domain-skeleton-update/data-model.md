@@ -123,12 +123,12 @@
 
 ## Final Baseline Mapping
 
-| Existing Artifact | Disposition | New Baseline Concept | Rationale | Compatibility Handling |
-|-------------------|-------------|----------------------|-----------|------------------------|
-| `accounts` | Generalize | `organizations` | The current shape captures a business-party concept that remains useful beyond CRM. | Existing account rows map to organization records by identity and display name. |
-| `contacts` | Generalize | `people` | Individual person records are useful across multiple tenant system types. | Existing contact rows map to person records, preserving organization linkage where present. |
-| `deals` | Replace | `work_items` | Pipeline opportunities are too CRM-specific for the future tenant baseline. | Existing deal rows must be interpreted as legacy work items until migrated to the new baseline. |
-| `activities` | Generalize | `activity_records` | Operational activity history is reusable if detached from CRM-only subject assumptions. | Existing activity rows remain historical records and should be remapped to broader subject references. |
+| Existing Artifact | Disposition | New Baseline Concept | Rationale                                                                               | Compatibility Handling                                                                                 |
+| ----------------- | ----------- | -------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `accounts`        | Generalize  | `organizations`      | The current shape captures a business-party concept that remains useful beyond CRM.     | Existing account rows map to organization records by identity and display name.                        |
+| `contacts`        | Generalize  | `people`             | Individual person records are useful across multiple tenant system types.               | Existing contact rows map to person records, preserving organization linkage where present.            |
+| `deals`           | Replace     | `work_items`         | Pipeline opportunities are too CRM-specific for the future tenant baseline.             | Existing deal rows must be interpreted as legacy work items until migrated to the new baseline.        |
+| `activities`      | Generalize  | `activity_records`   | Operational activity history is reusable if detached from CRM-only subject assumptions. | Existing activity rows remain historical records and should be remapped to broader subject references. |
 
 ## Approved Management-System Example Mapping
 

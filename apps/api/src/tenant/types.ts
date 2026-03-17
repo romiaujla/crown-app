@@ -1,6 +1,6 @@
-import type { DeprovisionTypeEnum } from "@crown/types";
-import type { Tenant } from "../generated/prisma/client.js";
-import type { TenantStatus } from "../domain/status-enums.js";
+import type { DeprovisionTypeEnum } from '@crown/types';
+import type { Tenant } from '../generated/prisma/client.js';
+import type { TenantStatus } from '../domain/status-enums.js';
 
 export type TenantMigrationDefinition = {
   version: string;
@@ -10,7 +10,7 @@ export type TenantMigrationDefinition = {
 };
 
 export type TenantMigrationExecutionResult = {
-  status: "provisioned" | "failed";
+  status: 'provisioned' | 'failed';
   appliedVersions: string[];
   skippedVersions: string[];
   failedVersion?: string;
@@ -32,7 +32,7 @@ export type ProvisionTenantInput = {
 };
 
 export type ProvisionTenantSuccessResult = {
-  status: "provisioned";
+  status: 'provisioned';
   tenantId: string;
   slug: string;
   schemaName: string;
@@ -43,13 +43,13 @@ export type ProvisionTenantSuccessResult = {
 };
 
 export type ProvisionTenantConflictResult = {
-  status: "conflict";
+  status: 'conflict';
   message: string;
 };
 
 export type ProvisionTenantFailureResult = {
-  status: "failed";
-  errorCode: "migration_failed";
+  status: 'failed';
+  errorCode: 'migration_failed';
   message: string;
   failedVersion?: string;
   tenantId: string;
@@ -77,7 +77,7 @@ export type DeprovisionTenantInput = {
 };
 
 export type SoftDeprovisionTenantSuccessResult = {
-  status: "soft_deprovisioned";
+  status: 'soft_deprovisioned';
   tenantId: string;
   slug: string;
   schemaName: string;
@@ -86,7 +86,7 @@ export type SoftDeprovisionTenantSuccessResult = {
 };
 
 export type HardDeprovisionTenantSuccessResult = {
-  status: "hard_deprovisioned";
+  status: 'hard_deprovisioned';
   tenantId: string;
   slug: string;
   schemaName: string;
@@ -95,13 +95,13 @@ export type HardDeprovisionTenantSuccessResult = {
 };
 
 export type SoftDeprovisionTenantConflictResult = {
-  status: "conflict";
+  status: 'conflict';
   message: string;
   tenantId: string;
 };
 
 export type SoftDeprovisionTenantNotFoundResult = {
-  status: "not_found";
+  status: 'not_found';
   message: string;
   tenantId: string;
 };

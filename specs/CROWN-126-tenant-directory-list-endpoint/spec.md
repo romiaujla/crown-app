@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-126` - "API | Tenant directory list endpoint for super admins"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - List Tenants For The Control Plane (Priority: P1)
 
@@ -63,7 +63,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 - The directory must return persisted platform statuses rather than duplicating web-only constants.
 - The initial directory contract must not widen into nested related collections such as tenant users.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -81,7 +81,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 - **FR-012**: Shared contract shapes, schemas, enums, and inferred types used by both API and web packages for this endpoint MUST be defined once in `@crown/types`.
 - **FR-013**: The manual OpenAPI source MUST document the tenant directory route, request body contract, and response contract.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Directory Item**: A control-plane tenant record returned in the list response, including identity, lifecycle status, and timestamps.
 - **Tenant Directory Filters**: The request-body filter inputs and echoed metadata for `name` and `status`.
@@ -101,7 +101,7 @@ As a maintainer, I want the tenant directory endpoint to follow the agreed respo
 - Shared contract package in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -13,6 +13,7 @@
 **Phase**: 1
 **Files**: `apps/api/src/routes/authorization.ts`
 **Scope**:
+
 - Add `POST /tenant/access` route.
 - Add request validation for body fields:
   - `authClass` in `tenant_admin | tenant_user`
@@ -30,6 +31,7 @@
 **Phase**: 2
 **Files**: `apps/api/src/routes/authorization.ts`
 **Scope**:
+
 - Remove `GET /tenant/admin/:tenantId` route.
 - Remove `GET /tenant/user/:tenantId` route.
 - Keep `/platform/ping` and unrelated routes unchanged.
@@ -43,6 +45,7 @@
 **Phase**: 3
 **Files**: `apps/api/src/docs/openapi.ts`
 **Scope**:
+
 - Add `POST /api/v1/tenant/access` path documentation with request body schema.
 - Include bearer auth security and `200`/`400`/`401`/`403` responses.
 - Remove legacy path docs for `/api/v1/tenant/admin/{tenantId}` and `/api/v1/tenant/user/{tenantId}`.
@@ -56,6 +59,7 @@
 **Phase**: 3
 **Files**: `apps/api/tests/integration/api-docs.spec.ts`
 **Scope**:
+
 - Replace expectations for legacy tenant access paths with `POST /api/v1/tenant/access`.
 - Update bearer auth assertions to match the new path and method.
 - Keep unrelated docs assertions unchanged.
@@ -69,6 +73,7 @@
 **Phase**: 4
 **Files**: `apps/api/tests/integration/tenant-admin-rbac.spec.ts`
 **Scope**:
+
 - Replace legacy GET usage with `POST /api/v1/tenant/access` payload contract.
 - Preserve denied-tenant-scope assertion (`403`, `forbidden_tenant`).
 - Add allowed-scope assertion (`200`) if missing.
@@ -82,6 +87,7 @@
 **Phase**: 4
 **Files**: `apps/api/tests/integration/tenant-user-rbac.spec.ts`
 **Scope**:
+
 - Replace legacy GET usage with `POST /api/v1/tenant/access` payload contract.
 - Preserve malformed claims test for unified endpoint (`401`, `invalid_claims`).
 - Add explicit tenant-user escalation denial scenario (`authClass: tenant_admin` -> `403`, `forbidden_role`).
@@ -96,6 +102,7 @@
 **Phase**: 5
 **Files**: none (validation only)
 **Scope**:
+
 - Run focused API integration tests for tenant-admin, tenant-user, and api-docs suites.
 - Run API typecheck.
 - Run `pnpm specify.audit`.

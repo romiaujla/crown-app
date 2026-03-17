@@ -33,7 +33,7 @@
 - [ ] T005 [P] Extend tenant lifecycle result types for soft deprovision outcomes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/types.ts`
 - [ ] T006 [P] Add a tenant soft deprovision lifecycle service in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/tenant/lifecycle-service.ts`
 - [ ] T007 [P] Extend the shared API error-code surface for deterministic not-found handling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/auth/claims.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/types/errors.ts`
-**Checkpoint**: The codebase has a reusable soft deprovision service contract plus deterministic API error handling primitives
+      **Checkpoint**: The codebase has a reusable soft deprovision service contract plus deterministic API error handling primitives
 
 ---
 

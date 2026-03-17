@@ -6,20 +6,20 @@ export type RecordedBootstrapStep = {
 
 export const expectedBootstrapSequence = [
   {
-    id: "postgres",
-    command: "pnpm",
-    args: ["postgres"]
+    id: 'postgres',
+    command: 'pnpm',
+    args: ['postgres'],
   },
   {
-    id: "db:push",
-    command: "pnpm",
-    args: ["db:push"]
+    id: 'db:push',
+    command: 'pnpm',
+    args: ['db:push'],
   },
   {
-    id: "db:seed:local",
-    command: "pnpm",
-    args: ["db:seed:local"]
-  }
+    id: 'db:seed:local',
+    command: 'pnpm',
+    args: ['db:seed:local'],
+  },
 ] as const;
 
 export const createBootstrapWorkflowHarness = () => {
@@ -33,18 +33,18 @@ export const createBootstrapWorkflowHarness = () => {
       recordedSteps.push({
         id: step.id,
         command: step.command,
-        args: [...step.args]
+        args: [...step.args],
       });
 
       return {
         stepId: step.id,
-        exitCode: 0
+        exitCode: 0,
       };
     },
     logger: {
       info: (message: string) => {
         infoMessages.push(message);
-      }
-    }
+      },
+    },
   };
 };

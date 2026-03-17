@@ -21,7 +21,7 @@ Refine the shared authenticated dashboard shell in `apps/web` by removing the de
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. `CROWN-115` is a Story and the active branch matches the required `feat/CROWN-<id>-<slug>` convention.
 - Planning gate: PASS. `spec.md` exists before implementation planning begins.

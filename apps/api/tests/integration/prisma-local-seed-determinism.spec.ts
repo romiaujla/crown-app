@@ -1,27 +1,27 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest';
 
-import { runLocalSeed } from "../../prisma/seed.js";
+import { runLocalSeed } from '../../prisma/seed.js';
 import {
   createExpectedCanonicalSnapshot,
   createSeedTestHarness,
   expectedCanonicalDeterministicLookupFields,
   expectedCanonicalTenantSchemaName,
-  expectedCanonicalTenantSlug
-} from "../helpers/local-seed-db.js";
+  expectedCanonicalTenantSlug,
+} from '../helpers/local-seed-db.js';
 
-describe("prisma local seed determinism", () => {
-  it("preserves stable fixture keys and representative seeded data across reruns", async () => {
+describe('prisma local seed determinism', () => {
+  it('preserves stable fixture keys and representative seeded data across reruns', async () => {
     const harness = createSeedTestHarness();
 
     const firstRun = await runLocalSeed({
       prismaClient: harness.prisma,
-      client: harness.client
+      client: harness.client,
     });
     const firstSnapshot = harness.snapshot();
 
     const secondRun = await runLocalSeed({
       prismaClient: harness.prisma,
-      client: harness.client
+      client: harness.client,
     });
     const secondSnapshot = harness.snapshot();
 

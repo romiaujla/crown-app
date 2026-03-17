@@ -1,123 +1,131 @@
-import request from "supertest";
-import { describe, expect, it, vi } from "vitest";
-import type { RequestHandler } from "express";
+import request from 'supertest';
+import { describe, expect, it, vi } from 'vitest';
+import type { RequestHandler } from 'express';
 
-import { buildApp } from "../../src/app.js";
-import { TenantStatus } from "../../src/domain/status-enums.js";
-import { createPlatformTenantsRouter } from "../../src/routes/platform-tenants.js";
-import type { ProvisionTenantResult } from "../../src/tenant/types.js";
-import { createJwtToken, superAdminClaims, tenantAdminClaims } from "../helpers/auth-fixtures.js";
+import { buildApp } from '../../src/app.js';
+import { TenantStatus } from '../../src/domain/status-enums.js';
+import { createPlatformTenantsRouter } from '../../src/routes/platform-tenants.js';
+import type { ProvisionTenantResult } from '../../src/tenant/types.js';
+import { createJwtToken, superAdminClaims, tenantAdminClaims } from '../helpers/auth-fixtures.js';
 
 const createProvisioned = (): ProvisionTenantResult => ({
-  status: "provisioned",
-  tenantId: "tenant-id-1",
-  slug: "acme",
-  schemaName: "tenant_acme",
-  appliedVersions: ["0001_base.001_foundational_tms_schema"],
+  status: 'provisioned',
+  tenantId: 'tenant-id-1',
+  slug: 'acme',
+  schemaName: 'tenant_acme',
+  appliedVersions: ['0001_base.001_foundational_tms_schema'],
   skippedVersions: [],
-  managementSystemTypeCode: "transportation",
+  managementSystemTypeCode: 'transportation',
   tenant: {
-    id: "tenant-id-1",
-    name: "Acme",
-    slug: "acme",
-    schemaName: "tenant_acme",
+    id: 'tenant-id-1',
+    name: 'Acme',
+    slug: 'acme',
+    schemaName: 'tenant_acme',
     status: TenantStatus.active,
     createdAt: new Date(),
-    updatedAt: new Date()
-  }
+    updatedAt: new Date(),
+  },
 });
 
-describe("platform tenant provisioning contract", () => {
-  it("returns 201 for super_admin", async () => {
+describe('platform tenant provisioning contract', () => {
+  it('returns 201 for super_admin', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: "Acme", slug: "acme", management_system_type_code: "transportation" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: 'Acme', slug: 'acme', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(201);
-    expect(response.body.status).toBe("provisioned");
-    expect(response.body.slug).toBe("acme");
-    expect(response.body.management_system_type_code).toBe("transportation");
+    expect(response.body.status).toBe('provisioned');
+    expect(response.body.slug).toBe('acme');
+    expect(response.body.management_system_type_code).toBe('transportation');
   });
 
-  it("returns 400 for invalid payload", async () => {
+  it('returns 400 for invalid payload', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: "A", slug: "INVALID", management_system_type_code: "transportation" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: 'A', slug: 'INVALID', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(400);
-    expect(response.body.error_code).toBe("validation_error");
+    expect(response.body.error_code).toBe('validation_error');
   });
 
-  it("returns 400 for missing management_system_type_code", async () => {
+  it('returns 400 for missing management_system_type_code', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: "Acme", slug: "acme" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: 'Acme', slug: 'acme' });
 
     expect(response.status).toBe(400);
-    expect(response.body.error_code).toBe("validation_error");
+    expect(response.body.error_code).toBe('validation_error');
   });
 
-  it("returns 401 for missing token", async () => {
+  it('returns 401 for missing token', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
-    const response = await request(app).post("/api/v1/platform/tenant").send({ name: "Acme", slug: "acme", management_system_type_code: "transportation" });
+    const response = await request(app)
+      .post('/api/v1/platform/tenant')
+      .send({ name: 'Acme', slug: 'acme', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe("unauthenticated");
+    expect(response.body.error_code).toBe('unauthenticated');
   });
 
-  it("returns 403 for non-super-admin", async () => {
+  it('returns 403 for non-super-admin', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`)
-      .send({ name: "Acme", slug: "acme", management_system_type_code: "transportation" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`)
+      .send({ name: 'Acme', slug: 'acme', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe("forbidden_role");
+    expect(response.body.error_code).toBe('forbidden_role');
   });
 
-  it("returns 409 on conflict", async () => {
-    const provision = vi.fn(async () => ({ status: "conflict", message: "tenant slug already exists" } as const));
+  it('returns 409 on conflict', async () => {
+    const provision = vi.fn(
+      async () => ({ status: 'conflict', message: 'tenant slug already exists' }) as const,
+    );
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: "Acme", slug: "acme", management_system_type_code: "transportation" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: 'Acme', slug: 'acme', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(409);
-    expect(response.body.error_code).toBe("conflict");
+    expect(response.body.error_code).toBe('conflict');
   });
 
-  it("returns 429 when rate limited", async () => {
+  it('returns 429 when rate limited', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const rateLimitMiddleware: RequestHandler = (_req, res) => {
-      res.status(429).json({ error_code: "rate_limited", message: "Too many tenant mutation requests" });
+      res
+        .status(429)
+        .json({ error_code: 'rate_limited', message: 'Too many tenant mutation requests' });
     };
-    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision, rateLimitMiddleware }) });
+    const app = buildApp({
+      platformTenantsRouter: createPlatformTenantsRouter({ provision, rateLimitMiddleware }),
+    });
 
     const response = await request(app)
-      .post("/api/v1/platform/tenant")
-      .set("Authorization", `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: "Acme", slug: "acme", management_system_type_code: "transportation" });
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({ name: 'Acme', slug: 'acme', management_system_type_code: 'transportation' });
 
     expect(response.status).toBe(429);
-    expect(response.body.error_code).toBe("rate_limited");
+    expect(response.body.error_code).toBe('rate_limited');
   });
 });

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-76` - "API | Hard deprovision tenant from the super-admin control plane"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Hard Deprovision A Tenant Through The Existing Deprovision Endpoint (Priority: P1)
 
@@ -62,7 +62,7 @@ As a maintainer, I want the shared deprovision contract to make soft and hard be
 - The tenant record is retained after hard deprovision and must remain in a deterministic `inactive` state for follow-up reads or repeated requests.
 - A caller omits `deprovisionType`, and the system must not accidentally perform a hard delete.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -80,7 +80,7 @@ As a maintainer, I want the shared deprovision contract to make soft and hard be
 - **FR-012**: The implementation MUST remain additive and limited to tenant-management backend behavior for this story.
 - **FR-013**: The manual OpenAPI source MUST document the shared deprovision route, optional `deprovisionType`, default soft behavior, and hard-deprovision semantics.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Deprovision Type**: The explicit lifecycle mode that selects either soft or hard tenant deprovision behavior.
 - **Tenant Record**: The retained control-plane tenant metadata row that continues to exist after hard deprovision.
@@ -101,7 +101,7 @@ As a maintainer, I want the shared deprovision contract to make soft and hard be
 - Tenant schema management utilities used by provisioning and tenant-migration workflows.
 - The manual OpenAPI document in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

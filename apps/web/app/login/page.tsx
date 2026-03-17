@@ -1,7 +1,7 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
-import { LoginPageContent } from "@/components/auth/login-page-content";
-import { StatusPanel } from "@/components/auth/status-panel";
+import { LoginPageContent } from '@/components/auth/login-page-content';
+import { StatusPanel } from '@/components/auth/status-panel';
 
 const LoginPage = () => (
   <Suspense
