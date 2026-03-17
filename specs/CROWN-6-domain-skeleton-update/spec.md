@@ -7,7 +7,7 @@
 
 **Artifact Path**: `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-6-domain-skeleton-update/` is the canonical feature directory for this story.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Audit Existing Tenant Domain Baseline (Priority: P1)
 
@@ -71,7 +71,7 @@ As an operator responsible for existing tenants, I want the schema pivot to incl
 - How does the pivot handle tenants provisioned before the new baseline is introduced?
 - How does the domain model stay generic enough for multiple tenant system types without becoming so abstract that it loses business clarity?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -87,7 +87,7 @@ As an operator responsible for existing tenants, I want the schema pivot to incl
 - **FR-010**: The feature MUST provide a documented mapping from the pre-pivot tenant baseline (`accounts`, `contacts`, `deals`, `activities`) to the approved management-system baseline.
 - **FR-011**: Architecture and backlog artifacts that currently describe tenant-scoped CRM operations MUST be updated to reflect the approved management-system baseline.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Domain Artifact**: Any existing tenant-facing schema element, data structure, or named domain concept that was previously introduced for tenant operations.
 - **Management-System Domain Baseline**: The neutral set of tenant-facing domain concepts and relationships intended to support multiple tenant system types.
@@ -107,7 +107,7 @@ As an operator responsible for existing tenants, I want the schema pivot to incl
 - Updated platform positioning work establishing `Crown` and the management-system tenant direction.
 - Follow-on implementation work that will apply the approved baseline to future tenant-domain features.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

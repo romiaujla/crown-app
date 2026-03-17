@@ -2,15 +2,14 @@ import {
   DashboardMetricWindowEnum,
   DashboardOverviewResponseSchema,
   TenantStatusEnum,
-  type DashboardOverviewResponse
-} from "@crown/types";
-import { RoleEnum } from "../../auth/claims.js";
-import { prisma } from "../../db/prisma.js";
-import { TenantStatus } from "../../domain/status-enums.js";
+  type DashboardOverviewResponse,
+} from '@crown/types';
+import { prisma } from '../../db/prisma.js';
+import { TenantStatus } from '../../domain/status-enums.js';
 
 type DashboardOverviewPrismaClient = {
-  platformUser: {
-    count(args: { where: { role: RoleEnum.TENANT_USER } }): Promise<number>;
+  user: {
+    count(args?: { where?: unknown }): Promise<number>;
   };
   tenant: {
     count(args?: {
@@ -22,7 +21,10 @@ type DashboardOverviewPrismaClient = {
         };
       };
     }): Promise<number>;
-    groupBy(args: { by: ["status"]; _count: { _all: true } }): Promise<Array<{ status: TenantStatus; _count: { _all: number } }>>;
+    groupBy(args: {
+      by: ['status'];
+      _count: { _all: true };
+    }): Promise<Array<{ status: TenantStatus; _count: { _all: number } }>>;
   };
 };
 
@@ -30,7 +32,7 @@ const tenantStatusOrder = Object.values(TenantStatusEnum);
 const dashboardMetricWindows = [
   { window: DashboardMetricWindowEnum.WEEK, durationDays: 7 },
   { window: DashboardMetricWindowEnum.MONTH, durationDays: 30 },
-  { window: DashboardMetricWindowEnum.YEAR, durationDays: 365 }
+  { window: DashboardMetricWindowEnum.YEAR, durationDays: 365 },
 ] as const;
 
 const getTrailingWindowStart = (now: Date, durationDays: number) =>
@@ -49,7 +51,7 @@ const calculateGrowthRatePercentage = (currentCount: number, previousCount: numb
 
 export const getPlatformDashboardOverview = async (
   db: DashboardOverviewPrismaClient = prisma,
-  now: Date = new Date()
+  now: Date = new Date(),
 ): Promise<DashboardOverviewResponse> => {
   const windowCounts = await Promise.all(
     dashboardMetricWindows.map(async ({ durationDays, window }) => {
@@ -61,61 +63,73 @@ export const getPlatformDashboardOverview = async (
           where: {
             createdAt: {
               gte: currentWindowStart,
-              lte: now
-            }
-          }
+              lte: now,
+            },
+          },
         }),
         db.tenant.count({
           where: {
             createdAt: {
               gte: previousWindowStart,
-              lt: currentWindowStart
-            }
-          }
-        })
+              lt: currentWindowStart,
+            },
+          },
+        }),
       ]);
 
       return {
         currentCount,
         previousCount,
-        window
+        window,
       };
-    })
+    }),
   );
 
   const [tenantUserCount, totalTenantCount, groupedStatusCounts] = await Promise.all([
-    db.platformUser.count({
+    db.user.count({
       where: {
-        role: RoleEnum.TENANT_USER
-      }
+        tenantMemberships: {
+          some: {
+            roleAssignments: {
+              some: {
+                role: {
+                  authClass: 'tenant_user',
+                },
+              },
+            },
+          },
+        },
+      },
     }),
     db.tenant.count(),
     db.tenant.groupBy({
-      by: ["status"],
-      _count: { _all: true }
-    })
+      by: ['status'],
+      _count: { _all: true },
+    }),
   ]);
 
-  const statusCountMap = new Map(groupedStatusCounts.map((entry) => [entry.status, entry._count._all]));
+  const statusCountMap = new Map(
+    groupedStatusCounts.map((entry) => [entry.status, entry._count._all]),
+  );
 
   return DashboardOverviewResponseSchema.parse({
     widgets: {
-      tenant_summary: {
-        total_tenant_count: totalTenantCount,
-        tenant_user_count: tenantUserCount,
-        tenant_status_counts: tenantStatusOrder.map((status) => ({
+      tenantSummary: {
+        totalTenantCount: totalTenantCount,
+        tenantUserCount: tenantUserCount,
+        tenantStatusCounts: tenantStatusOrder.map((status) => ({
           status,
-          count: statusCountMap.get(status) ?? 0
+          count: statusCountMap.get(status) ?? 0,
         })),
-        new_tenant_counts: windowCounts.map(({ currentCount, window }) => ({
+        newTenantCounts: windowCounts.map(({ currentCount, window }) => ({
           window,
-          count: currentCount
+          count: currentCount,
         })),
-        tenant_growth_rates: windowCounts.map(({ currentCount, previousCount, window }) => ({
+        tenantGrowthRates: windowCounts.map(({ currentCount, previousCount, window }) => ({
           window,
-          growth_rate_percentage: calculateGrowthRatePercentage(currentCount, previousCount)
-        }))
-      }
-    }
+          growthRatePercentage: calculateGrowthRatePercentage(currentCount, previousCount),
+        })),
+      },
+    },
   });
 };

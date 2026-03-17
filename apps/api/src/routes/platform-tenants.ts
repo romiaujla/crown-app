@@ -1,46 +1,54 @@
 import {
   DeprovisionTypeEnum,
   TenantCreateReferenceDataRequestSchema,
+  TenantDirectoryListRequestSchema,
   TenantSlugAvailabilityRequestSchema,
   TenantSlugSchema,
-  type TenantSlugAvailabilityResponse,
+  TenantStatusEnum,
   type TenantCreateReferenceDataFilter,
   type TenantCreateReferenceDataResponse,
-  TenantDirectoryListRequestSchema,
-  TenantStatusEnum,
-  type TenantDirectoryListResponse
-} from "@crown/types";
-import { Router, type RequestHandler } from "express";
+  type TenantDirectoryListResponse,
+  type TenantSlugAvailabilityResponse,
+} from '@crown/types';
+import { Router, type RequestHandler } from 'express';
 
-import { AuthErrorCodeEnum, RoleEnum } from "../auth/claims.js";
-import { authenticate } from "../middleware/authenticate.js";
-import { authorize } from "../middleware/authorize.js";
-import { createRateLimitMiddleware } from "../middleware/rate-limit.js";
-import { sendAuthError } from "../types/errors.js";
+import { AuthErrorCodeEnum, RoleEnum } from '../auth/claims.js';
+import { authenticate } from '../middleware/authenticate.js';
+import { authorize } from '../middleware/authorize.js';
+import { createRateLimitMiddleware } from '../middleware/rate-limit.js';
+import { sendAuthError } from '../types/errors.js';
 
+import { getPlatformTenantDirectory } from '../platform/tenants/directory-service.js';
+import { getPlatformTenantCreateReferenceData } from '../platform/tenants/reference-data-service.js';
+import { getPlatformTenantSlugAvailability } from '../platform/tenants/slug-availability-service.js';
 import {
   DeprovisionTenantRequestSchema,
   HardDeprovisionTenantResponseSchema,
   SoftDeprovisionTenantResponseSchema,
   TenantProvisionRequestSchema,
-  TenantProvisionResponseSchema
-} from "../tenant/contracts.js";
-import { normalizeSlug } from "../tenant/slug.js";
-import { getPlatformTenantSlugAvailability } from "../platform/tenants/slug-availability-service.js";
-import { getPlatformTenantCreateReferenceData } from "../platform/tenants/reference-data-service.js";
-import { getPlatformTenantDirectory } from "../platform/tenants/directory-service.js";
-import { deprovisionTenant } from "../tenant/lifecycle-service.js";
-import { provisionTenant } from "../tenant/provision-service.js";
-import type { DeprovisionTenantResult } from "../tenant/types.js";
+  TenantProvisionResponseSchema,
+} from '../tenant/contracts.js';
+import { deprovisionTenant } from '../tenant/lifecycle-service.js';
+import { provisionTenant } from '../tenant/provision-service.js';
+import { normalizeSlug } from '../tenant/slug.js';
+import type { DeprovisionTenantResult } from '../tenant/types.js';
 
 type PlatformTenantsRouterOptions = {
   getSlugAvailability?: (input: { slug: string }) => Promise<TenantSlugAvailabilityResponse>;
-  getReferenceData?: (filter: TenantCreateReferenceDataFilter) => Promise<TenantCreateReferenceDataResponse>;
-  listTenants?: (input: { name?: string; status?: TenantStatusEnum }) => Promise<TenantDirectoryListResponse>;
+  getReferenceData?: (
+    filter: TenantCreateReferenceDataFilter,
+  ) => Promise<TenantCreateReferenceDataResponse>;
+  listTenants?: (input: {
+    name?: string;
+    status?: TenantStatusEnum;
+  }) => Promise<TenantDirectoryListResponse>;
   provision?: typeof provisionTenant;
   rateLimitMiddleware?: RequestHandler;
   searchRateLimitMiddleware?: RequestHandler;
-  deprovision?: (input: { tenantId: string; deprovisionType: DeprovisionTypeEnum }) => Promise<DeprovisionTenantResult>;
+  deprovision?: (input: {
+    tenantId: string;
+    deprovisionType: DeprovisionTypeEnum;
+  }) => Promise<DeprovisionTenantResult>;
 };
 
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
@@ -54,146 +62,185 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
     createRateLimitMiddleware({
       windowMs: 60_000,
       maxRequests: 10,
-      message: "Too many tenant mutation requests"
+      message: 'Too many tenant mutation requests',
     });
   const searchRateLimitMiddleware =
     options.searchRateLimitMiddleware ??
     createRateLimitMiddleware({
       windowMs: 60_000,
       maxRequests: 100,
-      message: "Too many tenant directory requests"
+      message: 'Too many tenant directory requests',
     });
   const deprovision = options.deprovision ?? deprovisionTenant;
 
   router.post(
-    "/platform/tenant/slug-availability",
+    '/platform/tenant/slug-availability',
     authenticate,
-    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     searchRateLimitMiddleware,
     async (req, res) => {
       const parsed = TenantSlugAvailabilityRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant slug availability payload");
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant slug availability payload',
+        );
       }
 
       const normalizedSlug = normalizeSlug(parsed.data.slug);
       const validatedSlug = TenantSlugSchema.safeParse(normalizedSlug);
       if (!validatedSlug.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant slug availability payload");
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant slug availability payload',
+        );
       }
 
       const response = await getSlugAvailability({ slug: validatedSlug.data });
       return res.status(200).json(response);
-    }
+    },
   );
 
   router.post(
-    "/platform/tenant/reference-data",
+    '/platform/tenant/reference-data',
     authenticate,
-    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     searchRateLimitMiddleware,
     async (req, res) => {
       const parsed = TenantCreateReferenceDataRequestSchema.safeParse(req.body ?? {});
       if (!parsed.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant create reference-data filter");
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant create reference-data filter',
+        );
       }
 
       const response = await getReferenceData(parsed.data.filter ?? {});
       return res.status(200).json(response);
-    }
+    },
   );
 
   router.post(
-    "/platform/tenants/search",
+    '/platform/tenants/search',
     authenticate,
-    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     searchRateLimitMiddleware,
     async (req, res) => {
       const parsed = TenantDirectoryListRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant directory filter");
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant directory filter',
+        );
       }
 
       const response = await listTenants(parsed.data.filters ?? {});
       return res.status(200).json(response);
-    }
+    },
   );
 
-  router.post("/platform/tenant", authenticate, authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }), rateLimitMiddleware, async (req, res) => {
-    const parsed = TenantProvisionRequestSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant provisioning payload");
-    }
+  router.post(
+    '/platform/tenant',
+    authenticate,
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    rateLimitMiddleware,
+    async (req, res) => {
+      const parsed = TenantProvisionRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant provisioning payload',
+        );
+      }
 
-    const result = await provision({
-      ...parsed.data,
-      actorSub: req.auth?.sub ?? "unknown-actor"
-    });
+      const result = await provision({
+        name: parsed.data.name,
+        slug: parsed.data.slug,
+        managementSystemTypeCode: parsed.data.managementSystemTypeCode,
+        actorSub: req.auth?.sub ?? 'unknown-actor',
+      });
 
-    if (result.status === "conflict") {
-      return sendAuthError(res, 409, AuthErrorCodeEnum.CONFLICT, result.message);
-    }
+      if (result.status === 'conflict') {
+        return sendAuthError(res, 409, AuthErrorCodeEnum.CONFLICT, result.message);
+      }
 
-    if (result.status === "failed") {
-      return sendAuthError(res, 500, AuthErrorCodeEnum.MIGRATION_FAILED, result.message);
-    }
+      if (result.status === 'failed') {
+        return sendAuthError(res, 500, AuthErrorCodeEnum.MIGRATION_FAILED, result.message);
+      }
 
-    const response = TenantProvisionResponseSchema.parse({
-      tenant_id: result.tenantId,
-      slug: result.slug,
-      schema_name: result.schemaName,
-      applied_versions: result.appliedVersions,
-      status: "provisioned"
-    });
+      const response = TenantProvisionResponseSchema.parse({
+        tenantId: result.tenantId,
+        slug: result.slug,
+        schemaName: result.schemaName,
+        appliedVersions: result.appliedVersions,
+        managementSystemTypeCode: result.managementSystemTypeCode,
+        status: 'provisioned',
+      });
 
-    return res.status(201).json(response);
-  });
+      return res.status(201).json(response);
+    },
+  );
 
   router.post(
-    "/platform/tenant/deprovision",
+    '/platform/tenant/deprovision',
     authenticate,
-    authorize({ namespace: "platform", allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
     rateLimitMiddleware,
     async (req, res) => {
       const parsed = DeprovisionTenantRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        return sendAuthError(res, 400, AuthErrorCodeEnum.VALIDATION_ERROR, "Invalid tenant deprovision payload");
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant deprovision payload',
+        );
       }
 
       const result = await deprovision({
-        tenantId: parsed.data.tenant_id,
-        deprovisionType: parsed.data.deprovisionType ?? DeprovisionTypeEnum.SOFT
+        tenantId: parsed.data.tenantId,
+        deprovisionType: parsed.data.deprovisionType ?? DeprovisionTypeEnum.SOFT,
       });
 
-      if (result.status === "not_found") {
+      if (result.status === 'not_found') {
         return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, result.message);
       }
 
-      if (result.status === "conflict") {
+      if (result.status === 'conflict') {
         return sendAuthError(res, 409, AuthErrorCodeEnum.CONFLICT, result.message);
       }
 
       const response =
-        result.status === "hard_deprovisioned"
+        result.status === 'hard_deprovisioned'
           ? HardDeprovisionTenantResponseSchema.parse({
-              tenant_id: result.tenantId,
+              tenantId: result.tenantId,
               slug: result.slug,
-              schema_name: result.schemaName,
-              previous_status: result.previousStatus,
-              status: "hard_deprovisioned",
-              operation: "hard_deprovisioned"
+              schemaName: result.schemaName,
+              previousStatus: result.previousStatus,
+              status: 'hard_deprovisioned',
+              operation: 'hard_deprovisioned',
             })
           : SoftDeprovisionTenantResponseSchema.parse({
-              tenant_id: result.tenantId,
+              tenantId: result.tenantId,
               slug: result.slug,
-              schema_name: result.schemaName,
-              previous_status: result.previousStatus,
-              status: "inactive",
-              operation: "soft_deprovisioned"
+              schemaName: result.schemaName,
+              previousStatus: result.previousStatus,
+              status: 'inactive',
+              operation: 'soft_deprovisioned',
             });
 
       return res.status(200).json(response);
-    }
+    },
   );
 
   return router;

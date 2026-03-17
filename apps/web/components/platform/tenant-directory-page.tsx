@@ -1,57 +1,78 @@
-"use client";
+'use client';
 
-import { TenantStatusEnum, type TenantDirectoryListResponse } from "@crown/types";
-import { ArrowUpRight, PencilLine, Plus, Search } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { TenantStatusEnum, type TenantDirectoryListResponse } from '@crown/types';
+import { ArrowUpRight, PencilLine, Plus, Search } from 'lucide-react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { searchPlatformTenants } from "@/lib/auth/api";
-import { getStoredAccessToken } from "@/lib/auth/storage";
-import { ViewState, ViewStatusEnum } from "@/lib/view-state";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { searchPlatformTenants } from '@/lib/auth/api';
+import { getStoredAccessToken } from '@/lib/auth/storage';
+import { ViewState, ViewStatusEnum } from '@/lib/view-state';
 
-type TenantDirectoryViewState = ViewState<TenantDirectoryListResponse, "response">;
+type TenantDirectoryViewState = ViewState<TenantDirectoryListResponse, 'response'>;
 
-const ALL_STATUSES_VALUE = "__all__";
+const ALL_STATUSES_VALUE = '__all__';
 const tenantStatusOptions = Object.values(TenantStatusEnum);
 
 const formatTenantStatusLabel = (status: TenantStatusEnum) =>
   status === TenantStatusEnum.HARD_DEPROVISIONED
-    ? "Deprovisioned"
+    ? 'Deprovisioned'
     : status
-        .split("_")
+        .split('_')
         .filter(Boolean)
         .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
-        .join(" ");
+        .join(' ');
 
 const canEditTenant = (status: TenantStatusEnum) => status !== TenantStatusEnum.HARD_DEPROVISIONED;
 
 const formatTenantSchemaName = (status: TenantStatusEnum, schemaName: string) =>
-  status === TenantStatusEnum.HARD_DEPROVISIONED ? "-" : schemaName;
+  status === TenantStatusEnum.HARD_DEPROVISIONED ? '-' : schemaName;
 
-const tenantStatusBadgeVariants: Record<TenantStatusEnum, "success" | "muted" | "warning" | "destructive" | "contrast"> = {
-  [TenantStatusEnum.ACTIVE]: "success",
-  [TenantStatusEnum.INACTIVE]: "muted",
-  [TenantStatusEnum.PROVISIONING]: "warning",
-  [TenantStatusEnum.PROVISIONING_FAILED]: "destructive",
-  [TenantStatusEnum.HARD_DEPROVISIONED]: "contrast"
+const tenantStatusBadgeVariants: Record<
+  TenantStatusEnum,
+  'success' | 'muted' | 'warning' | 'destructive' | 'contrast'
+> = {
+  [TenantStatusEnum.ACTIVE]: 'success',
+  [TenantStatusEnum.INACTIVE]: 'muted',
+  [TenantStatusEnum.PROVISIONING]: 'warning',
+  [TenantStatusEnum.PROVISIONING_FAILED]: 'destructive',
+  [TenantStatusEnum.HARD_DEPROVISIONED]: 'contrast',
 };
 
 const formatTimestamp = (value: string) =>
-  new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short"
+  new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
   }).format(new Date(value));
 
 const SEARCH_DEBOUNCE_MS = 500;
 
 export const TenantDirectoryPrimaryAction = () => (
-  <Button asChild aria-label="Add new tenant" className="rounded-full px-3 sm:px-4" title="Add new tenant">
+  <Button
+    asChild
+    aria-label="Add new tenant"
+    className="rounded-full px-3 sm:px-4"
+    title="Add new tenant"
+  >
     <Link href="/platform/tenants/new">
       <Plus aria-hidden="true" className="h-4 w-4 sm:mr-2" />
       <span className="sr-only sm:not-sr-only">Add new</span>
@@ -60,11 +81,11 @@ export const TenantDirectoryPrimaryAction = () => (
 );
 
 export const TenantDirectoryPage = () => {
-  const [nameFilter, setNameFilter] = useState("");
+  const [nameFilter, setNameFilter] = useState('');
   const [debouncedNameFilter, setDebouncedNameFilter] = useState(nameFilter);
-  const [statusFilter, setStatusFilter] = useState<TenantStatusEnum | "">("");
+  const [statusFilter, setStatusFilter] = useState<TenantStatusEnum | ''>('');
   const [viewState, setViewState] = useState<TenantDirectoryViewState>({
-    status: ViewStatusEnum.LOADING
+    status: ViewStatusEnum.LOADING,
   });
 
   useEffect(() => {
@@ -85,7 +106,8 @@ export const TenantDirectoryPage = () => {
     if (!accessToken) {
       setViewState({
         status: ViewStatusEnum.ERROR,
-        message: "Tenant directory is unavailable because your platform session could not be confirmed."
+        message:
+          'Tenant directory is unavailable because your platform session could not be confirmed.',
       });
       return () => {
         cancelled = true;
@@ -99,21 +121,22 @@ export const TenantDirectoryPage = () => {
         const response = await searchPlatformTenants(accessToken, {
           filters: {
             ...(trimmedName ? { name: trimmedName } : {}),
-            ...(statusFilter ? { status: statusFilter } : {})
-          }
+            ...(statusFilter ? { status: statusFilter } : {}),
+          },
         });
 
         if (!cancelled) {
           setViewState({
             status: ViewStatusEnum.SUCCESS,
-            response
+            response,
           });
         }
       } catch {
         if (!cancelled) {
           setViewState({
             status: ViewStatusEnum.ERROR,
-            message: "Tenant directory is unavailable right now. Try refreshing once the platform API is reachable."
+            message:
+              'Tenant directory is unavailable right now. Try refreshing once the platform API is reachable.',
           });
         }
       }
@@ -130,9 +153,14 @@ export const TenantDirectoryPage = () => {
     <div className="space-y-4">
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-end">
         <label className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Search by name</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+            Search by name
+          </span>
           <span className="relative block">
-            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400" />
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
+            />
             <Input
               aria-label="Search tenants by name"
               className="rounded-2xl border-stone-200 bg-stone-50 pl-10"
@@ -145,10 +173,12 @@ export const TenantDirectoryPage = () => {
           </span>
         </label>
         <label className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Status</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+            Status
+          </span>
           <Select
             onValueChange={(value) => {
-              setStatusFilter(value === ALL_STATUSES_VALUE ? "" : (value as TenantStatusEnum));
+              setStatusFilter(value === ALL_STATUSES_VALUE ? '' : (value as TenantStatusEnum));
             }}
             value={statusFilter || ALL_STATUSES_VALUE}
           >
@@ -178,7 +208,9 @@ export const TenantDirectoryPage = () => {
       ) : null}
       {viewState.status === ViewStatusEnum.ERROR ? (
         <div className="rounded-3xl border border-amber-200 bg-amber-50/85 p-5">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">Directory unavailable</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">
+            Directory unavailable
+          </p>
           <p className="mt-3 text-sm leading-7 text-stone-700">{viewState.message}</p>
         </div>
       ) : null}
@@ -191,12 +223,18 @@ export const TenantDirectoryPage = () => {
           <Card className="overflow-hidden rounded-3xl border border-stone-200 bg-stone-50/80 shadow-sm">
             <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 text-sm text-stone-600">
               <p>
-                Showing <span className="font-semibold text-stone-950">{viewState.response.meta.totalRecords}</span> tenants
+                Showing{' '}
+                <span className="font-semibold text-stone-950">
+                  {viewState.response.meta.totalRecords}
+                </span>{' '}
+                tenants
               </p>
               <p>
-                Status:{" "}
+                Status:{' '}
                 <span className="font-semibold text-stone-950">
-                  {viewState.response.meta.filters.status ? formatTenantStatusLabel(viewState.response.meta.filters.status) : "All statuses"}
+                  {viewState.response.meta.filters.status
+                    ? formatTenantStatusLabel(viewState.response.meta.filters.status)
+                    : 'All statuses'}
                 </span>
               </p>
             </div>
@@ -213,9 +251,15 @@ export const TenantDirectoryPage = () => {
               </TableHeader>
               <TableBody>
                 {viewState.response.data.tenantList.map((tenant) => (
-                  <TableRow key={tenant.tenantId} className="border-stone-200/80 text-sm text-stone-700">
+                  <TableRow
+                    key={tenant.tenantId}
+                    className="border-stone-200/80 text-sm text-stone-700"
+                  >
                     <TableCell className="align-top">
-                      <Link className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary" href={`/platform/tenants/${tenant.slug}`}>
+                      <Link
+                        className="inline-flex items-center gap-2 font-semibold text-stone-950 transition hover:text-primary"
+                        href={`/platform/tenants/${tenant.slug}`}
+                      >
                         <span>{tenant.name}</span>
                         <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
                       </Link>
@@ -226,8 +270,12 @@ export const TenantDirectoryPage = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="align-top text-stone-600">{tenant.slug}</TableCell>
-                    <TableCell className="align-top text-stone-600">{formatTenantSchemaName(tenant.status, tenant.schemaName)}</TableCell>
-                    <TableCell className="align-top text-stone-600">{formatTimestamp(tenant.updatedAt)}</TableCell>
+                    <TableCell className="align-top text-stone-600">
+                      {formatTenantSchemaName(tenant.status, tenant.schemaName)}
+                    </TableCell>
+                    <TableCell className="align-top text-stone-600">
+                      {formatTimestamp(tenant.updatedAt)}
+                    </TableCell>
                     <TableCell className="align-top text-right">
                       {canEditTenant(tenant.status) ? (
                         <Button asChild size="sm" variant="outline">

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-60 auth credential model and role mapping foundation"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Establish credential-backed identities for supported roles (Priority: P1)
 
@@ -58,7 +58,7 @@ As a maintainer, I need the first auth foundation phase to stay intentionally na
 - The same person needs both a global `super_admin` identity and tenant membership records without creating contradictory role resolution.
 - Existing seeded users must gain deterministic credential support without changing the canonical tenant baseline beyond the minimum auth additions.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -75,14 +75,14 @@ As a maintainer, I need the first auth foundation phase to stay intentionally na
 - **FR-011**: The system MUST explicitly exclude persistent refresh sessions and refresh-token persistence from this feature scope.
 - **FR-012**: The system MUST support deterministic local and seeded auth identities needed for later login-journey validation.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Credential Identity**: A Crown platform user record with the persisted identity and credential attributes required for credential-based sign-in.
 - **Credential Secret**: The stored hashed-password representation and related auth metadata required to validate a login attempt safely.
 - **Authenticated Role Context**: The resolved role outcome for a login attempt, including whether the user is a `super_admin` or a tenant-scoped user and whether tenant context is required.
 - **Tenant Membership Context**: The tenant relationship used to validate and resolve tenant-scoped identities into `tenant_admin` or `tenant_user`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Crown Auth Contract
-  version: "1.0.0"
+  version: '1.0.0'
   description: Contract baseline for auth route request/response behavior.
 servers:
   - url: /api/v1
@@ -14,20 +14,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: '#/components/schemas/LoginRequest'
       responses:
-        "200":
+        '200':
           description: Tokens issued successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenPairResponse"
-        "401":
+                $ref: '#/components/schemas/TokenPairResponse'
+        '401':
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /auth/refresh:
     post:
       summary: Exchange refresh token for a new access token and refreshed session tokens
@@ -36,20 +36,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RefreshRequest"
+              $ref: '#/components/schemas/RefreshRequest'
       responses:
-        "200":
+        '200':
           description: Token refresh succeeded
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TokenPairResponse"
-        "401":
+                $ref: '#/components/schemas/TokenPairResponse'
+        '401':
           description: Invalid or expired refresh token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
   /auth/logout:
     post:
       summary: Invalidate active session token material
@@ -58,16 +58,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LogoutRequest"
+              $ref: '#/components/schemas/LogoutRequest'
       responses:
-        "204":
+        '204':
           description: Logout accepted
-        "401":
+        '401':
           description: Invalid token/session context
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     LoginRequest:
@@ -101,7 +101,7 @@ components:
         refresh_token:
           type: string
         claims:
-          $ref: "#/components/schemas/JwtClaims"
+          $ref: '#/components/schemas/JwtClaims'
     JwtClaims:
       type: object
       required: [sub, role, tenant_id]

@@ -1,11 +1,4 @@
-type LookupKind =
-  | "organization"
-  | "location"
-  | "person"
-  | "role"
-  | "asset"
-  | "load"
-  | "stop";
+type LookupKind = 'organization' | 'location' | 'person' | 'role' | 'asset' | 'load' | 'stop';
 
 export class SeedLookupStore {
   private readonly organizations = new Map<string, string>();
@@ -45,31 +38,31 @@ export class SeedLookupStore {
   }
 
   getOrganization(code: string): string {
-    return this.getRequired("organization", code, this.organizations);
+    return this.getRequired('organization', code, this.organizations);
   }
 
   getLocation(code: string): string {
-    return this.getRequired("location", code, this.locations);
+    return this.getRequired('location', code, this.locations);
   }
 
   getPerson(code: string): string {
-    return this.getRequired("person", code, this.people);
+    return this.getRequired('person', code, this.people);
   }
 
   getRole(code: string): string {
-    return this.getRequired("role", code, this.roles);
+    return this.getRequired('role', code, this.roles);
   }
 
   getAsset(code: string): string {
-    return this.getRequired("asset", code, this.assets);
+    return this.getRequired('asset', code, this.assets);
   }
 
   getLoad(code: string): string {
-    return this.getRequired("load", code, this.loads);
+    return this.getRequired('load', code, this.loads);
   }
 
   getStop(loadCode: string, stopSequence: number): string {
-    return this.getRequired("stop", `${loadCode}:${stopSequence}`, this.stops);
+    return this.getRequired('stop', `${loadCode}:${stopSequence}`, this.stops);
   }
 
   private getRequired(kind: LookupKind, key: string, map: Map<string, string>): string {

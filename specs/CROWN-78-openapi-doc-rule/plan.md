@@ -28,7 +28,7 @@ Codify a repo-wide workflow rule that any API route creation, update, or removal
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-78-openapi-doc-rule` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work on this branch will use `feat: CROWN-78 - ...` subjects and a squash-safe PR title.

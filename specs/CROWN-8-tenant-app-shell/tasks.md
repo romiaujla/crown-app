@@ -11,8 +11,8 @@
 
 **Purpose**: Establish the `CROWN-8` task artifact set and align repo-level references for the tenant shell.
 
-- [X] T001 Create the `CROWN-8` task breakdown artifact in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/tasks.md
-- [X] T002 [P] Align top-level tenant-shell references in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/system-overview.md
+- [x] T001 Create the `CROWN-8` task breakdown artifact in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/tasks.md
+- [x] T002 [P] Align top-level tenant-shell references in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/system-overview.md
 
 ---
 
@@ -22,10 +22,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Define tenant-shell content model and tenant navigation constants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T004 [P] Add tenant-shell structural styles and responsive layout tokens in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T005 [P] Update app metadata to support tenant workspace framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
-- [X] T006 Define tenant-role entry expectations for the shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T003 Define tenant-shell content model and tenant navigation constants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T004 [P] Add tenant-shell structural styles and responsive layout tokens in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T005 [P] Update app metadata to support tenant workspace framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
+- [x] T006 Define tenant-role entry expectations for the shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -39,15 +39,15 @@
 
 ### Tests for User Story 1
 
-- [X] T007 [P] [US1] Expand smoke coverage for tenant-shell entry and workspace identity in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T008 [P] [US1] Add role-separation smoke coverage for `super_admin` access handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T007 [P] [US1] Expand smoke coverage for tenant-shell entry and workspace identity in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T008 [P] [US1] Add role-separation smoke coverage for `super_admin` access handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Implement the tenant workspace landing shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T010 [US1] Add powered-by-Crown branding and tenant workspace orientation copy in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T011 [US1] Implement tenant-role shell gating or placeholder redirect behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T012 [US1] Refine tenant-shell hero and workspace layout styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T009 [US1] Implement the tenant workspace landing shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T010 [US1] Add powered-by-Crown branding and tenant workspace orientation copy in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T011 [US1] Implement tenant-role shell gating or placeholder redirect behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T012 [US1] Refine tenant-shell hero and workspace layout styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 
@@ -61,15 +61,15 @@
 
 ### Tests for User Story 2
 
-- [X] T013 [P] [US2] Add tenant-navigation rendering checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T014 [P] [US2] Add tenant-shell placeholder-data navigation checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T013 [P] [US2] Add tenant-navigation rendering checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T014 [P] [US2] Add tenant-shell placeholder-data navigation checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Implement tenant workspace navigation sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T016 [US2] Implement tenant overview entry-point presentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T017 [US2] Add responsive tenant navigation styling for desktop and mobile layouts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T018 [US2] Update tenant-shell contracts to match implemented navigation behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/contracts/tenant-shell-ui-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/contracts/tenant-role-entry-contract.md
+- [x] T015 [US2] Implement tenant workspace navigation sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T016 [US2] Implement tenant overview entry-point presentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T017 [US2] Add responsive tenant navigation styling for desktop and mobile layouts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T018 [US2] Update tenant-shell contracts to match implemented navigation behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/contracts/tenant-shell-ui-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/contracts/tenant-role-entry-contract.md
 
 **Checkpoint**: User Stories 1 and 2 are independently functional and testable.
 
@@ -83,15 +83,15 @@
 
 ### Tests for User Story 3
 
-- [X] T019 [P] [US3] Add tenant-shell copy assertions for management-system framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T020 [P] [US3] Add tenant-shell empty-state rendering checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T019 [P] [US3] Add tenant-shell copy assertions for management-system framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T020 [P] [US3] Add tenant-shell empty-state rendering checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Implement tenant overview cards and no-data states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T022 [US3] Replace residual CRM-style tenant wording with management-system language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
-- [X] T023 [US3] Add overview-card, powered-by-Crown, and empty-state styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T024 [US3] Update planning quickstart notes to reflect final tenant-shell validation expectations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/quickstart.md
+- [x] T021 [US3] Implement tenant overview cards and no-data states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T022 [US3] Replace residual CRM-style tenant wording with management-system language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
+- [x] T023 [US3] Add overview-card, powered-by-Crown, and empty-state styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T024 [US3] Update planning quickstart notes to reflect final tenant-shell validation expectations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/quickstart.md
 
 **Checkpoint**: All user stories are independently functional and testable.
 
@@ -101,10 +101,10 @@
 
 **Purpose**: Final validation and cross-story cleanup.
 
-- [X] T025 [P] Run app-level typecheck for the tenant shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [X] T026 [P] Run Playwright smoke coverage for the tenant shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T027 Review tenant-shell docs and backlog wording for drift in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/spec.md
-- [X] T028 Remove or reconcile the temporary numeric spec-kit stub in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-tenant-app-shell
+- [x] T025 [P] Run app-level typecheck for the tenant shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [x] T026 [P] Run Playwright smoke coverage for the tenant shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T027 Review tenant-shell docs and backlog wording for drift in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-8-tenant-app-shell/spec.md
+- [x] T028 Remove or reconcile the temporary numeric spec-kit stub in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/001-tenant-app-shell
 
 ---
 

@@ -21,7 +21,7 @@ Deliver the first real authenticated web entry flow in `apps/web` by adding a sh
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. Planning is on `feat/CROWN-64-web-login-logout-protected-routing`, which matches the Story branch convention.
 - Spec Kit gate: PASS. `spec.md` exists and this plan completes the required pre-implementation phase before `/tasks` and coding.

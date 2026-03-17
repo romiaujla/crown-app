@@ -1,52 +1,57 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
+import { usePathname } from 'next/navigation';
 
-import { StatusPanel } from "@/components/auth/status-panel";
-import { useProtectedShell } from "@/components/auth/use-protected-shell";
-import { WorkspaceShell } from "@/components/auth/workspace-shell";
+import { StatusPanel } from '@/components/auth/status-panel';
+import { useProtectedShell } from '@/components/auth/use-protected-shell';
+import { WorkspaceShell } from '@/components/auth/workspace-shell';
 
 const tenantNavigation = [
   {
-    title: "Workspace",
-    eyebrow: "Tenant overview",
-    description: "Review the current workspace state, priorities, and upcoming activity for this tenant."
+    title: 'Workspace',
+    eyebrow: 'Tenant overview',
+    description:
+      'Review the current workspace state, priorities, and upcoming activity for this tenant.',
   },
   {
-    title: "Organizations",
-    eyebrow: "Management records",
-    description: "Work with organizations, people, and active management-system records in one tenant space."
+    title: 'Organizations',
+    eyebrow: 'Management records',
+    description:
+      'Work with organizations, people, and active management-system records in one tenant space.',
   },
   {
-    title: "Activity",
-    eyebrow: "Workspace timeline",
-    description: "Track the latest work-item progress, notes, and operational follow-up inside the tenant workspace."
-  }
+    title: 'Activity',
+    eyebrow: 'Workspace timeline',
+    description:
+      'Track the latest work-item progress, notes, and operational follow-up inside the tenant workspace.',
+  },
 ] as const;
 
 const tenantOverviewCards = [
   {
-    title: "Workspace readiness",
-    value: "Ready for tenant setup",
-    detail: "This workspace is prepared for management-system activity even before live records arrive."
+    title: 'Workspace readiness',
+    value: 'Ready for tenant setup',
+    detail:
+      'This workspace is prepared for management-system activity even before live records arrive.',
   },
   {
-    title: "Current records",
-    value: "0 active work items",
-    detail: "No organizations, people, or work items have been added yet for this tenant."
+    title: 'Current records',
+    value: '0 active work items',
+    detail: 'No organizations, people, or work items have been added yet for this tenant.',
   },
   {
-    title: "Brand context",
-    value: "Powered by Crown",
-    detail: "Your workspace runs on Crown while remaining separate from the platform control plane."
-  }
+    title: 'Brand context',
+    value: 'Powered by Crown',
+    detail:
+      'Your workspace runs on Crown while remaining separate from the platform control plane.',
+  },
 ] as const;
 
 const TenantPage = () => {
   const pathname = usePathname();
   const protectedShell = useProtectedShell(pathname);
 
-  if (protectedShell.kind === "bootstrapping") {
+  if (protectedShell.kind === 'bootstrapping') {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -59,7 +64,7 @@ const TenantPage = () => {
     );
   }
 
-  if (protectedShell.kind !== "ready") {
+  if (protectedShell.kind !== 'ready') {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10 sm:px-6">
         <StatusPanel
@@ -73,7 +78,7 @@ const TenantPage = () => {
   }
 
   const { currentUser } = protectedShell;
-  const tenantName = currentUser.tenant?.name ?? "Tenant Workspace";
+  const tenantName = currentUser.tenant?.name ?? 'Tenant Workspace';
 
   return (
     <WorkspaceShell
@@ -92,7 +97,7 @@ const TenantPage = () => {
       shellLabel="Tenant workspace"
       title={tenantName}
       tone="tenant"
-      userDisplayName={currentUser.principal.display_name}
+      userDisplayName={currentUser.principal.displayName}
       userRole={currentUser.principal.role}
     />
   );

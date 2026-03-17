@@ -1,5 +1,9 @@
-import type { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import type { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
+import type { PlatformUserAccountStatus, TenantStatus } from '../../src/domain/status-enums.js';
+import type {
+  ManagementSystemTypeAvailabilityStatusEnum,
+  RoleAuthClassEnum,
+  RoleScopeEnum,
+} from '../../src/generated/prisma/enums.js';
 
 export type SeedQueryResult<T = Record<string, unknown>> = {
   rows: T[];
@@ -20,7 +24,7 @@ export type SeedTenantDelegate = {
   }): Promise<{ id: string; name: string; slug: string; schemaName: string; status: TenantStatus }>;
 };
 
-export type SeedPlatformUserDelegate = {
+export type SeedUserDelegate = {
   upsert(args: {
     where: { email: string };
     create: {
@@ -29,14 +33,12 @@ export type SeedPlatformUserDelegate = {
       passwordHash: string;
       accountStatus: PlatformUserAccountStatus;
       displayName: string;
-      role: string;
     };
     update: {
       username: string;
       passwordHash: string;
       accountStatus: PlatformUserAccountStatus;
       displayName: string;
-      role: string;
     };
   }): Promise<{
     id: string;
@@ -45,16 +47,31 @@ export type SeedPlatformUserDelegate = {
     passwordHash: string | null;
     accountStatus: PlatformUserAccountStatus;
     displayName: string;
-    role: string;
   }>;
 };
 
-export type SeedPlatformUserTenantDelegate = {
+export type SeedUserPlatformRoleAssignmentDelegate = {
   upsert(args: {
-    where: { platformUserId_tenantId: { platformUserId: string; tenantId: string } };
-    create: { platformUserId: string; tenantId: string; role: string };
-    update: { role: string };
-  }): Promise<{ id: string; platformUserId: string; tenantId: string; role: string }>;
+    where: Record<string, unknown>;
+    create: Record<string, unknown>;
+    update: Record<string, unknown>;
+  }): Promise<{ id: string; userId: string; roleId: string }>;
+};
+
+export type SeedTenantMembershipDelegate = {
+  upsert(args: {
+    where: { userId_tenantId: { userId: string; tenantId: string } };
+    create: { userId: string; tenantId: string };
+    update: Record<string, never>;
+  }): Promise<{ id: string; userId: string; tenantId: string }>;
+};
+
+export type SeedTenantMembershipRoleAssignmentDelegate = {
+  upsert(args: {
+    where: Record<string, unknown>;
+    create: Record<string, unknown>;
+    update: Record<string, unknown>;
+  }): Promise<{ id: string; tenantMembershipId: string; roleId: string; isPrimary: boolean }>;
 };
 
 export type SeedManagementSystemTypeDelegate = {
@@ -88,16 +105,22 @@ export type SeedRoleDelegate = {
     where: { roleCode: string };
     create: {
       roleCode: string;
+      scope: RoleScopeEnum;
+      authClass: RoleAuthClassEnum;
       displayName: string;
       description?: string | null;
     };
     update: {
+      scope: RoleScopeEnum;
+      authClass: RoleAuthClassEnum;
       displayName: string;
       description?: string | null;
     };
   }): Promise<{
     id: string;
     roleCode: string;
+    scope: RoleScopeEnum;
+    authClass: RoleAuthClassEnum;
     displayName: string;
     description: string | null;
   }>;
@@ -124,20 +147,22 @@ export type SeedManagementSystemTypeRoleDelegate = {
 
 export type SeedPrismaClient = {
   tenant: SeedTenantDelegate;
-  platformUser: SeedPlatformUserDelegate;
-  platformUserTenant: SeedPlatformUserTenantDelegate;
+  user: SeedUserDelegate;
+  userPlatformRoleAssignment: SeedUserPlatformRoleAssignmentDelegate;
+  tenantMembership: SeedTenantMembershipDelegate;
+  tenantMembershipRoleAssignment: SeedTenantMembershipRoleAssignmentDelegate;
   managementSystemType: SeedManagementSystemTypeDelegate;
   role: SeedRoleDelegate;
   managementSystemTypeRole: SeedManagementSystemTypeRoleDelegate;
 };
 
 export type SeedPhaseName =
-  | "after-control-plane"
-  | "after-reset"
-  | "after-reference-data"
-  | "after-organizations"
-  | "after-operations"
-  | "after-load";
+  | 'after-control-plane'
+  | 'after-reset'
+  | 'after-reference-data'
+  | 'after-organizations'
+  | 'after-operations'
+  | 'after-load';
 
 export type SeedControlPlaneBaseline = {
   tenantId: string;
@@ -147,6 +172,11 @@ export type SeedControlPlaneBaseline = {
     superAdmin: string;
     tenantAdmin: string;
     tenantUser: string;
+  };
+  edgeCaseUserIds: {
+    disabledUser: string;
+    tenantUserOrphan: string;
+    tenantAdminMulti: string;
   };
 };
 
@@ -164,10 +194,21 @@ export type SeedLoadedCounts = {
 };
 
 export type SeedExecutionSummary = {
+  tenantId: string;
   tenantSlug: string;
   schemaName: string;
   loadedCounts: SeedLoadedCounts;
   deterministicKeys: string[];
+  platformUserIds: {
+    superAdmin: string;
+    tenantAdmin: string;
+    tenantUser: string;
+  };
+  edgeCaseUserIds: {
+    disabledUser: string;
+    tenantUserOrphan: string;
+    tenantAdminMulti: string;
+  };
 };
 
 export type SeedBootstrapContext = {
@@ -182,7 +223,7 @@ export class SeedExecutionError extends Error {
 
   constructor(message: string, phase?: SeedPhaseName) {
     super(message);
-    this.name = "SeedExecutionError";
+    this.name = 'SeedExecutionError';
     this.phase = phase;
   }
 }
@@ -197,5 +238,5 @@ export const createEmptyLoadedCounts = (): SeedLoadedCounts => ({
   equipmentAssets: 0,
   loads: 0,
   loadStops: 0,
-  activityRecords: 0
+  activityRecords: 0,
 });

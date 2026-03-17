@@ -1,16 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import { StatusPanel } from "@/components/auth/status-panel";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatusPanel } from '@/components/auth/status-panel';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { LoginForm } from "@/components/auth/login-form";
-import { useAuth } from "@/components/auth/auth-provider";
-import { clearStoredLoginReason, getStoredLoginReason } from "@/lib/auth/storage";
-import { AuthReasonEnum, AuthStateStatusEnum } from "@/lib/auth/types";
-import { buildLoginHref, buildUnauthorizedHref, consumeValidatedReturnPath, toRecommendedPath } from "@/lib/routing/auth-routing";
+import { LoginForm } from '@/components/auth/login-form';
+import { useAuth } from '@/components/auth/auth-provider';
+import { clearStoredLoginReason, getStoredLoginReason } from '@/lib/auth/storage';
+import { AuthReasonEnum, AuthStateStatusEnum } from '@/lib/auth/types';
+import {
+  buildLoginHref,
+  buildUnauthorizedHref,
+  consumeValidatedReturnPath,
+  toRecommendedPath,
+} from '@/lib/routing/auth-routing';
 
 export const LoginPageContent = () => {
   const router = useRouter();
@@ -20,19 +25,26 @@ export const LoginPageContent = () => {
   useEffect(() => {
     if (state.status !== AuthStateStatusEnum.AUTHENTICATED) return;
 
-    const nextPath = consumeValidatedReturnPath(state.currentUser) ?? toRecommendedPath(state.currentUser);
+    const nextPath =
+      consumeValidatedReturnPath(state.currentUser) ?? toRecommendedPath(state.currentUser);
     router.replace(nextPath);
   }, [router, state]);
 
-  const reason = searchParams.get("reason");
-  const blockedReason = searchParams.get("blocked_reason");
+  const reason = searchParams.get('reason');
+  const blockedReason = searchParams.get('blocked_reason');
   const storedReason = getStoredLoginReason();
   const resolvedReason =
-    reason ?? storedReason ?? (state.reason === AuthReasonEnum.SESSION_EXPIRED ? state.reason : null);
+    reason ??
+    storedReason ??
+    (state.reason === AuthReasonEnum.SESSION_EXPIRED ? state.reason : null);
 
   useEffect(() => {
     if (state.status !== AuthStateStatusEnum.UNAUTHENTICATED) return;
-    if (state.reason !== AuthReasonEnum.SESSION_EXPIRED || reason === AuthReasonEnum.SESSION_EXPIRED) return;
+    if (
+      state.reason !== AuthReasonEnum.SESSION_EXPIRED ||
+      reason === AuthReasonEnum.SESSION_EXPIRED
+    )
+      return;
     router.replace(buildLoginHref(state.reason));
   }, [reason, router, state]);
 
@@ -65,7 +77,9 @@ export const LoginPageContent = () => {
           <CardContent className="grid min-h-[560px] gap-8 p-8 lg:grid-cols-[0.9fr_minmax(0,1.1fr)] lg:items-center">
             <div className="flex h-full items-center">
               <div className="space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Sign in to</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                  Sign in to
+                </p>
                 <h1
                   id="login-title"
                   aria-label="Enter Crown"
@@ -78,9 +92,13 @@ export const LoginPageContent = () => {
 
             <Card className="border-white/70 bg-[#ede7de]/95 shadow-sm">
               <CardHeader className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">Login</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                  Login
+                </p>
                 <div className="space-y-2">
-                  <CardTitle className="text-3xl tracking-tight text-stone-950">Access your workspace</CardTitle>
+                  <CardTitle className="text-3xl tracking-tight text-stone-950">
+                    Access your workspace
+                  </CardTitle>
                   <CardDescription className="text-base leading-7 text-stone-600">
                     Enter your credentials so Crown can take you to your destination.
                   </CardDescription>

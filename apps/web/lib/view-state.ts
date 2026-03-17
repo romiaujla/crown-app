@@ -1,7 +1,7 @@
 export enum ViewStatusEnum {
-  LOADING = "loading",
-  SUCCESS = "success",
-  ERROR = "error"
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  ERROR = 'error',
 }
 
 export type ViewLoadingState = {

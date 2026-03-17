@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-80` - "Enforce Spec Kit workflow for `Start implementing <JIRA ISSUE>` prompts"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Use explicit tagged commands for workflow mode selection (Priority: P1)
 
@@ -57,7 +57,7 @@ As an engineer maintaining the workflow, I want repository-local validation to c
 - A future documentation edit updates `AGENTS.md` but leaves `README.md` or Spec Kit process docs on the old natural-language prompt wording.
 - The repository remains on a correctly named Jira-linked branch, but the command contract drifts back to `Start implementing <JIRA ISSUE>` or mixed tag-plus-natural-language rules.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -70,14 +70,14 @@ As an engineer maintaining the workflow, I want repository-local validation to c
 - **FR-007**: The fix MUST remain scoped to AI-agent workflow enforcement and documentation/validation behavior.
 - **FR-008**: The `--help` prompt catalog remains out of scope for this issue.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Spec Kit Command**: The tagged prompt `--speckit CROWN-<id>` that selects the full Spec Kit-driven workflow.
 - **Implementation Command**: The tagged prompt `--implement CROWN-<id>` that selects the implementation-only workflow.
 - **Guidance Surface**: A repository document or instruction file that describes the tagged workflow commands.
 - **Workflow Audit Check**: A repository-local validation that confirms the required command guidance still exists.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

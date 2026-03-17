@@ -1,19 +1,21 @@
-"use client";
+'use client';
 
-import { DashboardMetricWindowEnum, type DashboardMetricWindow } from "@crown/types";
+import { DashboardMetricWindowEnum, type DashboardMetricWindow } from '@crown/types';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const metricWindowDescriptions: Record<DashboardMetricWindow, string> = {
-  [DashboardMetricWindowEnum.WEEK]: "past 7 days",
-  [DashboardMetricWindowEnum.MONTH]: "past 30 days",
-  [DashboardMetricWindowEnum.YEAR]: "past 365 days"
+  [DashboardMetricWindowEnum.WEEK]: 'past 7 days',
+  [DashboardMetricWindowEnum.MONTH]: 'past 30 days',
+  [DashboardMetricWindowEnum.YEAR]: 'past 365 days',
 };
 
-const formatMetricWindowLabel = (window: DashboardMetricWindow) => window.slice(0, 1).toUpperCase() + window.slice(1);
+const formatMetricWindowLabel = (window: DashboardMetricWindow) =>
+  window.slice(0, 1).toUpperCase() + window.slice(1);
 
-export const formatGrowthRateValue = (value: number) => `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
+export const formatGrowthRateValue = (value: number) =>
+  `${Number.isInteger(value) ? value : value.toFixed(2)}%`;
 
 export const getNewTenantDescription = (window: DashboardMetricWindow) =>
   `Trailing window count based on the ${metricWindowDescriptions[window]}.`;
@@ -50,12 +52,16 @@ export const WindowMetricCard = ({
   description,
   selectedWindow,
   onSelectWindow,
-  value
+  value,
 }: WindowMetricCardProps) => (
   <Card className="rounded-3xl border-stone-200 bg-stone-50/90 shadow-sm">
     <CardContent className="p-5">
       <div className="flex flex-nowrap gap-1.5 xl:gap-2">
-        {[DashboardMetricWindowEnum.WEEK, DashboardMetricWindowEnum.MONTH, DashboardMetricWindowEnum.YEAR].map((window) => {
+        {[
+          DashboardMetricWindowEnum.WEEK,
+          DashboardMetricWindowEnum.MONTH,
+          DashboardMetricWindowEnum.YEAR,
+        ].map((window) => {
           const isSelected = selectedWindow === window;
 
           return (
@@ -66,7 +72,7 @@ export const WindowMetricCard = ({
               onClick={() => onSelectWindow(window)}
               size="sm"
               type="button"
-              variant={isSelected ? "default" : "outline"}
+              variant={isSelected ? 'default' : 'outline'}
             >
               {formatMetricWindowLabel(window)}
             </Button>

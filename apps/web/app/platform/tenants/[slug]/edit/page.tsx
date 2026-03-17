@@ -1,5 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlatformShellFrame } from "@/components/platform/platform-shell-frame";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PlatformShellFrame } from '@/components/platform/platform-shell-frame';
 
 type PlatformTenantEditEntryPageProps = {
   params: {
@@ -20,8 +20,8 @@ const PlatformTenantEditEntryPage = ({ params }: PlatformTenantEditEntryPageProp
         </CardHeader>
         <CardContent className="space-y-3 pt-0 text-sm leading-7 text-stone-600">
           <p>
-            This route is a stable entry point for the future tenant-edit workflow. Editing behavior remains follow-up
-            scope for this story.
+            This route is a stable entry point for the future tenant-edit workflow. Editing behavior
+            remains follow-up scope for this story.
           </p>
           <p>
             Tenant reference: <span className="font-semibold text-stone-950">{params.slug}</span>

@@ -1,12 +1,15 @@
 # AGENTS.md
 
 ## Mandatory Policy
+
 All AI agents working in this repository must follow:
+
 - `docs/process/engineering-constitution.md`
 
 This is mandatory for code changes, branch naming, commits, Jira issue updates, pull requests, and release-related work.
 
 ## Required Workflow
+
 - Use Jira-linked branches and commits per constitution.
 - Keep issue descriptions aligned with Lean Jira template.
 - Use tagged workflow commands to select delivery mode:
@@ -18,6 +21,7 @@ This is mandatory for code changes, branch naming, commits, Jira issue updates, 
 - Keep the prompt help registry in `docs/process/ai-agent-prompt-help.md` aligned with any documented prompt behavior changes.
 
 ## Prompt-Driven Start Workflow
+
 When a user prompt is in the form `--speckit CROWN-<id>` or `--implement CROWN-<id>`:
 
 1. Resolve the Jira issue first and use that issue as the only delivery scope unless the user explicitly broadens it.
@@ -58,6 +62,7 @@ When a user prompt is `--clean-code-api` or `--clean-code-web`:
 6. Do not widen the audit into unrelated repository areas, feature design changes, or speculative implementation work.
 
 ## Operational Rules
+
 - Do not bypass repository hooks, CI checks, or branch protection requirements.
 - Do not widen PR scope beyond the Jira issue(s) named in the branch/PR.
 - Prefer additive, reviewable commits and explicit rationale for policy exceptions.
@@ -65,6 +70,7 @@ When a user prompt is `--clean-code-api` or `--clean-code-web`:
 - Creating a new API route, materially changing an existing API route contract/behavior, or deleting an API route requires updating the corresponding entries in `apps/api/src/docs/openapi.ts`.
 
 ## Active Technologies
+
 - TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9 (001-jwt-rbac-foundation)
 - PostgreSQL (via Prisma), plus JWT claim payload validation in request contex (001-jwt-rbac-foundation)
 - TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, pg 8, Pino 9 (005-crown-5)
@@ -91,4 +97,5 @@ When a user prompt is `--clean-code-api` or `--clean-code-web`:
 - PostgreSQL control-plane schema via Prisma and canonical local seed baseline for control-plane records (feat/CROWN-60-auth-credential-foundation)
 
 ## Recent Changes
+
 - 001-jwt-rbac-foundation: Added TypeScript 5.x on Node.js 20 (repo baseline) + Express 4, Zod 3, Prisma 5, Pino 9

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-93` - "UI | Super admin dashboard overview widgets"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Review Platform Tenant Counts At A Glance (Priority: P1)
 
@@ -61,7 +61,7 @@ As a future dashboard maintainer, I want the overview area structured to accommo
 - The overview request fails and the dashboard should keep the shell usable while explaining that the overview data could not be loaded.
 - Non-super-admin users remain blocked from the platform shell by the existing protected-route behavior and are out of scope for this story.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -76,7 +76,7 @@ As a future dashboard maintainer, I want the overview area structured to accommo
 - **FR-009**: The overview widget layout MUST preserve space for future platform widgets without requiring a redesign of the initial tenant-summary section.
 - **FR-010**: Access to the dashboard overview widgets MUST remain limited to authenticated `super_admin` users through the existing protected-shell behavior.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Dashboard Overview Widget Area**: The platform dashboard region that hosts the first tenant-summary widget and reserves room for future platform widgets.
 - **Tenant Summary Widget**: The visible UI summary of total tenant count and per-status tenant counts returned by the existing overview API.
@@ -95,7 +95,7 @@ As a future dashboard maintainer, I want the overview area structured to accommo
 - `CROWN-116` for the platform dashboard overview API contract consumed by this UI.
 - Existing authenticated web session handling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

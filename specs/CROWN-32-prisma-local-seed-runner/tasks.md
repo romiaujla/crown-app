@@ -17,9 +17,9 @@
 
 **Purpose**: Establish the local Prisma seed entrypoint surface and shared seed scaffolding
 
-- [X] T001 Add the canonical local seed command and Prisma seed configuration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
-- [X] T002 [P] Create canonical seed constants for tenant identity, schema name, and seeded operator identities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
-- [X] T003 [P] Create shared seed execution types and DB assertion helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
+- [x] T001 Add the canonical local seed command and Prisma seed configuration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json`
+- [x] T002 [P] Create canonical seed constants for tenant identity, schema name, and seeded operator identities in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/constants.ts`
+- [x] T003 [P] Create shared seed execution types and DB assertion helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
 
 ---
 
@@ -29,11 +29,11 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T004 Create the Prisma seed entrypoint shell and execution orchestration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts`
-- [X] T005 [P] Implement control-plane ensure helpers for tenant and platform memberships in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
-- [X] T006 [P] Implement tenant-domain reset helpers with schema-scoped deletion ordering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reset.ts`
-- [X] T007 [P] Implement tenant-domain load orchestration contracts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts`
-- [X] T008 Create seed result reporting and failure-surface helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
+- [x] T004 Create the Prisma seed entrypoint shell and execution orchestration in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts`
+- [x] T005 [P] Implement control-plane ensure helpers for tenant and platform memberships in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [x] T006 [P] Implement tenant-domain reset helpers with schema-scoped deletion ordering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reset.ts`
+- [x] T007 [P] Implement tenant-domain load orchestration contracts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts`
+- [x] T008 Create seed result reporting and failure-surface helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
 
 **Checkpoint**: Prisma seed command surface, control-plane ensure, tenant reset, tenant load, and reporting infrastructure are ready for story-level implementation
 
@@ -47,14 +47,14 @@
 
 ### Tests for User Story 1
 
-- [X] T009 [P] [US1] Add integration coverage for first-run seed and stale-baseline rerun behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`
+- [x] T009 [P] [US1] Add integration coverage for first-run seed and stale-baseline rerun behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed.spec.ts`
 
 ### Implementation for User Story 1
 
-- [X] T010 [P] [US1] Create canonical reference-data and business-party fixtures in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/reference-data.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/organizations.ts`
-- [X] T011 [P] [US1] Create canonical people, role, asset, load, and stop fixtures in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/operations.ts`
-- [X] T012 [US1] Implement the tenant-domain reload pipeline for the canonical baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts`
-- [X] T013 [US1] Wire reset-and-reload orchestration plus success summary output in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
+- [x] T010 [P] [US1] Create canonical reference-data and business-party fixtures in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/reference-data.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/organizations.ts`
+- [x] T011 [P] [US1] Create canonical people, role, asset, load, and stop fixtures in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/operations.ts`
+- [x] T012 [US1] Implement the tenant-domain reload pipeline for the canonical baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts`
+- [x] T013 [US1] Wire reset-and-reload orchestration plus success summary output in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
 
 **Checkpoint**: User Story 1 is complete when one supported seed command rebuilds the canonical tenant baseline from stale local state
 
@@ -68,14 +68,14 @@
 
 ### Tests for User Story 2
 
-- [X] T014 [P] [US2] Add integration coverage for deterministic lookup keys and representative baseline contents in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`
+- [x] T014 [P] [US2] Add integration coverage for deterministic lookup keys and representative baseline contents in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-determinism.spec.ts`
 
 ### Implementation for User Story 2
 
-- [X] T015 [P] [US2] Implement stable tenant and platform-user lookup or upsert helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
-- [X] T016 [P] [US2] Implement tenant-domain lookup maps and fixture-key helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/lookups.ts`
-- [X] T017 [US2] Refactor canonical fixture loaders to resolve relationships through deterministic lookup helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/reference-data.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/organizations.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/operations.ts`
-- [X] T018 [US2] Document the canonical seeded records and stable lookup-key expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
+- [x] T015 [P] [US2] Implement stable tenant and platform-user lookup or upsert helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts`
+- [x] T016 [P] [US2] Implement tenant-domain lookup maps and fixture-key helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/lookups.ts`
+- [x] T017 [US2] Refactor canonical fixture loaders to resolve relationships through deterministic lookup helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/reference-data.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/organizations.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/baseline/operations.ts`
+- [x] T018 [US2] Document the canonical seeded records and stable lookup-key expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
 
 **Checkpoint**: User Story 2 is complete when the seeded baseline exposes stable, documented lookup keys for downstream local workflows and tests
 
@@ -89,14 +89,14 @@
 
 ### Tests for User Story 3
 
-- [X] T019 [P] [US3] Add integration coverage for repeated reruns, preserved out-of-scope data, and partial-failure recovery in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
-- [X] T020 [P] [US3] Extend seed DB helpers for partial-failure setup and boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
+- [x] T019 [P] [US3] Add integration coverage for repeated reruns, preserved out-of-scope data, and partial-failure recovery in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/prisma-local-seed-recovery.spec.ts`
+- [x] T020 [P] [US3] Extend seed DB helpers for partial-failure setup and boundary assertions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/helpers/local-seed-db.ts`
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Implement rerun-safe control-plane ensure and non-destructive boundary behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reset.ts`
-- [X] T022 [US3] Add controlled failure injection seams for load-phase recovery testing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
-- [X] T023 [US3] Implement failure-aware rerun handling and terminal status reporting in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
+- [x] T021 [US3] Implement rerun-safe control-plane ensure and non-destructive boundary behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/control-plane.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reset.ts`
+- [x] T022 [US3] Add controlled failure injection seams for load-phase recovery testing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/load.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/types.ts`
+- [x] T023 [US3] Implement failure-aware rerun handling and terminal status reporting in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/prisma/seed/reporting.ts`
 
 **Checkpoint**: User Story 3 is complete when reruns recover the canonical baseline after interruptions without manual cleanup or destructive out-of-scope resets
 
@@ -106,10 +106,10 @@
 
 **Purpose**: Final validation, documentation, and implementation-readiness checks across the seed runner
 
-- [X] T024 [P] Update implementation and validation guidance for the runnable seed workflow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
-- [X] T025 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T026 [P] Run targeted API test coverage with `pnpm --filter @crown/api exec vitest` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T027 Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T024 [P] Update implementation and validation guidance for the runnable seed workflow in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-32-prisma-local-seed-runner/quickstart.md`
+- [x] T025 [P] Run targeted API typecheck with `pnpm --filter @crown/api typecheck` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T026 [P] Run targeted API test coverage with `pnpm --filter @crown/api exec vitest` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T027 Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
 
 ---
 

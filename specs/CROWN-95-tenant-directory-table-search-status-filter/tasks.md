@@ -17,9 +17,9 @@
 
 **Purpose**: Confirm the existing control-plane shell, tenant-directory contract, and browser-test seams that `CROWN-95` extends.
 
-- [X] T001 Review the current platform shell and `Tenants` placeholder behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx`
-- [X] T002 [P] Review the shared protected-shell and route-authorization helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/routing/auth-routing.ts`
-- [X] T003 [P] Review the shipped tenant-directory contract and API route surface in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts`
+- [x] T001 Review the current platform shell and `Tenants` placeholder behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx`
+- [x] T002 [P] Review the shared protected-shell and route-authorization helpers in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/routing/auth-routing.ts`
+- [x] T003 [P] Review the shipped tenant-directory contract and API route surface in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-tenants.ts`
 
 ---
 
@@ -29,10 +29,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T004 Refactor `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx` so `Tenants` links to a dedicated nested route instead of the query-param placeholder section
-- [X] T005 [P] Add a tenant-directory fetch helper that reuses shared request/response parsing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts`
-- [X] T006 [P] Add a reusable tenant-directory page component shell in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
-- [X] T007 [P] Add shared tenant-directory table, filter, and placeholder styling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T004 Refactor `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx` so `Tenants` links to a dedicated nested route instead of the query-param placeholder section
+- [x] T005 [P] Add a tenant-directory fetch helper that reuses shared request/response parsing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/lib/auth/api.ts`
+- [x] T006 [P] Add a reusable tenant-directory page component shell in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T007 [P] Add shared tenant-directory table, filter, and placeholder styling in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
 
 **Checkpoint**: The platform shell can route to a dedicated tenant-directory page backed by a reusable client component and shared fetch helper.
 
@@ -46,14 +46,14 @@
 
 ### Tests for User Story 1
 
-- [X] T008 [P] [US1] Add browser coverage for dedicated tenant-directory routing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [X] T009 [P] [US1] Add browser assertions for directory loading, tenant-name first-column rendering, and stable empty/error states in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T008 [P] [US1] Add browser coverage for dedicated tenant-directory routing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T009 [P] [US1] Add browser assertions for directory loading, tenant-name first-column rendering, and stable empty/error states in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 1
 
-- [X] T010 [US1] Add the dedicated tenant-directory route page in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/page.tsx`
-- [X] T011 [US1] Implement initial tenant-directory loading, success, empty, and error rendering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
-- [X] T012 [US1] Ensure the directory view remains inside the existing protected platform shell using `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/page.tsx`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts`
+- [x] T010 [US1] Add the dedicated tenant-directory route page in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/page.tsx`
+- [x] T011 [US1] Implement initial tenant-directory loading, success, empty, and error rendering in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T012 [US1] Ensure the directory view remains inside the existing protected platform shell using `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/page.tsx`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/use-protected-shell.ts`
 
 **Checkpoint**: The old `Tenants Coming Soon` state is replaced by a real dedicated directory page.
 
@@ -67,14 +67,14 @@
 
 ### Tests for User Story 2
 
-- [X] T013 [P] [US2] Add browser assertions for tenant-name search behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [X] T014 [P] [US2] Add browser assertions for explicit `TenantStatusEnum` filter options and combined filter behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T013 [P] [US2] Add browser assertions for tenant-name search behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T014 [P] [US2] Add browser assertions for explicit `TenantStatusEnum` filter options and combined filter behavior in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Implement controlled tenant-name search state and request wiring in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
-- [X] T016 [US2] Implement a single-select status filter driven by `TenantStatusEnum` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
-- [X] T017 [US2] Format persisted tenant-status values for readable UI presentation without changing the underlying enum value in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T015 [US2] Implement controlled tenant-name search state and request wiring in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T016 [US2] Implement a single-select status filter driven by `TenantStatusEnum` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T017 [US2] Format persisted tenant-status values for readable UI presentation without changing the underlying enum value in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
 
 **Checkpoint**: The directory narrows by name and exact persisted status values with no `other` bucket.
 
@@ -88,16 +88,16 @@
 
 ### Tests for User Story 3
 
-- [X] T018 [P] [US3] Add browser assertions for tenant-name navigation to the detail entry point in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [X] T019 [P] [US3] Add browser assertions for `Add new` and row-edit navigation entry points in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T018 [P] [US3] Add browser assertions for tenant-name navigation to the detail entry point in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T019 [P] [US3] Add browser assertions for `Add new` and row-edit navigation entry points in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
 
 ### Implementation for User Story 3
 
-- [X] T020 [US3] Add the tenant-details entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/[tenantId]/page.tsx`
-- [X] T021 [US3] Add the tenant-creation entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/new/page.tsx`
-- [X] T022 [US3] Add the tenant-edit entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/[tenantId]/edit/page.tsx`
-- [X] T023 [US3] Wire tenant-name links, the top-right `Add new` action, and row-level edit actions into `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
-- [X] T024 [US3] Align the quickstart and route/UI contract with the implemented entry-point destinations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/contracts/tenant-directory-ui-contract.md`
+- [x] T020 [US3] Add the tenant-details entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/[tenantId]/page.tsx`
+- [x] T021 [US3] Add the tenant-creation entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/new/page.tsx`
+- [x] T022 [US3] Add the tenant-edit entry-point route in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/tenants/[tenantId]/edit/page.tsx`
+- [x] T023 [US3] Wire tenant-name links, the top-right `Add new` action, and row-level edit actions into `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/platform/tenant-directory-page.tsx`
+- [x] T024 [US3] Align the quickstart and route/UI contract with the implemented entry-point destinations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/quickstart.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/contracts/tenant-directory-ui-contract.md`
 
 **Checkpoint**: Directory actions navigate into stable follow-up routes without broken pages.
 
@@ -107,11 +107,11 @@
 
 **Purpose**: Run the required validation loop, confirm scope discipline, and prepare the branch for PR creation.
 
-- [X] T025 [P] Run app-level typecheck in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json`
-- [X] T026 [P] Run focused Playwright coverage for the tenant-directory flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
-- [X] T027 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T028 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`
-- [X] T029 Create the PR for `feat/CROWN-95-tenant-directory-table-search-status-filter` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/tasks.md`
+- [x] T025 [P] Run app-level typecheck in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json`
+- [x] T026 [P] Run focused Playwright coverage for the tenant-directory flows in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts`
+- [x] T027 Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T028 Review the final behavior against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`
+- [x] T029 Create the PR for `feat/CROWN-95-tenant-directory-table-search-status-filter` with links to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/plan.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-95-tenant-directory-table-search-status-filter/tasks.md`
 
 ---
 

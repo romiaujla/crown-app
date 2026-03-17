@@ -1,36 +1,36 @@
-import { DashboardOverviewResponseSchema } from "@crown/types";
-import { z } from "zod";
+import { DashboardOverviewResponseSchema } from '@crown/types';
+import { z } from 'zod';
 
 export enum AuthStateStatusEnum {
-  BOOTSTRAPPING = "bootstrapping",
-  AUTHENTICATED = "authenticated",
-  UNAUTHENTICATED = "unauthenticated"
+  BOOTSTRAPPING = 'bootstrapping',
+  AUTHENTICATED = 'authenticated',
+  UNAUTHENTICATED = 'unauthenticated',
 }
 
 export enum AuthReasonEnum {
-  SESSION_EXPIRED = "session-expired"
+  SESSION_EXPIRED = 'session-expired',
 }
 
-export const RoleSchema = z.enum(["super_admin", "tenant_admin", "tenant_user"]);
-export const TenantRoleSchema = z.enum(["tenant_admin", "tenant_user"]);
-export const AuthTargetAppSchema = z.enum(["platform", "tenant"]);
-export const AuthRoutingStatusSchema = z.enum(["allowed", "access_denied", "selection_required"]);
+export const RoleSchema = z.enum(['super_admin', 'tenant_admin', 'tenant_user']);
+export const TenantRoleSchema = z.enum(['tenant_admin', 'tenant_user']);
+export const AuthTargetAppSchema = z.enum(['platform', 'tenant']);
+export const AuthRoutingStatusSchema = z.enum(['allowed', 'access_denied', 'selection_required']);
 export const AuthRoutingReasonCodeSchema = z.enum([
-  "missing_active_tenant_membership",
-  "multiple_active_tenant_memberships"
+  'missing_active_tenant_membership',
+  'multiple_active_tenant_memberships',
 ]);
 
 export const AuthRoutingSchema = z.object({
   status: AuthRoutingStatusSchema,
-  target_app: AuthTargetAppSchema.nullable(),
-  reason_code: AuthRoutingReasonCodeSchema.nullable()
+  targetApp: AuthTargetAppSchema.nullable(),
+  reasonCode: AuthRoutingReasonCodeSchema.nullable(),
 });
 
 export const AccessTokenClaimsSchema = z.object({
   sub: z.string(),
   role: RoleSchema,
   tenant_id: z.string().nullable(),
-  exp: z.number().int().positive()
+  exp: z.number().int().positive(),
 });
 
 export const CurrentUserResponseSchema = z.object({
@@ -38,36 +38,36 @@ export const CurrentUserResponseSchema = z.object({
     id: z.string(),
     email: z.string().email(),
     username: z.string().nullable(),
-    display_name: z.string(),
+    displayName: z.string(),
     role: RoleSchema,
-    account_status: z.string()
+    accountStatus: z.string(),
   }),
-  role_context: z.object({
+  roleContext: z.object({
     role: RoleSchema,
-    tenant_id: z.string().nullable()
+    tenantId: z.string().nullable(),
   }),
   tenant: z
     .object({
       id: z.string(),
       slug: z.string(),
       name: z.string(),
-      role: TenantRoleSchema
+      role: TenantRoleSchema,
     })
     .nullable(),
-  target_app: AuthTargetAppSchema,
-  routing: AuthRoutingSchema
+  targetApp: AuthTargetAppSchema,
+  routing: AuthRoutingSchema,
 });
 
 export const AccessTokenResponseSchema = z.object({
-  access_token: z.string(),
+  accessToken: z.string(),
   claims: AccessTokenClaimsSchema,
-  current_user: CurrentUserResponseSchema
+  currentUser: CurrentUserResponseSchema,
 });
 
 export const AuthErrorResponseSchema = z.object({
-  error_code: z.string(),
+  errorCode: z.string(),
   message: z.string(),
-  routing: AuthRoutingSchema.optional()
+  routing: AuthRoutingSchema.optional(),
 });
 
 export type Role = z.infer<typeof RoleSchema>;

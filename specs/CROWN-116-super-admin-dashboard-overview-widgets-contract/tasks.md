@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story task set and confirm the existing platform API surfaces this route will extend.
 
-- [X] T001 Create the `CROWN-116` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/tasks.md
-- [X] T002 [P] Review the current platform route wiring and manual OpenAPI coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/app.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
+- [x] T001 Create the `CROWN-116` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/tasks.md
+- [x] T002 [P] Review the current platform route wiring and manual OpenAPI coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/app.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Create the dashboard overview response schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
-- [X] T004 [P] Implement the tenant-summary aggregation service with deterministic zero-filled status buckets in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
-- [X] T005 [P] Confirm the existing shared status-enum exports are sufficient for the overview response in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/domain/status-enums.ts
+- [x] T003 Create the dashboard overview response schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts
+- [x] T004 [P] Implement the tenant-summary aggregation service with deterministic zero-filled status buckets in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/overview-service.ts
+- [x] T005 [P] Confirm the existing shared status-enum exports are sufficient for the overview response in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/domain/status-enums.ts
 
 **Checkpoint**: The API has one reusable contract module and one aggregation service capable of producing the initial tenant-summary widget payload.
 
@@ -38,14 +38,14 @@
 
 ### Tests for User Story 1
 
-- [X] T006 [P] [US1] Add contract tests for the successful dashboard overview response in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
-- [X] T007 [P] [US1] Add aggregation integration coverage for mixed and zero-count tenant statuses in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
+- [x] T006 [P] [US1] Add contract tests for the successful dashboard overview response in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T007 [P] [US1] Add aggregation integration coverage for mixed and zero-count tenant statuses in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/integration/platform-dashboard-overview.integration.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Implement the protected dashboard overview route in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
-- [X] T009 [US1] Wire the new platform dashboard overview router into /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/app.ts
-- [X] T010 [US1] Return the initial `widgets.tenant_summary` payload from the route using the overview service and response contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
+- [x] T008 [US1] Implement the protected dashboard overview route in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
+- [x] T009 [US1] Wire the new platform dashboard overview router into /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/app.ts
+- [x] T010 [US1] Return the initial `widgets.tenant_summary` payload from the route using the overview service and response contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
 
 **Checkpoint**: The super-admin route returns the initial tenant-summary overview widget contract.
 
@@ -59,12 +59,12 @@
 
 ### Tests for User Story 2
 
-- [X] T011 [P] [US2] Add contract coverage for unauthenticated and forbidden-role outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T011 [P] [US2] Add contract coverage for unauthenticated and forbidden-role outcomes in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T012 [US2] Reuse existing platform authentication and authorization middleware on the overview route in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
-- [X] T013 [US2] Verify the response remains limited to overview widget data and excludes recent-activity fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T012 [US2] Reuse existing platform authentication and authorization middleware on the overview route in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/routes/platform-dashboard-overview.ts
+- [x] T013 [US2] Verify the response remains limited to overview widget data and excludes recent-activity fields in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/platform/dashboard/contracts.ts and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
 
 **Checkpoint**: The route is protected consistently and returns only the intended dashboard-summary data.
 
@@ -78,12 +78,12 @@
 
 ### Tests for User Story 3
 
-- [X] T014 [P] [US3] Add response-shape assertions that pin the `widgets.tenant_summary` envelope contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
+- [x] T014 [P] [US3] Add response-shape assertions that pin the `widgets.tenant_summary` envelope contract in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tests/contract/platform-dashboard-overview.contract.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T015 [US3] Document the route and schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
-- [X] T016 [US3] Confirm the feature contract and quickstart guidance remain aligned with the implemented widgets envelope in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/contracts/dashboard-overview-widgets-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/quickstart.md
+- [x] T015 [US3] Document the route and schemas in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/src/docs/openapi.ts
+- [x] T016 [US3] Confirm the feature contract and quickstart guidance remain aligned with the implemented widgets envelope in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/contracts/dashboard-overview-widgets-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/quickstart.md
 
 **Checkpoint**: The implemented route and docs clearly preserve a future-safe widget extension pattern.
 
@@ -93,11 +93,11 @@
 
 **Purpose**: Validate the final route, keep docs aligned, and prepare the branch for PR creation.
 
-- [X] T017 [P] Run API test coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
-- [X] T018 [P] Run API typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
-- [X] T019 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [X] T020 Review the final endpoint behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/spec.md
-- [X] T021 Create the PR for `feat/CROWN-116-super-admin-dashboard-overview-widgets-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/tasks.md
+- [x] T017 [P] Run API test coverage in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
+- [x] T018 [P] Run API typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/package.json
+- [x] T019 [P] Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [x] T020 Review the final endpoint behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/spec.md
+- [x] T021 Create the PR for `feat/CROWN-116-super-admin-dashboard-overview-widgets-contract` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-116-super-admin-dashboard-overview-widgets-contract/tasks.md
 
 ---
 

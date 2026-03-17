@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-8"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Enter a Tenant Workspace (Priority: P1)
 
@@ -57,7 +57,7 @@ As a tenant user, I want the tenant app shell to describe my workspace using man
 - Tenant-facing branding must remain clearly separate from the super-admin control plane while still showing the connection to Crown.
 - The shell must remain understandable before deeper tenant workflows are implemented.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -72,7 +72,7 @@ As a tenant user, I want the tenant app shell to describe my workspace using man
 - **FR-009**: The system MUST preserve a clear access and presentation boundary between tenant-scoped experiences and the super-admin control plane.
 - **FR-010**: The shell MUST support future tenant-management expansion without requiring a rename or reframing of the top-level tenant experience.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant App Shell**: The top-level tenant-facing workspace experience shown to a tenant-scoped user.
 - **Tenant Workspace Navigation Item**: A primary destination within the tenant app shell.
@@ -96,7 +96,7 @@ As a tenant user, I want the tenant app shell to describe my workspace using man
 
 - The tenant shell may initially coexist inside the same top-level web app route as the platform shell as long as role-aware presentation keeps the two experiences clearly separated.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

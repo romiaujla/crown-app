@@ -3,34 +3,34 @@ import {
   RoleCodeEnum,
   type TenantCreateReferenceDataFilter,
   TenantCreateReferenceDataResponseSchema,
-  type TenantCreateReferenceDataResponse
-} from "@crown/types";
-import type { PrismaClient } from "../../generated/prisma/client.js";
-import { ManagementSystemTypeAvailabilityStatusEnum } from "../../generated/prisma/enums.js";
+  type TenantCreateReferenceDataResponse,
+} from '@crown/types';
+import type { PrismaClient } from '../../generated/prisma/client.js';
+import { ManagementSystemTypeAvailabilityStatusEnum } from '../../generated/prisma/enums.js';
 
-import { prisma } from "../../db/prisma.js";
+import { prisma } from '../../db/prisma.js';
 
 const REQUIRED_ROLE_CODE = RoleCodeEnum.TENANT_ADMIN;
 
-type PlatformTenantReferenceDataDb = Pick<PrismaClient, "managementSystemType">;
+type PlatformTenantReferenceDataDb = Pick<PrismaClient, 'managementSystemType'>;
 
 export const getPlatformTenantCreateReferenceData = async (
   filter: TenantCreateReferenceDataFilter = {},
-  db: PlatformTenantReferenceDataDb = prisma
+  db: PlatformTenantReferenceDataDb = prisma,
 ): Promise<TenantCreateReferenceDataResponse> => {
   const managementSystemTypes = await db.managementSystemType.findMany({
     where: {
       availabilityStatus: ManagementSystemTypeAvailabilityStatusEnum.active,
-      ...(filter.typeCode ? { typeCode: filter.typeCode } : {})
+      ...(filter.typeCode ? { typeCode: filter.typeCode } : {}),
     },
     include: {
       roles: {
         include: {
-          role: true
-        }
-      }
+          role: true,
+        },
+      },
     },
-    orderBy: [{ displayName: "asc" }, { typeCode: "asc" }]
+    orderBy: [{ displayName: 'asc' }, { typeCode: 'asc' }],
   });
 
   return TenantCreateReferenceDataResponseSchema.parse({
@@ -46,10 +46,10 @@ export const getPlatformTenantCreateReferenceData = async (
             displayName: role.displayName,
             description: role.description ?? null,
             isDefault,
-            isRequired: role.roleCode === REQUIRED_ROLE_CODE
+            isRequired: role.roleCode === REQUIRED_ROLE_CODE,
           }))
-          .sort((left, right) => left.displayName.localeCompare(right.displayName))
-      }))
-    }
+          .sort((left, right) => left.displayName.localeCompare(right.displayName)),
+      })),
+    },
   });
 };

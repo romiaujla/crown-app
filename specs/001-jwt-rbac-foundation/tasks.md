@@ -11,10 +11,10 @@
 
 **Purpose**: Prepare route/middleware/test scaffolding for auth and RBAC contracts.
 
-- [X] T001 Create auth route scaffold in `apps/api/src/routes/auth.ts`
-- [X] T002 Create authorization route scaffold in `apps/api/src/routes/authorization.ts`
-- [X] T003 [P] Create authentication middleware scaffold in `apps/api/src/middleware/authenticate.ts`
-- [X] T004 [P] Create authorization middleware scaffold in `apps/api/src/middleware/authorize.ts`
+- [x] T001 Create auth route scaffold in `apps/api/src/routes/auth.ts`
+- [x] T002 Create authorization route scaffold in `apps/api/src/routes/authorization.ts`
+- [x] T003 [P] Create authentication middleware scaffold in `apps/api/src/middleware/authenticate.ts`
+- [x] T004 [P] Create authorization middleware scaffold in `apps/api/src/middleware/authorize.ts`
 
 ---
 
@@ -24,13 +24,13 @@
 
 **⚠️ CRITICAL**: No user story work starts until this phase completes.
 
-- [X] T005 Implement strict JWT claims validation rules in `packages/types/src/index.ts`
-- [X] T006 [P] Add shared authorization denial response types in `apps/api/src/types/errors.ts`
-- [X] T007 Implement claim extraction and normalization middleware in `apps/api/src/middleware/authenticate.ts`
-- [X] T008 Implement namespace-based policy evaluation core in `apps/api/src/auth/policy.ts`
-- [X] T009 Wire shared middleware into API bootstrap pipeline in `apps/api/src/app.ts`
-- [X] T010 [P] Add foundational middleware tests for invalid/missing claims in `apps/api/tests/integration/authenticate.middleware.spec.ts`
-- [X] T011 Add test helpers for role and tenant identity fixtures in `apps/api/tests/helpers/auth-fixtures.ts`
+- [x] T005 Implement strict JWT claims validation rules in `packages/types/src/index.ts`
+- [x] T006 [P] Add shared authorization denial response types in `apps/api/src/types/errors.ts`
+- [x] T007 Implement claim extraction and normalization middleware in `apps/api/src/middleware/authenticate.ts`
+- [x] T008 Implement namespace-based policy evaluation core in `apps/api/src/auth/policy.ts`
+- [x] T009 Wire shared middleware into API bootstrap pipeline in `apps/api/src/app.ts`
+- [x] T010 [P] Add foundational middleware tests for invalid/missing claims in `apps/api/tests/integration/authenticate.middleware.spec.ts`
+- [x] T011 Add test helpers for role and tenant identity fixtures in `apps/api/tests/helpers/auth-fixtures.ts`
 
 **Checkpoint**: Shared claims and policy primitives are ready.
 
@@ -44,15 +44,15 @@
 
 ### Tests for User Story 1
 
-- [X] T012 [P] [US1] Add contract tests for platform role outcomes in `apps/api/tests/contract/platform-auth.contract.spec.ts`
-- [X] T013 [P] [US1] Add integration tests for platform role mismatch denials in `apps/api/tests/integration/platform-rbac.spec.ts`
+- [x] T012 [P] [US1] Add contract tests for platform role outcomes in `apps/api/tests/contract/platform-auth.contract.spec.ts`
+- [x] T013 [P] [US1] Add integration tests for platform role mismatch denials in `apps/api/tests/integration/platform-rbac.spec.ts`
 
 ### Implementation for User Story 1
 
-- [X] T014 [US1] Implement platform-only role policy rules in `apps/api/src/auth/policy.ts`
-- [X] T015 [US1] Implement platform guard middleware branch in `apps/api/src/middleware/authorize.ts`
-- [X] T016 [US1] Implement protected platform route behavior in `apps/api/src/routes/authorization.ts`
-- [X] T017 [US1] Register platform protected route namespace in `apps/api/src/app.ts`
+- [x] T014 [US1] Implement platform-only role policy rules in `apps/api/src/auth/policy.ts`
+- [x] T015 [US1] Implement platform guard middleware branch in `apps/api/src/middleware/authorize.ts`
+- [x] T016 [US1] Implement protected platform route behavior in `apps/api/src/routes/authorization.ts`
+- [x] T017 [US1] Register platform protected route namespace in `apps/api/src/app.ts`
 
 **Checkpoint**: US1 is independently functional and testable.
 
@@ -66,15 +66,15 @@
 
 ### Tests for User Story 2
 
-- [X] T018 [P] [US2] Add contract tests for tenant-admin allow/deny matrix in `apps/api/tests/contract/tenant-admin-auth.contract.spec.ts`
-- [X] T019 [P] [US2] Add integration tests for tenant-admin tenant mismatch in `apps/api/tests/integration/tenant-admin-rbac.spec.ts`
+- [x] T018 [P] [US2] Add contract tests for tenant-admin allow/deny matrix in `apps/api/tests/contract/tenant-admin-auth.contract.spec.ts`
+- [x] T019 [P] [US2] Add integration tests for tenant-admin tenant mismatch in `apps/api/tests/integration/tenant-admin-rbac.spec.ts`
 
 ### Implementation for User Story 2
 
-- [X] T020 [US2] Implement tenant-admin namespace policy rules in `apps/api/src/auth/policy.ts`
-- [X] T021 [US2] Implement tenant scope comparison checks in `apps/api/src/middleware/authorize.ts`
-- [X] T022 [US2] Implement tenant-admin protected route behavior in `apps/api/src/routes/authorization.ts`
-- [X] T023 [US2] Register tenant-admin protected route namespace in `apps/api/src/app.ts`
+- [x] T020 [US2] Implement tenant-admin namespace policy rules in `apps/api/src/auth/policy.ts`
+- [x] T021 [US2] Implement tenant scope comparison checks in `apps/api/src/middleware/authorize.ts`
+- [x] T022 [US2] Implement tenant-admin protected route behavior in `apps/api/src/routes/authorization.ts`
+- [x] T023 [US2] Register tenant-admin protected route namespace in `apps/api/src/app.ts`
 
 **Checkpoint**: US2 is independently functional and testable.
 
@@ -88,15 +88,15 @@
 
 ### Tests for User Story 3
 
-- [X] T024 [P] [US3] Add contract tests for tenant-user permission boundaries in `apps/api/tests/contract/tenant-user-auth.contract.spec.ts`
-- [X] T025 [P] [US3] Add integration tests for tenant-user admin denial paths in `apps/api/tests/integration/tenant-user-rbac.spec.ts`
+- [x] T024 [P] [US3] Add contract tests for tenant-user permission boundaries in `apps/api/tests/contract/tenant-user-auth.contract.spec.ts`
+- [x] T025 [P] [US3] Add integration tests for tenant-user admin denial paths in `apps/api/tests/integration/tenant-user-rbac.spec.ts`
 
 ### Implementation for User Story 3
 
-- [X] T026 [US3] Implement tenant-user policy rules and admin denial logic in `apps/api/src/auth/policy.ts`
-- [X] T027 [US3] Implement tenant-user protected route behavior in `apps/api/src/routes/authorization.ts`
-- [X] T028 [US3] Register tenant-user protected route namespace in `apps/api/src/app.ts`
-- [X] T029 [US3] Add malformed-claim tenant-user rejection coverage in `apps/api/tests/integration/tenant-user-rbac.spec.ts`
+- [x] T026 [US3] Implement tenant-user policy rules and admin denial logic in `apps/api/src/auth/policy.ts`
+- [x] T027 [US3] Implement tenant-user protected route behavior in `apps/api/src/routes/authorization.ts`
+- [x] T028 [US3] Register tenant-user protected route namespace in `apps/api/src/app.ts`
+- [x] T029 [US3] Add malformed-claim tenant-user rejection coverage in `apps/api/tests/integration/tenant-user-rbac.spec.ts`
 
 **Checkpoint**: US3 is independently functional and testable.
 
@@ -106,10 +106,10 @@
 
 **Purpose**: Implement `/auth/login`, `/auth/refresh`, and `/auth/logout` request/response contracts.
 
-- [X] T030 Add auth route request/response schema module in `apps/api/src/auth/contracts.ts`
-- [X] T031 Implement login/refresh/logout route handlers in `apps/api/src/routes/auth.ts`
-- [X] T032 Add auth route contract tests in `apps/api/tests/contract/auth-routes.contract.spec.ts`
-- [X] T033 Register `/api/v1/auth` router in `apps/api/src/app.ts`
+- [x] T030 Add auth route request/response schema module in `apps/api/src/auth/contracts.ts`
+- [x] T031 Implement login/refresh/logout route handlers in `apps/api/src/routes/auth.ts`
+- [x] T032 Add auth route contract tests in `apps/api/tests/contract/auth-routes.contract.spec.ts`
+- [x] T033 Register `/api/v1/auth` router in `apps/api/src/app.ts`
 
 ---
 
@@ -117,10 +117,10 @@
 
 **Purpose**: Final alignment, documentation, and validation across all stories.
 
-- [X] T034 [P] Update RBAC architecture documentation with finalized policy matrix in `docs/architecture/auth-rbac.md`
-- [X] T035 [P] Update API boundary documentation with protected namespaces in `docs/architecture/api-boundaries.md`
-- [X] T036 Run API auth/RBAC test suite and record execution notes in `specs/001-jwt-rbac-foundation/quickstart.md`
-- [X] T037 Verify auth contract artifact matches implemented behavior in `specs/001-jwt-rbac-foundation/contracts/auth-routes.openapi.yaml`
+- [x] T034 [P] Update RBAC architecture documentation with finalized policy matrix in `docs/architecture/auth-rbac.md`
+- [x] T035 [P] Update API boundary documentation with protected namespaces in `docs/architecture/api-boundaries.md`
+- [x] T036 Run API auth/RBAC test suite and record execution notes in `specs/001-jwt-rbac-foundation/quickstart.md`
+- [x] T037 Verify auth contract artifact matches implemented behavior in `specs/001-jwt-rbac-foundation/contracts/auth-routes.openapi.yaml`
 
 ---
 

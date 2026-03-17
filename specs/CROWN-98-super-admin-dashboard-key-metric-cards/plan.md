@@ -21,7 +21,7 @@ Extend the existing protected `/platform` dashboard so `CROWN-98` renders the fi
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Jira traceability and branch policy: PASS. `CROWN-98` is a Story and the active branch matches `feat/CROWN-<id>-<slug>`.
 - Planning gate: PASS. `spec.md` exists before implementation work begins.

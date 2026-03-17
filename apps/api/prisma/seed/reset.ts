@@ -1,14 +1,22 @@
-import { LOCAL_SEED_RESET_TABLES } from "./constants.js";
-import type { SeedSqlClient } from "./types.js";
+import { LOCAL_SEED_RESET_TABLES } from './constants.js';
+import type { SeedSqlClient } from './types.js';
 
 const quoteIdentifier = (value: string): string => `"${value.replaceAll('"', '""')}"`;
 
-export const setTenantSearchPath = async (client: SeedSqlClient, schemaName: string): Promise<void> => {
+export const setTenantSearchPath = async (
+  client: SeedSqlClient,
+  schemaName: string,
+): Promise<void> => {
   await client.query(`SET LOCAL search_path TO ${quoteIdentifier(schemaName)}`);
 };
 
-export const tenantSchemaHasFoundationalTables = async (client: SeedSqlClient, schemaName: string): Promise<boolean> => {
-  const result = (await client.query("SELECT to_regclass($1) AS regclass", [`${schemaName}.organizations`])) as {
+export const tenantSchemaHasFoundationalTables = async (
+  client: SeedSqlClient,
+  schemaName: string,
+): Promise<boolean> => {
+  const result = (await client.query('SELECT to_regclass($1) AS regclass', [
+    `${schemaName}.organizations`,
+  ])) as {
     rows: Array<{ regclass: string | null }>;
   };
 
@@ -21,7 +29,9 @@ export const assertTenantSchemaReady = async (client: SeedSqlClient): Promise<vo
   };
 
   if (!result.rows[0]?.regclass) {
-    throw new Error("Canonical tenant schema is missing foundational tables. Apply tenant migrations before seeding.");
+    throw new Error(
+      'Canonical tenant schema is missing foundational tables. Apply tenant migrations before seeding.',
+    );
   }
 };
 

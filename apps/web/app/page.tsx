@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { StatusPanel } from "@/components/auth/status-panel";
+import { StatusPanel } from '@/components/auth/status-panel';
 
-import { useAuth } from "../components/auth/auth-provider";
-import { AuthStateStatusEnum } from "../lib/auth/types";
-import { buildLoginHref, toRecommendedPath } from "../lib/routing/auth-routing";
+import { useAuth } from '../components/auth/auth-provider';
+import { AuthStateStatusEnum } from '../lib/auth/types';
+import { buildLoginHref, toRecommendedPath } from '../lib/routing/auth-routing';
 
 const RootPage = () => {
   const router = useRouter();

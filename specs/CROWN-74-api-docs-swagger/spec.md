@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-74` - "Add local API docs route with Swagger UI for auth-bearing endpoints"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Open browser docs for auth-bearing endpoints (Priority: P1)
 
@@ -57,7 +57,7 @@ As a maintainer, I want the first docs surface to stay local/dev-first so the im
 - An auth-bearing route changes shape and the docs fall out of sync with the current request or response contract.
 - The docs page renders, but the authorization expectations for protected routes are too vague to support local testing.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -70,13 +70,13 @@ As a maintainer, I want the first docs surface to stay local/dev-first so the im
 - **FR-007**: The system MUST avoid widening into hosted docs publishing, external documentation portals, or public documentation distribution workflows in this story.
 - **FR-008**: The system MUST keep the docs definitions aligned with the implemented auth-bearing route contracts in the repository.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Docs Route**: The local browser-accessible endpoint that serves Swagger UI from the API service.
 - **Documented Auth Endpoint**: An API operation with auth-relevant behavior that appears in the docs page, including payload and response information.
 - **Authorization Requirement**: The bearer-token or protected-route expectation shown to developers for local testing.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
