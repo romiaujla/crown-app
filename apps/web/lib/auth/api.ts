@@ -75,7 +75,7 @@ const request = async (path: string, init: RequestInit) => {
     throw new AuthApiError(
       error.success ? error.data.message : 'Authentication request failed.',
       response.status,
-      error.success ? error.data.error_code : null,
+      error.success ? error.data.errorCode : null,
     );
   }
 
@@ -109,9 +109,9 @@ export const login = async (
 
     return {
       ok: true,
-      accessToken: parsed.data.access_token,
+      accessToken: parsed.data.accessToken,
       claims: parsed.data.claims,
-      currentUser: parsed.data.current_user,
+      currentUser: parsed.data.currentUser,
     };
   } catch (error) {
     return {

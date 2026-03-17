@@ -22,8 +22,8 @@ export const AuthRoutingReasonCodeSchema = z.enum([
 
 export const AuthRoutingSchema = z.object({
   status: AuthRoutingStatusSchema,
-  target_app: AuthTargetAppSchema.nullable(),
-  reason_code: AuthRoutingReasonCodeSchema.nullable(),
+  targetApp: AuthTargetAppSchema.nullable(),
+  reasonCode: AuthRoutingReasonCodeSchema.nullable(),
 });
 
 export const AccessTokenClaimsSchema = z.object({
@@ -38,13 +38,13 @@ export const CurrentUserResponseSchema = z.object({
     id: z.string(),
     email: z.string().email(),
     username: z.string().nullable(),
-    display_name: z.string(),
+    displayName: z.string(),
     role: RoleSchema,
-    account_status: z.string(),
+    accountStatus: z.string(),
   }),
-  role_context: z.object({
+  roleContext: z.object({
     role: RoleSchema,
-    tenant_id: z.string().nullable(),
+    tenantId: z.string().nullable(),
   }),
   tenant: z
     .object({
@@ -54,18 +54,18 @@ export const CurrentUserResponseSchema = z.object({
       role: TenantRoleSchema,
     })
     .nullable(),
-  target_app: AuthTargetAppSchema,
+  targetApp: AuthTargetAppSchema,
   routing: AuthRoutingSchema,
 });
 
 export const AccessTokenResponseSchema = z.object({
-  access_token: z.string(),
+  accessToken: z.string(),
   claims: AccessTokenClaimsSchema,
-  current_user: CurrentUserResponseSchema,
+  currentUser: CurrentUserResponseSchema,
 });
 
 export const AuthErrorResponseSchema = z.object({
-  error_code: z.string(),
+  errorCode: z.string(),
   message: z.string(),
   routing: AuthRoutingSchema.optional(),
 });

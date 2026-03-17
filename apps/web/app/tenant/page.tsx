@@ -97,7 +97,7 @@ const TenantPage = () => {
       shellLabel="Tenant workspace"
       title={tenantName}
       tone="tenant"
-      userDisplayName={currentUser.principal.display_name}
+      userDisplayName={currentUser.principal.displayName}
       userRole={currentUser.principal.role}
     />
   );

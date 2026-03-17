@@ -28,7 +28,7 @@ import { ViewState, ViewStatusEnum } from '@/lib/view-state';
 type DashboardOverviewState = ViewState<DashboardOverviewResponse, 'overview'>;
 
 type MetricWindow =
-  DashboardOverviewResponse['widgets']['tenant_summary']['new_tenant_counts'][number]['window'];
+  DashboardOverviewResponse['widgets']['tenantSummary']['newTenantCounts'][number]['window'];
 
 const formatTenantStatusLabel = (status: TenantStatusEnum) =>
   status === 'hard_deprovisioned'
@@ -219,13 +219,13 @@ const DashboardOverviewSection = () => {
     );
   }
 
-  const tenantSummary = overviewState.overview.widgets.tenant_summary;
+  const tenantSummary = overviewState.overview.widgets.tenantSummary;
   const selectedNewTenantMetric =
-    tenantSummary.new_tenant_counts.find((entry) => entry.window === selectedNewTenantWindow) ??
-    tenantSummary.new_tenant_counts[0];
+    tenantSummary.newTenantCounts.find((entry) => entry.window === selectedNewTenantWindow) ??
+    tenantSummary.newTenantCounts[0];
   const selectedGrowthRateMetric =
-    tenantSummary.tenant_growth_rates.find((entry) => entry.window === selectedGrowthRateWindow) ??
-    tenantSummary.tenant_growth_rates[0];
+    tenantSummary.tenantGrowthRates.find((entry) => entry.window === selectedGrowthRateWindow) ??
+    tenantSummary.tenantGrowthRates[0];
 
   return (
     <div className="space-y-6">
@@ -236,7 +236,7 @@ const DashboardOverviewSection = () => {
           </CardDescription>
           <div className="space-y-2">
             <CardTitle className="text-3xl text-stone-950">
-              {tenantSummary.total_tenant_count} tenants
+              {tenantSummary.totalTenantCount} tenants
             </CardTitle>
             <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
               Current tenant count with lifecycle status KPIs for the platform.
@@ -248,7 +248,7 @@ const DashboardOverviewSection = () => {
             className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3"
             data-testid="platform-footprint-kpi-grid"
           >
-            {tenantSummary.tenant_status_counts.map((entry) => (
+            {tenantSummary.tenantStatusCounts.map((entry) => (
               <div
                 key={entry.status}
                 className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-3 sm:p-3.5"
@@ -280,7 +280,7 @@ const DashboardOverviewSection = () => {
           <SummaryMetricCard
             description="Current number of tenant users across all tenant workspaces."
             title="Total users"
-            value={tenantSummary.tenant_user_count.toString()}
+            value={tenantSummary.tenantUserCount.toString()}
           />
           <WindowMetricCard
             description={getNewTenantDescription(selectedNewTenantMetric.window)}
@@ -294,7 +294,7 @@ const DashboardOverviewSection = () => {
             onSelectWindow={setSelectedGrowthRateWindow}
             selectedWindow={selectedGrowthRateMetric.window}
             title="Tenant growth rate"
-            value={formatGrowthRateValue(selectedGrowthRateMetric.growth_rate_percentage)}
+            value={formatGrowthRateValue(selectedGrowthRateMetric.growthRatePercentage)}
           />
         </CardContent>
       </Card>

@@ -127,7 +127,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       const result = await provision({
         name: parsed.data.name,
         slug: parsed.data.slug,
-        managementSystemTypeCode: parsed.data.management_system_type_code,
+        managementSystemTypeCode: parsed.data.managementSystemTypeCode,
         actorSub: req.auth?.sub ?? 'unknown-actor',
       });
 
@@ -140,11 +140,11 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       }
 
       const response = TenantProvisionResponseSchema.parse({
-        tenant_id: result.tenantId,
+        tenantId: result.tenantId,
         slug: result.slug,
-        schema_name: result.schemaName,
-        applied_versions: result.appliedVersions,
-        management_system_type_code: result.managementSystemTypeCode,
+        schemaName: result.schemaName,
+        appliedVersions: result.appliedVersions,
+        managementSystemTypeCode: result.managementSystemTypeCode,
         status: 'provisioned',
       });
 
@@ -169,7 +169,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       }
 
       const result = await deprovision({
-        tenantId: parsed.data.tenant_id,
+        tenantId: parsed.data.tenantId,
         deprovisionType: parsed.data.deprovisionType ?? DeprovisionTypeEnum.SOFT,
       });
 
@@ -184,18 +184,18 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       const response =
         result.status === 'hard_deprovisioned'
           ? HardDeprovisionTenantResponseSchema.parse({
-              tenant_id: result.tenantId,
+              tenantId: result.tenantId,
               slug: result.slug,
-              schema_name: result.schemaName,
-              previous_status: result.previousStatus,
+              schemaName: result.schemaName,
+              previousStatus: result.previousStatus,
               status: 'hard_deprovisioned',
               operation: 'hard_deprovisioned',
             })
           : SoftDeprovisionTenantResponseSchema.parse({
-              tenant_id: result.tenantId,
+              tenantId: result.tenantId,
               slug: result.slug,
-              schema_name: result.schemaName,
-              previous_status: result.previousStatus,
+              schemaName: result.schemaName,
+              previousStatus: result.previousStatus,
               status: 'inactive',
               operation: 'soft_deprovisioned',
             });

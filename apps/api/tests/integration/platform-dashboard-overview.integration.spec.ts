@@ -70,25 +70,25 @@ describe('platform dashboard overview integration', () => {
 
     expect(response).toEqual({
       widgets: {
-        tenant_summary: {
-          total_tenant_count: 3,
-          tenant_user_count: 12,
-          tenant_status_counts: [
+        tenantSummary: {
+          totalTenantCount: 3,
+          tenantUserCount: 12,
+          tenantStatusCounts: [
             { status: TenantStatus.active, count: 2 },
             { status: TenantStatus.inactive, count: 0 },
             { status: TenantStatus.provisioning, count: 1 },
             { status: TenantStatus.provisioning_failed, count: 0 },
             { status: TenantStatus.hard_deprovisioned, count: 0 },
           ],
-          new_tenant_counts: [
+          newTenantCounts: [
             { window: DashboardMetricWindowEnum.WEEK, count: 1 },
             { window: DashboardMetricWindowEnum.MONTH, count: 2 },
             { window: DashboardMetricWindowEnum.YEAR, count: 3 },
           ],
-          tenant_growth_rates: [
-            { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
-            { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 100 },
-            { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 100 },
+          tenantGrowthRates: [
+            { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 100 },
+            { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 100 },
+            { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 100 },
           ],
         },
       },
@@ -105,24 +105,24 @@ describe('platform dashboard overview integration', () => {
 
     const response = await getPlatformDashboardOverview(undefined, fixedNow);
 
-    expect(response.widgets.tenant_summary.total_tenant_count).toBe(0);
-    expect(response.widgets.tenant_summary.tenant_user_count).toBe(0);
-    expect(response.widgets.tenant_summary.tenant_status_counts).toEqual([
+    expect(response.widgets.tenantSummary.totalTenantCount).toBe(0);
+    expect(response.widgets.tenantSummary.tenantUserCount).toBe(0);
+    expect(response.widgets.tenantSummary.tenantStatusCounts).toEqual([
       { status: TenantStatus.active, count: 0 },
       { status: TenantStatus.inactive, count: 0 },
       { status: TenantStatus.provisioning, count: 0 },
       { status: TenantStatus.provisioning_failed, count: 0 },
       { status: TenantStatus.hard_deprovisioned, count: 0 },
     ]);
-    expect(response.widgets.tenant_summary.new_tenant_counts).toEqual([
+    expect(response.widgets.tenantSummary.newTenantCounts).toEqual([
       { window: DashboardMetricWindowEnum.WEEK, count: 0 },
       { window: DashboardMetricWindowEnum.MONTH, count: 0 },
       { window: DashboardMetricWindowEnum.YEAR, count: 0 },
     ]);
-    expect(response.widgets.tenant_summary.tenant_growth_rates).toEqual([
-      { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 0 },
-      { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 0 },
-      { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 0 },
+    expect(response.widgets.tenantSummary.tenantGrowthRates).toEqual([
+      { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 0 },
+      { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 0 },
+      { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 0 },
     ]);
   });
 
@@ -170,10 +170,10 @@ describe('platform dashboard overview integration', () => {
 
     const response = await getPlatformDashboardOverview(undefined, fixedNow);
 
-    expect(response.widgets.tenant_summary.tenant_growth_rates).toEqual([
-      { window: DashboardMetricWindowEnum.WEEK, growth_rate_percentage: 100 },
-      { window: DashboardMetricWindowEnum.MONTH, growth_rate_percentage: 50 },
-      { window: DashboardMetricWindowEnum.YEAR, growth_rate_percentage: 100 },
+    expect(response.widgets.tenantSummary.tenantGrowthRates).toEqual([
+      { window: DashboardMetricWindowEnum.WEEK, growthRatePercentage: 100 },
+      { window: DashboardMetricWindowEnum.MONTH, growthRatePercentage: 50 },
+      { window: DashboardMetricWindowEnum.YEAR, growthRatePercentage: 100 },
     ]);
   });
 });

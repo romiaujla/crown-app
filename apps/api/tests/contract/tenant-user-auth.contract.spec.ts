@@ -23,7 +23,7 @@ describe('tenant user auth contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_tenant');
+    expect(response.body.errorCode).toBe('forbidden_tenant');
   });
 
   it('denies tenant_user on tenant admin route', async () => {
@@ -33,6 +33,6 @@ describe('tenant user auth contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 });

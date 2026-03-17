@@ -13,7 +13,7 @@ describe('platform rbac integration', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 
   it('denies tenant_user', async () => {
@@ -22,6 +22,6 @@ describe('platform rbac integration', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 });

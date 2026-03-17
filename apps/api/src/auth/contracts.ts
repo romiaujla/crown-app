@@ -9,8 +9,8 @@ export const AuthTargetAppSchema = z.enum(AuthTargetAppEnum);
 
 export const AuthRoutingSchema = z.object({
   status: z.enum(AuthRoutingStatusEnum),
-  target_app: AuthTargetAppSchema.nullable(),
-  reason_code: AuthRoutingReasonCodeSchema.nullable(),
+  targetApp: AuthTargetAppSchema.nullable(),
+  reasonCode: AuthRoutingReasonCodeSchema.nullable(),
 });
 
 export const AllowedAuthRoutingSchema = AuthRoutingSchema.superRefine((routing, ctx) => {
@@ -21,14 +21,14 @@ export const AllowedAuthRoutingSchema = AuthRoutingSchema.superRefine((routing, 
     });
   }
 
-  if (routing.target_app === null) {
+  if (routing.targetApp === null) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: 'Allowed routing requires a target app',
     });
   }
 
-  if (routing.reason_code !== null) {
+  if (routing.reasonCode !== null) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: 'Allowed routing cannot include a reason code',
@@ -47,9 +47,9 @@ export const CurrentUserPrincipalSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   username: z.string().nullable(),
-  display_name: z.string(),
+  displayName: z.string(),
   role: RoleSchema,
-  account_status: PlatformUserAccountStatusSchema,
+  accountStatus: PlatformUserAccountStatusSchema,
 });
 
 export const CurrentUserTenantSchema = z
@@ -63,19 +63,19 @@ export const CurrentUserTenantSchema = z
 
 export const CurrentUserResponseSchema = z.object({
   principal: CurrentUserPrincipalSchema,
-  role_context: z.object({
+  roleContext: z.object({
     role: RoleSchema,
-    tenant_id: z.string().nullable(),
+    tenantId: z.string().nullable(),
   }),
   tenant: CurrentUserTenantSchema,
-  target_app: AuthTargetAppSchema,
+  targetApp: AuthTargetAppSchema,
   routing: AllowedAuthRoutingSchema,
 });
 
 export const AccessTokenResponseSchema = z.object({
-  access_token: z.string(),
+  accessToken: z.string(),
   claims: JwtClaimsSchema,
-  current_user: CurrentUserResponseSchema,
+  currentUser: CurrentUserResponseSchema,
 });
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;

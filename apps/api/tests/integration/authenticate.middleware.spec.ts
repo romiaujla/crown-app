@@ -15,7 +15,7 @@ describe('authenticate middleware', () => {
     const response = await request(app).get('/api/v1/platform/ping');
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('unauthenticated');
+    expect(response.body.errorCode).toBe('unauthenticated');
   });
 
   it('rejects invalid claims payload', async () => {
@@ -24,7 +24,7 @@ describe('authenticate middleware', () => {
       .set('Authorization', 'Bearer malformed.token');
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('invalid_claims');
+    expect(response.body.errorCode).toBe('invalid_claims');
   });
 
   it('rejects tampered signed tokens', async () => {
@@ -33,7 +33,7 @@ describe('authenticate middleware', () => {
       .set('Authorization', `Bearer ${createTamperedJwtToken(superAdminClaims)}`);
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('invalid_claims');
+    expect(response.body.errorCode).toBe('invalid_claims');
   });
 
   it('rejects tokens signed with the wrong secret', async () => {
@@ -42,6 +42,6 @@ describe('authenticate middleware', () => {
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims, 'wrong-secret')}`);
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('invalid_claims');
+    expect(response.body.errorCode).toBe('invalid_claims');
   });
 });

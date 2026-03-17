@@ -31,14 +31,14 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme' });
+      .send({ tenantId: 'tenant-acme' });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      tenant_id: 'tenant-acme',
+      tenantId: 'tenant-acme',
       slug: 'acme-local',
-      schema_name: 'tenant_acme_local',
-      previous_status: 'active',
+      schemaName: 'tenant_acme_local',
+      previousStatus: 'active',
       status: 'inactive',
       operation: 'soft_deprovisioned',
     });
@@ -55,10 +55,10 @@ describe('platform tenant soft deprovision contract', () => {
 
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
-      .send({ tenant_id: 'tenant-acme' });
+      .send({ tenantId: 'tenant-acme' });
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('unauthenticated');
+    expect(response.body.errorCode).toBe('unauthenticated');
   });
 
   it('returns 403 for non-super-admin', async () => {
@@ -69,10 +69,10 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme' });
+      .send({ tenantId: 'tenant-acme' });
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 
   it('returns 404 for unknown tenants', async () => {
@@ -86,10 +86,10 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-missing' });
+      .send({ tenantId: 'tenant-missing' });
 
     expect(response.status).toBe(404);
-    expect(response.body.error_code).toBe('not_found');
+    expect(response.body.errorCode).toBe('not_found');
   });
 
   it('returns 400 for invalid payload', async () => {
@@ -103,7 +103,7 @@ describe('platform tenant soft deprovision contract', () => {
       .send({});
 
     expect(response.status).toBe(400);
-    expect(response.body.error_code).toBe('validation_error');
+    expect(response.body.errorCode).toBe('validation_error');
   });
 
   it('returns 409 when the tenant is already inactive', async () => {
@@ -117,17 +117,17 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme' });
+      .send({ tenantId: 'tenant-acme' });
 
     expect(response.status).toBe(409);
-    expect(response.body.error_code).toBe('conflict');
+    expect(response.body.errorCode).toBe('conflict');
   });
 
   it('returns 429 when rate limited', async () => {
     const rateLimitMiddleware: RequestHandler = (_req, res) => {
       res
         .status(429)
-        .json({ error_code: 'rate_limited', message: 'Too many tenant mutation requests' });
+        .json({ errorCode: 'rate_limited', message: 'Too many tenant mutation requests' });
     };
     const app = buildApp({
       platformTenantsRouter: createPlatformTenantsRouter({
@@ -139,10 +139,10 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme' });
+      .send({ tenantId: 'tenant-acme' });
 
     expect(response.status).toBe(429);
-    expect(response.body.error_code).toBe('rate_limited');
+    expect(response.body.errorCode).toBe('rate_limited');
   });
 
   it('returns 200 for explicit hard deprovision', async () => {
@@ -167,14 +167,14 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme', deprovisionType: 'hard' });
+      .send({ tenantId: 'tenant-acme', deprovisionType: 'hard' });
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      tenant_id: 'tenant-acme',
+      tenantId: 'tenant-acme',
       slug: 'acme-local',
-      schema_name: 'tenant_acme_local',
-      previous_status: 'active',
+      schemaName: 'tenant_acme_local',
+      previousStatus: 'active',
       status: 'hard_deprovisioned',
       operation: 'hard_deprovisioned',
     });
@@ -192,9 +192,9 @@ describe('platform tenant soft deprovision contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant/deprovision')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ tenant_id: 'tenant-acme', deprovisionType: 'destroy' });
+      .send({ tenantId: 'tenant-acme', deprovisionType: 'destroy' });
 
     expect(response.status).toBe(400);
-    expect(response.body.error_code).toBe('validation_error');
+    expect(response.body.errorCode).toBe('validation_error');
   });
 });

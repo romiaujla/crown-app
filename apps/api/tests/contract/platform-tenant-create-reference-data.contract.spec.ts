@@ -83,7 +83,7 @@ describe('platform tenant create reference data contract', () => {
       .send({ filter: { typeCode: '' } });
 
     expect(response.status).toBe(400);
-    expect(response.body.error_code).toBe('validation_error');
+    expect(response.body.errorCode).toBe('validation_error');
     expect(getReferenceData).not.toHaveBeenCalled();
   });
 
@@ -95,7 +95,7 @@ describe('platform tenant create reference data contract', () => {
     const response = await request(app).post('/api/v1/platform/tenant/reference-data').send({});
 
     expect(response.status).toBe(401);
-    expect(response.body.error_code).toBe('unauthenticated');
+    expect(response.body.errorCode).toBe('unauthenticated');
   });
 
   it('returns 403 for non-super-admin', async () => {
@@ -109,14 +109,14 @@ describe('platform tenant create reference data contract', () => {
       .send({});
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_role');
+    expect(response.body.errorCode).toBe('forbidden_role');
   });
 
   it('returns 429 when rate limited', async () => {
     const searchRateLimitMiddleware: RequestHandler = (_req, res) => {
       res
         .status(429)
-        .json({ error_code: 'rate_limited', message: 'Too many tenant directory requests' });
+        .json({ errorCode: 'rate_limited', message: 'Too many tenant directory requests' });
     };
     const app = buildApp({
       platformTenantsRouter: createPlatformTenantsRouter({
@@ -131,7 +131,7 @@ describe('platform tenant create reference data contract', () => {
       .send({});
 
     expect(response.status).toBe(429);
-    expect(response.body.error_code).toBe('rate_limited');
+    expect(response.body.errorCode).toBe('rate_limited');
     expect(response.body.message).toBe('Too many tenant directory requests');
   });
 });

@@ -23,6 +23,6 @@ describe('tenant admin auth contract', () => {
       .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error_code).toBe('forbidden_tenant');
+    expect(response.body.errorCode).toBe('forbidden_tenant');
   });
 });
