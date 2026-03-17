@@ -1,7 +1,7 @@
 import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from "@crown/types";
 import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
+import { ManagementSystemTypeAvailabilityStatusEnum, RoleAuthClassEnum } from "../../src/generated/prisma/enums.js";
 import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 
 export const LOCAL_SEED_TENANT = {
@@ -25,7 +25,7 @@ export const LOCAL_SEED_USERS = {
     password: SEEDED_AUTH_PASSWORDS.superAdmin,
     accountStatus: PlatformUserAccountStatus.active,
     displayName: "Super Admin",
-    role: "super_admin"
+    role: RoleAuthClassEnum.super_admin
   },
   tenantAdmin: {
     email: "tenant-admin@acme-local.test",
@@ -99,49 +99,49 @@ export const LOCAL_SEED_ROLES = [
   {
     roleCode: "super_admin",
     scope: "platform",
-    authClass: "super_admin",
+    authClass: RoleAuthClassEnum.super_admin,
     displayName: "Super Admin",
     description: "Platform-wide operator role."
   },
   {
     roleCode: RoleCodeEnum.TENANT_ADMIN,
     scope: "tenant",
-    authClass: "tenant_admin",
+    authClass: RoleAuthClassEnum.tenant_admin,
     displayName: "Tenant Admin",
     description: "Tenant shell administrator role."
   },
   {
     roleCode: RoleCodeEnum.ADMIN,
     scope: "tenant",
-    authClass: "tenant_user",
+    authClass: RoleAuthClassEnum.tenant_user,
     displayName: "Admin",
     description: "Management-system administrator role inside the tenant workspace."
   },
   {
     roleCode: RoleCodeEnum.DISPATCHER,
     scope: "tenant",
-    authClass: "tenant_user",
+    authClass: RoleAuthClassEnum.tenant_user,
     displayName: "Dispatcher",
     description: "Coordinates transportation loads and assignments."
   },
   {
     roleCode: RoleCodeEnum.ACCOUNTANT,
     scope: "tenant",
-    authClass: "tenant_user",
+    authClass: RoleAuthClassEnum.tenant_user,
     displayName: "Accountant",
     description: "Handles financial workflows for the tenant."
   },
   {
     roleCode: RoleCodeEnum.HUMAN_RESOURCES,
     scope: "tenant",
-    authClass: "tenant_user",
+    authClass: RoleAuthClassEnum.tenant_user,
     displayName: "Human Resources",
     description: "Handles people and staffing workflows for the tenant."
   },
   {
     roleCode: RoleCodeEnum.DRIVER,
     scope: "tenant",
-    authClass: "tenant_user",
+    authClass: RoleAuthClassEnum.tenant_user,
     displayName: "Driver",
     description: "Executes assigned transportation work in the tenant workspace."
   }

@@ -31,9 +31,9 @@ The local auth experience depends on the same canonical bootstrap workflow as th
 If the local database is already prepared and you only need to refresh seeded tenant data, use `pnpm db:seed:local`.
 
 ## Seeded Login Accounts
-Primary seeded accounts for local login:
+Primary seeded accounts for local login. The "Auth Class" column shows the `roles.auth_class` value derived from each user's assigned role via the normalized role-assignment tables — it is not a direct column on the `users` table.
 
-| Role | Identifier | Alternate Identifier | Password | Expected Destination |
+| Auth Class | Identifier | Alternate Identifier | Password | Expected Destination |
 | --- | --- | --- | --- | --- |
 | `super_admin` | `super-admin@acme-local.test` | `super.admin` | `SeedSuperAdmin123!` | `/platform` |
 | `tenant_admin` | `tenant-admin@acme-local.test` | `tenant.admin` | `SeedTenantAdmin123!` | `/tenant` |
@@ -48,17 +48,17 @@ Additional seeded auth records used for negative-path validation:
 | Multiple tenant memberships | `tenant-admin-multi@acme-local.test` | `Password123!` | Tenant selection required |
 
 ## Login Journeys
-### `super_admin`
+### `super_admin` (auth_class)
 - Sign in on `/login`
 - Crown routes the user to `/platform`
-- The platform shell is the only allowed authenticated shell for this role
+- The platform shell is the only allowed authenticated shell for this auth_class
 
-### `tenant_admin`
+### `tenant_admin` (auth_class)
 - Sign in on `/login`
 - Crown routes the user to `/tenant`
 - The tenant shell is the allowed authenticated shell when exactly one active tenant membership exists
 
-### `tenant_user`
+### `tenant_user` (auth_class)
 - Sign in on `/login`
 - Crown routes the user to `/tenant`
 - The tenant shell is the allowed authenticated shell when exactly one active tenant membership exists

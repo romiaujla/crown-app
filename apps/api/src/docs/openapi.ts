@@ -68,7 +68,9 @@ export const authDocsDocument = {
     schemas: {
       Role: {
         type: "string",
-        enum: roleValues
+        enum: roleValues,
+        description:
+          "The auth_class dimension from the normalized roles table. Maps platform and tenant role assignments to the JWT claim level: super_admin (platform operator), tenant_admin (tenant shell admin), tenant_user (tenant workspace member)."
       },
       PlatformUserAccountStatus: {
         type: "string",
@@ -76,6 +78,8 @@ export const authDocsDocument = {
       },
       JwtClaims: {
         type: "object",
+        description:
+          "Access-token claims. The role field is derived from the roles.auth_class column via the normalized role-assignment tables during authentication.",
         required: ["sub", "role", "tenant_id", "exp"],
         properties: {
           sub: { type: "string" },
