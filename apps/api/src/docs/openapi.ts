@@ -103,6 +103,20 @@ export const authDocsDocument = {
           }
         }
       },
+      TenantAccessRequest: {
+        type: "object",
+        required: ["authClass", "tenantId"],
+        properties: {
+          authClass: {
+            type: "string",
+            enum: tenantRoleValues
+          },
+          tenantId: {
+            type: "string",
+            minLength: 1
+          }
+        }
+      },
       ErrorResponse: {
         type: "object",
         required: ["error_code", "message"],
@@ -794,23 +808,23 @@ export const authDocsDocument = {
         }
       }
     },
-    "/api/v1/tenant/admin/{tenantId}": {
-      get: {
+    "/api/v1/tenant/access": {
+      post: {
         tags: ["Authorization"],
-        summary: "Check tenant-admin access",
-        description: "Protected example route for tenant admin access scoped to a tenant.",
+        summary: "Check tenant access",
+        description: "Protected route for tenant access checks scoped by auth class and tenant identifier.",
         security: bearerSecurity,
-        parameters: [
-          {
-            name: "tenantId",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/TenantAccessRequest" }
+            }
           }
-        ],
+        },
         responses: {
           "200": {
-            description: "Tenant-admin access allowed",
+            description: "Tenant access allowed",
             content: {
               "application/json": {
                 schema: {
@@ -818,47 +832,13 @@ export const authDocsDocument = {
                   required: ["ok", "namespace"],
                   properties: {
                     ok: { type: "boolean" },
-                    namespace: { type: "string", enum: ["tenant-admin"] }
+                    namespace: { type: "string", enum: ["tenant-admin", "tenant-user"] }
                   }
                 }
               }
             }
           },
-          "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
-          "403": errorResponse("Tenant or role not allowed", "forbidden_tenant", "Tenant access denied")
-        }
-      }
-    },
-    "/api/v1/tenant/user/{tenantId}": {
-      get: {
-        tags: ["Authorization"],
-        summary: "Check tenant-user access",
-        description: "Protected example route for tenant user access scoped to a tenant.",
-        security: bearerSecurity,
-        parameters: [
-          {
-            name: "tenantId",
-            in: "path",
-            required: true,
-            schema: { type: "string" }
-          }
-        ],
-        responses: {
-          "200": {
-            description: "Tenant-user access allowed",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  required: ["ok", "namespace"],
-                  properties: {
-                    ok: { type: "boolean" },
-                    namespace: { type: "string", enum: ["tenant-user"] }
-                  }
-                }
-              }
-            }
-          },
+          "400": errorResponse("Invalid tenant access payload", "validation_error", "Invalid tenant access payload"),
           "401": errorResponse("Unauthenticated request", "unauthenticated", "Missing bearer token"),
           "403": errorResponse("Tenant or role not allowed", "forbidden_role", "Insufficient role")
         }

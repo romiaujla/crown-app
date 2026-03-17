@@ -12,8 +12,7 @@ describe("api docs openapi document", () => {
         "/api/v1/platform/ping",
         "/api/v1/platform/tenant/reference-data",
         "/api/v1/platform/tenants/search",
-        "/api/v1/tenant/admin/{tenantId}",
-        "/api/v1/tenant/user/{tenantId}",
+        "/api/v1/tenant/access",
         "/api/v1/platform/tenant"
       ])
     );
@@ -24,8 +23,7 @@ describe("api docs openapi document", () => {
     expect(authDocsDocument.paths["/api/v1/platform/ping"].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/tenant/reference-data"].post.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/tenants/search"].post.security).toEqual([{ bearerAuth: [] }]);
-    expect(authDocsDocument.paths["/api/v1/tenant/admin/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
-    expect(authDocsDocument.paths["/api/v1/tenant/user/{tenantId}"].get.security).toEqual([{ bearerAuth: [] }]);
+    expect(authDocsDocument.paths["/api/v1/tenant/access"].post.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths["/api/v1/platform/tenant"].post.security).toEqual([{ bearerAuth: [] }]);
   });
 

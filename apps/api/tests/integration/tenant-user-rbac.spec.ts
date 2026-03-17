@@ -7,9 +7,30 @@ import { createJwtToken, tenantUserClaims } from "../helpers/auth-fixtures.js";
 describe("tenant user rbac integration", () => {
   const app = buildApp();
 
-  it("denies admin path", async () => {
+  it("allows tenant-user auth class on matching tenant", async () => {
     const response = await request(app)
-      .get("/api/v1/tenant/admin/tenant-acme")
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_user", tenantId: "tenant-acme" })
+      .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ ok: true, namespace: "tenant-user" });
+  });
+
+  it("denies tenant mismatch for tenant-user auth class", async () => {
+    const response = await request(app)
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_user", tenantId: "tenant-other" })
+      .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error_code).toBe("forbidden_tenant");
+  });
+
+  it("denies tenant-user escalation to tenant-admin auth class", async () => {
+    const response = await request(app)
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_admin", tenantId: "tenant-acme" })
       .set("Authorization", `Bearer ${createJwtToken(tenantUserClaims)}`);
 
     expect(response.status).toBe(403);
@@ -20,7 +41,10 @@ describe("tenant user rbac integration", () => {
     const malformed = Buffer.from(JSON.stringify({ sub: "user", role: "tenant_user" }), "utf8").toString("base64url");
     const token = `${Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" }), "utf8").toString("base64url")}.${malformed}.sig`;
 
-    const response = await request(app).get("/api/v1/tenant/user/tenant-acme").set("Authorization", `Bearer ${token}`);
+    const response = await request(app)
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_user", tenantId: "tenant-acme" })
+      .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(401);
     expect(response.body.error_code).toBe("invalid_claims");
