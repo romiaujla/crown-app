@@ -1,7 +1,10 @@
 import {
   DashboardMetricWindowEnum,
+  ManagementSystemTypeCodeEnum,
+  RoleCodeEnum,
   TenantStatusEnum,
   type DashboardOverviewResponse,
+  type TenantCreateReferenceDataResponse,
   type TenantDirectoryListResponse,
 } from '@crown/types';
 import { expect, test, type Page } from '@playwright/test';
@@ -156,6 +159,74 @@ const buildCurrentUser = (persona: Persona) => {
   };
 };
 
+const knownTenantSlugs: Set<string> = new Set(baseTenantDirectoryList.map((t) => t.slug));
+
+const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
+  data: {
+    managementSystemTypeList: [
+      {
+        typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
+        version: '1.0',
+        displayName: 'Transportation',
+        description: 'Fleet and route management',
+        roleOptions: [
+          {
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
+            description: null,
+            isDefault: true,
+            isRequired: true,
+          },
+          {
+            roleCode: RoleCodeEnum.DISPATCHER,
+            displayName: 'Dispatcher',
+            description: null,
+            isDefault: true,
+            isRequired: false,
+          },
+          {
+            roleCode: RoleCodeEnum.DRIVER,
+            displayName: 'Driver',
+            description: null,
+            isDefault: true,
+            isRequired: false,
+          },
+        ],
+      },
+      {
+        typeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
+        version: '1.0',
+        displayName: 'Dealership',
+        description: 'Vehicle sales management',
+        roleOptions: [
+          {
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
+            description: null,
+            isDefault: true,
+            isRequired: true,
+          },
+        ],
+      },
+      {
+        typeCode: ManagementSystemTypeCodeEnum.INVENTORY,
+        version: '1.0',
+        displayName: 'Inventory',
+        description: 'Stock and warehouse management',
+        roleOptions: [
+          {
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
+            description: null,
+            isDefault: true,
+            isRequired: true,
+          },
+        ],
+      },
+    ],
+  },
+});
+
 const setupAuthRoutes = async (
   page: Page,
   options: {
@@ -214,6 +285,31 @@ const setupAuthRoutes = async (
               status: filters.status ?? null,
             }),
         ),
+        contentType: 'application/json',
+        status: 200,
+      });
+      return;
+    }
+
+    if (url.endsWith('/platform/tenant/slug-availability')) {
+      const payload = request.postDataJSON() as { slug?: string } | null;
+      const slug = payload?.slug?.trim().toLowerCase() ?? '';
+      await route.fulfill({
+        body: JSON.stringify({
+          data: {
+            slug,
+            isAvailable: !knownTenantSlugs.has(slug),
+          },
+        }),
+        contentType: 'application/json',
+        status: 200,
+      });
+      return;
+    }
+
+    if (url.endsWith('/platform/tenant/reference-data')) {
+      await route.fulfill({
+        body: JSON.stringify(buildReferenceDataResponse()),
         contentType: 'application/json',
         status: 200,
       });
@@ -597,6 +693,93 @@ test('tenant create shell allows clean cancel when no step data has been entered
   await page.goto('/platform/tenants/new');
   await page.getByRole('button', { name: 'Cancel' }).click();
 
+  await expect(page).toHaveURL(/\/platform\/tenants$/);
+});
+
+test('tenant create step 1 shows slug immutability warning and real form fields', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await expect(page.getByTestId('slug-immutability-warning')).toContainText(
+    'The tenant slug cannot be changed after creation',
+  );
+  await expect(page.getByLabel('Tenant name')).toBeVisible();
+  await expect(page.getByLabel('Tenant slug')).toBeVisible();
+  await expect(page.getByLabel('Management system type')).toBeVisible();
+});
+
+test('tenant create step 1 auto-derives slug from name and checks availability', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await page.getByLabel('Tenant name').fill('Acme Logistics');
+
+  await expect(page.getByLabel('Tenant slug')).toHaveValue('acme-logistics');
+
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await expect(page.getByLabel('Slug is available')).toBeVisible();
+});
+
+test('tenant create step 1 shows taken indicator for existing slug', async ({ page }) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await page.getByLabel('Tenant slug').fill('northwind-tms');
+
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await expect(page.getByLabel('Slug is already taken')).toBeVisible();
+});
+
+test('tenant create step 1 populates management system type from reference data', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  const refDataResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
+  );
+  await refDataResponse;
+
+  await page.getByLabel('Management system type').click();
+  await expect(page.getByRole('option', { name: 'Transportation' })).toBeVisible();
+  await expect(page.getByRole('option', { name: 'Dealership' })).toBeVisible();
+  await expect(page.getByRole('option', { name: 'Inventory' })).toBeVisible();
+
+  await page.getByRole('option', { name: 'Transportation' }).click();
+  await expect(page.getByLabel('Management system type')).toContainText('Transportation');
+});
+
+test('tenant create step 1 triggers discard warning when name is entered then cancel', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await page.getByLabel('Tenant name').fill('Test Tenant');
+
+  page.once('dialog', async (dialog) => {
+    expect(dialog.message()).toContain('Discard the tenant setup progress');
+    await dialog.accept();
+  });
+  await page.getByRole('button', { name: 'Cancel' }).click();
   await expect(page).toHaveURL(/\/platform\/tenants$/);
 });
 

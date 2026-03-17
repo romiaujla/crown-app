@@ -2,12 +2,22 @@
 
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
+
+import type { TenantCreateReferenceData } from '@crown/types';
+
+import { getTenantCreateReferenceData } from '@/lib/auth/api';
+import { getStoredAccessToken } from '@/lib/auth/storage';
+
+import {
+  TenantCreateStepTenantInfo,
+  type TenantInfoStepData,
+} from './tenant-create-step-tenant-info';
 
 enum TenantCreateStepKeyEnum {
   TENANT_INFO = 'tenant_info',
@@ -27,7 +37,7 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
   {
     key: TenantCreateStepKeyEnum.TENANT_INFO,
     title: 'Tenant info',
-    description: 'Capture the future tenant profile and operating context in a guided first step.',
+    description: 'Set up the tenant name, slug, and management system type.',
     placeholderLabel: 'Tenant info placeholder notes',
   },
   {
@@ -53,6 +63,12 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
   },
 ];
 
+const INITIAL_TENANT_INFO: TenantInfoStepData = {
+  name: '',
+  slug: '',
+  managementSystemTypeCode: null,
+};
+
 const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
   tenantCreateSteps.findIndex((step) => step.key === stepKey);
 
@@ -61,9 +77,18 @@ export const TenantCreateShell = () => {
   const [currentStepKey, setCurrentStepKey] = useState<TenantCreateStepKeyEnum>(
     TenantCreateStepKeyEnum.TENANT_INFO,
   );
+
+  // Step 1 — typed tenant info
+  const [tenantInfoData, setTenantInfoData] = useState<TenantInfoStepData>(INITIAL_TENANT_INFO);
+
+  // Steps 2–4 — placeholder inputs (preserved until those stories ship)
   const [stepInputByKey, setStepInputByKey] = useState<
     Partial<Record<TenantCreateStepKeyEnum, string>>
   >({});
+
+  // Reference data for management-system type select
+  const [referenceData, setReferenceData] = useState<TenantCreateReferenceData | null>(null);
+  const [referenceDataLoading, setReferenceDataLoading] = useState(false);
 
   const currentStepIndex = getStepIndex(currentStepKey);
   const currentStep = tenantCreateSteps[currentStepIndex] ?? tenantCreateSteps[0];
@@ -73,7 +98,49 @@ export const TenantCreateShell = () => {
   }));
   const hasPreviousStep = currentStepIndex > 0;
   const hasNextStep = currentStepIndex < tenantCreateSteps.length - 1;
-  const hasUnsavedChanges = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
+
+  const tenantInfoHasData =
+    Boolean(tenantInfoData.name.trim()) ||
+    Boolean(tenantInfoData.slug.trim()) ||
+    tenantInfoData.managementSystemTypeCode !== null;
+
+  const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
+
+  const downstreamDataExists = [
+    TenantCreateStepKeyEnum.ROLE_SELECTION,
+    TenantCreateStepKeyEnum.USER_ASSIGNMENT,
+    TenantCreateStepKeyEnum.REVIEW,
+  ].some((key) => Boolean(stepInputByKey[key]?.trim()));
+
+  const hasUnsavedChanges = tenantInfoHasData || placeholderHasData;
+
+  // Fetch reference data on mount
+  useEffect(() => {
+    const accessToken = getStoredAccessToken();
+    if (!accessToken) return;
+
+    let cancelled = false;
+    setReferenceDataLoading(true);
+
+    getTenantCreateReferenceData(accessToken)
+      .then((response) => {
+        if (!cancelled) {
+          setReferenceData(response.data);
+        }
+      })
+      .catch(() => {
+        // Reference data load failure is non-blocking; select stays disabled
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setReferenceDataLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!hasUnsavedChanges) {
@@ -105,6 +172,18 @@ export const TenantCreateShell = () => {
     router.push('/platform/tenants');
   };
 
+  const handleTenantInfoChange = useCallback((update: Partial<TenantInfoStepData>) => {
+    setTenantInfoData((prev) => ({ ...prev, ...update }));
+  }, []);
+
+  const handleConfirmSystemTypeReset = useCallback((): boolean => {
+    return window.confirm(
+      'Changing the management system type may reset role and configuration selections made in later steps. Continue?',
+    );
+  }, []);
+
+  const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
+
   return (
     <div className="space-y-5">
       <div data-testid="tenant-create-stepper">
@@ -125,39 +204,51 @@ export const TenantCreateShell = () => {
           <div className="space-y-2">
             <CardTitle className="text-2xl text-stone-950">{currentStep.title}</CardTitle>
             <CardDescription className="max-w-2xl text-sm leading-7 text-stone-600">
-              {currentStep.description} This placeholder step intentionally stops short of real
-              tenant-create business logic in `CROWN-96`.
+              {currentStep.description}
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent className="space-y-6 pt-0">
-          <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
-              Placeholder wiring
-            </p>
-            <p className="mt-3 text-sm leading-7 text-stone-600">
-              This step is here to anchor the guided layout, progress indicator, and future
-              extension point for tenant onboarding work. The actual form rules, validation, and
-              submission behavior ship separately.
-            </p>
-          </div>
-          <label className="block space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-              {currentStep.placeholderLabel}
-            </span>
-            <Input
-              aria-label={currentStep.placeholderLabel}
-              className="rounded-2xl border-stone-200 bg-stone-50"
-              onChange={(event) => {
-                setStepInputByKey((currentValue) => ({
-                  ...currentValue,
-                  [currentStep.key]: event.target.value,
-                }));
-              }}
-              placeholder="Type here to simulate in-progress tenant-create input"
-              value={stepInputByKey[currentStep.key] ?? ''}
+          {isTenantInfoStep ? (
+            <TenantCreateStepTenantInfo
+              data={tenantInfoData}
+              downstreamDataExists={downstreamDataExists}
+              onChange={handleTenantInfoChange}
+              onConfirmSystemTypeReset={handleConfirmSystemTypeReset}
+              referenceData={referenceData}
+              referenceDataLoading={referenceDataLoading}
             />
-          </label>
+          ) : (
+            <>
+              <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  Placeholder wiring
+                </p>
+                <p className="mt-3 text-sm leading-7 text-stone-600">
+                  This step is here to anchor the guided layout, progress indicator, and future
+                  extension point for tenant onboarding work. The actual form rules, validation, and
+                  submission behavior ship separately.
+                </p>
+              </div>
+              <label className="block space-y-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  {currentStep.placeholderLabel}
+                </span>
+                <Input
+                  aria-label={currentStep.placeholderLabel}
+                  className="rounded-2xl border-stone-200 bg-stone-50"
+                  onChange={(event) => {
+                    setStepInputByKey((currentValue) => ({
+                      ...currentValue,
+                      [currentStep.key]: event.target.value,
+                    }));
+                  }}
+                  placeholder="Type here to simulate in-progress tenant-create input"
+                  value={stepInputByKey[currentStep.key] ?? ''}
+                />
+              </label>
+            </>
+          )}
           <div className="flex flex-col gap-3 border-t border-stone-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <Button
               className="gap-2 self-start rounded-full px-4"
