@@ -14,6 +14,9 @@ const quoteIdentifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
 const isUniqueConstraintError = (error: unknown): error is { code: string } =>
   typeof error === "object" && error !== null && "code" in error && (error as { code: string }).code === "P2002";
 
+const CURRENT_TYPE_VERSION = "1.0";
+const TENANT_ADMIN_ROLE_CODE = "tenant_admin";
+
 export const provisionTenant = async (input: ProvisionTenantInput): Promise<ProvisionTenantResult> => {
   const normalizedName = input.name.trim();
   const normalizedSlug = normalizeSlug(input.slug);
@@ -22,6 +25,22 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
     return {
       status: "conflict",
       message: "invalid tenant provisioning input"
+    };
+  }
+
+  const managementSystemType = await prisma.managementSystemType.findUnique({
+    where: {
+      typeCode_version: {
+        typeCode: input.managementSystemTypeCode,
+        version: CURRENT_TYPE_VERSION
+      }
+    }
+  });
+
+  if (!managementSystemType) {
+    return {
+      status: "conflict",
+      message: "invalid management system type code"
     };
   }
 
@@ -106,6 +125,29 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
       data: { status: TenantStatus.active }
     });
 
+    const tenantAdminRole = await prisma.role.findUnique({
+      where: { roleCode: TENANT_ADMIN_ROLE_CODE }
+    });
+
+    if (tenantAdminRole) {
+      const membership = await prisma.tenantMembership.create({
+        data: {
+          userId: input.actorSub,
+          tenantId: updatedTenant.id,
+          membershipStatus: "active"
+        }
+      });
+
+      await prisma.tenantMembershipRoleAssignment.create({
+        data: {
+          tenantMembershipId: membership.id,
+          roleId: tenantAdminRole.id,
+          assignmentStatus: "active",
+          isPrimary: true
+        }
+      });
+    }
+
     return {
       status: "provisioned",
       tenantId: updatedTenant.id,
@@ -113,6 +155,7 @@ export const provisionTenant = async (input: ProvisionTenantInput): Promise<Prov
       schemaName: updatedTenant.schemaName,
       appliedVersions: migrationResult.appliedVersions,
       skippedVersions: migrationResult.skippedVersions,
+      managementSystemTypeCode: input.managementSystemTypeCode,
       tenant: updatedTenant
     };
   } finally {

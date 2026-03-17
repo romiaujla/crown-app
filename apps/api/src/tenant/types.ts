@@ -28,6 +28,7 @@ export type ProvisionTenantInput = {
   name: string;
   slug: string;
   actorSub: string;
+  managementSystemTypeCode: string;
 };
 
 export type ProvisionTenantSuccessResult = {
@@ -37,6 +38,7 @@ export type ProvisionTenantSuccessResult = {
   schemaName: string;
   appliedVersions: string[];
   skippedVersions: string[];
+  managementSystemTypeCode: string;
   tenant: Tenant;
 };
 
