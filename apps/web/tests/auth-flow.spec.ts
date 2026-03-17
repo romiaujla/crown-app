@@ -535,7 +535,6 @@ test('tenant directory action links route to stable detail, add, and edit entry 
   await expect(page).toHaveURL(/\/platform\/tenants\/new$/);
   await expect(page.getByRole('heading', { name: 'Add Tenant', level: 3 })).toBeVisible();
   await expect(page.getByTestId('tenant-create-stepper')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Tenant create workflow' })).toBeVisible();
 
   await page.goto('/platform/tenants');
   await page.getByRole('link', { name: /Edit/ }).first().click();
@@ -553,6 +552,9 @@ test('tenant create shell advances through placeholder steps and protects entere
 
   await expect(page.getByText('Step 1 of 4')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
+  await expect(
+    page.locator('[data-testid="tenant-create-stepper"] [aria-current="step"]'),
+  ).toContainText('Step 1/4');
   await expect(
     page.locator('[data-testid="tenant-create-stepper"] [aria-current="step"]'),
   ).toContainText('Tenant info');

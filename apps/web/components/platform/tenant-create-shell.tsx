@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Stepper, type StepperStep } from '@/components/ui/stepper';
+import { Stepper } from '@/components/ui/stepper';
 
 enum TenantCreateStepKeyEnum {
   TENANT_INFO = 'tenant_info',
@@ -67,9 +67,8 @@ export const TenantCreateShell = () => {
 
   const currentStepIndex = getStepIndex(currentStepKey);
   const currentStep = tenantCreateSteps[currentStepIndex] ?? tenantCreateSteps[0];
-  const stepperSteps: StepperStep[] = tenantCreateSteps.map((step, index) => ({
+  const stepperSteps = tenantCreateSteps.map((step, index) => ({
     a11yLabel: `Step ${index + 1}: ${step.title}`,
-    description: step.description,
     title: step.title,
   }));
   const hasPreviousStep = currentStepIndex > 0;
@@ -107,34 +106,17 @@ export const TenantCreateShell = () => {
   };
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[18rem_minmax(0,1fr)]">
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Guided onboarding
-          </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-xl text-stone-950">Tenant create workflow</CardTitle>
-            <CardDescription className="text-sm leading-6 text-stone-600">
-              Use the stepper shell now; the real tenant provisioning behavior arrives in follow-up
-              stories.
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div data-testid="tenant-create-stepper">
-            <Stepper
-              clickable
-              currentStep={currentStepIndex}
-              onStepClick={(index) => {
-                setCurrentStepKey(tenantCreateSteps[index]?.key ?? currentStepKey);
-              }}
-              orientation="vertical"
-              steps={stepperSteps}
-            />
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-5">
+      <div data-testid="tenant-create-stepper">
+        <Stepper
+          clickable
+          currentStep={currentStepIndex}
+          onStepClick={(index) => {
+            setCurrentStepKey(tenantCreateSteps[index]?.key ?? currentStepKey);
+          }}
+          steps={stepperSteps}
+        />
+      </div>
       <Card className="border-white/70 bg-white/92 shadow-sm">
         <CardHeader className="space-y-3">
           <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
