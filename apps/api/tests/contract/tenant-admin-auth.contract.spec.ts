@@ -9,7 +9,8 @@ describe("tenant admin auth contract", () => {
 
   it("allows tenant_admin for matching tenant", async () => {
     const response = await request(app)
-      .get(`/api/v1/tenant/admin/${tenantAdminClaims.tenant_id}`)
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_admin", tenantId: tenantAdminClaims.tenant_id })
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(200);
@@ -17,7 +18,8 @@ describe("tenant admin auth contract", () => {
 
   it("denies tenant_admin for non-matching tenant", async () => {
     const response = await request(app)
-      .get("/api/v1/tenant/admin/tenant-other")
+      .post("/api/v1/tenant/access")
+      .send({ authClass: "tenant_admin", tenantId: "tenant-other" })
       .set("Authorization", `Bearer ${createJwtToken(tenantAdminClaims)}`);
 
     expect(response.status).toBe(403);
