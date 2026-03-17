@@ -13,7 +13,7 @@
 - Q: What tenant schema naming pattern should downstream work use? → A: Use `tenant_<tenant_slug>` for tenant schemas.
 - Q: What belongs in the shared `core` schema versus tenant schemas? → A: Only platform-wide shared tables belong in `core`; tenant reference data and tenant operational data stay inside each `tenant_<tenant_slug>` schema unless a table is truly global.
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Define The Foundational Tenant Model (Priority: P1)
 
@@ -65,7 +65,7 @@ The maintainer produces a model definition that is intentionally foundational, s
 - How are stable identifiers defined when human-readable names may change over time?
 - How is a table handled when it appears reusable across tenants but still contains tenant-owned reference data?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -83,7 +83,7 @@ The maintainer produces a model definition that is intentionally foundational, s
 - **FR-012**: The specification MUST keep tenant reference data inside each tenant schema unless the data is truly platform-global.
 - **FR-013**: The specification MUST identify which foundational entities are shared `core` concerns and which are tenant-schema concerns so downstream migration work can place them correctly.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Foundational Tenant Entity**: A top-level tenant-domain record type required for the next TMS baseline.
 - **Core Shared Entity**: A platform-wide table or catalog in the `core` schema that is reused across tenants.
@@ -100,7 +100,7 @@ The maintainer produces a model definition that is intentionally foundational, s
 - Platform-wide shared tables will live in the `core` schema.
 - Tenant-specific tables, including tenant reference data, will live in schemas named `tenant_<tenant_slug>` unless a table is explicitly global.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-152` - "Auth | Design normalized user, membership, and role-assignment model"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Separate Identity, Membership, And Role Concepts (Priority: P1)
 
@@ -62,7 +62,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 - A legacy user currently stores `tenant_user` on `platform_users.role` even though the normalized catalog prefers explicit tenant auth-role assignments.
 - Existing seeded display labels use `Admin`, but the canonical auth role code remains `tenant_admin`.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -81,7 +81,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 - **FR-012**: The design MUST preserve the existing concept that a user identity can outlive any one tenant membership or tenant assignment.
 - **FR-013**: The design MUST remain limited to the normalized auth data model and rollout guidance; implementation of schema migrations, auth APIs, and UI flows remains follow-up scope.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **User**: The global person/account record used for login credentials, account status, and profile identity.
 - **Platform Role Assignment**: The platform-scoped authorization grant that enables global permissions such as `super_admin`.
@@ -98,7 +98,7 @@ As a maintainer, I want a concrete migration and rollout outline so follow-up sc
 - The normalized schema will support many-to-many tenant-role assignments over time, but the initial auth runtime will continue to resolve one effective tenant auth role per session for compatibility with the current JWT and RBAC contracts.
 - Schema, seed, JWT, and API/UI implementation work will be delivered in follow-up stories under `CROWN-149` once this target design is approved.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -11,6 +11,7 @@
 - Manual note: initial implementation of spec kit governance commands/docs
 
 ### File breakdown
+
 - README.md (+5 / -0)
 - docs/process/spec-kit-workflow.md (+19 / -0)
 - package.json (+2 / -0)
@@ -18,4 +19,3 @@
 - docs/process/spec-kit-installation.md (+51 / -0)
 - scripts/specify-audit.mjs (+135 / -0)
 - scripts/specify-drift.mjs (+150 / -0)
-

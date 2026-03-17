@@ -8,6 +8,7 @@
 ## Problem Statement
 
 ### Current State
+
 - Tests require a local PostgreSQL database instance to be running on the developer's machine during test execution
 - Developers must manually start and manage a local database service (e.g., Docker Desktop, brew services, or cloud-hosted instance)
 - Test database state persists between test runs, potentially causing flaky tests due to residual state
@@ -15,13 +16,14 @@
 - High friction for new developers onboarding to the project
 
 ### Desired State
+
 - Tests automatically provision an ephemeral PostgreSQL container at test startup
 - Database is automatically seeded and destroyed after tests complete
 - Same container approach works in both local development and GitHub Actions environments
 - Zero manual database setup required for developers
 - Test isolation is guaranteed by container lifecycle management
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Developers Can Run Tests Without Local Database Setup (Priority: P1)
 
@@ -92,7 +94,7 @@ As a new team member, I need clear documentation of the local testing setup so I
 - The seed process fails partway through, leaving the database in an inconsistent state.
 - Network connectivity is interrupted during container startup.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -121,7 +123,7 @@ As a new team member, I need clear documentation of the local testing setup so I
 - **IR-003**: The database connection configuration MUST be provided to the existing Prisma Client and test fixtures without major refactoring.
 - **IR-004**: The solution MUST not break existing test behavior or require rewriting tests.
 
-## Key Components *(include if feature involves infrastructure)*
+## Key Components _(include if feature involves infrastructure)_
 
 - **Test Database Container**: A Docker-based PostgreSQL instance provisioned specifically for a test run.
 - **Container Orchestration Layer**: Logic to start, configure, and manage the container lifecycle (using Docker SDK, Testcontainers, or equivalent).
@@ -131,7 +133,7 @@ As a new team member, I need clear documentation of the local testing setup so I
 - **Cleanup Handler**: Logic that reliably destroys containers and cleans up resources on test completion or interruption.
 - **Environment Configuration**: Configuration that selects the appropriate container strategy for local vs. CI/CD contexts.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

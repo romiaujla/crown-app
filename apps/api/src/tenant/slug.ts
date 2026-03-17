@@ -1,4 +1,4 @@
-import { SLUG_REGEX } from "./contracts.js";
+import { SLUG_REGEX } from './contracts.js';
 
 export const normalizeSlug = (input: string): string => input.trim().toLowerCase();
 

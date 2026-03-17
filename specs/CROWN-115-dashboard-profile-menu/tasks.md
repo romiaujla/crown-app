@@ -11,8 +11,8 @@
 
 **Purpose**: Prepare the story task set and confirm the shared shell change surface.
 
-- [X] T001 Create the `CROWN-115` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
-- [X] T002 [P] Review the current standalone authenticated-user block and shared logout affordance in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx
+- [x] T001 Create the `CROWN-115` task breakdown in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
+- [x] T002 [P] Review the current standalone authenticated-user block and shared logout affordance in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx
 
 ---
 
@@ -22,9 +22,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Refactor /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx to remove the top-level authenticated-user card and host a compact profile section beneath the sidebar navigation
-- [X] T004 [P] Add or update shell styling for the compact profile entry and anchored menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T005 [P] Adjust the logout-button presentation for compact menu use in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx if needed without changing sign-out behavior
+- [x] T003 Refactor /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx to remove the top-level authenticated-user card and host a compact profile section beneath the sidebar navigation
+- [x] T004 [P] Add or update shell styling for the compact profile entry and anchored menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T005 [P] Adjust the logout-button presentation for compact menu use in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx if needed without changing sign-out behavior
 
 **Checkpoint**: The shared shell supports a compact profile trigger/menu area below the navigation rail.
 
@@ -38,14 +38,14 @@
 
 ### Tests for User Story 1
 
-- [X] T006 [P] [US1] Add browser assertions for removing the old standalone authenticated-user block in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [X] T007 [P] [US1] Add browser assertions for the compact left-menu profile entry and initials avatar in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T006 [P] [US1] Add browser assertions for removing the old standalone authenticated-user block in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T007 [P] [US1] Add browser assertions for the compact left-menu profile entry and initials avatar in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T008 [US1] Render the compact profile entry beneath the sidebar navigation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [X] T009 [US1] Implement deterministic initials derivation from the authenticated display name in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [X] T010 [US1] Verify shared shell consumers still pass the needed user context in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/tenant/page.tsx
+- [x] T008 [US1] Render the compact profile entry beneath the sidebar navigation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [x] T009 [US1] Implement deterministic initials derivation from the authenticated display name in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [x] T010 [US1] Verify shared shell consumers still pass the needed user context in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/tenant/page.tsx
 
 **Checkpoint**: The old user block is gone and the new profile entry is part of the left shell.
 
@@ -59,14 +59,14 @@
 
 ### Tests for User Story 2
 
-- [X] T011 [P] [US2] Add browser assertions for opening and closing the compact profile menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [X] T012 [P] [US2] Add browser assertions for the menu identity details in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T011 [P] [US2] Add browser assertions for opening and closing the compact profile menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T012 [P] [US2] Add browser assertions for the menu identity details in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T013 [US2] Implement the compact profile menu open/close state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [X] T014 [US2] Render the signed-in display name and role inside the compact menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
-- [X] T015 [US2] Align the shell contract and quickstart notes with the final profile-menu behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/contracts/dashboard-profile-menu-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/quickstart.md
+- [x] T013 [US2] Implement the compact profile menu open/close state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [x] T014 [US2] Render the signed-in display name and role inside the compact menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx
+- [x] T015 [US2] Align the shell contract and quickstart notes with the final profile-menu behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/contracts/dashboard-profile-menu-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/quickstart.md
 
 **Checkpoint**: The compact menu opens in place and shows the required identity details.
 
@@ -80,12 +80,12 @@
 
 ### Tests for User Story 3
 
-- [X] T016 [P] [US3] Update logout browser coverage to use the new compact profile menu interaction in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T016 [P] [US3] Update logout browser coverage to use the new compact profile menu interaction in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T017 [US3] Place the existing logout action inside the compact profile menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx
-- [X] T018 [US3] Confirm the shared shell still supports both platform and tenant logout entry points after relocation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/tenant/page.tsx, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T017 [US3] Place the existing logout action inside the compact profile menu in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/workspace-shell.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/components/auth/logout-button.tsx
+- [x] T018 [US3] Confirm the shared shell still supports both platform and tenant logout entry points after relocation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/page.tsx, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/tenant/page.tsx, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
 
 **Checkpoint**: Logout remains available from the new menu and preserves existing behavior.
 
@@ -95,11 +95,11 @@
 
 **Purpose**: Validate the final implementation, keep docs aligned, and prepare the branch for PR creation.
 
-- [X] T019 [P] Run app-level typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [X] T020 [P] Run focused Playwright coverage for the profile-menu and logout flows in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
-- [X] T021 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
-- [X] T022 Review the final shell behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md
-- [X] T023 Create the PR for `feat/CROWN-115-dashboard-profile-menu` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
+- [x] T019 [P] Run app-level typecheck in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [x] T020 [P] Run focused Playwright coverage for the profile-menu and logout flows in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/auth-flow.spec.ts
+- [x] T021 Run `pnpm specify.audit` from /Users/ramanpreetaujla/Documents/AI-Projects/crown-app
+- [x] T022 Review the final shell behavior against /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md
+- [x] T023 Create the PR for `feat/CROWN-115-dashboard-profile-menu` with links to /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/spec.md, /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/plan.md, and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-115-dashboard-profile-menu/tasks.md
 
 ---
 

@@ -17,8 +17,8 @@
 
 **Purpose**: Confirm the design-artifact workspace and downstream touchpoints before foundational modeling work begins
 
-- [X] T001 Review existing tenant baseline inputs in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/` and record relevant carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
-- [X] T002 [P] Review downstream story expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
+- [x] T001 Review existing tenant baseline inputs in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/api/tenant-migrations/0001_base/` and record relevant carry-forward constraints in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
+- [x] T002 [P] Review downstream story expectations in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
 
 ---
 
@@ -28,10 +28,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Consolidate foundational TMS modeling constraints and constitutional naming rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/plan.md`
-- [X] T004 [P] Normalize foundational scope boundaries, exclusions, and downstream dependencies in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T005 [P] Align the handoff contract with current epic/story sequencing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T006 Reconcile the foundational model with the current tenant baseline artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T003 Consolidate foundational TMS modeling constraints and constitutional naming rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/plan.md`
+- [x] T004 [P] Normalize foundational scope boundaries, exclusions, and downstream dependencies in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T005 [P] Align the handoff contract with current epic/story sequencing in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T006 Reconcile the foundational model with the current tenant baseline artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
 
 **Checkpoint**: Foundational modeling rules are stable and downstream handoff constraints are aligned
 
@@ -45,15 +45,15 @@
 
 ### Validation for User Story 1
 
-- [X] T007 [P] [US1] Cross-check foundational entity coverage and terminology in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T008 [P] [US1] Cross-check entity relationships, lifecycle states, and validation rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T007 [P] [US1] Cross-check foundational entity coverage and terminology in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T008 [P] [US1] Cross-check entity relationships, lifecycle states, and validation rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Refine foundational entity definitions and purpose statements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
-- [X] T010 [US1] Refine relationship summaries and lifecycle/state boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
-- [X] T011 [US1] Align foundational model requirements and success criteria with the refined entity map in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T012 [US1] Update foundational modeling decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
+- [x] T009 [US1] Refine foundational entity definitions and purpose statements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T010 [US1] Refine relationship summaries and lifecycle/state boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T011 [US1] Align foundational model requirements and success criteria with the refined entity map in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T012 [US1] Update foundational modeling decisions and rejected alternatives in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
 
 **Checkpoint**: User Story 1 is fully reviewable and can stand alone as the foundational tenant-model definition
 
@@ -67,15 +67,15 @@
 
 ### Validation for User Story 2
 
-- [X] T013 [P] [US2] Review reference-data and fixture-boundary requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T014 [P] [US2] Review stable identifier and fixture profile coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T013 [P] [US2] Review reference-data and fixture-boundary requirements in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T014 [P] [US2] Review stable identifier and fixture profile coverage in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Refine reference-data set definitions, controlled catalogs, and validation rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
-- [X] T016 [US2] Refine seed fixture profile definitions, reset-scope expectations, and deterministic key guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
-- [X] T017 [US2] Update fixture-boundary requirements, assumptions, and edge cases in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T018 [US2] Update reference-data and deterministic-fixture decisions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
+- [x] T015 [US2] Refine reference-data set definitions, controlled catalogs, and validation rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T016 [US2] Refine seed fixture profile definitions, reset-scope expectations, and deterministic key guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`
+- [x] T017 [US2] Update fixture-boundary requirements, assumptions, and edge cases in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T018 [US2] Update reference-data and deterministic-fixture decisions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
 
 **Checkpoint**: User Story 2 clearly defines what downstream seed and test stories can treat as catalogs, fixtures, and stable keys
 
@@ -89,15 +89,15 @@
 
 ### Validation for User Story 3
 
-- [X] T019 [P] [US3] Review downstream dependency and out-of-scope boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T020 [P] [US3] Review downstream usage and completion signals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
+- [x] T019 [P] [US3] Review downstream dependency and out-of-scope boundaries in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T020 [P] [US3] Review downstream usage and completion signals in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Refine downstream consumer guarantees and review rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T022 [US3] Refine downstream usage guidance and review steps in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
-- [X] T023 [US3] Update handoff-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
-- [X] T024 [US3] Reconcile plan summary and structure decisions with the finalized handoff scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/plan.md`
+- [x] T021 [US3] Refine downstream consumer guarantees and review rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T022 [US3] Refine downstream usage guidance and review steps in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
+- [x] T023 [US3] Update handoff-focused requirements and success criteria in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`
+- [x] T024 [US3] Reconcile plan summary and structure decisions with the finalized handoff scope in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/plan.md`
 
 **Checkpoint**: All user stories are independently reviewable and the downstream schema/seed stories have a stable model handoff
 
@@ -107,10 +107,10 @@
 
 **Purpose**: Final consistency, validation, and artifact readiness across all user stories
 
-- [X] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [X] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
-- [X] T027 Perform final terminology and scope consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
-- [X] T028 Confirm the final model handoff still defers Prisma 7+ to `CROWN-35` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
+- [x] T025 [P] Run artifact validation with `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T026 [P] Update implementation-readiness notes in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/quickstart.md`
+- [x] T027 Perform final terminology and scope consistency pass across `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md`, `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/data-model.md`, and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/contracts/tenant-model-handoff-contract.md`
+- [x] T028 Confirm the final model handoff still defers Prisma 7+ to `CROWN-35` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/spec.md` and `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-29-tenant-domain-model/research.md`
 
 ---
 

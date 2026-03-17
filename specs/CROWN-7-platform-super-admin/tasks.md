@@ -11,8 +11,8 @@
 
 **Purpose**: Establish the feature workspace and align app metadata with the new platform-shell direction.
 
-- [X] T001 Create the `CROWN-7` task breakdown artifact in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/tasks.md
-- [X] T002 [P] Align top-level feature references for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/system-overview.md
+- [x] T001 Create the `CROWN-7` task breakdown artifact in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/tasks.md
+- [x] T002 [P] Align top-level feature references for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/architecture/system-overview.md
 
 ---
 
@@ -22,10 +22,10 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [X] T003 Create shared platform-shell content model and navigation constants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T004 [P] Add platform-shell structural styles and responsive layout tokens in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T005 [P] Update app metadata to reflect the Crown platform control plane in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
-- [X] T006 Define role-entry behavior expectations for the shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T003 Create shared platform-shell content model and navigation constants in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T004 [P] Add platform-shell structural styles and responsive layout tokens in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T005 [P] Update app metadata to reflect the Crown platform control plane in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
+- [x] T006 Define role-entry behavior expectations for the shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
@@ -39,15 +39,15 @@
 
 ### Tests for User Story 1
 
-- [X] T007 [P] [US1] Expand shell-entry smoke coverage for super-admin platform identity in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T008 [P] [US1] Add role-entry scenario coverage for non-super-admin handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T007 [P] [US1] Expand shell-entry smoke coverage for super-admin platform identity in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T008 [P] [US1] Add role-entry scenario coverage for non-super-admin handling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 1
 
-- [X] T009 [US1] Implement the super-admin control-plane landing shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T010 [US1] Add operator identity, entry-state copy, and shell framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T011 [US1] Implement role-aware shell gating or placeholder redirect behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T012 [US1] Refine shell layout and hero treatment for the control-plane landing state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T009 [US1] Implement the super-admin control-plane landing shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T010 [US1] Add operator identity, entry-state copy, and shell framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T011 [US1] Implement role-aware shell gating or placeholder redirect behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T012 [US1] Refine shell layout and hero treatment for the control-plane landing state in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
 
 **Checkpoint**: User Story 1 is independently functional and testable.
 
@@ -61,15 +61,15 @@
 
 ### Tests for User Story 2
 
-- [X] T013 [P] [US2] Add navigation rendering checks for platform destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T014 [P] [US2] Add no-tenant-selected shell behavior checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T013 [P] [US2] Add navigation rendering checks for platform destinations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T014 [P] [US2] Add no-tenant-selected shell behavior checks in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 2
 
-- [X] T015 [US2] Implement primary platform navigation sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T016 [US2] Implement tenant-management entry-point presentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T017 [US2] Add responsive navigation styling for desktop and mobile layouts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T018 [US2] Update platform-shell contracts to match implemented navigation behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/contracts/platform-shell-ui-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/contracts/platform-role-entry-contract.md
+- [x] T015 [US2] Implement primary platform navigation sections in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T016 [US2] Implement tenant-management entry-point presentation in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T017 [US2] Add responsive navigation styling for desktop and mobile layouts in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T018 [US2] Update platform-shell contracts to match implemented navigation behavior in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/contracts/platform-shell-ui-contract.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/contracts/platform-role-entry-contract.md
 
 **Checkpoint**: User Stories 1 and 2 are independently functional and testable.
 
@@ -83,15 +83,15 @@
 
 ### Tests for User Story 3
 
-- [X] T019 [P] [US3] Add copy and overview-state assertions for management-system framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T020 [P] [US3] Add empty-state rendering checks for no-data platform conditions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T019 [P] [US3] Add copy and overview-state assertions for management-system framing in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T020 [P] [US3] Add empty-state rendering checks for no-data platform conditions in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
 
 ### Implementation for User Story 3
 
-- [X] T021 [US3] Implement platform overview cards and no-data states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
-- [X] T022 [US3] Replace residual CRM-style shell wording with management-system language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
-- [X] T023 [US3] Add overview-card and empty-state styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
-- [X] T024 [US3] Update planning quickstart notes to reflect final shell validation expectations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/quickstart.md
+- [x] T021 [US3] Implement platform overview cards and no-data states in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx
+- [x] T022 [US3] Replace residual CRM-style shell wording with management-system language in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/page.tsx and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/layout.tsx
+- [x] T023 [US3] Add overview-card and empty-state styling in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css
+- [x] T024 [US3] Update planning quickstart notes to reflect final shell validation expectations in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/quickstart.md
 
 **Checkpoint**: All user stories are independently functional and testable.
 
@@ -101,10 +101,10 @@
 
 **Purpose**: Final validation and cross-story cleanup.
 
-- [X] T025 [P] Run app-level typecheck for the web shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
-- [X] T026 [P] Run Playwright smoke coverage for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
-- [X] T027 Review shell docs and backlog wording for drift in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/spec.md
-- [X] T028 Confirm Jira wording changes needed for `CROWN-7` before any Jira update in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/spec.md
+- [x] T025 [P] Run app-level typecheck for the web shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/package.json
+- [x] T026 [P] Run Playwright smoke coverage for the platform shell in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/tests/smoke.spec.ts
+- [x] T027 Review shell docs and backlog wording for drift in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/specs/backlog-map.md and /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/spec.md
+- [x] T028 Confirm Jira wording changes needed for `CROWN-7` before any Jira update in /Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-7-platform-super-admin/spec.md
 
 ---
 

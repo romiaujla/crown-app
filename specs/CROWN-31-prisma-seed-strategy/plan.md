@@ -31,7 +31,7 @@ The resulting strategy assumes one canonical local baseline centered on a single
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-31-prisma-seed-strategy` matches the constitution for a Story.
 - Commit/PR convention: PASS. Later implementation should use `feat: CROWN-31 - ...` and squash-safe PR titles.

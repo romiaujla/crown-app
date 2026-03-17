@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-95` - "UI | Tenant directory table with search and status filter"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Open The Tenant Directory On A Dedicated Route (Priority: P1)
 
@@ -65,7 +65,7 @@ As a super admin, I want tenant names and tenant actions to lead into dedicated 
 - A tenant row includes a status whose display label needs formatting for readability while preserving the exact enum value underneath.
 - Follow-up detail, add, and edit destinations remain placeholder-level entry points in this story and must not suggest the workflows are complete.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -84,7 +84,7 @@ As a super admin, I want tenant names and tenant actions to lead into dedicated 
 - **FR-013**: Access to the tenant-directory page and its follow-up entry-point routes MUST remain limited to super-admin users.
 - **FR-014**: The implementation MUST preserve the existing control-plane shell patterns while introducing dedicated tenant-management routes.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Tenant Directory View**: The dedicated control-plane page that presents persisted tenant records in a filterable table for super-admin operators.
 - **Tenant Directory Filter State**: The UI state for the name search value and single selected `TenantStatusEnum` value used to narrow the directory.
@@ -104,7 +104,7 @@ As a super admin, I want tenant names and tenant actions to lead into dedicated 
 - Existing shared contract definitions in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/packages/types/src/index.ts`.
 - Existing protected platform web shell in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/platform/`.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

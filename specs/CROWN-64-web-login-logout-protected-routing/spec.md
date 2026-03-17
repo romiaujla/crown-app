@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-64` - "Deliver web login and logout experience with protected-route handling"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Sign in and land in the correct shell (Priority: P1)
 
@@ -62,7 +62,7 @@ As a Crown user, I want logout and expired-session handling to return me to a cl
 - A tenant-scoped user manually navigates to a platform route or a mismatched tenant route after login.
 - A user opens the login page while already authenticated and should be routed away from login into the correct shell.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -81,7 +81,7 @@ As a Crown user, I want logout and expired-session handling to return me to a cl
 - **FR-013**: The feature MUST preserve the role-aware separation between the platform shell and tenant shell already established by `CROWN-7` and `CROWN-8`.
 - **FR-014**: The implementation MUST not introduce long-lived token persistence beyond `sessionStorage` for this phase.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Login Form State**: The client-side credential entry state, validation state, and submission/error status for the shared login experience.
 - **Web Session Token**: The access token stored in `sessionStorage` and used to call authenticated API routes for the active browser session.
@@ -105,7 +105,7 @@ As a Crown user, I want logout and expired-session handling to return me to a cl
 - `CROWN-8` tenant shell to serve as the authenticated destination for tenant-scoped users.
 - Existing role and routing enums/contracts in `apps/api/src/auth` that define safe client destinations and structured denial states.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

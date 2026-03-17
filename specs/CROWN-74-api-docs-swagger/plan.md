@@ -29,7 +29,7 @@ Add a local/dev-first Swagger UI route at `/api/v1/docs` for the current auth-be
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-74-api-docs-swagger` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work on this branch will use `feat: CROWN-74 - ...` subjects and a squash-safe PR title.

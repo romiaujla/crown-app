@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWn-7 is what i want to work on. This issue was written before we had decided to pivot from crm to management systems. I would still want the super admin for the main app, so keep that in mind when working on this. if there are any changes needed to JIRA confirm with me and we can do those as well."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Enter the Platform Control Plane (Priority: P1)
 
@@ -57,7 +57,7 @@ As a platform super admin, I want the control plane to summarize platform state 
 - Platform summary areas have no data yet and must show meaningful empty states instead of broken or misleading CRM-style placeholders.
 - A `super_admin` enters the shell from a direct link to a platform area and must still see consistent platform navigation and orientation.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -74,7 +74,7 @@ As a platform super admin, I want the control plane to summarize platform state 
 - **FR-011**: The shell MUST support future platform-management expansion without requiring a rename or reframing of the top-level experience.
 - **FR-012**: The feature definition MUST preserve `super_admin` as the main-app operator role even after the product pivot from CRM to management systems.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Super-Admin Shell**: The top-level platform experience used by a `super_admin` to access Crown administration functions.
 - **Platform Navigation Item**: A primary control-plane destination representing a platform management area.
@@ -98,7 +98,7 @@ As a platform super admin, I want the control plane to summarize platform state 
 
 - If `CROWN-7` still references CRM framing, the Jira wording should be updated to describe a Crown super-admin control plane for tenant management systems while preserving `super_admin` as the main-app operator role.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

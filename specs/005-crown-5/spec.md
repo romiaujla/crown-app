@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-5` (Tenant Provisioning and Schema Bootstrap)
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Provision Tenant with Isolated Schema (Priority: P1)
 
@@ -58,7 +58,7 @@ As an operator, I want global metadata to record tenant provisioning and applied
 - Retry of a previously failed provisioning run must not duplicate already-applied version records.
 - Non-super-admin caller attempts provisioning and is denied before any database side effects.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -75,7 +75,7 @@ As an operator, I want global metadata to record tenant provisioning and applied
 - **FR-011**: The system MUST ensure provisioning operations are idempotent-safe for retry paths where initial attempt partially applied migrations.
 - **FR-012**: The system MUST document provisioning API and migration runner contracts for implementation and testing.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **TenantProvisionRequest**: Input payload defining tenant identity attributes (`name`, `slug`) and actor context.
 - **Tenant**: Global control-plane tenant record containing `id`, `name`, `slug`, `schema_name`, `status`, timestamps.
@@ -95,7 +95,7 @@ As an operator, I want global metadata to record tenant provisioning and applied
 - Existing tenant migration runner strategy in `apps/api/src/tenant/migrator.ts` is extended for execution behavior.
 - Contract and integration tests can run against disposable PostgreSQL instances (Testcontainers).
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

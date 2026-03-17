@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: Jira issue `CROWN-158` - "API | Consolidate tenant access checks into POST /api/v1/tenant/access"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Tenant Admin Access Check Uses The Unified Endpoint (Priority: P1)
 
@@ -71,7 +71,7 @@ As a maintainer, I want the legacy split endpoints removed and the OpenAPI docum
 - Calls without a bearer token continue returning `401` using existing structured auth error behavior.
 - Super-admin tokens are out of scope for this endpoint contract and continue following existing tenant namespace authorization behavior.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -106,7 +106,7 @@ As a maintainer, I want the legacy split endpoints removed and the OpenAPI docum
 - Adding tenant-selection flows or UI changes.
 - Changing platform-only authorization routes.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

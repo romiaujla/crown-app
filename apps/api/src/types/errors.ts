@@ -1,14 +1,14 @@
-import type { Response } from "express";
-import { z } from "zod";
+import type { Response } from 'express';
+import { z } from 'zod';
 
-import { AuthRoutingSchema } from "../auth/contracts.js";
-import { AuthErrorCodeSchema, type AuthErrorCodeEnum } from "../auth/claims.js";
-import type { BlockedAuthRouting } from "../auth/service.js";
+import { AuthRoutingSchema } from '../auth/contracts.js';
+import { AuthErrorCodeSchema, type AuthErrorCodeEnum } from '../auth/claims.js';
+import type { BlockedAuthRouting } from '../auth/service.js';
 
 export const ErrorResponseSchema = z.object({
   error_code: AuthErrorCodeSchema,
   message: z.string(),
-  routing: AuthRoutingSchema.optional()
+  routing: AuthRoutingSchema.optional(),
 });
 
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
@@ -18,7 +18,7 @@ export const sendAuthError = (
   status: number,
   errorCode: AuthErrorCodeEnum,
   message: string,
-  routing?: BlockedAuthRouting
+  routing?: BlockedAuthRouting,
 ) => {
   res.status(status).json({
     error_code: errorCode,
@@ -28,10 +28,10 @@ export const sendAuthError = (
           routing: {
             status: routing.status,
             target_app: routing.targetApp,
-            reason_code: routing.reasonCode
-          }
+            reason_code: routing.reasonCode,
+          },
         }
-      : {})
+      : {}),
   } satisfies ErrorResponse);
 };
 

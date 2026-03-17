@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-140` - "DB | Tenant management-system type and default role template model"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Persist Versioned Management-System Types (Priority: P1)
 
@@ -25,7 +25,7 @@ As a platform maintainer, I want a junction between management-system types and 
 
 **Independent Test**: Review the junction records and baseline seed output to confirm each type-to-role association is persisted explicitly and `is_default` marks the bootstrap/default set.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -55,7 +55,7 @@ As a platform maintainer, I want a junction between management-system types and 
 - Only `tenant_admin` is initially connected to `dealership` and `inventory`.
 - The current branch should be revised in place rather than layering a second competing persistence design on top.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

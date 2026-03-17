@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: Jira issue `CROWN-150` — "API | Align tenant provisioning and role-template enablement with normalized role model"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 — Provision A Tenant With A Management System Type And Role Template (Priority: P1)
 
@@ -56,7 +56,7 @@ As a super admin, I want the existing provisioning behavior (tenant record creat
 
 ---
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -97,7 +97,7 @@ As a super admin, I want the existing provisioning behavior (tenant record creat
 - Modifying the tenant schema DDL or migrations based on the selected management system type.
 - Front-end changes to the tenant creation form.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

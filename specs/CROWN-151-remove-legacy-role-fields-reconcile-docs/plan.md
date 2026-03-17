@@ -1,6 +1,7 @@
 # CROWN-151 — Implementation Plan
 
 ## Phase 1: Remove dead type exports from shared types package
+
 **Files**: `packages/types/src/index.ts`
 **Risk**: Low — zero consumers import these exports
 
@@ -10,6 +11,7 @@
 4. Run `pnpm --filter api typecheck` and `pnpm --filter web typecheck` to confirm no breakage
 
 ## Phase 2: Align seed data type consistency
+
 **Files**: `apps/api/prisma/seed/constants.ts`, `apps/api/prisma/seed/types.ts`
 **Risk**: Low — changes are value-preserving type narrowing
 
@@ -18,6 +20,7 @@
 3. Run typecheck to confirm
 
 ## Phase 3: Add auth_class context to OpenAPI schema descriptions
+
 **Files**: `apps/api/src/docs/openapi.ts`
 **Risk**: Low — documentation-only changes to schema descriptions
 
@@ -26,6 +29,7 @@
 3. Run typecheck
 
 ## Phase 4: Reconcile architecture and auth documentation
+
 **Files**: `docs/architecture/auth-rbac.md`, `docs/architecture/api-boundaries.md`, `docs/auth/local-authentication.md`, `docs/specs/future-epics.md`
 **Risk**: None — documentation-only changes
 
@@ -35,11 +39,13 @@
 4. Update `future-epics.md` stale role references
 
 ## Phase 5: Validate
+
 1. `pnpm --filter api typecheck`
 2. `pnpm --filter api test`
 3. Confirm all tests pass with zero assertion changes
 
 ## Commit Strategy
+
 - Single commit: `feat: CROWN-151 - remove legacy role exports and reconcile docs`
 - If changes span multiple logical units, split into:
   - `feat: CROWN-151 - remove dead role/JWT/auth exports from @crown/types`

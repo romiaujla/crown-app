@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-79` - "Support prompt-driven end-to-end Spec Kit implementation workflow"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Start a Jira-scoped implementation workflow from one prompt (Priority: P1)
 
@@ -61,7 +61,7 @@ As an engineer using the repository AI agent, I want the workflow to stop when s
 - The branch name, spec directory, or pull request metadata drift away from the Jira issue being implemented.
 - The implementation is complete but validation evidence is incomplete, preventing a policy-compliant pull request handoff.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -79,14 +79,14 @@ As an engineer using the repository AI agent, I want the workflow to stop when s
 - **FR-012**: The system MUST produce a pull request description that includes Jira linkage, links to the `spec`, `plan`, and `tasks` artifacts, a scope statement, and validation notes.
 - **FR-013**: The system MUST keep the workflow scoped to AI-agent prompting and delivery process behavior rather than unrelated product functionality.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Workflow Invocation**: The user prompt that names a Jira issue and starts the agent's staged delivery sequence.
 - **Workflow Phase Gate**: The completion checkpoint that determines whether the agent can commit, push, and advance to the next phase.
 - **Clarification Blocker**: Any unresolved ambiguity in scope, requirements, repository state, or validation that requires the workflow to pause.
 - **Pull Request Handoff**: The final review package that links Jira, the Spec Kit artifacts, scope boundaries, and validation evidence.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

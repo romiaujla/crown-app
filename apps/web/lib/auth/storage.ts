@@ -1,9 +1,9 @@
-const ACCESS_TOKEN_STORAGE_KEY = "crown.auth.access_token";
-const RETURN_PATH_STORAGE_KEY = "crown.auth.return_path";
-const LOGIN_REASON_STORAGE_KEY = "crown.auth.login_reason";
+const ACCESS_TOKEN_STORAGE_KEY = 'crown.auth.access_token';
+const RETURN_PATH_STORAGE_KEY = 'crown.auth.return_path';
+const LOGIN_REASON_STORAGE_KEY = 'crown.auth.login_reason';
 
 const getStorage = () => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   return window.sessionStorage;
 };
 

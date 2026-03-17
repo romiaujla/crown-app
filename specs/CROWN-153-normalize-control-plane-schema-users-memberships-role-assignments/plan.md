@@ -21,7 +21,7 @@ Implement the control-plane schema changes defined by `CROWN-152` so the repo pe
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - Branch naming: PASS. `feat/CROWN-153-normalize-control-plane-schema-users-memberships-role-assignments` matches the constitution for a Story.
 - Commit/PR convention: PASS. Work should use `feat: CROWN-153 - ...` commit subjects and squash-safe PR titles.

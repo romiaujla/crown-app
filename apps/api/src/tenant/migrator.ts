@@ -1,11 +1,11 @@
-import { readFile } from "node:fs/promises";
+import { readFile } from 'node:fs/promises';
 
-import { Client } from "pg";
+import { Client } from 'pg';
 
-import { env } from "../config/env.js";
-import { prisma } from "../db/prisma.js";
+import { env } from '../config/env.js';
+import { prisma } from '../db/prisma.js';
 
-import type { ExecuteTenantMigrationsInput, TenantMigrationExecutionResult } from "./types.js";
+import type { ExecuteTenantMigrationsInput, TenantMigrationExecutionResult } from './types.js';
 
 export type TenantMigration = {
   version: string;
@@ -14,9 +14,9 @@ export type TenantMigration = {
 };
 
 export const tenantMigrationStrategy = {
-  prismaScope: "public",
-  tenantScope: "tenant_<slug>",
-  execution: "versioned-sql"
+  prismaScope: 'public',
+  tenantScope: 'tenant_<slug>',
+  execution: 'versioned-sql',
 } as const;
 
 type ExecuteTenantMigrationsOptions = {
@@ -27,7 +27,7 @@ const quoteIdentifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
 
 export const executeTenantMigrations = async (
   input: ExecuteTenantMigrationsInput,
-  options: ExecuteTenantMigrationsOptions = {}
+  options: ExecuteTenantMigrationsOptions = {},
 ): Promise<TenantMigrationExecutionResult> => {
   const ownedClient = !options.client;
   const client = options.client ?? new Client({ connectionString: env.DATABASE_URL });
@@ -44,9 +44,9 @@ export const executeTenantMigrations = async (
         where: {
           tenantId_version: {
             tenantId: input.tenantId,
-            version: migration.version
-          }
-        }
+            version: migration.version,
+          },
+        },
       });
 
       if (alreadyApplied) {
@@ -54,10 +54,10 @@ export const executeTenantMigrations = async (
         continue;
       }
 
-      const sql = await readFile(migration.sqlPath, "utf8");
+      const sql = await readFile(migration.sqlPath, 'utf8');
 
       try {
-        await client.query("BEGIN");
+        await client.query('BEGIN');
         await client.query(`SET LOCAL search_path TO ${quoteIdentifier(input.schemaName)}`);
         await client.query(sql);
 
@@ -66,28 +66,28 @@ export const executeTenantMigrations = async (
             tenantId: input.tenantId,
             version: migration.version,
             appliedBy: input.actorSub,
-            description: migration.description
-          }
+            description: migration.description,
+          },
         });
 
-        await client.query("COMMIT");
+        await client.query('COMMIT');
         appliedVersions.push(migration.version);
       } catch (error) {
-        await client.query("ROLLBACK");
+        await client.query('ROLLBACK');
         return {
-          status: "failed",
+          status: 'failed',
           failedVersion: migration.version,
           appliedVersions,
           skippedVersions,
-          message: error instanceof Error ? error.message : "Migration execution failed"
+          message: error instanceof Error ? error.message : 'Migration execution failed',
         };
       }
     }
 
     return {
-      status: "provisioned",
+      status: 'provisioned',
       appliedVersions,
-      skippedVersions
+      skippedVersions,
     };
   } finally {
     if (ownedClient) {

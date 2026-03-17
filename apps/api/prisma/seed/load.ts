@@ -1,8 +1,22 @@
-import { organizationFixtures, locationFixtures } from "./baseline/organizations.js";
-import { activityFixtures, equipmentAssetFixtures, loadFixtures, loadStopFixtures, personFixtures, tenantRoleAssignmentFixtures, tenantRoleFixtures } from "./baseline/operations.js";
-import { referenceDataFixtures } from "./baseline/reference-data.js";
-import { SeedLookupStore } from "./lookups.js";
-import { createEmptyLoadedCounts, SeedExecutionError, type SeedLoadedCounts, type SeedPhaseName, type SeedSqlClient } from "./types.js";
+import { organizationFixtures, locationFixtures } from './baseline/organizations.js';
+import {
+  activityFixtures,
+  equipmentAssetFixtures,
+  loadFixtures,
+  loadStopFixtures,
+  personFixtures,
+  tenantRoleAssignmentFixtures,
+  tenantRoleFixtures,
+} from './baseline/operations.js';
+import { referenceDataFixtures } from './baseline/reference-data.js';
+import { SeedLookupStore } from './lookups.js';
+import {
+  createEmptyLoadedCounts,
+  SeedExecutionError,
+  type SeedLoadedCounts,
+  type SeedPhaseName,
+  type SeedSqlClient,
+} from './types.js';
 
 type LoadCanonicalBaselineOptions = {
   client: SeedSqlClient;
@@ -17,7 +31,11 @@ const maybeFail = (failAtPhase: SeedPhaseName | undefined, phase: SeedPhaseName)
   }
 };
 
-const queryOne = async (client: SeedSqlClient, text: string, values: readonly unknown[]): Promise<IdRow> => {
+const queryOne = async (
+  client: SeedSqlClient,
+  text: string,
+  values: readonly unknown[],
+): Promise<IdRow> => {
   const result = (await client.query(text, values)) as { rows: IdRow[] };
 
   if (!result.rows[0]?.id) {
@@ -29,7 +47,7 @@ const queryOne = async (client: SeedSqlClient, text: string, values: readonly un
 
 export const loadCanonicalBaseline = async ({
   client,
-  failAtPhase
+  failAtPhase,
 }: LoadCanonicalBaselineOptions): Promise<SeedLoadedCounts> => {
   const lookups = new SeedLookupStore();
   const loadedCounts = createEmptyLoadedCounts();
@@ -52,13 +70,13 @@ export const loadCanonicalBaseline = async ({
         referenceDataSet.dataSetCode,
         referenceDataSet.displayName,
         referenceDataSet.domainName,
-        JSON.stringify(referenceDataSet.valuesJson)
-      ]
+        JSON.stringify(referenceDataSet.valuesJson),
+      ],
     );
     loadedCounts.referenceDataSets += 1;
   }
 
-  maybeFail(failAtPhase, "after-reference-data");
+  maybeFail(failAtPhase, 'after-reference-data');
 
   for (const organization of organizationFixtures) {
     const row = await queryOne(
@@ -73,7 +91,7 @@ export const loadCanonicalBaseline = async ({
             updated_at = CURRENT_TIMESTAMP
         RETURNING id
       `,
-      [organization.organizationCode, organization.displayName, organization.organizationType]
+      [organization.organizationCode, organization.displayName, organization.organizationType],
     );
     lookups.setOrganization(organization.organizationCode, row.id);
     loadedCounts.organizations += 1;
@@ -103,14 +121,14 @@ export const loadCanonicalBaseline = async ({
         location.locationType,
         location.city,
         location.regionCode,
-        location.countryCode
-      ]
+        location.countryCode,
+      ],
     );
     lookups.setLocation(location.locationCode, row.id);
     loadedCounts.locations += 1;
   }
 
-  maybeFail(failAtPhase, "after-organizations");
+  maybeFail(failAtPhase, 'after-organizations');
 
   for (const person of personFixtures) {
     const row = await queryOne(
@@ -134,8 +152,8 @@ export const loadCanonicalBaseline = async ({
         person.givenName,
         person.familyName,
         person.email ?? null,
-        person.phoneNumber ?? null
-      ]
+        person.phoneNumber ?? null,
+      ],
     );
     lookups.setPerson(person.personCode, row.id);
     loadedCounts.people += 1;
@@ -154,7 +172,7 @@ export const loadCanonicalBaseline = async ({
             updated_at = CURRENT_TIMESTAMP
         RETURNING id
       `,
-      [roleDefinition.roleCode, roleDefinition.displayName, roleDefinition.description]
+      [roleDefinition.roleCode, roleDefinition.displayName, roleDefinition.description],
     );
     lookups.setRole(roleDefinition.roleCode, row.id);
     loadedCounts.tenantRoleDefinitions += 1;
@@ -172,7 +190,7 @@ export const loadCanonicalBaseline = async ({
             updated_at = CURRENT_TIMESTAMP
         RETURNING id
       `,
-      [lookups.getPerson(assignment.personCode), lookups.getRole(assignment.roleCode)]
+      [lookups.getPerson(assignment.personCode), lookups.getRole(assignment.roleCode)],
     );
     loadedCounts.tenantRoleAssignments += 1;
   }
@@ -190,7 +208,11 @@ export const loadCanonicalBaseline = async ({
             updated_at = CURRENT_TIMESTAMP
         RETURNING id
       `,
-      [asset.organizationCode ? lookups.getOrganization(asset.organizationCode) : null, asset.assetCode, asset.assetType]
+      [
+        asset.organizationCode ? lookups.getOrganization(asset.organizationCode) : null,
+        asset.assetCode,
+        asset.assetType,
+      ],
     );
     lookups.setAsset(asset.assetCode, row.id);
     loadedCounts.equipmentAssets += 1;
@@ -215,12 +237,14 @@ export const loadCanonicalBaseline = async ({
       [
         load.loadCode,
         load.shipperOrganizationCode ? lookups.getOrganization(load.shipperOrganizationCode) : null,
-        load.customerOrganizationCode ? lookups.getOrganization(load.customerOrganizationCode) : null,
+        load.customerOrganizationCode
+          ? lookups.getOrganization(load.customerOrganizationCode)
+          : null,
         load.dispatcherPersonCode ? lookups.getPerson(load.dispatcherPersonCode) : null,
         load.equipmentAssetCode ? lookups.getAsset(load.equipmentAssetCode) : null,
         load.mode,
-        load.status
-      ]
+        load.status,
+      ],
     );
     lookups.setLoad(load.loadCode, row.id);
     loadedCounts.loads += 1;
@@ -246,8 +270,8 @@ export const loadCanonicalBaseline = async ({
         stop.stopSequence,
         stop.stopType,
         stop.plannedAt,
-        stop.status
-      ]
+        stop.status,
+      ],
     );
     lookups.setStop(stop.loadCode, stop.stopSequence, row.id);
     loadedCounts.loadStops += 1;
@@ -273,20 +297,24 @@ export const loadCanonicalBaseline = async ({
       `,
       [
         activity.subjectLoadCode ? lookups.getLoad(activity.subjectLoadCode) : null,
-        activity.subjectStop ? lookups.getStop(activity.subjectStop.loadCode, activity.subjectStop.stopSequence) : null,
-        activity.subjectOrganizationCode ? lookups.getOrganization(activity.subjectOrganizationCode) : null,
+        activity.subjectStop
+          ? lookups.getStop(activity.subjectStop.loadCode, activity.subjectStop.stopSequence)
+          : null,
+        activity.subjectOrganizationCode
+          ? lookups.getOrganization(activity.subjectOrganizationCode)
+          : null,
         activity.subjectPersonCode ? lookups.getPerson(activity.subjectPersonCode) : null,
         activity.subjectAssetCode ? lookups.getAsset(activity.subjectAssetCode) : null,
         activity.actorPersonCode ? lookups.getPerson(activity.actorPersonCode) : null,
         activity.activityType,
         activity.details,
-        activity.occurredAt
-      ]
+        activity.occurredAt,
+      ],
     );
     loadedCounts.activityRecords += 1;
   }
 
-  maybeFail(failAtPhase, "after-operations");
+  maybeFail(failAtPhase, 'after-operations');
 
   return loadedCounts;
 };

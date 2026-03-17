@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-33"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Run A Complete Local Bootstrap Workflow (Priority: P1)
 
@@ -57,7 +57,7 @@ The maintainer understands how the foundational bootstrap and seed workflow shou
 - How does the workflow behave when unrelated tenant schemas and unrelated platform users already exist locally?
 - How should later test workflows treat multi-tenant coverage when the canonical seeded baseline starts with one representative tenant?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -74,7 +74,7 @@ The maintainer understands how the foundational bootstrap and seed workflow shou
 - **FR-011**: The workflow MUST define when the canonical tenant baseline is refreshed versus when unrelated local tenant data remains untouched.
 - **FR-012**: The workflow MUST be documented clearly enough that maintainers can prepare a local environment and understand how that preparation carries forward into future automated workflows.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Bootstrap Workflow**: The repeatable setup path that prepares schema state and canonical baseline data for local or future test use.
 - **Canonical Testable Baseline**: The schema-plus-seed state that local development and future automated workflows are expected to share.
@@ -90,7 +90,7 @@ The maintainer understands how the foundational bootstrap and seed workflow shou
 - The supported bootstrap rerun path refreshes only the canonical seeded tenant baseline and does not act as a general-purpose multi-tenant reset command.
 - Later e2e or container-based test automation should reuse the same canonical bootstrap and seed contract rather than define a separate seed baseline.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

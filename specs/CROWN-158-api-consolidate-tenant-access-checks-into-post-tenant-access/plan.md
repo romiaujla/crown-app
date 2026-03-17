@@ -13,8 +13,8 @@ Replace split tenant access-check routes (`GET /api/v1/tenant/admin/:tenantId` a
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                   | Change                                                                                                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/routes/authorization.ts` | Add `POST /tenant/access` route with Zod request-body validation; map `authClass` to existing `authorize` role checks and preserve tenant-scope behavior. |
 
 ### Design Details
@@ -42,8 +42,8 @@ Replace split tenant access-check routes (`GET /api/v1/tenant/admin/:tenantId` a
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
+| File                                   | Change                                                                                                          |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | `apps/api/src/routes/authorization.ts` | Remove `GET /tenant/admin/:tenantId` and `GET /tenant/user/:tenantId` handlers after unified route is in place. |
 
 ### Design Details
@@ -63,10 +63,10 @@ Replace split tenant access-check routes (`GET /api/v1/tenant/admin/:tenantId` a
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
-| `apps/api/src/docs/openapi.ts` | Remove old tenant admin/user GET path docs and add `POST /api/v1/tenant/access` with request body schema and response/security metadata. |
-| `apps/api/tests/integration/api-docs.spec.ts` | Update expected documented paths/security assertions to new tenant access endpoint. |
+| File                                          | Change                                                                                                                                   |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/docs/openapi.ts`                | Remove old tenant admin/user GET path docs and add `POST /api/v1/tenant/access` with request body schema and response/security metadata. |
+| `apps/api/tests/integration/api-docs.spec.ts` | Update expected documented paths/security assertions to new tenant access endpoint.                                                      |
 
 ### Design Details
 
@@ -88,10 +88,10 @@ Replace split tenant access-check routes (`GET /api/v1/tenant/admin/:tenantId` a
 
 ### Files Changed
 
-| File | Change |
-|------|--------|
-| `apps/api/tests/integration/tenant-admin-rbac.spec.ts` | Migrate tenant-admin denied scope test to `POST /api/v1/tenant/access`. |
-| `apps/api/tests/integration/tenant-user-rbac.spec.ts` | Migrate tenant-user tests to `POST /api/v1/tenant/access`; add explicit tenant-user escalation denial case. |
+| File                                                   | Change                                                                                                      |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `apps/api/tests/integration/tenant-admin-rbac.spec.ts` | Migrate tenant-admin denied scope test to `POST /api/v1/tenant/access`.                                     |
+| `apps/api/tests/integration/tenant-user-rbac.spec.ts`  | Migrate tenant-user tests to `POST /api/v1/tenant/access`; add explicit tenant-user escalation denial case. |
 
 ### Design Details
 

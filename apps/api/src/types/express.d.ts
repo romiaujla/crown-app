@@ -1,5 +1,5 @@
-import type { JwtClaims } from "../auth/claims.js";
-import type { CurrentUserContext } from "../auth/service.js";
+import type { JwtClaims } from '../auth/claims.js';
+import type { CurrentUserContext } from '../auth/service.js';
 
 declare global {
   namespace Express {

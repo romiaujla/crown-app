@@ -25,6 +25,7 @@ curl -X POST \
 ```
 
 Expected:
+
 - `200 OK`
 - response includes `data.tenantList`
 - response includes `meta.totalRecords`
@@ -41,6 +42,7 @@ curl -X POST \
 ```
 
 Expected:
+
 - only matching tenant names are returned
 - `meta.filters.name` echoes `"acme"`
 
@@ -55,12 +57,14 @@ curl -X POST \
 ```
 
 Expected:
+
 - only `active` tenants are returned
 - `meta.filters.status` echoes `"active"`
 
 4. Request the directory without auth or as a non-super-admin caller.
 
 Expected:
+
 - request is rejected with the existing protected-route error behavior
 
 ## Automated Verification

@@ -5,6 +5,7 @@ This guide covers the ephemeral PostgreSQL test container setup for Crown backen
 ## Overview
 
 Tests use **Testcontainers** to automatically provision ephemeral PostgreSQL containers. This means:
+
 - ✅ **No manual database setup required** — containers start automatically
 - ✅ **Isolated test environments** — each test run gets a clean database
 - ✅ **Works everywhere** — local development, CI/CD pipelines, and containerized environments
@@ -13,6 +14,7 @@ Tests use **Testcontainers** to automatically provision ephemeral PostgreSQL con
 ## Quick Start
 
 ### Prerequisites
+
 1. **Docker must be installed and running**
    - macOS: [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
    - Windows: [Install Docker Desktop](https://www.docker.com/products/docker-desktop)
@@ -27,6 +29,7 @@ Tests use **Testcontainers** to automatically provision ephemeral PostgreSQL con
    - Linux: `sudo systemctl start docker`
 
 ### Running Tests
+
 ```bash
 # From the repository root or apps/api directory
 pnpm test
@@ -41,6 +44,7 @@ pnpm test tests/integration/db-container.spec.ts
 ## How It Works
 
 ### Container Lifecycle
+
 1. **Startup** (~2-3 seconds)
    - Testcontainers pulls the PostgreSQL 16 Alpine image (if not cached)
    - Container starts with default credentials: `postgres` / `postgres`
@@ -63,6 +67,7 @@ pnpm test tests/integration/db-container.spec.ts
    - No residual processes or volumes remain
 
 ### Total Overhead
+
 - First test run: ~5-10 seconds (includes Docker image pull)
 - Subsequent runs: ~3-4 seconds (container startup + schema + seed)
 - Per-test isolation: Guaranteed by ephemeral containers
@@ -70,9 +75,11 @@ pnpm test tests/integration/db-container.spec.ts
 ## Troubleshooting
 
 ### "Cannot connect to Docker daemon"
+
 **Error**: `error during connect: This error may indicate that the docker daemon is not running.`
 
 **Solution**:
+
 - macOS: Open Docker Desktop from Applications
 - Windows: Start Docker Desktop
 - Linux: Run `sudo systemctl start docker`
@@ -82,15 +89,19 @@ pnpm test tests/integration/db-container.spec.ts
 ---
 
 ### "No space left on device" or disk full errors
+
 **Error**: `no space left on device` or container fails to start
 
 **Solutions**:
+
 1. **Clean up unused Docker images and containers**
+
    ```bash
    docker system prune -a
    ```
 
 2. **Check disk space**
+
    ```bash
    df -h
    ```
@@ -102,14 +113,17 @@ pnpm test tests/integration/db-container.spec.ts
 ---
 
 ### Tests timeout or hang
+
 **Error**: `Hook timed out in 120000ms`
 
 **Possible causes**:
+
 - Docker daemon is unresponsive
 - System is out of resources
 - PostgreSQL image failed to download
 
 **Solutions**:
+
 1. Verify Docker is responsive: `docker ps`
 2. Check system resources: `free -h` (Linux) or Activity Monitor (macOS)
 3. Restart Docker daemon:
@@ -120,9 +134,11 @@ pnpm test tests/integration/db-container.spec.ts
 ---
 
 ### "Permission denied" errors
+
 **Error**: `permission denied while trying to connect to Docker daemon`
 
 **Solution** (Linux only):
+
 ```bash
 # Add your user to docker group
 sudo usermod -aG docker $USER
@@ -137,15 +153,19 @@ docker ps
 ---
 
 ### Prisma migration failures
+
 **Error**: `The table 'public.X' does not exist` or migration-related errors
 
 **Solutions**:
+
 1. **Regenerate Prisma client**
+
    ```bash
    cd apps/api && pnpm db:generate
    ```
 
 2. **Verify migrations exist**
+
    ```bash
    ls apps/api/prisma/migrations/
    ```
@@ -158,15 +178,19 @@ docker ps
 ---
 
 ### Seed process fails
+
 **Error**: Seed-related errors in setup logs
 
 **Solutions**:
+
 1. **Verify seed file exists and is valid**
+
    ```bash
    cat apps/api/prisma/seed.ts
    ```
 
 2. **Test seed manually** (requires running local PostgreSQL)
+
    ```bash
    cd apps/api
    export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
@@ -178,9 +202,11 @@ docker ps
 ---
 
 ### Orphaned containers remain after tests crash
+
 **Error**: Old container processes persist even after tests fail
 
 **Manual cleanup**:
+
 ```bash
 # List all containers (including stopped)
 docker ps -a | grep postgres
@@ -195,12 +221,15 @@ docker container prune -f
 ---
 
 ### Tests pass locally but fail in CI/CD
+
 **Possible causes**:
+
 - Different Docker image versions between local and CI
 - Resource constraints in CI runner
 - Database state not properly isolated
 
 **Solutions**:
+
 1. **Ensure same PostgreSQL version locally and CI**: Currently `postgres:16-alpine`
 2. **Increase timeout in CI workflows** if needed
 3. **Check CI runner Docker availability**: Confirm Docker is enabled in CI config
@@ -210,25 +239,31 @@ docker container prune -f
 ## Performance Tuning
 
 ### Slow container startup
+
 **Issue**: Containers take significantly longer than expected to start
 
 **Check**:
+
 - Docker daemon responsiveness: `docker info`
 - Available disk space: `docker system df`
 - Resource allocation in Docker Desktop (macOS/Windows)
 
 **Optimization**:
+
 - Pre-pull the image locally: `docker pull postgres:16-alpine`
 - Increase Docker daemon memory/CPU allocation (if applicable)
 
 ### Slow migrations or seed
+
 **Issue**: Database schema takes too long to initialize
 
 **Check**:
+
 - Verify Prisma migration files are not creating excessive indexes or constraints
 - Check seed process performance with detailed logging
 
 **Enable debug logging**:
+
 ```bash
 LOG_LEVEL=debug pnpm test
 ```
@@ -238,9 +273,11 @@ LOG_LEVEL=debug pnpm test
 ## Advanced Configuration
 
 ### Environment Variables
+
 The following environment variables can be used to customize test behavior:
 
 - **`LOG_LEVEL`**: Set logging verbosity
+
   ```bash
   LOG_LEVEL=debug pnpm test
   ```
@@ -251,6 +288,7 @@ The following environment variables can be used to customize test behavior:
   ```
 
 ### Vitest Configuration
+
 Test timeouts and setup behavior can be configured in `apps/api/vitest.config.ts`:
 
 - **`hookTimeout`**: Maximum time for setup/teardown hooks (default: 120000ms = 2 min)
@@ -261,6 +299,7 @@ Test timeouts and setup behavior can be configured in `apps/api/vitest.config.ts
 ## Debugging Tips
 
 ### View container logs
+
 ```bash
 # List running test containers
 docker ps | grep postgres
@@ -273,6 +312,7 @@ docker logs -f <container-id>
 ```
 
 ### Connect to running container manually
+
 ```bash
 # List containers
 docker ps
@@ -285,7 +325,9 @@ psql -h localhost -p <port> -U postgres -d postgres
 ```
 
 ### Inspect test database
+
 While tests are running:
+
 ```bash
 # Get container details
 docker ps | grep postgres
@@ -311,6 +353,7 @@ psql -h localhost -p $PORT -U postgres -d postgres -c "SELECT * FROM users;"
 ## Support
 
 For issues not covered here:
+
 1. Check test output logs for detailed error messages
 2. Enable debug logging: `LOG_LEVEL=debug pnpm test`
 3. Verify Docker is working: `docker run hello-world`

@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: Jira issue `CROWN-92` - "UI | Super admin control-plane navigation shell"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Navigate Core Super-Admin Areas (Priority: P1)
 
@@ -59,7 +59,7 @@ As a super admin, I want the navigation shell to adapt across desktop and iPad-s
 - The collapsed navigation must remain understandable for keyboard and pointer users.
 - Access control must continue to prevent tenant-scoped users from entering the super-admin shell.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -74,7 +74,7 @@ As a super admin, I want the navigation shell to adapt across desktop and iPad-s
 - **FR-009**: The shell MUST support adding future super-admin sections without structural rework.
 - **FR-010**: Access to the shell MUST remain limited to super-admin users.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Control-Plane Navigation Item**: A super-admin destination with a stable title, icon treatment, route key, and active-state behavior.
 - **Control-Plane Section State**: The content payload for the currently selected destination, which may be implemented or placeholder-only.
@@ -92,7 +92,7 @@ As a super admin, I want the navigation shell to adapt across desktop and iPad-s
 - `CROWN-7` provides the initial super-admin shell and access boundary this story extends.
 - Existing `apps/web` auth-routing behavior continues to direct `super_admin` users into the platform experience.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

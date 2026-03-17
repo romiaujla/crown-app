@@ -5,7 +5,7 @@
 **Status**: Draft  
 **Input**: User description: "CROWN-34"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Prove Deterministic Canonical Seed Records (Priority: P1)
 
@@ -57,7 +57,7 @@ The maintainer can review one clear description of how local bootstrap, local re
 - How should setup guidance describe the difference between a full local bootstrap and a canonical baseline refresh without implying a full database reset?
 - How should later automated workflows reuse the same canonical baseline without redefining seeded identifiers or reset boundaries?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -72,7 +72,7 @@ The maintainer can review one clear description of how local bootstrap, local re
 - **FR-009**: The validation work MUST cover both direct local reseeding and the broader local bootstrap path where those workflows share the same canonical baseline.
 - **FR-010**: The maintained documentation MUST describe the expected outcomes of a canonical rerun, including what is refreshed and what is preserved.
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Canonical Validation Contract**: The set of expectations that proves the seeded baseline, stable lookup keys, and supported rerun path remain trustworthy.
 - **Deterministic Seed Lookup**: A stable business identifier, slug, code, or email that downstream workflows and reviewers use to locate canonical seeded records.
@@ -89,7 +89,7 @@ The maintainer can review one clear description of how local bootstrap, local re
 - Canonical validation examples should center on the tenant slug, tenant schema name, seeded operator emails, and representative business codes rather than generated IDs.
 - This story validates and documents the existing canonical baseline contract; it does not expand fixture scope or widen reset boundaries.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: Jira issue `CROWN-155` — "API | Migrate auth resolution and JWT claims to normalized role assignments"
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 — Login And Auth Resolution Read From The Normalized Assignment Model (Priority: P1)
 
@@ -81,7 +81,7 @@ As a maintainer, I want integration tests to exercise the full login and `/me` f
 - A Prisma query returns a user with `platformRoleAssignments` and `tenantMemberships` that are empty arrays — the user is treated as having no authorization grants.
 - The existing `signAccessToken` and `verifyAccessToken` functions remain unchanged; the migration only changes how claims are populated before signing.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -128,7 +128,7 @@ As a maintainer, I want integration tests to exercise the full login and `/me` f
 - Adding refresh token or token revocation features.
 - Changing the OpenAPI documentation (no route surface changes).
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
