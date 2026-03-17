@@ -1,0 +1,61 @@
+#!/usr/bin/env sh
+
+# ──────────────────────────────────────────────────────────────
+# Pre-commit hook — runs prettier, typecheck, and tests.
+# Blocks the commit if any check fails.
+# Skip with: HUSKY=0 git commit  (use sparingly)
+# ──────────────────────────────────────────────────────────────
+
+FAILED_CHECKS=""
+
+echo ""
+echo "🔍  Running pre-commit checks…"
+echo ""
+
+# ── 1. Prettier ──────────────────────────────────────────────
+echo "▸ prettier (format check)"
+pnpm format:check --log-level warn
+if [ $? -ne 0 ]; then
+  FAILED_CHECKS="$FAILED_CHECKS prettier"
+  echo "✖  prettier — FAILED"
+else
+  echo "✔  prettier — passed"
+fi
+echo ""
+
+# ── 2. Typecheck ─────────────────────────────────────────────
+echo "▸ typecheck"
+pnpm typecheck
+if [ $? -ne 0 ]; then
+  FAILED_CHECKS="$FAILED_CHECKS typecheck"
+  echo "✖  typecheck — FAILED"
+else
+  echo "✔  typecheck — passed"
+fi
+echo ""
+
+# ── 3. Tests ─────────────────────────────────────────────────
+echo "▸ tests"
+pnpm test
+if [ $? -ne 0 ]; then
+  FAILED_CHECKS="$FAILED_CHECKS tests"
+  echo "✖  tests — FAILED"
+else
+  echo "✔  tests — passed"
+fi
+echo ""
+
+# ── Summary ──────────────────────────────────────────────────
+if [ -n "$FAILED_CHECKS" ]; then
+  echo "══════════════════════════════════════════════════════"
+  echo "  Commit blocked. Failed checks:$FAILED_CHECKS"
+  echo "══════════════════════════════════════════════════════"
+  echo ""
+  echo "Fix the issues above, then try committing again."
+  echo "To skip pre-commit checks (emergency only): HUSKY=0 git commit"
+  echo ""
+  exit 1
+fi
+
+echo "✔  All pre-commit checks passed."
+echo ""

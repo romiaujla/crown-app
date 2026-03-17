@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+coverage/
+.next/
+test-results/
+playwright-report/
+pnpm-lock.yaml
+*.min.js
+apps/api/src/generated/
