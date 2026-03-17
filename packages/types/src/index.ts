@@ -40,6 +40,16 @@ export enum ManagementSystemTypeCodeEnum {
 export const ManagementSystemTypeCodeSchema = z.enum(ManagementSystemTypeCodeEnum);
 export type ManagementSystemTypeCode = z.infer<typeof ManagementSystemTypeCodeSchema>;
 
+export const TENANT_SLUG_PATTERN = '^[a-z0-9]+(?:-[a-z0-9]+)*$';
+
+export const TenantSlugSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(48)
+  .regex(new RegExp(TENANT_SLUG_PATTERN), 'slug must be lowercase kebab-case');
+export type TenantSlug = z.infer<typeof TenantSlugSchema>;
+
 export const TenantDirectoryListFilterSchema = z
   .object({
     name: z.string().trim().min(1).max(120).optional(),
@@ -112,6 +122,21 @@ export type TenantDirectoryListResponse = {
   data: TenantDirectoryListData;
   meta: TenantDirectoryListMeta;
 };
+
+export const TenantSlugAvailabilityRequestSchema = z
+  .object({
+    slug: z.string().trim().min(1).max(48),
+  })
+  .strict();
+export type TenantSlugAvailabilityRequest = z.infer<typeof TenantSlugAvailabilityRequestSchema>;
+
+export const TenantSlugAvailabilityResponseSchema = z.object({
+  data: z.object({
+    slug: TenantSlugSchema,
+    isAvailable: z.boolean(),
+  }),
+});
+export type TenantSlugAvailabilityResponse = z.infer<typeof TenantSlugAvailabilityResponseSchema>;
 
 export const TenantCreateRoleOptionSchema = z.object({
   roleCode: RoleCodeSchema,

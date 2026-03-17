@@ -378,6 +378,36 @@ export const authDocsDocument = {
           meta: { $ref: '#/components/schemas/TenantDirectoryListMeta' },
         },
       },
+      TenantSlugAvailabilityRequest: {
+        type: 'object',
+        required: ['slug'],
+        properties: {
+          slug: {
+            type: 'string',
+            maxLength: 48,
+            description:
+              'Candidate tenant slug. The API trims and lowercases before validating availability.',
+          },
+        },
+      },
+      TenantSlugAvailabilityData: {
+        type: 'object',
+        required: ['slug', 'isAvailable'],
+        properties: {
+          slug: {
+            type: 'string',
+            pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+          },
+          isAvailable: { type: 'boolean' },
+        },
+      },
+      TenantSlugAvailabilityResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/TenantSlugAvailabilityData' },
+        },
+      },
       TenantCreateRoleOption: {
         type: 'object',
         required: ['roleCode', 'displayName', 'description', 'isDefault', 'isRequired'],
@@ -1270,6 +1300,49 @@ export const authDocsDocument = {
             'Missing bearer token',
           ),
           '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/slug-availability': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Check tenant slug availability',
+        description:
+          'Protected super-admin route used to check whether a candidate tenant slug is currently available. The API normalizes the slug before applying the existing provisioning validation and uniqueness rules.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantSlugAvailabilityRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant slug availability evaluated',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantSlugAvailabilityResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant slug availability payload',
+            'validation_error',
+            'Invalid tenant slug availability payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant directory requests',
+          ),
         },
       },
     },

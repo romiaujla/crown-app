@@ -10,6 +10,7 @@ describe('api docs openapi document', () => {
         '/api/v1/auth/me',
         '/api/v1/auth/logout',
         '/api/v1/platform/ping',
+        '/api/v1/platform/tenant/slug-availability',
         '/api/v1/platform/tenant/reference-data',
         '/api/v1/platform/tenants/search',
         '/api/v1/tenant/access',
@@ -23,6 +24,9 @@ describe('api docs openapi document', () => {
     expect(authDocsDocument.paths['/api/v1/platform/ping'].get.security).toEqual([
       { bearerAuth: [] },
     ]);
+    expect(
+      authDocsDocument.paths['/api/v1/platform/tenant/slug-availability'].post.security,
+    ).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths['/api/v1/platform/tenant/reference-data'].post.security).toEqual([
       { bearerAuth: [] },
     ]);
@@ -61,6 +65,17 @@ describe('api docs openapi document', () => {
 
     expect(referenceDataSchema).toEqual({
       $ref: '#/components/schemas/TenantCreateReferenceDataRequest',
+    });
+  });
+
+  it('documents the tenant slug availability request payload', () => {
+    const slugAvailabilitySchema =
+      authDocsDocument.paths['/api/v1/platform/tenant/slug-availability'].post.requestBody.content[
+        'application/json'
+      ].schema;
+
+    expect(slugAvailabilitySchema).toEqual({
+      $ref: '#/components/schemas/TenantSlugAvailabilityRequest',
     });
   });
 
