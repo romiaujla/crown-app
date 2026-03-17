@@ -48,7 +48,10 @@ export const Stepper = ({
   const totalSteps = steps.length;
 
   return (
-    <ol aria-label="Progress" className={cn('flex w-full items-start gap-0', className)}>
+    <ol
+      aria-label="Progress"
+      className={cn('mx-auto flex w-full max-w-3xl items-start gap-0', className)}
+    >
       {steps.map((step, index) => {
         const isCompleted = index < normalizedCurrentStep;
         const isCurrent = index === normalizedCurrentStep;
