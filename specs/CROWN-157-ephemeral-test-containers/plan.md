@@ -1,7 +1,7 @@
 # Implementation Plan: Ephemeral Test Database Containers
 
-**Jira Issue**: [CROWN-157](https://crown-crm.atlassian.net/browse/CROWN-157)  
-**Feature Branch**: `feat/CROWN-157-ephemeral-test-containers`  
+**Jira Issue**: [CROWN-157](https://crown-crm.atlassian.net/browse/CROWN-157)
+**Feature Branch**: `feat/CROWN-157-ephemeral-test-containers`
 **Last Updated**: 2026-03-16
 
 ## High-Level Strategy
@@ -28,7 +28,7 @@ To eliminate manual database setup, this plan implements automated ephemeral con
 ┌─────────────────────────┐
 │  Test Execution Start   │
 └────────┬────────────────┘
-         │ 
+         │
          ▼
 ┌─────────────────────────────────┐
 │ Initialize Container Provider    │ ← Loads Testcontainers
@@ -96,7 +96,7 @@ To eliminate manual database setup, this plan implements automated ephemeral con
    - Exports `startTestContainer()` and `stopTestContainer()`
    - Manages PostgreSQL container lifecycle
    - Provides connection details (host, port, database, credentials)
-   
+
 3. **Update `apps/api/vitest.config.ts`**: Setup hook
    - Register setup file in Vitest config
    - Configure `setupFiles` to trigger container startup
@@ -157,7 +157,7 @@ To eliminate manual database setup, this plan implements automated ephemeral con
 
 ### Phase 3 Changes
 
-1. **Enhanced `apps/api/test/db-container.ts`**: 
+1. **Enhanced `apps/api/test/db-container.ts`**:
    - Add cleanup error handling
    - Register process signal handlers (SIGTERM, SIGINT)
    - Implement robust resource cleanup
@@ -297,13 +297,13 @@ By phase completion, verify:
 
 1. **Docker Availability**: Testcontainers requires Docker; what about environments without it?
    - *Mitigation*: Clear documentation about Docker requirement; consider CI/CD-only setup if needed
-   
+
 2. **Performance**: Container startup overhead on M1 Macs or CI runners?
    - *Mitigation*: Target < 10 seconds total overhead; measure and optimize if needed
-   
+
 3. **Parallel Test Execution**: How does Testcontainers handle concurrent test runs?
    - *Mitigation*: Testcontainers auto-allocates unique ports; verify no conflicts in CI
-   
+
 4. **Debugging**: How do developers inspect the test database during execution?
    - *Mitigation*: Document connection details output during test setup; provide option to keep container running for debugging
 

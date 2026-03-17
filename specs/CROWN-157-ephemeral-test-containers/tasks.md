@@ -1,8 +1,8 @@
 # Task Breakdown: Ephemeral Test Database Containers
 
-**Jira Issue**: [CROWN-157](https://crown-crm.atlassian.net/browse/CROWN-157)  
-**Feature Branch**: `feat/CROWN-157-ephemeral-test-containers`  
-**Plan Reference**: [plan.md](plan.md)  
+**Jira Issue**: [CROWN-157](https://crown-crm.atlassian.net/browse/CROWN-157)
+**Feature Branch**: `feat/CROWN-157-ephemeral-test-containers`
+**Plan Reference**: [plan.md](plan.md)
 **Status**: Draft (Phase Breakdown)
 
 ---
