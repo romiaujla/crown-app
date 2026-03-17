@@ -1,8 +1,8 @@
 import { ManagementSystemTypeCodeEnum, RoleCodeEnum } from "@crown/types";
+import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 import { PlatformUserAccountStatus, TenantStatus } from "../../src/domain/status-enums.js";
-import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 import { ManagementSystemTypeAvailabilityStatusEnum } from "../../src/generated/prisma/enums.js";
-import { SEEDED_AUTH_PASSWORDS, DEFAULT_SEEDED_PASSWORD } from "../../src/auth/seeded-credentials.js";
+import { deriveTenantSchemaName } from "../../src/tenant/slug.js";
 
 export const LOCAL_SEED_TENANT = {
   name: "Acme Local Logistics",

@@ -19,13 +19,13 @@ export const ensureControlPlaneBaseline = async ({
 }: EnsureControlPlaneBaselineOptions): Promise<SeedControlPlaneBaseline> => {
   const [superAdminPasswordHash, tenantAdminPasswordHash, tenantUserPasswordHash,
     disabledUserPasswordHash, orphanUserPasswordHash, multiAdminPasswordHash] = await Promise.all([
-    hashPassword(LOCAL_SEED_USERS.superAdmin.password, LOCAL_SEED_USERS.superAdmin.username),
-    hashPassword(LOCAL_SEED_USERS.tenantAdmin.password, LOCAL_SEED_USERS.tenantAdmin.username),
-    hashPassword(LOCAL_SEED_USERS.tenantUser.password, LOCAL_SEED_USERS.tenantUser.username),
-    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.disabledUser.password, LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username),
-    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.password, LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username),
-    hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.password, LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username)
-  ]);
+      hashPassword(LOCAL_SEED_USERS.superAdmin.password, LOCAL_SEED_USERS.superAdmin.username),
+      hashPassword(LOCAL_SEED_USERS.tenantAdmin.password, LOCAL_SEED_USERS.tenantAdmin.username),
+      hashPassword(LOCAL_SEED_USERS.tenantUser.password, LOCAL_SEED_USERS.tenantUser.username),
+      hashPassword(LOCAL_SEED_EDGE_CASE_USERS.disabledUser.password, LOCAL_SEED_EDGE_CASE_USERS.disabledUser.username),
+      hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.password, LOCAL_SEED_EDGE_CASE_USERS.tenantUserOrphan.username),
+      hashPassword(LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.password, LOCAL_SEED_EDGE_CASE_USERS.tenantAdminMulti.username)
+    ]);
 
   const tenant = await prisma.tenant.upsert({
     where: {

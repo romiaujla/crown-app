@@ -1,8 +1,8 @@
 # Feature Specification: API — Migrate Auth Resolution And JWT Claims To Normalized Role Assignments
 
-**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`  
-**Created**: 2026-03-17  
-**Status**: Draft  
+**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`
+**Created**: 2026-03-17
+**Status**: Draft
 **Input**: Jira issue `CROWN-155` — "API | Migrate auth resolution and JWT claims to normalized role assignments"
 
 ## User Scenarios & Testing *(mandatory)*

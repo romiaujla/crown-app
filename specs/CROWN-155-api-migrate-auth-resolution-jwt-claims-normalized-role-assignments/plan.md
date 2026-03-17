@@ -1,8 +1,8 @@
 # Implementation Plan: API — Migrate Auth Resolution And JWT Claims To Normalized Role Assignments
 
-**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`  
-**Created**: 2026-03-17  
-**Status**: Draft  
+**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`
+**Created**: 2026-03-17
+**Status**: Draft
 **Spec**: [spec.md](spec.md)
 
 ## Plan Overview

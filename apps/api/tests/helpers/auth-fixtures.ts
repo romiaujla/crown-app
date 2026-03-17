@@ -1,6 +1,6 @@
 import { RoleEnum, type JwtClaims } from "../../src/auth/claims.js";
 import { AUTH_ACCESS_TOKEN_TTL_SECONDS } from "../../src/auth/default-auth-service.js";
-import { SEEDED_AUTH_PASSWORDS, DEFAULT_SEEDED_PASSWORD } from "../../src/auth/seeded-credentials.js";
+import { DEFAULT_SEEDED_PASSWORD, SEEDED_AUTH_PASSWORDS } from "../../src/auth/seeded-credentials.js";
 import { signAccessToken } from "../../src/auth/tokens.js";
 
 const futureExpiry = () => Math.floor(Date.now() / 1000) + AUTH_ACCESS_TOKEN_TTL_SECONDS;

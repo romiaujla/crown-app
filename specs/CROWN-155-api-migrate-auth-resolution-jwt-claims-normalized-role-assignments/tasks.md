@@ -1,17 +1,17 @@
 # Task Breakdown: API — Migrate Auth Resolution And JWT Claims To Normalized Role Assignments
 
-**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`  
-**Created**: 2026-03-17  
-**Status**: Draft  
-**Spec**: [spec.md](spec.md)  
+**Feature Branch**: `feat/CROWN-155-api-migrate-auth-resolution-jwt-claims-normalized-role-assignments`
+**Created**: 2026-03-17
+**Status**: Draft
+**Spec**: [spec.md](spec.md)
 **Plan**: [plan.md](plan.md)
 
 ## Tasks
 
 ### Task 1 — Add Active-Status Filters To Identity Lookup Query
 
-**Phase**: 1  
-**Files**: `apps/api/src/auth/identity.ts`  
+**Phase**: 1
+**Files**: `apps/api/src/auth/identity.ts`
 **Scope**:
 - Add `where: { assignmentStatus: "active" }` filter to `platformRoleAssignments` include in the Prisma query shape.
 - Add `where: { membershipStatus: "active" }` filter to `tenantMemberships` include.
@@ -24,8 +24,8 @@
 
 ### Task 2 — Create `prisma-auth-service.ts` With Prisma-Backed Login And ResolveCurrentUser
 
-**Phase**: 2  
-**Files**: `apps/api/src/auth/prisma-auth-service.ts` (new)  
+**Phase**: 2
+**Files**: `apps/api/src/auth/prisma-auth-service.ts` (new)
 **Scope**:
 - Implement `login(identifier, password)` using `findAuthIdentityByIdentifier(prisma, identifier)`, `verifyPassword`, and `resolveAuthenticatedRoleContext`.
 - Implement `resolveCurrentUser(claims)` by querying user by ID with the same active-filtered include shape, running role resolution, and validating claim consistency.
@@ -40,8 +40,8 @@
 
 ### Task 3 — Replace Default Auth Service Export With Prisma-Backed Implementation
 
-**Phase**: 2  
-**Files**: `apps/api/src/auth/default-auth-service.ts`  
+**Phase**: 2
+**Files**: `apps/api/src/auth/default-auth-service.ts`
 **Scope**:
 - Remove `directorySeed`, `DirectoryUser`, `DirectorySeedUser`, `createDirectoryClient`, `directoryPromise`, `DEFAULT_TENANT`.
 - Remove `AUTH_LOGIN_FIXTURES` and `DISABLED_AUTH_TEST_USER` exports.
@@ -54,8 +54,8 @@
 
 ### Task 4 — Relocate Test Login Fixtures To Test Helpers
 
-**Phase**: 3  
-**Files**: `apps/api/tests/helpers/auth-fixtures.ts`  
+**Phase**: 3
+**Files**: `apps/api/tests/helpers/auth-fixtures.ts`
 **Scope**:
 - Define `loginFixtures` inline with seeded persona credentials sourced from `seeded-credentials.ts`.
 - Remove imports of `AUTH_LOGIN_FIXTURES` and `DISABLED_AUTH_TEST_USER` from `default-auth-service.ts`.
@@ -67,8 +67,8 @@
 
 ### Task 5 — Add Login Integration Tests
 
-**Phase**: 4  
-**Files**: `apps/api/tests/integration/auth-login.spec.ts` (new)  
+**Phase**: 4
+**Files**: `apps/api/tests/integration/auth-login.spec.ts` (new)
 **Scope**:
 - Super admin login by email → validates 200, JWT claims, current-user context with `targetApp: "platform"`.
 - Super admin login by username → validates same claims.
@@ -85,8 +85,8 @@
 
 ### Task 6 — Add `/me` Integration Tests
 
-**Phase**: 4  
-**Files**: `apps/api/tests/integration/auth-me.spec.ts` (new)  
+**Phase**: 4
+**Files**: `apps/api/tests/integration/auth-me.spec.ts` (new)
 **Scope**:
 - Super admin `/me` → validates full `CurrentUserResponseSchema`.
 - Tenant admin `/me` → validates real tenant data in response.
@@ -100,8 +100,8 @@
 
 ### Task 7 — Final Validation And Commit
 
-**Phase**: 5  
-**Files**: (none — validation only)  
+**Phase**: 5
+**Files**: (none — validation only)
 **Scope**:
 - Run `pnpm --filter api typecheck`.
 - Run `pnpm --filter api test` (full suite).
