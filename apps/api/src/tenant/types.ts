@@ -25,9 +25,9 @@ export type ExecuteTenantMigrationsInput = {
 };
 
 export type ProvisionTenantInitialUser = {
-  firstName: string;
-  lastName: string;
+  displayName: string;
   email: string;
+  username: string;
   roleCode: string;
 };
 

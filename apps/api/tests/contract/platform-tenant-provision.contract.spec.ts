@@ -77,9 +77,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin', 'dispatcher'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'tenant_admin',
           },
         ],

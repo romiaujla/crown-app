@@ -60,9 +60,9 @@ vi.mock('pg', () => ({
 
 const defaultInitialUsers = [
   {
-    firstName: 'Alex',
-    lastName: 'Admin',
+    displayName: 'Alex Admin',
     email: 'alex.admin@example.com',
+    username: 'alex_admin',
     roleCode: 'tenant_admin',
   },
 ];
@@ -181,10 +181,13 @@ describe('tenant provisioning integration', () => {
       where: { email: 'alex.admin@example.com' },
       create: {
         email: 'alex.admin@example.com',
+        username: 'alex_admin',
         displayName: 'Alex Admin',
         accountStatus: 'active',
       },
-      update: {},
+      update: {
+        username: 'alex_admin',
+      },
     });
     expect(txTenantMembershipCreate).toHaveBeenCalledWith({
       data: {
@@ -238,15 +241,15 @@ describe('tenant provisioning integration', () => {
       selectedRoleCodes: ['tenant_admin', 'dispatcher'],
       initialUsers: [
         {
-          firstName: 'Alex',
-          lastName: 'Admin',
+          displayName: 'Alex Admin',
           email: 'alex@example.com',
+          username: 'alex_admin',
           roleCode: 'tenant_admin',
         },
         {
-          firstName: 'Bob',
-          lastName: 'Dispatcher',
+          displayName: 'Bob Dispatcher',
           email: 'bob@example.com',
+          username: 'bob_dispatcher',
           roleCode: 'dispatcher',
         },
       ],

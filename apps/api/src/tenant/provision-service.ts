@@ -153,16 +153,20 @@ export const provisionTenant = async (
     await prisma.$transaction(async (tx) => {
       for (const initialUser of input.initialUsers) {
         const normalizedEmail = initialUser.email.trim().toLowerCase();
-        const displayName = `${initialUser.firstName.trim()} ${initialUser.lastName.trim()}`;
+        const normalizedUsername = initialUser.username.trim().toLowerCase();
+        const displayName = initialUser.displayName.trim();
 
         const user = await tx.user.upsert({
           where: { email: normalizedEmail },
           create: {
             email: normalizedEmail,
+            username: normalizedUsername,
             displayName,
             accountStatus: 'active',
           },
-          update: {},
+          update: {
+            username: normalizedUsername,
+          },
         });
 
         const membership = await tx.tenantMembership.create({
