@@ -19,7 +19,7 @@ describe('platform tenant create reference data contract', () => {
             description: 'Transportation workflows',
             roleOptions: [
               {
-                roleCode: RoleCodeEnum.TENANT_ADMIN,
+                roleCode: RoleCodeEnum.ADMIN,
                 displayName: 'Admin',
                 description: 'Baseline administrator role.',
                 isDefault: true,

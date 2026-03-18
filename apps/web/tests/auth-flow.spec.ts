@@ -171,8 +171,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Fleet and route management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.TENANT_ADMIN,
-            displayName: 'Tenant Admin',
+            roleCode: RoleCodeEnum.ADMIN,
+            displayName: 'Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -200,8 +200,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Vehicle sales management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.TENANT_ADMIN,
-            displayName: 'Tenant Admin',
+            roleCode: RoleCodeEnum.ADMIN,
+            displayName: 'Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -215,8 +215,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Stock and warehouse management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.TENANT_ADMIN,
-            displayName: 'Tenant Admin',
+            roleCode: RoleCodeEnum.ADMIN,
+            displayName: 'Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -639,7 +639,7 @@ test('tenant directory action links route to stable detail, add, and edit entry 
   await expect(page.getByRole('heading', { name: 'Edit Tenant', level: 3 })).toBeVisible();
 });
 
-test('tenant create shell advances through placeholder steps and protects entered progress on cancel', async ({
+test('tenant create shell advances through steps and protects entered progress on cancel', async ({
   page,
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
@@ -668,7 +668,9 @@ test('tenant create shell advances through placeholder steps and protects entere
   await page.getByRole('button', { name: 'Back' }).click();
   await expect(page.getByRole('heading', { name: 'Role selection' })).toBeVisible();
 
-  await page.getByLabel('Role selection placeholder notes').fill('Northwind expansion workspace');
+  // Enter data in step 1 to trigger unsaved-changes protection
+  await page.getByRole('button', { name: 'Step 1: Tenant info' }).click();
+  await page.getByLabel('Tenant name').fill('Northwind expansion workspace');
 
   page.once('dialog', async (dialog) => {
     expect(dialog.message()).toContain('Discard the tenant setup progress');
@@ -683,6 +685,70 @@ test('tenant create shell advances through placeholder steps and protects entere
   });
   await page.getByRole('button', { name: 'Cancel' }).click();
   await expect(page).toHaveURL(/\/platform\/tenants$/);
+});
+
+test('tenant create step 2 shows role options for selected management system type', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  // Wait for reference data to load, then select Transportation
+  const refDataResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
+  );
+  await refDataResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  // Navigate to step 2
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await expect(page.getByText('Step 2 of 4')).toBeVisible();
+  await expect(page.getByTestId('role-selection-list')).toBeVisible();
+
+  // Verify role cards render for Transportation defaults
+  await expect(page.getByTestId('role-option-admin')).toBeVisible();
+  await expect(page.getByTestId('role-option-dispatcher')).toBeVisible();
+  await expect(page.getByTestId('role-option-driver')).toBeVisible();
+
+  // Verify admin role is checked and locked
+  const adminCheckbox = page.getByRole('checkbox', { name: /Admin.*required/i });
+  await expect(adminCheckbox).toBeChecked();
+  await expect(adminCheckbox).toBeDisabled();
+
+  // Verify optional roles start checked (isDefault = true)
+  const dispatcherCheckbox = page.getByRole('checkbox', { name: 'Dispatcher' });
+  await expect(dispatcherCheckbox).toBeChecked();
+  await expect(dispatcherCheckbox).toBeEnabled();
+
+  // Toggle dispatcher off
+  await dispatcherCheckbox.click();
+  await expect(dispatcherCheckbox).not.toBeChecked();
+
+  // Navigate back to step 1 and return — toggle state should persist
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Dispatcher' })).not.toBeChecked();
+
+  // Re-select dispatcher
+  await page.getByRole('checkbox', { name: 'Dispatcher' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Dispatcher' })).toBeChecked();
+});
+
+test('tenant create step 2 shows empty state when no management system type selected', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  // Navigate to step 2 without selecting a type
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await expect(page.getByTestId('role-selection-empty-state')).toBeVisible();
+  await expect(page.getByText('No roles available')).toBeVisible();
 });
 
 test('tenant create shell allows clean cancel when no step data has been entered', async ({
