@@ -1,14 +1,15 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMemo, useRef, useState } from 'react';
 
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { useAuth } from './auth-provider';
 import { consumeValidatedReturnPath, toRecommendedPath } from '../../lib/routing/auth-routing';
+import { useAuth } from './auth-provider';
 
 type LoginFormProps = {
   reason: string | null;
@@ -73,12 +74,9 @@ export const LoginForm = ({ reason }: LoginFormProps) => {
   return (
     <form className="space-y-5" onSubmit={handleSubmit} noValidate>
       {bannerMessage ? (
-        <div
-          className="form-banner rounded-lg border border-destructive/25 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
-          {bannerMessage}
-        </div>
+        <Alert className="form-banner" severity="error">
+          <AlertDescription>{bannerMessage}</AlertDescription>
+        </Alert>
       ) : null}
 
       <div className="space-y-2">

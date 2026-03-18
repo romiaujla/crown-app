@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
 
@@ -90,6 +91,10 @@ export const TenantCreateShell = () => {
     Partial<Record<TenantCreateStepKeyEnum, string>>
   >({});
 
+  // Confirm-dialog state
+  const [exitDialogOpen, setExitDialogOpen] = useState(false);
+  const [pendingSystemTypeValue, setPendingSystemTypeValue] = useState<string | null>(null);
+
   // Reference data for management-system type select
   const [referenceData, setReferenceData] = useState<TenantCreateReferenceData | null>(null);
   const [referenceDataLoading, setReferenceDataLoading] = useState(false);
@@ -167,12 +172,8 @@ export const TenantCreateShell = () => {
 
   const attemptExit = () => {
     if (hasUnsavedChanges) {
-      const shouldLeave = window.confirm(
-        'Discard the tenant setup progress you entered on this page?',
-      );
-      if (!shouldLeave) {
-        return;
-      }
+      setExitDialogOpen(true);
+      return;
     }
 
     router.push('/platform/tenants');
@@ -182,15 +183,8 @@ export const TenantCreateShell = () => {
     setTenantInfoData((prev) => ({ ...prev, ...update }));
   }, []);
 
-  const handleConfirmSystemTypeReset = useCallback((): boolean => {
-    const confirmed = window.confirm(
-      'Changing the management system type may reset role and configuration selections made in later steps. Continue?',
-    );
-    if (confirmed) {
-      setSelectedRoleCodes(new Set());
-      setRoleCodesInitialized(false);
-    }
-    return confirmed;
+  const handleConfirmSystemTypeReset = useCallback((pendingValue: string): void => {
+    setPendingSystemTypeValue(pendingValue);
   }, []);
 
   // Step-level validity — gates Next button per step
@@ -368,6 +362,43 @@ export const TenantCreateShell = () => {
           </Button>
         </div>
       </div>
+
+      {/* Exit confirmation dialog */}
+      <ConfirmDialog
+        cancelLabel="Stay"
+        confirmLabel="Discard"
+        description="Discard the tenant setup progress you entered on this page?"
+        onCancel={() => setExitDialogOpen(false)}
+        onConfirm={() => {
+          setExitDialogOpen(false);
+          router.push('/platform/tenants');
+        }}
+        open={exitDialogOpen}
+        title="Discard progress"
+        variant="destructive"
+      />
+
+      {/* System-type reset confirmation dialog */}
+      <ConfirmDialog
+        confirmLabel="Continue"
+        description="Changing the management system type may reset role and configuration selections made in later steps. Continue?"
+        onCancel={() => setPendingSystemTypeValue(null)}
+        onConfirm={() => {
+          const pendingValue = pendingSystemTypeValue;
+          setPendingSystemTypeValue(null);
+          setSelectedRoleCodes(new Set());
+          setRoleCodesInitialized(false);
+          if (pendingValue) {
+            setTenantInfoData((prev) => ({
+              ...prev,
+              managementSystemTypeCode:
+                pendingValue as TenantInfoStepData['managementSystemTypeCode'],
+            }));
+          }
+        }}
+        open={pendingSystemTypeValue !== null}
+        title="Change management system type"
+      />
     </div>
   );
 };
