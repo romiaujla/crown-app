@@ -15,12 +15,14 @@ import type {
   TenantCreateReferenceData,
   TenantCreateRoleOption,
 } from '@crown/types';
-import { RoleCodeEnum, TenantCreateOnboardingInitialUserSchema } from '@crown/types';
+import { RoleCodeEnum } from '@crown/types';
 
-import { getTenantCreateReferenceData } from '@/lib/auth/api';
+import { checkTenantUserEmailAvailability, getTenantCreateReferenceData } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 
 import {
+  type DraftField,
+  type TenantCreateAssignmentFieldErrorsByRowId,
   TenantCreateStepUserAssignment,
   type TenantCreateAssignmentDraftsByRole,
   type TenantCreateInitialUserDraft,
@@ -82,22 +84,44 @@ const INITIAL_TENANT_INFO: TenantInfoStepData = {
 };
 
 const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_PATTERN = /^[a-z0-9_]+$/;
 
 const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
   tenantCreateSteps.findIndex((step) => step.key === stepKey);
 
 const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
 
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
+
+const normalizeUsernameInput = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9_]/g, '');
+
+const autoGenerateUsername = (displayName: string) =>
+  displayName
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+
 const createAssignmentDraftRow = (roleCode: RoleCode): TenantCreateInitialUserDraft => ({
   rowId: createDraftRowId(),
   displayName: '',
   email: '',
   username: '',
+  usernameManuallyEdited: false,
   roleCode,
 });
 
 const hasAnyAssignmentValue = (draft: TenantCreateInitialUserDraft) =>
   Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
+
+const isDraftEmpty = (draft: TenantCreateInitialUserDraft) => !hasAnyAssignmentValue(draft);
 
 const toOnboardingInitialUserInput = ({
   displayName,
@@ -110,6 +134,14 @@ const toOnboardingInitialUserInput = ({
   roleCode,
   username,
 });
+
+type EmailAvailabilityState = {
+  isAvailable: boolean;
+  status: 'available' | 'checking' | 'unavailable';
+};
+
+const getRoleLabel = (role: TenantCreateRoleOption) =>
+  ADMIN_ROLE_CODES.has(role.roleCode) ? 'Tenant Admins' : role.displayName;
 
 const getSelectedRoleSections = (
   roleOptions: TenantCreateRoleOption[],
@@ -128,74 +160,263 @@ const getSelectedRoleSections = (
       return left.displayName.localeCompare(right.displayName);
     });
 
-const getDuplicateEmailRowIds = (assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole) => {
-  const rowIds = new Set<string>();
-  const emailRowsByValue = new Map<string, string[]>();
+const getAssignmentDraftRows = (assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole) =>
+  Object.values(assignmentDraftsByRole).flatMap((draftRows) => draftRows ?? []);
 
-  Object.values(assignmentDraftsByRole).forEach((draftRows) => {
-    draftRows?.forEach((draft) => {
-      const normalizedEmail = draft.email.trim().toLowerCase();
-      if (!normalizedEmail) {
-        return;
-      }
+const setRowFieldError = (
+  fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId,
+  rowId: string,
+  field: DraftField,
+  message: string,
+) => {
+  const currentErrors = fieldErrorsByRowId[rowId] ?? {};
+  if (currentErrors[field]) {
+    return;
+  }
 
-      const existingRowIds = emailRowsByValue.get(normalizedEmail) ?? [];
-      existingRowIds.push(draft.rowId);
-      emailRowsByValue.set(normalizedEmail, existingRowIds);
-    });
-  });
+  fieldErrorsByRowId[rowId] = {
+    ...currentErrors,
+    [field]: message,
+  };
+};
 
-  emailRowsByValue.forEach((duplicateRowIds) => {
-    if (duplicateRowIds.length > 1) {
-      duplicateRowIds.forEach((rowId) => rowIds.add(rowId));
+const getUserAssignmentValidationState = (
+  roleSections: TenantCreateRoleOption[],
+  assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole,
+  emailAvailabilityByEmail: Record<string, EmailAvailabilityState>,
+) => {
+  const fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId = {};
+  const roleByCode = new Map(roleSections.map((role) => [role.roleCode, role]));
+  const optionalWarningRoleCodes = new Set<RoleCode>();
+  const requiredErrorRoleCodes = new Set<RoleCode>();
+  const draftRows = getAssignmentDraftRows(assignmentDraftsByRole);
+
+  for (const roleSection of roleSections) {
+    const draftRowsForRole = assignmentDraftsByRole[roleSection.roleCode] ?? [];
+    const hasAnyPopulatedRow = draftRowsForRole.some((draft) => hasAnyAssignmentValue(draft));
+
+    if (
+      !roleSection.isRequired &&
+      !ADMIN_ROLE_CODES.has(roleSection.roleCode) &&
+      !hasAnyPopulatedRow
+    ) {
+      optionalWarningRoleCodes.add(roleSection.roleCode);
+    }
+  }
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const trimmedDisplayName = draft.displayName.trim();
+    const normalizedEmail = normalizeEmail(draft.email);
+    const trimmedUsername = draft.username.trim();
+
+    if (!trimmedDisplayName) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'displayName', 'Display name is required');
+    } else if (trimmedDisplayName.length < 5 || trimmedDisplayName.length > 128) {
+      setRowFieldError(
+        fieldErrorsByRowId,
+        draft.rowId,
+        'displayName',
+        'Display name must be between 5 and 128 characters',
+      );
+    }
+
+    if (!trimmedUsername) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'username', 'Username is required');
+    } else if (
+      trimmedUsername.length < 5 ||
+      trimmedUsername.length > 32 ||
+      !USERNAME_PATTERN.test(trimmedUsername)
+    ) {
+      setRowFieldError(
+        fieldErrorsByRowId,
+        draft.rowId,
+        'username',
+        'Username must be between 5 and 32 characters',
+      );
+    }
+
+    if (!normalizedEmail) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'email', 'Email is required');
+    } else if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'email', 'Enter a valid email address');
     }
   });
 
-  return rowIds;
+  const usernameRowsByValue = new Map<string, string[]>();
+  const emailRowsByValue = new Map<string, TenantCreateInitialUserDraft[]>();
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const normalizedUsername = draft.username.trim();
+    if (normalizedUsername && !fieldErrorsByRowId[draft.rowId]?.username) {
+      const rowIds = usernameRowsByValue.get(normalizedUsername) ?? [];
+      rowIds.push(draft.rowId);
+      usernameRowsByValue.set(normalizedUsername, rowIds);
+    }
+
+    const normalizedEmail = normalizeEmail(draft.email);
+    if (normalizedEmail && !fieldErrorsByRowId[draft.rowId]?.email) {
+      const rows = emailRowsByValue.get(normalizedEmail) ?? [];
+      rows.push(draft);
+      emailRowsByValue.set(normalizedEmail, rows);
+    }
+  });
+
+  usernameRowsByValue.forEach((rowIds) => {
+    if (rowIds.length < 2) {
+      return;
+    }
+
+    rowIds.forEach((rowId) => {
+      setRowFieldError(fieldErrorsByRowId, rowId, 'username', 'Username already exists');
+    });
+  });
+
+  emailRowsByValue.forEach((rows, normalizedEmail) => {
+    if (rows.length > 1) {
+      const hasAdminRow = rows.some((row) => ADMIN_ROLE_CODES.has(row.roleCode));
+      const hasNonAdminRow = rows.some((row) => !ADMIN_ROLE_CODES.has(row.roleCode));
+      const roleCodes = new Set(rows.map((row) => row.roleCode));
+
+      if (hasAdminRow && hasNonAdminRow) {
+        rows.forEach((row) => {
+          setRowFieldError(
+            fieldErrorsByRowId,
+            row.rowId,
+            'email',
+            'Admins cannot be assigned to roles',
+          );
+        });
+        return;
+      }
+
+      if (roleCodes.size > 1) {
+        rows.forEach((row) => {
+          const conflictingRow = rows.find((candidate) => candidate.roleCode !== row.roleCode);
+          const conflictingRole = conflictingRow
+            ? roleByCode.get(conflictingRow.roleCode)
+            : undefined;
+
+          setRowFieldError(
+            fieldErrorsByRowId,
+            row.rowId,
+            'email',
+            conflictingRole
+              ? `User already assigned to ${getRoleLabel(conflictingRole)}`
+              : 'This email already exists in the system',
+          );
+        });
+        return;
+      }
+
+      rows.forEach((row) => {
+        setRowFieldError(
+          fieldErrorsByRowId,
+          row.rowId,
+          'email',
+          'This email already exists in the system',
+        );
+      });
+      return;
+    }
+
+    const availability = emailAvailabilityByEmail[normalizedEmail];
+    if (availability?.status === 'unavailable') {
+      const row = rows[0];
+      if (row) {
+        setRowFieldError(
+          fieldErrorsByRowId,
+          row.rowId,
+          'email',
+          'This email already exists in the system',
+        );
+      }
+    }
+  });
+
+  let hasValidAdmin = false;
+  let hasPendingEmailAvailabilityChecks = false;
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const normalizedEmail = normalizeEmail(draft.email);
+    const emailAvailability = normalizedEmail
+      ? emailAvailabilityByEmail[normalizedEmail]
+      : undefined;
+    const rowErrors = fieldErrorsByRowId[draft.rowId];
+    const rowHasErrors = Boolean(rowErrors && Object.keys(rowErrors).length > 0);
+
+    if (
+      normalizedEmail &&
+      !rowErrors?.email &&
+      (!emailAvailability || emailAvailability.status === 'checking')
+    ) {
+      hasPendingEmailAvailabilityChecks = true;
+    }
+
+    if (ADMIN_ROLE_CODES.has(draft.roleCode) && !rowHasErrors) {
+      hasValidAdmin = true;
+    }
+  });
+
+  for (const roleSection of roleSections) {
+    if (roleSection.isRequired || ADMIN_ROLE_CODES.has(roleSection.roleCode)) {
+      const draftRowsForRole = assignmentDraftsByRole[roleSection.roleCode] ?? [];
+      const hasValidRow = draftRowsForRole.some((draft) => {
+        if (isDraftEmpty(draft)) {
+          return false;
+        }
+
+        const rowErrors = fieldErrorsByRowId[draft.rowId];
+        return !rowErrors || Object.keys(rowErrors).length === 0;
+      });
+
+      if (!hasValidRow) {
+        requiredErrorRoleCodes.add(roleSection.roleCode);
+      }
+    }
+  }
+
+  const hasFieldErrors = Object.keys(fieldErrorsByRowId).length > 0;
+  const hasBlockingIssues = !hasValidAdmin || hasFieldErrors || hasPendingEmailAvailabilityChecks;
+
+  return {
+    fieldErrorsByRowId,
+    globalErrorMessage: !hasValidAdmin
+      ? 'At least one tenant admin is required'
+      : hasFieldErrors || hasPendingEmailAvailabilityChecks
+        ? 'Resolve the highlighted user assignment issues'
+        : undefined,
+    hasBlockingIssues,
+    optionalWarningRoleCodes,
+    requiredErrorRoleCodes,
+  };
 };
 
 const getUserAssignmentStepValidity = (
   roleSections: TenantCreateRoleOption[],
   assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole,
+  emailAvailabilityByEmail: Record<string, EmailAvailabilityState>,
 ) => {
   if (roleSections.length === 0) {
     return false;
   }
 
-  const duplicateEmailRowIds = getDuplicateEmailRowIds(assignmentDraftsByRole);
-  let hasRequiredAdmin = false;
-
-  for (const roleSection of roleSections) {
-    const draftRows = assignmentDraftsByRole[roleSection.roleCode] ?? [];
-    const completedRows = draftRows.filter(
-      (draft) =>
-        TenantCreateOnboardingInitialUserSchema.safeParse(toOnboardingInitialUserInput(draft))
-          .success,
-    );
-    const hasInvalidRows = draftRows.some((draft) => {
-      if (!hasAnyAssignmentValue(draft)) {
-        return false;
-      }
-
-      return (
-        !TenantCreateOnboardingInitialUserSchema.safeParse(toOnboardingInitialUserInput(draft))
-          .success || duplicateEmailRowIds.has(draft.rowId)
-      );
-    });
-
-    if (hasInvalidRows) {
-      return false;
-    }
-
-    if (
-      (roleSection.isRequired || ADMIN_ROLE_CODES.has(roleSection.roleCode)) &&
-      completedRows.length > 0
-    ) {
-      hasRequiredAdmin = true;
-    }
-  }
-
-  return hasRequiredAdmin;
+  return !getUserAssignmentValidationState(
+    roleSections,
+    assignmentDraftsByRole,
+    emailAvailabilityByEmail,
+  ).hasBlockingIssues;
 };
 
 export const TenantCreateShell = () => {
@@ -217,6 +438,9 @@ export const TenantCreateShell = () => {
   const [pendingSystemTypeValue, setPendingSystemTypeValue] = useState<string | null>(null);
   const [referenceData, setReferenceData] = useState<TenantCreateReferenceData | null>(null);
   const [referenceDataLoading, setReferenceDataLoading] = useState(false);
+  const [emailAvailabilityByEmail, setEmailAvailabilityByEmail] = useState<
+    Record<string, EmailAvailabilityState>
+  >({});
 
   const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
   const [showStepErrors, setShowStepErrors] = useState(false);
@@ -255,7 +479,11 @@ export const TenantCreateShell = () => {
     )?.roleOptions ?? [];
 
   const selectedRoleSections = getSelectedRoleSections(currentRoleOptions, selectedRoleCodes);
-  const duplicateEmailRowIds = getDuplicateEmailRowIds(assignmentDraftsByRole);
+  const userAssignmentValidationState = getUserAssignmentValidationState(
+    selectedRoleSections,
+    assignmentDraftsByRole,
+    emailAvailabilityByEmail,
+  );
 
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
   const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
@@ -264,6 +492,7 @@ export const TenantCreateShell = () => {
   const isUserAssignmentValid = getUserAssignmentStepValidity(
     selectedRoleSections,
     assignmentDraftsByRole,
+    emailAvailabilityByEmail,
   );
   const isCurrentStepValid = isTenantInfoStep
     ? isTenantInfoValid
@@ -356,6 +585,68 @@ export const TenantCreateShell = () => {
     });
   }, [selectedRoleSections]);
 
+  useEffect(() => {
+    const accessToken = getStoredAccessToken();
+    if (!accessToken) {
+      return;
+    }
+
+    const normalizedEmails = Array.from(
+      new Set(
+        getAssignmentDraftRows(assignmentDraftsByRole)
+          .map((draft) => normalizeEmail(draft.email))
+          .filter((email) => email.length > 0 && EMAIL_PATTERN.test(email)),
+      ),
+    );
+    const emailsToCheck = normalizedEmails.filter((email) => !emailAvailabilityByEmail[email]);
+
+    if (emailsToCheck.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+
+    emailsToCheck.forEach((email) => {
+      setEmailAvailabilityByEmail((currentValue) => ({
+        ...currentValue,
+        [email]: {
+          isAvailable: true,
+          status: 'checking',
+        },
+      }));
+
+      checkTenantUserEmailAvailability(accessToken, email)
+        .then((response) => {
+          if (cancelled) {
+            return;
+          }
+
+          setEmailAvailabilityByEmail((currentValue) => ({
+            ...currentValue,
+            [email]: {
+              isAvailable: response.data.isAvailable,
+              status: response.data.isAvailable ? 'available' : 'unavailable',
+            },
+          }));
+        })
+        .catch(() => {
+          if (cancelled) {
+            return;
+          }
+
+          setEmailAvailabilityByEmail((currentValue) => {
+            const nextValue = { ...currentValue };
+            delete nextValue[email];
+            return nextValue;
+          });
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [assignmentDraftsByRole]);
+
   const attemptExit = () => {
     if (hasUnsavedChanges) {
       setExitDialogOpen(true);
@@ -429,16 +720,30 @@ export const TenantCreateShell = () => {
   }, []);
 
   const handleUpdateAssignmentRow = useCallback(
-    (
-      roleCode: RoleCode,
-      rowId: string,
-      field: keyof Pick<TenantCreateOnboardingInitialUser, 'displayName' | 'email' | 'username'>,
-      value: string,
-    ) => {
+    (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => {
       setAssignmentDraftsByRole((currentDraftsByRole) => ({
         ...currentDraftsByRole,
         [roleCode]: (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
-          draftRow.rowId === rowId ? { ...draftRow, [field]: value } : draftRow,
+          draftRow.rowId === rowId
+            ? field === 'username'
+              ? {
+                  ...draftRow,
+                  username: normalizeUsernameInput(value),
+                  usernameManuallyEdited: true,
+                }
+              : field === 'displayName'
+                ? {
+                    ...draftRow,
+                    displayName: value,
+                    username: draftRow.usernameManuallyEdited
+                      ? draftRow.username
+                      : autoGenerateUsername(value),
+                  }
+                : {
+                    ...draftRow,
+                    email: value,
+                  }
+            : draftRow,
         ),
       }));
     },
@@ -490,11 +795,16 @@ export const TenantCreateShell = () => {
             ) : isUserAssignmentStep ? (
               <TenantCreateStepUserAssignment
                 assignmentDraftsByRole={assignmentDraftsByRole}
-                duplicateEmailRowIds={duplicateEmailRowIds}
+                fieldErrorsByRowId={userAssignmentValidationState.fieldErrorsByRowId}
+                globalErrorMessage={userAssignmentValidationState.globalErrorMessage}
                 onAddRow={handleAddAssignmentRow}
                 onRemoveRow={handleRemoveAssignmentRow}
                 onUpdateRow={handleUpdateAssignmentRow}
                 roleSections={selectedRoleSections}
+                roleCodesWithOptionalWarnings={
+                  userAssignmentValidationState.optionalWarningRoleCodes
+                }
+                roleCodesWithRequiredErrors={userAssignmentValidationState.requiredErrorRoleCodes}
                 showErrors={showStepErrors}
               />
             ) : (
@@ -608,6 +918,7 @@ export const TenantCreateShell = () => {
           setSelectedRoleCodes(new Set());
           setRoleCodesInitialized(false);
           setAssignmentDraftsByRole({});
+          setEmailAvailabilityByEmail({});
 
           if (nextSystemTypeValue) {
             setTenantInfoData((currentValue) => ({

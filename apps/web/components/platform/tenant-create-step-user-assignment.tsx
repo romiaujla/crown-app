@@ -16,34 +16,40 @@ import type {
 } from '@crown/types';
 import { RoleCodeEnum } from '@crown/types';
 
-type DraftField = keyof Pick<
+export type DraftField = keyof Pick<
   TenantCreateOnboardingInitialUser,
   'displayName' | 'email' | 'username'
 >;
 
 export type TenantCreateInitialUserDraft = TenantCreateOnboardingInitialUser & {
   rowId: string;
+  usernameManuallyEdited: boolean;
 };
 
 export type TenantCreateAssignmentDraftsByRole = Partial<
   Record<RoleCode, TenantCreateInitialUserDraft[]>
 >;
 
+export type TenantCreateAssignmentFieldErrors = Partial<Record<DraftField, string>>;
+export type TenantCreateAssignmentFieldErrorsByRowId = Record<
+  string,
+  TenantCreateAssignmentFieldErrors
+>;
+
 type TenantCreateStepUserAssignmentProps = {
   assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole;
-  duplicateEmailRowIds: ReadonlySet<string>;
+  fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId;
+  globalErrorMessage?: string;
   onAddRow: (roleCode: RoleCode) => void;
   onRemoveRow: (roleCode: RoleCode, rowId: string) => void;
   onUpdateRow: (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => void;
   roleSections: TenantCreateRoleOption[];
+  roleCodesWithOptionalWarnings: ReadonlySet<RoleCode>;
+  roleCodesWithRequiredErrors: ReadonlySet<RoleCode>;
   showErrors: boolean;
 };
 
 const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const hasAnyDraftValue = (draft: TenantCreateInitialUserDraft) =>
-  Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
 
 const isAdminRole = (roleCode: RoleCode) => ADMIN_ROLE_CODES.has(roleCode);
 
@@ -55,47 +61,16 @@ const getSectionDescription = (role: TenantCreateRoleOption) =>
     ? 'At least one tenant admin is required before this flow can continue.'
     : `Assign new ${role.displayName.toLowerCase()} users now or leave this role unstaffed for v1.`;
 
-const getFieldErrors = (
-  draft: TenantCreateInitialUserDraft,
-  duplicateEmailRowIds: ReadonlySet<string>,
-  showErrors: boolean,
-) => {
-  if (!showErrors && !hasAnyDraftValue(draft)) {
-    return {};
-  }
-
-  const trimmedDisplayName = draft.displayName.trim();
-  const trimmedUsername = draft.username.trim();
-  const trimmedEmail = draft.email.trim();
-
-  return {
-    displayName:
-      !trimmedDisplayName && (showErrors || trimmedUsername || trimmedEmail)
-        ? 'Display name is required.'
-        : undefined,
-    username:
-      !trimmedUsername && (showErrors || trimmedDisplayName || trimmedEmail)
-        ? 'Username is required.'
-        : undefined,
-    email: !trimmedEmail
-      ? showErrors || trimmedDisplayName || trimmedUsername
-        ? 'Email is required.'
-        : undefined
-      : !EMAIL_PATTERN.test(trimmedEmail)
-        ? 'Enter a valid email address.'
-        : duplicateEmailRowIds.has(draft.rowId)
-          ? 'This email is already used in another assignment row.'
-          : undefined,
-  };
-};
-
 export const TenantCreateStepUserAssignment = ({
   assignmentDraftsByRole,
-  duplicateEmailRowIds,
+  fieldErrorsByRowId,
+  globalErrorMessage,
   onAddRow,
   onRemoveRow,
   onUpdateRow,
   roleSections,
+  roleCodesWithOptionalWarnings,
+  roleCodesWithRequiredErrors,
   showErrors,
 }: TenantCreateStepUserAssignmentProps) => {
   if (roleSections.length === 0) {
@@ -116,23 +91,28 @@ export const TenantCreateStepUserAssignment = ({
 
   return (
     <div className="space-y-4" data-testid="user-assignment-step">
+      {showErrors && globalErrorMessage ? (
+        <Alert severity="error">
+          <AlertTriangle aria-hidden="true" className="h-4 w-4" />
+          <AlertTitle>{globalErrorMessage}</AlertTitle>
+          <AlertDescription>Resolve the highlighted issues before continuing.</AlertDescription>
+        </Alert>
+      ) : null}
+
       {roleSections.map((role) => {
         const sectionRows = assignmentDraftsByRole[role.roleCode] ?? [];
-        const hasCompletedRows = sectionRows.some((draft) => {
-          const errors = getFieldErrors(draft, duplicateEmailRowIds, true);
-          return (
-            hasAnyDraftValue(draft) && !errors.displayName && !errors.username && !errors.email
-          );
-        });
         const isRequiredSection = role.isRequired || isAdminRole(role.roleCode);
-        const shouldShowRequiredError = isRequiredSection && showErrors && !hasCompletedRows;
+        const shouldShowRequiredError = roleCodesWithRequiredErrors.has(role.roleCode);
+        const shouldShowOptionalWarning = roleCodesWithOptionalWarnings.has(role.roleCode);
 
         return (
           <Card
             className={
-              isRequiredSection
-                ? 'rounded-3xl border-primary/20 bg-primary/5 shadow-sm'
-                : 'rounded-3xl border-stone-200 bg-white shadow-sm'
+              shouldShowRequiredError
+                ? 'rounded-3xl border-destructive/30 bg-destructive/5 shadow-sm'
+                : isRequiredSection
+                  ? 'rounded-3xl border-primary/20 bg-primary/5 shadow-sm'
+                  : 'rounded-3xl border-stone-200 bg-white shadow-sm'
             }
             data-testid={`user-assignment-section-${role.roleCode}`}
             key={role.roleCode}
@@ -150,16 +130,16 @@ export const TenantCreateStepUserAssignment = ({
 
               {shouldShowRequiredError ? (
                 <Alert severity="error">
-                  <AlertTitle>Tenant admin required</AlertTitle>
+                  <AlertTitle>At least one tenant admin is required</AlertTitle>
                   <AlertDescription>
-                    Add at least one valid tenant-admin user before continuing.
+                    Add at least one valid tenant admin before continuing.
                   </AlertDescription>
                 </Alert>
               ) : null}
 
-              {!isRequiredSection && !hasCompletedRows ? (
+              {!isRequiredSection && shouldShowOptionalWarning ? (
                 <Alert severity="warning">
-                  <AlertTitle>No users assigned yet</AlertTitle>
+                  <AlertTitle>No users assigned to this role</AlertTitle>
                   <AlertDescription>
                     This role can stay unstaffed in v1, but the tenant will start without an
                     assigned {role.displayName.toLowerCase()} user.
@@ -172,7 +152,7 @@ export const TenantCreateStepUserAssignment = ({
               {sectionRows.length > 0 ? (
                 <div className="space-y-3">
                   {sectionRows.map((draft, rowIndex) => {
-                    const fieldErrors = getFieldErrors(draft, duplicateEmailRowIds, showErrors);
+                    const fieldErrors = fieldErrorsByRowId[draft.rowId] ?? {};
                     const rowPrefix = `${role.roleCode}-${draft.rowId}`;
 
                     return (
