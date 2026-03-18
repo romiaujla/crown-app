@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
 
@@ -182,11 +181,21 @@ export const TenantCreateShell = () => {
     );
   }, []);
 
+  // Step-level validity — gates Next button per step
+  const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
+  const [showStepErrors, setShowStepErrors] = useState(false);
+  const handleTenantInfoValidityChange = useCallback((isValid: boolean) => {
+    setIsTenantInfoValid(isValid);
+    if (isValid) setShowStepErrors(false);
+  }, []);
+
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
+  const isCurrentStepValid = isTenantInfoStep ? isTenantInfoValid : true;
 
   return (
-    <div className="mx-auto max-w-[660px] space-y-6">
-      <div data-testid="tenant-create-stepper">
+    <div className="flex min-h-0 flex-1 flex-col">
+      {/* Stepper — centered, capped width */}
+      <div className="mx-auto w-full max-w-[660px] pb-6" data-testid="tenant-create-stepper">
         <Stepper
           clickable
           currentStep={currentStepIndex}
@@ -196,101 +205,115 @@ export const TenantCreateShell = () => {
           steps={stepperSteps}
         />
       </div>
-      <Card className="bg-white border border-stone-200/60 shadow-md shadow-stone-200/40">
-        <CardHeader className="space-y-1 pb-4">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Step {currentStepIndex + 1} of {tenantCreateSteps.length}
-          </CardDescription>
-          <CardTitle className="text-xl text-stone-950">{currentStep.title}</CardTitle>
-          <CardDescription className="text-sm leading-6 text-stone-600">
-            {currentStep.description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-          {isTenantInfoStep ? (
-            <TenantCreateStepTenantInfo
-              data={tenantInfoData}
-              downstreamDataExists={downstreamDataExists}
-              onChange={handleTenantInfoChange}
-              onConfirmSystemTypeReset={handleConfirmSystemTypeReset}
-              referenceData={referenceData}
-              referenceDataLoading={referenceDataLoading}
-            />
-          ) : (
-            <>
-              <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  Placeholder wiring
-                </p>
-                <p className="mt-3 text-sm leading-7 text-stone-600">
-                  This step is here to anchor the guided layout, progress indicator, and future
-                  extension point for tenant onboarding work. The actual form rules, validation, and
-                  submission behavior ship separately.
-                </p>
-              </div>
-              <label className="block space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-                  {currentStep.placeholderLabel}
-                </span>
-                <Input
-                  aria-label={currentStep.placeholderLabel}
-                  className="rounded-2xl border-stone-200 bg-stone-50"
-                  onChange={(event) => {
-                    setStepInputByKey((currentValue) => ({
-                      ...currentValue,
-                      [currentStep.key]: event.target.value,
-                    }));
-                  }}
-                  placeholder="Type here to simulate in-progress tenant-create input"
-                  value={stepInputByKey[currentStep.key] ?? ''}
-                />
-              </label>
-            </>
-          )}
-          <div className="flex items-center justify-end gap-2 border-t border-stone-100 pt-5">
-            <Button
-              className="gap-2 rounded-full px-4"
-              onClick={attemptExit}
-              type="button"
-              variant="ghost"
-            >
-              <X aria-hidden="true" className="h-4 w-4" />
-              Cancel
-            </Button>
-            <Button
-              className="gap-2 rounded-full px-4"
-              disabled={!hasPreviousStep}
-              onClick={() => {
-                if (!hasPreviousStep) {
-                  return;
-                }
 
-                setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
-              }}
-              type="button"
-              variant="outline"
-            >
-              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
-              Back
-            </Button>
-            <Button
-              className="gap-2 rounded-full px-5"
-              disabled={!hasNextStep}
-              onClick={() => {
-                if (!hasNextStep) {
-                  return;
-                }
-
-                setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
-              }}
-              type="button"
-            >
-              Next
-              <ChevronRight aria-hidden="true" className="h-4 w-4" />
-            </Button>
+      {/* Scrollable form area — full width, content centered */}
+      <div className="-mx-6 flex-1 overflow-y-auto border-t border-stone-200/60 bg-stone-50/60 px-6 pt-6">
+        <div className="mx-auto max-w-[660px]">
+          <div className="space-y-1 pb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              Step {currentStepIndex + 1} of {tenantCreateSteps.length}
+            </p>
+            <h3 className="text-xl font-semibold text-stone-950">{currentStep.title}</h3>
+            <p className="text-sm leading-6 text-stone-600">{currentStep.description}</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="space-y-4">
+            {isTenantInfoStep ? (
+              <TenantCreateStepTenantInfo
+                data={tenantInfoData}
+                downstreamDataExists={downstreamDataExists}
+                onChange={handleTenantInfoChange}
+                onConfirmSystemTypeReset={handleConfirmSystemTypeReset}
+                onValidityChange={handleTenantInfoValidityChange}
+                referenceData={referenceData}
+                referenceDataLoading={referenceDataLoading}
+                showErrors={showStepErrors}
+              />
+            ) : (
+              <>
+                <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-5">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
+                    Placeholder wiring
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-stone-600">
+                    This step is here to anchor the guided layout, progress indicator, and future
+                    extension point for tenant onboarding work. The actual form rules, validation,
+                    and submission behavior ship separately.
+                  </p>
+                </div>
+                <label className="block space-y-2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                    {currentStep.placeholderLabel}
+                  </span>
+                  <Input
+                    aria-label={currentStep.placeholderLabel}
+                    className="rounded-2xl border-stone-200 bg-stone-50"
+                    onChange={(event) => {
+                      setStepInputByKey((currentValue) => ({
+                        ...currentValue,
+                        [currentStep.key]: event.target.value,
+                      }));
+                    }}
+                    placeholder="Type here to simulate in-progress tenant-create input"
+                    value={stepInputByKey[currentStep.key] ?? ''}
+                  />
+                </label>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky bottom button bar — full width, buttons at far right */}
+      <div className="-mx-6 border-t border-stone-200 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-end gap-2 px-6 py-3">
+          <Button
+            className="gap-2 rounded-full px-4 text-red-600 hover:bg-red-50 hover:text-red-700"
+            onClick={attemptExit}
+            type="button"
+            variant="ghost"
+          >
+            <X aria-hidden="true" className="h-4 w-4" />
+            Cancel
+          </Button>
+          <Button
+            className="gap-2 rounded-full px-4"
+            disabled={!hasPreviousStep}
+            onClick={() => {
+              if (!hasPreviousStep) {
+                return;
+              }
+
+              setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
+            }}
+            type="button"
+            variant="outline"
+          >
+            <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+            Back
+          </Button>
+          <Button
+            className="gap-2 rounded-full px-5"
+            disabled={!hasNextStep}
+            onClick={() => {
+              if (!hasNextStep) {
+                return;
+              }
+
+              if (!isCurrentStepValid) {
+                setShowStepErrors(true);
+                return;
+              }
+
+              setShowStepErrors(false);
+              setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
+            }}
+            type="button"
+          >
+            Next
+            <ChevronRight aria-hidden="true" className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -61,16 +61,16 @@ export const Stepper = ({
         const stepState = isCompleted ? 'completed' : isCurrent ? 'current' : 'upcoming';
 
         const indicatorClassName = cn(
-          'relative z-10 inline-flex shrink-0 items-center justify-center rounded-full transition-all duration-200',
+          'relative z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200',
           isCompleted
-            ? 'h-7 w-7 bg-[#22C55E] text-white'
+            ? 'bg-[#22C55E] text-white'
             : isCurrent
-              ? 'h-9 w-9 bg-primary text-white ring-4 ring-primary/20'
-              : 'h-7 w-7 border-2 border-[#ADD8E6] bg-white text-[#ADD8E6]',
+              ? 'scale-110 bg-primary text-white ring-4 ring-primary/20'
+              : 'border-2 border-[#ADD8E6] bg-white text-[#ADD8E6]',
         );
 
         const connectorClassName = cn(
-          'absolute top-[1.3rem] left-[calc(55%+1rem)] right-[calc(-45%+1rem)] h-px transition-colors duration-200',
+          'absolute top-[1.15rem] left-[calc(55%+1rem)] right-[calc(-45%+1rem)] h-px transition-colors duration-200',
           isCompleted ? 'bg-[#22C55E]' : 'bg-[#ADD8E6]/50',
         );
 

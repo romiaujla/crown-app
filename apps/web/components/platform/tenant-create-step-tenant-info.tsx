@@ -30,6 +30,8 @@ type SlugStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid' | 'err
 type TenantCreateStepTenantInfoProps = {
   data: TenantInfoStepData;
   onChange: (update: Partial<TenantInfoStepData>) => void;
+  onValidityChange: (isValid: boolean) => void;
+  showErrors: boolean;
   referenceData: TenantCreateReferenceData | null;
   referenceDataLoading: boolean;
   downstreamDataExists: boolean;
@@ -54,6 +56,8 @@ const deriveSlugFromName = (name: string): string => {
 export const TenantCreateStepTenantInfo = ({
   data,
   onChange,
+  onValidityChange,
+  showErrors,
   referenceData,
   referenceDataLoading,
   downstreamDataExists,
@@ -110,6 +114,55 @@ export const TenantCreateStepTenantInfo = ({
       abortControllerRef.current?.abort();
     };
   }, [clearDebounce]);
+
+  // Re-check slug availability on mount if a valid slug already exists (e.g. after back-navigation)
+  useEffect(() => {
+    if (data.slug && SLUG_PATTERN.test(data.slug)) {
+      checkAvailability(data.slug);
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Report validity to parent whenever relevant state changes
+  const trimmedName = data.name.trim();
+  const isNameValid = trimmedName.length >= NAME_MIN && trimmedName.length <= NAME_MAX;
+  const isSlugValid =
+    Boolean(data.slug) && SLUG_PATTERN.test(data.slug) && slugStatus === 'available';
+  const isTypeValid = data.managementSystemTypeCode !== null;
+
+  useEffect(() => {
+    onValidityChange(isNameValid && isSlugValid && isTypeValid);
+  }, [isNameValid, isSlugValid, isTypeValid, onValidityChange]);
+
+  // Build submit-triggered error messages (shown when showErrors is true)
+  const submitNameError = !isNameValid
+    ? !trimmedName
+      ? 'Tenant name is required.'
+      : `Tenant name must be between ${NAME_MIN} and ${NAME_MAX} characters.`
+    : undefined;
+
+  const submitSlugError = !isSlugValid
+    ? !data.slug
+      ? 'Tenant slug is required.'
+      : !SLUG_PATTERN.test(data.slug)
+        ? 'Slug must be lowercase kebab-case (e.g. my-tenant).'
+        : slugStatus === 'taken'
+          ? 'This slug is already in use. Choose a different one.'
+          : slugStatus === 'checking'
+            ? 'Slug availability is still being checked.'
+            : 'Slug must be verified as available before continuing.'
+    : undefined;
+
+  const submitTypeError = !isTypeValid ? 'Management system type is required.' : undefined;
+
+  const visibleNameError = fieldErrors.name ?? (showErrors ? submitNameError : undefined);
+  const visibleSlugError = fieldErrors.slug ?? (showErrors ? submitSlugError : undefined);
+  const visibleTypeError = showErrors ? submitTypeError : undefined;
+
+  const errorSummary = showErrors
+    ? ([submitNameError, submitSlugError, submitTypeError].filter(Boolean) as string[])
+    : [];
 
   const handleNameChange = (value: string) => {
     onChange({ name: value });
@@ -177,6 +230,27 @@ export const TenantCreateStepTenantInfo = ({
 
   return (
     <div className="space-y-4">
+      {/* Validation error summary banner */}
+      {errorSummary.length > 0 ? (
+        <div
+          className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/70 px-4 py-3"
+          data-testid="step-validation-errors"
+          role="alert"
+        >
+          <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-red-800">
+              Please fix the following before continuing:
+            </p>
+            <ul className="list-inside list-disc space-y-0.5 text-sm text-red-700">
+              {errorSummary.map((msg) => (
+                <li key={msg}>{msg}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : null}
+
       {/* Slug immutability warning */}
       <div
         className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/60 px-4 py-3"
@@ -191,10 +265,12 @@ export const TenantCreateStepTenantInfo = ({
 
       {/* Tenant name */}
       <div className="space-y-2">
-        <Label htmlFor="tenant-name">Tenant name</Label>
+        <Label htmlFor="tenant-name">
+          Tenant name <span className="text-destructive">*</span>
+        </Label>
         <Input
-          aria-invalid={fieldErrors.name ? 'true' : 'false'}
-          className="rounded-2xl border-stone-200 bg-stone-50"
+          aria-invalid={visibleNameError ? 'true' : 'false'}
+          className={`rounded-2xl border-stone-200 bg-white ${visibleNameError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
           id="tenant-name"
           maxLength={NAME_MAX}
           onBlur={handleNameBlur}
@@ -202,16 +278,18 @@ export const TenantCreateStepTenantInfo = ({
           placeholder="e.g. Northwind Logistics"
           value={data.name}
         />
-        {fieldErrors.name ? <p className="text-sm text-destructive">{fieldErrors.name}</p> : null}
+        {visibleNameError ? <p className="text-sm text-destructive">{visibleNameError}</p> : null}
       </div>
 
       {/* Tenant slug */}
       <div className="space-y-2">
-        <Label htmlFor="tenant-slug">Tenant slug</Label>
+        <Label htmlFor="tenant-slug">
+          Tenant slug <span className="text-destructive">*</span>
+        </Label>
         <div className="relative">
           <Input
-            aria-invalid={fieldErrors.slug || slugStatus === 'taken' ? 'true' : 'false'}
-            className="rounded-2xl border-stone-200 bg-stone-50 pr-10"
+            aria-invalid={visibleSlugError || slugStatus === 'taken' ? 'true' : 'false'}
+            className={`rounded-2xl border-stone-200 bg-white pr-10 ${visibleSlugError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
             id="tenant-slug"
             maxLength={SLUG_MAX}
             onBlur={handleSlugBlur}
@@ -238,8 +316,8 @@ export const TenantCreateStepTenantInfo = ({
             ) : null}
           </span>
         </div>
-        {fieldErrors.slug ? <p className="text-sm text-destructive">{fieldErrors.slug}</p> : null}
-        {slugStatus === 'taken' ? (
+        {visibleSlugError ? <p className="text-sm text-destructive">{visibleSlugError}</p> : null}
+        {!visibleSlugError && slugStatus === 'taken' ? (
           <p className="text-sm text-destructive">
             This slug is already in use. Choose a different one.
           </p>
@@ -251,13 +329,18 @@ export const TenantCreateStepTenantInfo = ({
 
       {/* Management-system type */}
       <div className="space-y-2">
-        <Label htmlFor="management-system-type">Management system type</Label>
+        <Label htmlFor="management-system-type">
+          Management system type <span className="text-destructive">*</span>
+        </Label>
         <Select
           disabled={referenceDataLoading || !referenceData}
           onValueChange={handleSystemTypeChange}
           value={data.managementSystemTypeCode ?? undefined}
         >
-          <SelectTrigger id="management-system-type">
+          <SelectTrigger
+            className={visibleTypeError ? 'border-red-300 ring-1 ring-red-300' : ''}
+            id="management-system-type"
+          >
             <SelectValue
               placeholder={
                 referenceDataLoading ? 'Loading system types…' : 'Select a management system type'
@@ -272,6 +355,7 @@ export const TenantCreateStepTenantInfo = ({
             ))}
           </SelectContent>
         </Select>
+        {visibleTypeError ? <p className="text-sm text-destructive">{visibleTypeError}</p> : null}
         {referenceData &&
         !referenceDataLoading &&
         referenceData.managementSystemTypeList.length === 0 ? (

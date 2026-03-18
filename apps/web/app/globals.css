@@ -204,11 +204,12 @@ h3 {
 }
 
 .platform-shell-grid {
-  align-items: start;
+  align-items: stretch;
   grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
 }
 
 .sidebar-shell-card {
+  align-self: start;
   position: sticky;
   top: 2rem;
   z-index: 20;
