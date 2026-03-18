@@ -24,11 +24,20 @@ export type ExecuteTenantMigrationsInput = {
   migrations: TenantMigrationDefinition[];
 };
 
+export type ProvisionTenantInitialUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  roleCode: string;
+};
+
 export type ProvisionTenantInput = {
   name: string;
   slug: string;
   actorSub: string;
   managementSystemTypeCode: string;
+  selectedRoleCodes: string[];
+  initialUsers: ProvisionTenantInitialUser[];
 };
 
 export type ProvisionTenantSuccessResult = {

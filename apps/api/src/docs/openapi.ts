@@ -1490,7 +1490,12 @@ export const authDocsDocument = {
       post: {
         tags: ['Platform Tenants'],
         summary: 'Provision a tenant',
-        description: 'Protected super-admin route used to create and provision a tenant.',
+        description:
+          'Protected super-admin route used to create and provision a tenant. ' +
+          'Accepts the full onboarding submission including tenant info, selected roles, and initial users. ' +
+          'Creates the tenant schema, runs baseline migrations, and bootstraps initial user accounts with ' +
+          'tenant memberships and role assignments. Each initial user is created (or reused if the email ' +
+          'already exists) and assigned their specified role within the new tenant.',
         security: bearerSecurity,
         requestBody: {
           required: true,
