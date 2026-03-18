@@ -555,7 +555,9 @@ export type CreateTenantMembershipResponse = z.infer<typeof CreateTenantMembersh
 
 export const TenantMemberSearchFilterSchema = z
   .object({
-    search: z.string().trim().min(1).max(200).optional(),
+    email: z.string().trim().min(1).max(200).optional(),
+    username: z.string().trim().min(1).max(200).optional(),
+    displayName: z.string().trim().min(1).max(200).optional(),
     roleCode: RoleCodeSchema.optional(),
   })
   .strict();
@@ -588,7 +590,9 @@ export const TenantMemberSearchDataSchema = z.object({
 });
 
 export const TenantMemberSearchFiltersSchema = z.object({
-  search: z.string().nullable(),
+  email: z.string().nullable(),
+  username: z.string().nullable(),
+  displayName: z.string().nullable(),
   roleCode: z.string().nullable(),
 });
 

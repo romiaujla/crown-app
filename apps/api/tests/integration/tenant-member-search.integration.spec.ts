@@ -60,17 +60,27 @@ describe('tenant member search integration', () => {
     expect(response.data.memberList[0].membershipId).toBe('tm-1');
     expect(response.data.memberList[0].email).toBe('member@example.test');
     expect(response.meta.totalRecords).toBe(1);
-    expect(response.meta.filters).toEqual({ search: null, roleCode: null });
+    expect(response.meta.filters).toEqual({
+      email: null,
+      username: null,
+      displayName: null,
+      roleCode: null,
+    });
   });
 
-  it('applies search and roleCode filters', async () => {
+  it('applies explicit user-field filters and roleCode filters', async () => {
     tenantMembershipFindMany.mockResolvedValue([]);
     tenantMembershipCount.mockResolvedValue(0);
 
     const { getTenantMembers } = await import('../../src/tenant/member-service.js');
 
     await getTenantMembers('tenant-1', {
-      filters: { search: 'member', roleCode: RoleCodeEnum.TENANT_ADMIN },
+      filters: {
+        email: 'member@example.test',
+        username: 'member1',
+        displayName: 'Member One',
+        roleCode: RoleCodeEnum.TENANT_ADMIN,
+      },
       page: 1,
       pageSize: 25,
     });
@@ -81,16 +91,46 @@ describe('tenant member search integration', () => {
           tenantId: 'tenant-1',
           membershipStatus: 'active',
           user: {
-            OR: [
-              { email: { contains: 'member', mode: 'insensitive' } },
-              { username: { contains: 'member', mode: 'insensitive' } },
-              { displayName: { contains: 'member', mode: 'insensitive' } },
+            AND: [
+              { email: { contains: 'member@example.test', mode: 'insensitive' } },
+              { username: { contains: 'member1', mode: 'insensitive' } },
+              { displayName: { contains: 'Member One', mode: 'insensitive' } },
             ],
           },
           roleAssignments: {
             some: {
               assignmentStatus: 'active',
-              role: { roleCode: 'tenant_admin' },
+              role: {
+                OR: [{ roleCode: 'tenant_admin' }, { authClass: 'tenant_admin' }],
+              },
+            },
+          },
+        }),
+      }),
+    );
+  });
+
+  it('maps admin roleCode filter to tenant_admin auth-class match for compatibility', async () => {
+    tenantMembershipFindMany.mockResolvedValue([]);
+    tenantMembershipCount.mockResolvedValue(0);
+
+    const { getTenantMembers } = await import('../../src/tenant/member-service.js');
+
+    await getTenantMembers('tenant-1', {
+      filters: { roleCode: RoleCodeEnum.ADMIN },
+      page: 1,
+      pageSize: 25,
+    });
+
+    expect(tenantMembershipFindMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          roleAssignments: {
+            some: {
+              assignmentStatus: 'active',
+              role: {
+                OR: [{ roleCode: 'admin' }, { authClass: 'tenant_admin' }],
+              },
             },
           },
         }),

@@ -976,8 +976,15 @@ export const authDocsDocument = {
       TenantMemberSearchFilter: {
         type: 'object',
         properties: {
-          search: { type: 'string', minLength: 1, maxLength: 200 },
-          roleCode: { type: 'string', enum: roleCodeValues },
+          email: { type: 'string', minLength: 1, maxLength: 200 },
+          username: { type: 'string', minLength: 1, maxLength: 200 },
+          displayName: { type: 'string', minLength: 1, maxLength: 200 },
+          roleCode: {
+            type: 'string',
+            enum: roleCodeValues,
+            description:
+              'Role code filter. Supports direct roleCode matches and auth-class compatibility (for example, admin matches tenant_admin memberships).',
+          },
         },
       },
       TenantMemberSearchRequest: {
@@ -1000,9 +1007,11 @@ export const authDocsDocument = {
       },
       TenantMemberSearchFilters: {
         type: 'object',
-        required: ['search', 'roleCode'],
+        required: ['email', 'username', 'displayName', 'roleCode'],
         properties: {
-          search: { type: 'string', nullable: true },
+          email: { type: 'string', nullable: true },
+          username: { type: 'string', nullable: true },
+          displayName: { type: 'string', nullable: true },
           roleCode: { type: 'string', nullable: true },
         },
       },
@@ -1566,7 +1575,12 @@ export const authDocsDocument = {
       post: {
         tags: ['Platform Tenants'],
         summary: 'Provision a tenant',
-        description: 'Protected super-admin route used to create and provision a tenant.',
+        description:
+          'Protected super-admin route used to create and provision a tenant. ' +
+          'Accepts the full onboarding submission including tenant info, selected roles, and initial users. ' +
+          'Creates the tenant schema, runs baseline migrations, and bootstraps initial user accounts with ' +
+          'tenant memberships and role assignments. Each initial user is created (or reused if the email ' +
+          'already exists) and assigned their specified role within the new tenant.',
         security: bearerSecurity,
         requestBody: {
           required: true,
@@ -1794,8 +1808,20 @@ export const authDocsDocument = {
         tags: ['Tenant Members'],
         summary: 'Search tenant members',
         description:
-          'Protected tenant-admin route that returns tenant members with pagination. Scoped to the authenticated tenant context. Accepts optional filters for search text and role code.',
+          'Protected tenant-admin route that returns tenant members with pagination. Scoped to the authenticated tenant context. Accepts optional filters for email, username, display name, and role code.',
         security: bearerSecurity,
+        parameters: [
+          {
+            name: 'x-tenant-id',
+            in: 'header',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+            description:
+              "The tenant ID to scope this request to. Must match the authenticated tenant admin's tenant context.",
+          },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -1843,6 +1869,18 @@ export const authDocsDocument = {
         description:
           'Protected tenant-admin route that assigns a role to a tenant member. Re-activates an existing inactive assignment for the same role instead of creating a duplicate.',
         security: bearerSecurity,
+        parameters: [
+          {
+            name: 'x-tenant-id',
+            in: 'header',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+            description:
+              "The tenant ID to scope this request to. Must match the authenticated tenant admin's tenant context.",
+          },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -1900,6 +1938,18 @@ export const authDocsDocument = {
         description:
           'Protected tenant-admin route that revokes a role from a tenant member. Prevents revoking the last active role assignment to maintain at least one active role per member.',
         security: bearerSecurity,
+        parameters: [
+          {
+            name: 'x-tenant-id',
+            in: 'header',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+            description:
+              "The tenant ID to scope this request to. Must match the authenticated tenant admin's tenant context.",
+          },
+        ],
         requestBody: {
           required: true,
           content: {
@@ -1952,6 +2002,18 @@ export const authDocsDocument = {
         description:
           'Protected tenant-admin route that returns all roles with scope "tenant". Used to populate role selection dropdowns.',
         security: bearerSecurity,
+        parameters: [
+          {
+            name: 'x-tenant-id',
+            in: 'header',
+            required: true,
+            schema: {
+              type: 'string',
+            },
+            description:
+              "The tenant ID to scope this request to. Must match the authenticated tenant admin's tenant context.",
+          },
+        ],
         responses: {
           '200': {
             description: 'Tenant role catalog response',

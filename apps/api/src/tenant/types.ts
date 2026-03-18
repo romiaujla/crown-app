@@ -1,6 +1,6 @@
 import type { DeprovisionTypeEnum } from '@crown/types';
-import type { Tenant } from '../generated/prisma/client.js';
 import type { TenantStatus } from '../domain/status-enums.js';
+import type { Tenant } from '../generated/prisma/client.js';
 
 export type TenantMigrationDefinition = {
   version: string;
@@ -24,11 +24,20 @@ export type ExecuteTenantMigrationsInput = {
   migrations: TenantMigrationDefinition[];
 };
 
+export type ProvisionTenantInitialUser = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  roleCode: string;
+};
+
 export type ProvisionTenantInput = {
   name: string;
   slug: string;
   actorSub: string;
   managementSystemTypeCode: string;
+  selectedRoleCodes: string[];
+  initialUsers: ProvisionTenantInitialUser[];
 };
 
 export type ProvisionTenantSuccessResult = {

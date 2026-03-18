@@ -60,6 +60,33 @@ describe('platform tenant provisioning contract', () => {
     expect(response.body.managementSystemTypeCode).toBe('transportation');
   });
 
+  it('forwards selectedRoleCodes and initialUsers to provision function', async () => {
+    const provision = vi.fn(async () => createProvisioned());
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
+
+    await request(app)
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send(createValidOnboardingPayload());
+
+    expect(provision).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Acme',
+        slug: 'acme',
+        managementSystemTypeCode: 'transportation',
+        selectedRoleCodes: ['tenant_admin', 'dispatcher'],
+        initialUsers: [
+          {
+            firstName: 'Alex',
+            lastName: 'Admin',
+            email: 'alex.admin@example.com',
+            roleCode: 'tenant_admin',
+          },
+        ],
+      }),
+    );
+  });
+
   it('returns 400 for invalid payload', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
