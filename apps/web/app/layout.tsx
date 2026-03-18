@@ -1,6 +1,7 @@
 import './globals.css';
 
 import { AuthProvider } from '../components/auth/auth-provider';
+import { AlertProvider } from '../components/ui/alert-toast';
 
 export const metadata = {
   title: 'Crown Workspaces',
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AlertProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </AlertProvider>
       </body>
     </html>
   );

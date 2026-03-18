@@ -410,7 +410,93 @@ Before merging:
 
 ---
 
-# 17. Final Rule
+# 17. Alerts & Notifications
+
+## 17.1 Severity States
+
+The shared `Alert` component (`components/ui/alert.tsx`) supports four severity variants:
+
+| Severity  | Color | Default Icon    | ARIA Role | When to Use                                          |
+| --------- | ----- | --------------- | --------- | ---------------------------------------------------- |
+| `success` | Green | `CircleCheck`   | `status`  | Confirmation of a completed action                   |
+| `info`    | Blue  | `Info`          | `status`  | Contextual information, hints, or reminders          |
+| `warning` | Amber | `AlertTriangle` | `alert`   | Degraded state, potential issues, recoverable errors |
+| `error`   | Red   | `CircleX`       | `alert`   | Validation failures, hard errors, blocked actions    |
+
+## 17.2 Inline Alert vs. Toast
+
+| Use Case                        | Pattern      |
+| ------------------------------- | ------------ |
+| Form validation errors          | Inline Alert |
+| Contextual info banners         | Inline Alert |
+| Page-level error/degraded state | Inline Alert |
+| Operation success confirmation  | Toast        |
+| Async error after network call  | Toast        |
+| Transient notification          | Toast        |
+
+**Rule**: Use inline alerts when the message relates to content already on the page. Use toasts for ephemeral feedback from an action the user just performed.
+
+## 17.3 Inline Alert Usage
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+<Alert severity="error">
+  <AlertTitle>Validation failed</AlertTitle>
+  <AlertDescription>Please fix the highlighted fields before continuing.</AlertDescription>
+</Alert>;
+```
+
+- Compose with `AlertTitle` and `AlertDescription` sub-components.
+- Pass `data-testid` for test targeting.
+- The default icon per severity is rendered automatically; pass `icon={false}` to suppress.
+
+## 17.4 Toast Usage
+
+```tsx
+import { useAlerts } from '@/components/ui/alert-toast';
+
+const { showAlert, dismissAlert } = useAlerts();
+
+// Fire-and-forget
+showAlert({ severity: 'success', title: 'Tenant created' });
+
+// With all options
+const id = showAlert({
+  severity: 'error',
+  title: 'Save failed',
+  description: 'Please retry.',
+  position: 'top-right',
+  duration: 8000,
+  dismissible: true,
+});
+
+// Programmatic dismiss
+dismissAlert(id);
+```
+
+## 17.5 Positioning (Toast Only)
+
+Supported positions: `top-right` (default), `top-left`, `top-center`, `bottom-right`, `bottom-left`, `bottom-center`, `center`.
+
+- **Default**: `top-right` — use for most transient notifications.
+- **Center**: reserve for critical blocking alerts only.
+- Keep one consistent position per flow when possible.
+
+## 17.6 Auto-Dismiss Conventions
+
+| Severity | Default Duration |
+| -------- | ---------------- |
+| success  | 5 000 ms         |
+| info     | 5 000 ms         |
+| warning  | 5 000 ms         |
+| error    | 5 000 ms         |
+
+Pass `duration={0}` for persistent toasts that require explicit dismissal.
+
+---
+
+# 18. Final Rule
 
 If a UI decision is unclear:
 → Choose the option that increases consistency across the product.

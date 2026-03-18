@@ -5,6 +5,7 @@ import { ArrowUpRight, PencilLine, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -207,12 +208,12 @@ export const TenantDirectoryPage = () => {
         </div>
       ) : null}
       {viewState.status === ViewStatusEnum.ERROR ? (
-        <div className="rounded-3xl border border-amber-200 bg-amber-50/85 p-5">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-700">
+        <Alert severity="warning">
+          <AlertTitle className="font-semibold uppercase tracking-[0.18em]">
             Directory unavailable
-          </p>
-          <p className="mt-3 text-sm leading-7 text-stone-700">{viewState.message}</p>
-        </div>
+          </AlertTitle>
+          <AlertDescription>{viewState.message}</AlertDescription>
+        </Alert>
       ) : null}
       {viewState.status === ViewStatusEnum.SUCCESS ? (
         viewState.response.data.tenantList.length === 0 ? (

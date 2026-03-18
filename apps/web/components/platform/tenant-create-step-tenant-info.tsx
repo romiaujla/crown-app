@@ -1,8 +1,9 @@
 'use client';
 
-import { AlertTriangle, Check, Info, Loader2, X } from 'lucide-react';
+import { AlertTriangle, Check, Loader2, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -232,36 +233,24 @@ export const TenantCreateStepTenantInfo = ({
     <div className="space-y-4">
       {/* Validation error summary banner */}
       {errorSummary.length > 0 ? (
-        <div
-          className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/70 px-4 py-3"
-          data-testid="step-validation-errors"
-          role="alert"
-        >
-          <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-red-800">
-              Please fix the following before continuing:
-            </p>
-            <ul className="list-inside list-disc space-y-0.5 text-sm text-red-700">
+        <Alert data-testid="step-validation-errors" severity="error">
+          <AlertTitle>Please fix the following before continuing:</AlertTitle>
+          <AlertDescription>
+            <ul className="list-inside list-disc space-y-0.5">
               {errorSummary.map((msg) => (
                 <li key={msg}>{msg}</li>
               ))}
             </ul>
-          </div>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       {/* Slug immutability warning */}
-      <div
-        className="flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50/60 px-4 py-3"
-        data-testid="slug-immutability-warning"
-        role="alert"
-      >
-        <Info aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
-        <p className="text-sm leading-6 text-blue-800">
+      <Alert data-testid="slug-immutability-warning" severity="info">
+        <AlertDescription>
           The tenant slug cannot be changed after creation. Choose it carefully.
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
 
       {/* Tenant name */}
       <div className="space-y-2">

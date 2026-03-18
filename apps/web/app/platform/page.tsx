@@ -19,6 +19,7 @@ import {
   PlatformSectionPlaceholder,
   PlatformShellFrame,
 } from '@/components/platform/platform-shell-frame';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 import { getPlatformDashboardOverview } from '@/lib/auth/api';
@@ -205,17 +206,12 @@ const DashboardOverviewSection = () => {
 
   if (overviewState.status === ViewStatusEnum.ERROR) {
     return (
-      <Card className="border-amber-200/80 bg-amber-50/85 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-700">
-            Platform footprint
-          </CardDescription>
-          <CardTitle className="text-2xl text-stone-950">Dashboard overview unavailable</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0 text-sm leading-7 text-stone-700">
-          {overviewState.message}
-        </CardContent>
-      </Card>
+      <Alert severity="warning">
+        <AlertTitle className="font-semibold uppercase tracking-[0.22em]">
+          Dashboard overview unavailable
+        </AlertTitle>
+        <AlertDescription>{overviewState.message}</AlertDescription>
+      </Alert>
     );
   }
 
