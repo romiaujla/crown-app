@@ -185,7 +185,7 @@ export const TenantCreateShell = () => {
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-8">
       <div data-testid="tenant-create-stepper">
         <Stepper
           clickable
@@ -196,7 +196,7 @@ export const TenantCreateShell = () => {
           steps={stepperSteps}
         />
       </div>
-      <Card className="border-white/70 bg-white/92 shadow-sm">
+      <Card className="max-w-lg mx-auto bg-white border border-stone-200/60 shadow-md shadow-stone-200/40">
         <CardHeader className="space-y-3">
           <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             Step {currentStepIndex + 1} of {tenantCreateSteps.length}
@@ -249,52 +249,55 @@ export const TenantCreateShell = () => {
               </label>
             </>
           )}
-          <div className="flex flex-col gap-3 border-t border-stone-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-            <Button
-              className="gap-2 self-start rounded-full px-4"
-              onClick={attemptExit}
-              type="button"
-              variant="ghost"
-            >
-              <X aria-hidden="true" className="h-4 w-4" />
-              Cancel
-            </Button>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                className="gap-2 rounded-full px-4"
-                disabled={!hasPreviousStep}
-                onClick={() => {
-                  if (!hasPreviousStep) {
-                    return;
-                  }
-
-                  setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
-                }}
-                type="button"
-                variant="outline"
-              >
-                <ChevronLeft aria-hidden="true" className="h-4 w-4" />
-                Back
-              </Button>
-              <Button
-                className="gap-2 rounded-full px-4"
-                disabled={!hasNextStep}
-                onClick={() => {
-                  if (!hasNextStep) {
-                    return;
-                  }
-
-                  setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
-                }}
-                type="button"
-              >
-                Next
-                <ChevronRight aria-hidden="true" className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </CardContent>
       </Card>
+      {/* Sticky footer CTA bar */}
+      <div className="sticky bottom-0 z-20 -mx-4 mt-4 border-t border-stone-200/80 bg-white/90 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
+        <div className="mx-auto flex max-w-lg flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Button
+            className="gap-2 self-start rounded-full px-4"
+            onClick={attemptExit}
+            type="button"
+            variant="ghost"
+          >
+            <X aria-hidden="true" className="h-4 w-4" />
+            Cancel
+          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button
+              className="gap-2 rounded-full px-4"
+              disabled={!hasPreviousStep}
+              onClick={() => {
+                if (!hasPreviousStep) {
+                  return;
+                }
+
+                setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
+              }}
+              type="button"
+              variant="outline"
+            >
+              <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+              Back
+            </Button>
+            <Button
+              className="gap-2 rounded-full px-5 text-base"
+              disabled={!hasNextStep}
+              onClick={() => {
+                if (!hasNextStep) {
+                  return;
+                }
+
+                setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
+              }}
+              type="button"
+            >
+              Next
+              <ChevronRight aria-hidden="true" className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
