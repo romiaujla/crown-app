@@ -672,18 +672,17 @@ test('tenant create shell advances through steps and protects entered progress o
   await page.getByRole('button', { name: 'Step 1: Tenant info' }).click();
   await page.getByLabel('Tenant name').fill('Northwind expansion workspace');
 
-  page.once('dialog', async (dialog) => {
-    expect(dialog.message()).toContain('Discard the tenant setup progress');
-    await dialog.dismiss();
-  });
   await page.getByRole('button', { name: 'Cancel' }).click();
+  const dialog = page.getByTestId('confirm-dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toContainText('Discard the tenant setup progress');
+  await dialog.getByRole('button', { name: 'Stay' }).click();
+  await expect(dialog).not.toBeVisible();
   await expect(page).toHaveURL(/\/platform\/tenants\/new$/);
 
-  page.once('dialog', async (dialog) => {
-    expect(dialog.message()).toContain('Discard the tenant setup progress');
-    await dialog.accept();
-  });
   await page.getByRole('button', { name: 'Cancel' }).click();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Discard' }).click();
   await expect(page).toHaveURL(/\/platform\/tenants$/);
 });
 
@@ -841,11 +840,11 @@ test('tenant create step 1 triggers discard warning when name is entered then ca
 
   await page.getByLabel('Tenant name').fill('Test Tenant');
 
-  page.once('dialog', async (dialog) => {
-    expect(dialog.message()).toContain('Discard the tenant setup progress');
-    await dialog.accept();
-  });
   await page.getByRole('button', { name: 'Cancel' }).click();
+  const discardDialog = page.getByTestId('confirm-dialog');
+  await expect(discardDialog).toBeVisible();
+  await expect(discardDialog).toContainText('Discard the tenant setup progress');
+  await discardDialog.getByRole('button', { name: 'Discard' }).click();
   await expect(page).toHaveURL(/\/platform\/tenants$/);
 });
 

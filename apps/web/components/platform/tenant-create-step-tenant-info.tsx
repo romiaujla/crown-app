@@ -36,7 +36,7 @@ type TenantCreateStepTenantInfoProps = {
   referenceData: TenantCreateReferenceData | null;
   referenceDataLoading: boolean;
   downstreamDataExists: boolean;
-  onConfirmSystemTypeReset: () => boolean;
+  onConfirmSystemTypeReset: (pendingValue: string) => void;
 };
 
 const SLUG_PATTERN = new RegExp(TENANT_SLUG_PATTERN);
@@ -223,8 +223,8 @@ export const TenantCreateStepTenantInfo = ({
 
   const handleSystemTypeChange = (value: string) => {
     if (downstreamDataExists) {
-      const confirmed = onConfirmSystemTypeReset();
-      if (!confirmed) return;
+      onConfirmSystemTypeReset(value);
+      return;
     }
     onChange({ managementSystemTypeCode: value as ManagementSystemTypeCodeEnum });
   };
