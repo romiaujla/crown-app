@@ -17,7 +17,7 @@ type TenantMembershipWhere = {
   tenantId: string;
   membershipStatus: 'active';
   user?: {
-    OR: Array<{
+    AND: Array<{
       email?: { contains: string; mode: 'insensitive' };
       username?: { contains: string; mode: 'insensitive' };
       displayName?: { contains: string; mode: 'insensitive' };
@@ -26,9 +26,22 @@ type TenantMembershipWhere = {
   roleAssignments?: {
     some: {
       assignmentStatus: 'active';
-      role: { roleCode: string };
+      role: {
+        OR: Array<{
+          roleCode?: string;
+          authClass?: 'super_admin' | 'tenant_admin' | 'tenant_user';
+        }>;
+      };
     };
   };
+};
+
+const toRoleAuthClass = (roleCode: string): 'tenant_admin' | 'tenant_user' | null => {
+  if (roleCode === 'admin' || roleCode === 'tenant_admin') return 'tenant_admin';
+  if (roleCode === 'dispatcher' || roleCode === 'accountant' || roleCode === 'driver') {
+    return 'tenant_user';
+  }
+  return null;
 };
 
 const buildTenantMemberWhere = (
@@ -40,21 +53,47 @@ const buildTenantMemberWhere = (
     membershipStatus: 'active',
   };
 
-  if (filters.search) {
+  const userFieldClauses: NonNullable<TenantMembershipWhere['user']>['AND'] = [];
+
+  if (filters.email) {
+    userFieldClauses.push({
+      email: { contains: filters.email, mode: 'insensitive' },
+    });
+  }
+
+  if (filters.username) {
+    userFieldClauses.push({
+      username: { contains: filters.username, mode: 'insensitive' },
+    });
+  }
+
+  if (filters.displayName) {
+    userFieldClauses.push({
+      displayName: { contains: filters.displayName, mode: 'insensitive' },
+    });
+  }
+
+  if (userFieldClauses.length > 0) {
     where.user = {
-      OR: [
-        { email: { contains: filters.search, mode: 'insensitive' } },
-        { username: { contains: filters.search, mode: 'insensitive' } },
-        { displayName: { contains: filters.search, mode: 'insensitive' } },
-      ],
+      AND: userFieldClauses,
     };
   }
 
   if (filters.roleCode) {
+    const mappedAuthClass = toRoleAuthClass(filters.roleCode);
+    const roleClauses: NonNullable<
+      NonNullable<TenantMembershipWhere['roleAssignments']>['some']['role']
+    >['OR'] = [{ roleCode: filters.roleCode }];
+    if (mappedAuthClass) {
+      roleClauses.push({ authClass: mappedAuthClass });
+    }
+
     where.roleAssignments = {
       some: {
         assignmentStatus: 'active',
-        role: { roleCode: filters.roleCode },
+        role: {
+          OR: roleClauses,
+        },
       },
     };
   }
@@ -130,7 +169,9 @@ export const getTenantMembers = async (
       page: input.page,
       pageSize: input.pageSize,
       filters: {
-        search: input.filters.search ?? null,
+        email: input.filters.email ?? null,
+        username: input.filters.username ?? null,
+        displayName: input.filters.displayName ?? null,
         roleCode: input.filters.roleCode ?? null,
       },
     },

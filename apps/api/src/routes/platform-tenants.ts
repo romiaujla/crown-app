@@ -168,6 +168,8 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
         slug: parsed.data.tenant.slug,
         managementSystemTypeCode: parsed.data.tenant.managementSystemTypeCode,
         actorSub: req.auth?.sub ?? 'unknown-actor',
+        selectedRoleCodes: parsed.data.selectedRoleCodes,
+        initialUsers: parsed.data.initialUsers,
       });
 
       if (result.status === 'conflict') {

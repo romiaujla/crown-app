@@ -134,28 +134,59 @@ export const provisionTenant = async (
       data: { status: TenantStatus.active },
     });
 
-    const tenantAdminRole = await prisma.role.findUnique({
-      where: { roleCode: TENANT_ADMIN_ROLE_CODE },
+    const uniqueRoleCodes = [...new Set(input.initialUsers.map((u) => u.roleCode))];
+    const roles = await prisma.role.findMany({
+      where: { roleCode: { in: uniqueRoleCodes } },
     });
+    const roleByCode = new Map(roles.map((r) => [r.roleCode, r]));
 
-    if (tenantAdminRole) {
-      const membership = await prisma.tenantMembership.create({
-        data: {
-          userId: input.actorSub,
-          tenantId: updatedTenant.id,
-          membershipStatus: 'active',
-        },
-      });
-
-      await prisma.tenantMembershipRoleAssignment.create({
-        data: {
-          tenantMembershipId: membership.id,
-          roleId: tenantAdminRole.id,
-          assignmentStatus: 'active',
-          isPrimary: true,
-        },
-      });
+    const missingRoles = uniqueRoleCodes.filter((code) => !roleByCode.has(code));
+    if (missingRoles.length > 0) {
+      return {
+        status: 'conflict',
+        message: `role codes not found: ${missingRoles.join(', ')}`,
+      };
     }
+
+    let foundFirstTenantAdmin = false;
+
+    await prisma.$transaction(async (tx) => {
+      for (const initialUser of input.initialUsers) {
+        const normalizedEmail = initialUser.email.trim().toLowerCase();
+        const displayName = `${initialUser.firstName.trim()} ${initialUser.lastName.trim()}`;
+
+        const user = await tx.user.upsert({
+          where: { email: normalizedEmail },
+          create: {
+            email: normalizedEmail,
+            displayName,
+            accountStatus: 'active',
+          },
+          update: {},
+        });
+
+        const membership = await tx.tenantMembership.create({
+          data: {
+            userId: user.id,
+            tenantId: updatedTenant.id,
+            membershipStatus: 'active',
+          },
+        });
+
+        const role = roleByCode.get(initialUser.roleCode)!;
+        const isPrimary = !foundFirstTenantAdmin && initialUser.roleCode === TENANT_ADMIN_ROLE_CODE;
+        if (isPrimary) foundFirstTenantAdmin = true;
+
+        await tx.tenantMembershipRoleAssignment.create({
+          data: {
+            tenantMembershipId: membership.id,
+            roleId: role.id,
+            assignmentStatus: 'active',
+            isPrimary,
+          },
+        });
+      }
+    });
 
     return {
       status: 'provisioned',
