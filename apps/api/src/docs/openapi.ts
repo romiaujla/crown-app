@@ -268,22 +268,24 @@ export const authDocsDocument = {
       },
       TenantCreateOnboardingInitialUser: {
         type: 'object',
-        required: ['firstName', 'lastName', 'email', 'roleCode'],
+        required: ['displayName', 'email', 'username', 'roleCode'],
         properties: {
-          firstName: {
+          displayName: {
             type: 'string',
-            minLength: 1,
-            maxLength: 120,
-          },
-          lastName: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 120,
+            minLength: 5,
+            maxLength: 128,
           },
           email: {
             type: 'string',
             format: 'email',
             maxLength: 320,
+          },
+          username: {
+            type: 'string',
+            minLength: 5,
+            maxLength: 32,
+            pattern: '^[a-z0-9_]+$',
+            description: 'Lowercase username using letters, numbers, and underscores only.',
           },
           roleCode: {
             type: 'string',
@@ -458,6 +460,37 @@ export const authDocsDocument = {
         required: ['data'],
         properties: {
           data: { $ref: '#/components/schemas/TenantSlugAvailabilityData' },
+        },
+      },
+      TenantUserEmailAvailabilityRequest: {
+        type: 'object',
+        required: ['email'],
+        properties: {
+          email: {
+            type: 'string',
+            format: 'email',
+            maxLength: 320,
+            description:
+              'Candidate user email. The API trims and lowercases before validating availability.',
+          },
+        },
+      },
+      TenantUserEmailAvailabilityData: {
+        type: 'object',
+        required: ['email', 'isAvailable'],
+        properties: {
+          email: {
+            type: 'string',
+            format: 'email',
+          },
+          isAvailable: { type: 'boolean' },
+        },
+      },
+      TenantUserEmailAvailabilityResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/TenantUserEmailAvailabilityData' },
         },
       },
       TenantCreateRoleOption: {
@@ -1383,6 +1416,49 @@ export const authDocsDocument = {
             'Invalid tenant slug availability payload',
             'validation_error',
             'Invalid tenant slug availability payload',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant directory requests',
+          ),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/user-email-availability': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Check onboarding user email availability',
+        description:
+          'Protected super-admin route used to validate whether a candidate onboarding email is already associated with any existing user. The API trims and lowercases before applying uniqueness checks.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/TenantUserEmailAvailabilityRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Onboarding user email availability evaluated',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/TenantUserEmailAvailabilityResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant user email availability payload',
+            'validation_error',
+            'Invalid tenant user email availability payload',
           ),
           '401': errorResponse(
             'Unauthenticated request',

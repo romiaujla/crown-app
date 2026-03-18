@@ -11,6 +11,7 @@ describe('api docs openapi document', () => {
         '/api/v1/auth/logout',
         '/api/v1/platform/ping',
         '/api/v1/platform/tenant/slug-availability',
+        '/api/v1/platform/tenant/user-email-availability',
         '/api/v1/platform/tenant/reference-data',
         '/api/v1/platform/tenants/search',
         '/api/v1/tenant/access',
@@ -26,6 +27,9 @@ describe('api docs openapi document', () => {
     ]);
     expect(
       authDocsDocument.paths['/api/v1/platform/tenant/slug-availability'].post.security,
+    ).toEqual([{ bearerAuth: [] }]);
+    expect(
+      authDocsDocument.paths['/api/v1/platform/tenant/user-email-availability'].post.security,
     ).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths['/api/v1/platform/tenant/reference-data'].post.security).toEqual([
       { bearerAuth: [] },
@@ -76,6 +80,16 @@ describe('api docs openapi document', () => {
 
     expect(slugAvailabilitySchema).toEqual({
       $ref: '#/components/schemas/TenantSlugAvailabilityRequest',
+    });
+  });
+
+  it('documents the onboarding user email availability request payload', () => {
+    const emailAvailabilitySchema =
+      authDocsDocument.paths['/api/v1/platform/tenant/user-email-availability'].post.requestBody
+        .content['application/json'].schema;
+
+    expect(emailAvailabilitySchema).toEqual({
+      $ref: '#/components/schemas/TenantUserEmailAvailabilityRequest',
     });
   });
 
