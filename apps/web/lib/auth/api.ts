@@ -5,11 +5,14 @@ import {
   TenantDirectoryListResponseSchema,
   TenantSlugAvailabilityRequestSchema,
   TenantSlugAvailabilityResponseSchema,
+  TenantUserEmailAvailabilityRequestSchema,
+  TenantUserEmailAvailabilityResponseSchema,
   type DashboardOverviewResponse,
   type TenantCreateReferenceDataResponse,
   type TenantDirectoryListRequest,
   type TenantDirectoryListResponse,
   type TenantSlugAvailabilityResponse,
+  type TenantUserEmailAvailabilityResponse,
 } from '@crown/types';
 import {
   AccessTokenResponseSchema,
@@ -183,6 +186,17 @@ export const checkTenantSlugAvailability = async (accessToken: string, slug: str
       method: 'POST',
     }),
   ) as TenantSlugAvailabilityResponse;
+
+export const checkTenantUserEmailAvailability = async (accessToken: string, email: string) =>
+  TenantUserEmailAvailabilityResponseSchema.parse(
+    await request('/api/v1/platform/tenant/user-email-availability', {
+      body: JSON.stringify(TenantUserEmailAvailabilityRequestSchema.parse({ email })),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }),
+  ) as TenantUserEmailAvailabilityResponse;
 
 export const getTenantCreateReferenceData = async (accessToken: string) =>
   TenantCreateReferenceDataResponseSchema.parse(
