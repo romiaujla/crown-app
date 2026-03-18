@@ -1,6 +1,6 @@
 import type { DeprovisionTypeEnum } from '@crown/types';
-import type { Tenant } from '../generated/prisma/client.js';
 import type { TenantStatus } from '../domain/status-enums.js';
+import type { Tenant } from '../generated/prisma/client.js';
 
 export type TenantMigrationDefinition = {
   version: string;
