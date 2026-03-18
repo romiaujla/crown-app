@@ -1,28 +1,19 @@
 import {
+  TenantCreateOnboardingSubmissionRequestSchema,
+  TenantCreateOnboardingSubmissionResponseSchema,
   DeprovisionTypeEnum,
   DeprovisionTypeSchema,
-  ManagementSystemTypeCodeSchema,
+  TENANT_SLUG_PATTERN,
 } from '@crown/types';
 import { z } from 'zod';
 
 import { TenantStatusSchema } from '../domain/status-enums.js';
 
-const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_REGEX = new RegExp(TENANT_SLUG_PATTERN);
 
-export const TenantProvisionRequestSchema = z.object({
-  name: z.string().trim().min(2).max(120),
-  slug: z.string().trim().min(1).max(48).regex(SLUG_REGEX, 'slug must be lowercase kebab-case'),
-  managementSystemTypeCode: ManagementSystemTypeCodeSchema,
-});
+export const TenantProvisionRequestSchema = TenantCreateOnboardingSubmissionRequestSchema;
 
-export const TenantProvisionResponseSchema = z.object({
-  tenantId: z.string(),
-  slug: z.string(),
-  schemaName: z.string(),
-  appliedVersions: z.array(z.string()),
-  managementSystemTypeCode: ManagementSystemTypeCodeSchema,
-  status: z.literal('provisioned'),
-});
+export const TenantProvisionResponseSchema = TenantCreateOnboardingSubmissionResponseSchema;
 
 export const SoftDeprovisionTenantResponseSchema = z.object({
   tenantId: z.string(),

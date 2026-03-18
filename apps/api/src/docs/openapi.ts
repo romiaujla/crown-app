@@ -245,7 +245,7 @@ export const authDocsDocument = {
           currentUser: { $ref: '#/components/schemas/CurrentUserResponse' },
         },
       },
-      TenantProvisionRequest: {
+      TenantCreateOnboardingTenantInfo: {
         type: 'object',
         required: ['name', 'slug', 'managementSystemTypeCode'],
         properties: {
@@ -265,6 +265,58 @@ export const authDocsDocument = {
             description: 'Management system type to apply as the tenant role template.',
           },
         },
+      },
+      TenantCreateOnboardingInitialUser: {
+        type: 'object',
+        required: ['firstName', 'lastName', 'email', 'roleCode'],
+        properties: {
+          firstName: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 120,
+          },
+          lastName: {
+            type: 'string',
+            minLength: 1,
+            maxLength: 120,
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+            maxLength: 320,
+          },
+          roleCode: {
+            type: 'string',
+            enum: roleCodeValues,
+          },
+        },
+      },
+      TenantCreateOnboardingSubmissionRequest: {
+        type: 'object',
+        required: ['tenant', 'selectedRoleCodes', 'initialUsers'],
+        properties: {
+          tenant: { $ref: '#/components/schemas/TenantCreateOnboardingTenantInfo' },
+          selectedRoleCodes: {
+            type: 'array',
+            minItems: 1,
+            uniqueItems: true,
+            items: {
+              type: 'string',
+              enum: roleCodeValues,
+            },
+            description: 'Must include tenant_admin for bootstrap provisioning.',
+          },
+          initialUsers: {
+            type: 'array',
+            minItems: 1,
+            items: { $ref: '#/components/schemas/TenantCreateOnboardingInitialUser' },
+            description:
+              'V1 initial users are create-only entries; each entry carries exactly one roleCode.',
+          },
+        },
+      },
+      TenantProvisionRequest: {
+        allOf: [{ $ref: '#/components/schemas/TenantCreateOnboardingSubmissionRequest' }],
       },
       TenantProvisionResponse: {
         type: 'object',
@@ -1444,7 +1496,7 @@ export const authDocsDocument = {
           required: true,
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/TenantProvisionRequest' },
+              schema: { $ref: '#/components/schemas/TenantCreateOnboardingSubmissionRequest' },
             },
           },
         },

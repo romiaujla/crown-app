@@ -138,6 +138,106 @@ export const TenantSlugAvailabilityResponseSchema = z.object({
 });
 export type TenantSlugAvailabilityResponse = z.infer<typeof TenantSlugAvailabilityResponseSchema>;
 
+export const TenantCreateOnboardingTenantInfoSchema = z
+  .object({
+    name: z.string().trim().min(2).max(120),
+    slug: TenantSlugSchema,
+    managementSystemTypeCode: ManagementSystemTypeCodeSchema,
+  })
+  .strict();
+export type TenantCreateOnboardingTenantInfo = z.infer<
+  typeof TenantCreateOnboardingTenantInfoSchema
+>;
+
+export const TenantCreateOnboardingInitialUserSchema = z
+  .object({
+    firstName: z.string().trim().min(1).max(120),
+    lastName: z.string().trim().min(1).max(120),
+    email: z.string().trim().email().max(320),
+    roleCode: RoleCodeSchema,
+  })
+  .strict();
+export type TenantCreateOnboardingInitialUser = z.infer<
+  typeof TenantCreateOnboardingInitialUserSchema
+>;
+
+export const TenantCreateOnboardingSubmissionRequestSchema = z
+  .object({
+    tenant: TenantCreateOnboardingTenantInfoSchema,
+    selectedRoleCodes: z.array(RoleCodeSchema).min(1),
+    initialUsers: z.array(TenantCreateOnboardingInitialUserSchema).min(1),
+  })
+  .strict()
+  .superRefine((value, ctx) => {
+    const selectedRoleCodeSet = new Set(value.selectedRoleCodes);
+
+    if (selectedRoleCodeSet.size !== value.selectedRoleCodes.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'selectedRoleCodes must not include duplicates',
+        path: ['selectedRoleCodes'],
+      });
+    }
+
+    if (!selectedRoleCodeSet.has(RoleCodeEnum.TENANT_ADMIN)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'selectedRoleCodes must include tenant_admin',
+        path: ['selectedRoleCodes'],
+      });
+    }
+
+    const hasTenantAdminAssignee = value.initialUsers.some(
+      (initialUser) => initialUser.roleCode === RoleCodeEnum.TENANT_ADMIN,
+    );
+
+    if (!hasTenantAdminAssignee) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'initialUsers must include at least one tenant_admin assignment',
+        path: ['initialUsers'],
+      });
+    }
+
+    const normalizedEmailSet = new Set<string>();
+    value.initialUsers.forEach((initialUser, index) => {
+      if (!selectedRoleCodeSet.has(initialUser.roleCode)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'initialUsers roleCode must exist in selectedRoleCodes',
+          path: ['initialUsers', index, 'roleCode'],
+        });
+      }
+
+      const normalizedEmail = initialUser.email.trim().toLowerCase();
+      if (normalizedEmailSet.has(normalizedEmail)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'initialUsers must not include duplicate email values',
+          path: ['initialUsers', index, 'email'],
+        });
+      }
+      normalizedEmailSet.add(normalizedEmail);
+    });
+  });
+export type TenantCreateOnboardingSubmissionRequest = z.infer<
+  typeof TenantCreateOnboardingSubmissionRequestSchema
+>;
+
+export const TenantCreateOnboardingSubmissionResponseSchema = z
+  .object({
+    tenantId: z.string(),
+    slug: TenantSlugSchema,
+    schemaName: z.string(),
+    appliedVersions: z.array(z.string()),
+    managementSystemTypeCode: ManagementSystemTypeCodeSchema,
+    status: z.literal('provisioned'),
+  })
+  .strict();
+export type TenantCreateOnboardingSubmissionResponse = z.infer<
+  typeof TenantCreateOnboardingSubmissionResponseSchema
+>;
+
 export const TenantCreateRoleOptionSchema = z.object({
   roleCode: RoleCodeSchema,
   displayName: z.string(),

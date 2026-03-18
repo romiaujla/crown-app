@@ -164,9 +164,9 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       }
 
       const result = await provision({
-        name: parsed.data.name,
-        slug: parsed.data.slug,
-        managementSystemTypeCode: parsed.data.managementSystemTypeCode,
+        name: parsed.data.tenant.name,
+        slug: parsed.data.tenant.slug,
+        managementSystemTypeCode: parsed.data.tenant.managementSystemTypeCode,
         actorSub: req.auth?.sub ?? 'unknown-actor',
       });
 
