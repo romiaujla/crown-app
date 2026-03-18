@@ -5,6 +5,7 @@
 All AI agents working in this repository must follow:
 
 - `docs/process/engineering-constitution.md`
+- `docs/process/ui-guidlines.md`
 
 This is mandatory for code changes, branch naming, commits, Jira issue updates, pull requests, and release-related work.
 

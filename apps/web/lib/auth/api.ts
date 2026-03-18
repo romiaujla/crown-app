@@ -1,10 +1,15 @@
 import {
   DashboardOverviewResponseSchema,
+  TenantCreateReferenceDataResponseSchema,
   TenantDirectoryListRequestSchema,
   TenantDirectoryListResponseSchema,
+  TenantSlugAvailabilityRequestSchema,
+  TenantSlugAvailabilityResponseSchema,
   type DashboardOverviewResponse,
+  type TenantCreateReferenceDataResponse,
   type TenantDirectoryListRequest,
   type TenantDirectoryListResponse,
+  type TenantSlugAvailabilityResponse,
 } from '@crown/types';
 import {
   AccessTokenResponseSchema,
@@ -167,3 +172,25 @@ export const searchPlatformTenants = async (
       method: 'POST',
     }),
   ) as TenantDirectoryListResponse;
+
+export const checkTenantSlugAvailability = async (accessToken: string, slug: string) =>
+  TenantSlugAvailabilityResponseSchema.parse(
+    await request('/api/v1/platform/tenant/slug-availability', {
+      body: JSON.stringify(TenantSlugAvailabilityRequestSchema.parse({ slug })),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }),
+  ) as TenantSlugAvailabilityResponse;
+
+export const getTenantCreateReferenceData = async (accessToken: string) =>
+  TenantCreateReferenceDataResponseSchema.parse(
+    await request('/api/v1/platform/tenant/reference-data', {
+      body: JSON.stringify({ filter: {} }),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }),
+  ) as TenantCreateReferenceDataResponse;

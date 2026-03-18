@@ -145,8 +145,8 @@ export const WorkspaceShell = ({
   }, [isProfileMenuOpen]);
 
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex w-full flex-col gap-6">
+    <main className="flex h-screen flex-col overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
         {layoutProps.layout === 'sidebar' ? null : (
           <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
             <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -205,7 +205,7 @@ export const WorkspaceShell = ({
         )}
 
         {layoutProps.layout === 'sidebar' ? (
-          <div className="platform-shell-grid grid gap-6">
+          <div className="platform-shell-grid grid min-h-0 flex-1 gap-6">
             <Card
               className={cn(
                 'sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur',
@@ -306,7 +306,10 @@ export const WorkspaceShell = ({
             </Card>
 
             <Card
-              className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.section)}
+              className={cn(
+                'flex min-h-0 flex-col border shadow-lg shadow-stone-950/5 backdrop-blur',
+                style.section,
+              )}
             >
               <CardHeader className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
@@ -335,7 +338,9 @@ export const WorkspaceShell = ({
                   ) : null}
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">{layoutProps.sectionContent}</CardContent>
+              <CardContent className="flex min-h-0 flex-1 flex-col space-y-4 pb-0">
+                {layoutProps.sectionContent}
+              </CardContent>
             </Card>
           </div>
         ) : (
