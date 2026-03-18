@@ -9,11 +9,22 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
 
-import type { RoleCode, TenantCreateReferenceData } from '@crown/types';
+import type {
+  RoleCode,
+  TenantCreateOnboardingInitialUser,
+  TenantCreateReferenceData,
+  TenantCreateRoleOption,
+} from '@crown/types';
+import { RoleCodeEnum, TenantCreateOnboardingInitialUserSchema } from '@crown/types';
 
 import { getTenantCreateReferenceData } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 
+import {
+  TenantCreateStepUserAssignment,
+  type TenantCreateAssignmentDraftsByRole,
+  type TenantCreateInitialUserDraft,
+} from './tenant-create-step-user-assignment';
 import { TenantCreateStepRoleSelection } from './tenant-create-step-role-selection';
 import {
   TenantCreateStepTenantInfo,
@@ -52,7 +63,7 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
     key: TenantCreateStepKeyEnum.USER_ASSIGNMENT,
     title: 'User assignment',
     description:
-      'Reserve the guided handoff point for assigning the first tenant users in a future story.',
+      'Add tenant admins and assign new users to the selected roles before the final review step.',
     placeholderLabel: 'User assignment placeholder notes',
   },
   {
@@ -70,8 +81,122 @@ const INITIAL_TENANT_INFO: TenantInfoStepData = {
   managementSystemTypeCode: null,
 };
 
+const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+
 const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
   tenantCreateSteps.findIndex((step) => step.key === stepKey);
+
+const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
+
+const createAssignmentDraftRow = (roleCode: RoleCode): TenantCreateInitialUserDraft => ({
+  rowId: createDraftRowId(),
+  firstName: '',
+  lastName: '',
+  email: '',
+  roleCode,
+});
+
+const hasAnyAssignmentValue = (draft: TenantCreateInitialUserDraft) =>
+  Boolean(draft.firstName.trim() || draft.lastName.trim() || draft.email.trim());
+
+const toOnboardingInitialUserInput = ({
+  email,
+  firstName,
+  lastName,
+  roleCode,
+}: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
+  email,
+  firstName,
+  lastName,
+  roleCode,
+});
+
+const getSelectedRoleSections = (
+  roleOptions: TenantCreateRoleOption[],
+  selectedRoleCodes: ReadonlySet<RoleCode>,
+) =>
+  roleOptions
+    .filter((role) => selectedRoleCodes.has(role.roleCode))
+    .sort((left, right) => {
+      const leftIsAdmin = left.isRequired || ADMIN_ROLE_CODES.has(left.roleCode);
+      const rightIsAdmin = right.isRequired || ADMIN_ROLE_CODES.has(right.roleCode);
+
+      if (leftIsAdmin !== rightIsAdmin) {
+        return leftIsAdmin ? -1 : 1;
+      }
+
+      return left.displayName.localeCompare(right.displayName);
+    });
+
+const getDuplicateEmailRowIds = (assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole) => {
+  const rowIds = new Set<string>();
+  const emailRowsByValue = new Map<string, string[]>();
+
+  Object.values(assignmentDraftsByRole).forEach((draftRows) => {
+    draftRows?.forEach((draft) => {
+      const normalizedEmail = draft.email.trim().toLowerCase();
+      if (!normalizedEmail) {
+        return;
+      }
+
+      const existingRowIds = emailRowsByValue.get(normalizedEmail) ?? [];
+      existingRowIds.push(draft.rowId);
+      emailRowsByValue.set(normalizedEmail, existingRowIds);
+    });
+  });
+
+  emailRowsByValue.forEach((duplicateRowIds) => {
+    if (duplicateRowIds.length > 1) {
+      duplicateRowIds.forEach((rowId) => rowIds.add(rowId));
+    }
+  });
+
+  return rowIds;
+};
+
+const getUserAssignmentStepValidity = (
+  roleSections: TenantCreateRoleOption[],
+  assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole,
+) => {
+  if (roleSections.length === 0) {
+    return false;
+  }
+
+  const duplicateEmailRowIds = getDuplicateEmailRowIds(assignmentDraftsByRole);
+  let hasRequiredAdmin = false;
+
+  for (const roleSection of roleSections) {
+    const draftRows = assignmentDraftsByRole[roleSection.roleCode] ?? [];
+    const completedRows = draftRows.filter(
+      (draft) =>
+        TenantCreateOnboardingInitialUserSchema.safeParse(toOnboardingInitialUserInput(draft))
+          .success,
+    );
+    const hasInvalidRows = draftRows.some((draft) => {
+      if (!hasAnyAssignmentValue(draft)) {
+        return false;
+      }
+
+      return (
+        !TenantCreateOnboardingInitialUserSchema.safeParse(toOnboardingInitialUserInput(draft))
+          .success || duplicateEmailRowIds.has(draft.rowId)
+      );
+    });
+
+    if (hasInvalidRows) {
+      return false;
+    }
+
+    if (
+      (roleSection.isRequired || ADMIN_ROLE_CODES.has(roleSection.roleCode)) &&
+      completedRows.length > 0
+    ) {
+      hasRequiredAdmin = true;
+    }
+  }
+
+  return hasRequiredAdmin;
+};
 
 export const TenantCreateShell = () => {
   const router = useRouter();
@@ -79,25 +204,22 @@ export const TenantCreateShell = () => {
     TenantCreateStepKeyEnum.TENANT_INFO,
   );
 
-  // Step 1 — typed tenant info
   const [tenantInfoData, setTenantInfoData] = useState<TenantInfoStepData>(INITIAL_TENANT_INFO);
-
-  // Step 2 — selected role codes for the chosen management-system type
   const [selectedRoleCodes, setSelectedRoleCodes] = useState<Set<RoleCode>>(new Set());
   const [roleCodesInitialized, setRoleCodesInitialized] = useState(false);
-
-  // Steps 3–4 — placeholder inputs (preserved until those stories ship)
+  const [assignmentDraftsByRole, setAssignmentDraftsByRole] =
+    useState<TenantCreateAssignmentDraftsByRole>({});
   const [stepInputByKey, setStepInputByKey] = useState<
     Partial<Record<TenantCreateStepKeyEnum, string>>
   >({});
 
-  // Confirm-dialog state
   const [exitDialogOpen, setExitDialogOpen] = useState(false);
   const [pendingSystemTypeValue, setPendingSystemTypeValue] = useState<string | null>(null);
-
-  // Reference data for management-system type select
   const [referenceData, setReferenceData] = useState<TenantCreateReferenceData | null>(null);
   const [referenceDataLoading, setReferenceDataLoading] = useState(false);
+
+  const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
+  const [showStepErrors, setShowStepErrors] = useState(false);
 
   const currentStepIndex = getStepIndex(currentStepKey);
   const currentStep = tenantCreateSteps[currentStepIndex] ?? tenantCreateSteps[0];
@@ -113,22 +235,47 @@ export const TenantCreateShell = () => {
     Boolean(tenantInfoData.slug.trim()) ||
     tenantInfoData.managementSystemTypeCode !== null;
 
-  const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
-
   const roleSelectionHasData = selectedRoleCodes.size > 0;
+  const assignmentHasData = Object.values(assignmentDraftsByRole).some((draftRows) =>
+    (draftRows ?? []).some(hasAnyAssignmentValue),
+  );
+  const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
 
   const downstreamDataExists =
     roleSelectionHasData ||
-    [TenantCreateStepKeyEnum.USER_ASSIGNMENT, TenantCreateStepKeyEnum.REVIEW].some((key) =>
-      Boolean(stepInputByKey[key]?.trim()),
-    );
+    assignmentHasData ||
+    Boolean(stepInputByKey[TenantCreateStepKeyEnum.REVIEW]?.trim());
 
-  const hasUnsavedChanges = tenantInfoHasData || roleSelectionHasData || placeholderHasData;
+  const hasUnsavedChanges =
+    tenantInfoHasData || roleSelectionHasData || assignmentHasData || placeholderHasData;
 
-  // Fetch reference data on mount
+  const currentRoleOptions =
+    referenceData?.managementSystemTypeList.find(
+      (typeOption) => typeOption.typeCode === tenantInfoData.managementSystemTypeCode,
+    )?.roleOptions ?? [];
+
+  const selectedRoleSections = getSelectedRoleSections(currentRoleOptions, selectedRoleCodes);
+  const duplicateEmailRowIds = getDuplicateEmailRowIds(assignmentDraftsByRole);
+
+  const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
+  const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
+  const isUserAssignmentStep = currentStepKey === TenantCreateStepKeyEnum.USER_ASSIGNMENT;
+
+  const isUserAssignmentValid = getUserAssignmentStepValidity(
+    selectedRoleSections,
+    assignmentDraftsByRole,
+  );
+  const isCurrentStepValid = isTenantInfoStep
+    ? isTenantInfoValid
+    : isUserAssignmentStep
+      ? isUserAssignmentValid
+      : true;
+
   useEffect(() => {
     const accessToken = getStoredAccessToken();
-    if (!accessToken) return;
+    if (!accessToken) {
+      return;
+    }
 
     let cancelled = false;
     setReferenceDataLoading(true);
@@ -140,7 +287,7 @@ export const TenantCreateShell = () => {
         }
       })
       .catch(() => {
-        // Reference data load failure is non-blocking; select stays disabled
+        // Reference data load failure is non-blocking; downstream steps stay empty.
       })
       .finally(() => {
         if (!cancelled) {
@@ -170,6 +317,45 @@ export const TenantCreateShell = () => {
     };
   }, [hasUnsavedChanges]);
 
+  useEffect(() => {
+    if (
+      currentStepKey !== TenantCreateStepKeyEnum.TENANT_INFO &&
+      !roleCodesInitialized &&
+      currentRoleOptions.length > 0
+    ) {
+      const defaults = new Set<RoleCode>(
+        currentRoleOptions
+          .filter((roleOption) => roleOption.isDefault || roleOption.isRequired)
+          .map((roleOption) => roleOption.roleCode),
+      );
+
+      setSelectedRoleCodes(defaults);
+      setRoleCodesInitialized(true);
+    }
+  }, [currentRoleOptions, currentStepKey, roleCodesInitialized]);
+
+  useEffect(() => {
+    const selectedRoleCodeSet = new Set(
+      selectedRoleSections.map((roleSection) => roleSection.roleCode),
+    );
+
+    setAssignmentDraftsByRole((currentDraftsByRole) => {
+      const nextDraftsByRole: TenantCreateAssignmentDraftsByRole = {};
+      let didChange = false;
+
+      Object.entries(currentDraftsByRole).forEach(([roleCode, draftRows]) => {
+        if (!selectedRoleCodeSet.has(roleCode as RoleCode)) {
+          didChange = true;
+          return;
+        }
+
+        nextDraftsByRole[roleCode as RoleCode] = draftRows;
+      });
+
+      return didChange ? nextDraftsByRole : currentDraftsByRole;
+    });
+  }, [selectedRoleSections]);
+
   const attemptExit = () => {
     if (hasUnsavedChanges) {
       setExitDialogOpen(true);
@@ -180,75 +366,99 @@ export const TenantCreateShell = () => {
   };
 
   const handleTenantInfoChange = useCallback((update: Partial<TenantInfoStepData>) => {
-    setTenantInfoData((prev) => ({ ...prev, ...update }));
+    setTenantInfoData((currentValue) => ({ ...currentValue, ...update }));
   }, []);
 
   const handleConfirmSystemTypeReset = useCallback((pendingValue: string): void => {
     setPendingSystemTypeValue(pendingValue);
   }, []);
 
-  // Step-level validity — gates Next button per step
-  const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
-  const [showStepErrors, setShowStepErrors] = useState(false);
-  const handleTenantInfoValidityChange = useCallback((isValid: boolean) => {
-    setIsTenantInfoValid(isValid);
-    if (isValid) setShowStepErrors(false);
-  }, []);
-
-  const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
-  const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
-  const isCurrentStepValid = isTenantInfoStep ? isTenantInfoValid : true;
-
-  // Resolve role options for the currently selected management-system type
-  const currentRoleOptions =
-    referenceData?.managementSystemTypeList.find(
-      (t) => t.typeCode === tenantInfoData.managementSystemTypeCode,
-    )?.roleOptions ?? [];
-
-  // Auto-initialize selected role codes from defaults when entering step 2 for the first time
-  useEffect(() => {
-    if (isRoleSelectionStep && !roleCodesInitialized && currentRoleOptions.length > 0) {
-      const defaults = new Set<RoleCode>(
-        currentRoleOptions.filter((r) => r.isDefault || r.isRequired).map((r) => r.roleCode),
-      );
-      setSelectedRoleCodes(defaults);
-      setRoleCodesInitialized(true);
+  const handleTenantInfoValidityChange = useCallback((nextIsValid: boolean) => {
+    setIsTenantInfoValid(nextIsValid);
+    if (nextIsValid) {
+      setShowStepErrors(false);
     }
-  }, [isRoleSelectionStep, roleCodesInitialized, currentRoleOptions]);
+  }, []);
 
   const handleRoleToggle = useCallback(
     (roleCode: RoleCode) => {
-      const isRequired = currentRoleOptions.some((r) => r.roleCode === roleCode && r.isRequired);
-      if (isRequired) return;
+      const isRequired = currentRoleOptions.some(
+        (roleOption) => roleOption.roleCode === roleCode && roleOption.isRequired,
+      );
+      if (isRequired) {
+        return;
+      }
 
-      setSelectedRoleCodes((prev) => {
-        const next = new Set(prev);
-        if (next.has(roleCode)) {
-          next.delete(roleCode);
+      setSelectedRoleCodes((currentValue) => {
+        const nextValue = new Set(currentValue);
+        if (nextValue.has(roleCode)) {
+          nextValue.delete(roleCode);
         } else {
-          next.add(roleCode);
+          nextValue.add(roleCode);
         }
-        return next;
+        return nextValue;
       });
     },
     [currentRoleOptions],
   );
 
+  const handleAddAssignmentRow = useCallback((roleCode: RoleCode) => {
+    setAssignmentDraftsByRole((currentDraftsByRole) => ({
+      ...currentDraftsByRole,
+      [roleCode]: [...(currentDraftsByRole[roleCode] ?? []), createAssignmentDraftRow(roleCode)],
+    }));
+  }, []);
+
+  const handleRemoveAssignmentRow = useCallback((roleCode: RoleCode, rowId: string) => {
+    setAssignmentDraftsByRole((currentDraftsByRole) => {
+      const nextRoleDrafts = (currentDraftsByRole[roleCode] ?? []).filter(
+        (draftRow) => draftRow.rowId !== rowId,
+      );
+
+      if (nextRoleDrafts.length === 0) {
+        const nextDraftsByRole = { ...currentDraftsByRole };
+        delete nextDraftsByRole[roleCode];
+        return nextDraftsByRole;
+      }
+
+      return {
+        ...currentDraftsByRole,
+        [roleCode]: nextRoleDrafts,
+      };
+    });
+  }, []);
+
+  const handleUpdateAssignmentRow = useCallback(
+    (
+      roleCode: RoleCode,
+      rowId: string,
+      field: keyof Pick<TenantCreateOnboardingInitialUser, 'firstName' | 'lastName' | 'email'>,
+      value: string,
+    ) => {
+      setAssignmentDraftsByRole((currentDraftsByRole) => ({
+        ...currentDraftsByRole,
+        [roleCode]: (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
+          draftRow.rowId === rowId ? { ...draftRow, [field]: value } : draftRow,
+        ),
+      }));
+    },
+    [],
+  );
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* Stepper — centered, capped width */}
       <div className="mx-auto w-full max-w-[660px] pb-6" data-testid="tenant-create-stepper">
         <Stepper
           clickable
           currentStep={currentStepIndex}
           onStepClick={(index) => {
+            setShowStepErrors(false);
             setCurrentStepKey(tenantCreateSteps[index]?.key ?? currentStepKey);
           }}
           steps={stepperSteps}
         />
       </div>
 
-      {/* Scrollable form area — full width, content centered */}
       <div className="-mx-6 flex-1 overflow-y-auto border-t border-stone-200/60 bg-stone-50/60 px-6 pt-6">
         <div className="mx-auto max-w-[660px]">
           <div className="space-y-1 pb-4">
@@ -258,6 +468,7 @@ export const TenantCreateShell = () => {
             <h3 className="text-xl font-semibold text-stone-950">{currentStep.title}</h3>
             <p className="text-sm leading-6 text-stone-600">{currentStep.description}</p>
           </div>
+
           <div className="space-y-4">
             {isTenantInfoStep ? (
               <TenantCreateStepTenantInfo
@@ -275,6 +486,16 @@ export const TenantCreateShell = () => {
                 onToggle={handleRoleToggle}
                 roleOptions={currentRoleOptions}
                 selectedRoleCodes={selectedRoleCodes}
+              />
+            ) : isUserAssignmentStep ? (
+              <TenantCreateStepUserAssignment
+                assignmentDraftsByRole={assignmentDraftsByRole}
+                duplicateEmailRowIds={duplicateEmailRowIds}
+                onAddRow={handleAddAssignmentRow}
+                onRemoveRow={handleRemoveAssignmentRow}
+                onUpdateRow={handleUpdateAssignmentRow}
+                roleSections={selectedRoleSections}
+                showErrors={showStepErrors}
               />
             ) : (
               <>
@@ -311,7 +532,6 @@ export const TenantCreateShell = () => {
         </div>
       </div>
 
-      {/* Sticky bottom button bar — full width, buttons at far right */}
       <div className="-mx-6 border-t border-stone-200 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-end gap-2 px-6 py-3">
           <Button
@@ -331,6 +551,7 @@ export const TenantCreateShell = () => {
                 return;
               }
 
+              setShowStepErrors(false);
               setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
             }}
             type="button"
@@ -363,7 +584,6 @@ export const TenantCreateShell = () => {
         </div>
       </div>
 
-      {/* Exit confirmation dialog */}
       <ConfirmDialog
         cancelLabel="Stay"
         confirmLabel="Discard"
@@ -378,21 +598,22 @@ export const TenantCreateShell = () => {
         variant="destructive"
       />
 
-      {/* System-type reset confirmation dialog */}
       <ConfirmDialog
         confirmLabel="Continue"
         description="Changing the management system type may reset role and configuration selections made in later steps. Continue?"
         onCancel={() => setPendingSystemTypeValue(null)}
         onConfirm={() => {
-          const pendingValue = pendingSystemTypeValue;
+          const nextSystemTypeValue = pendingSystemTypeValue;
           setPendingSystemTypeValue(null);
           setSelectedRoleCodes(new Set());
           setRoleCodesInitialized(false);
-          if (pendingValue) {
-            setTenantInfoData((prev) => ({
-              ...prev,
+          setAssignmentDraftsByRole({});
+
+          if (nextSystemTypeValue) {
+            setTenantInfoData((currentValue) => ({
+              ...currentValue,
               managementSystemTypeCode:
-                pendingValue as TenantInfoStepData['managementSystemTypeCode'],
+                nextSystemTypeValue as TenantInfoStepData['managementSystemTypeCode'],
             }));
           }
         }}
