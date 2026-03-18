@@ -79,6 +79,16 @@ describe('api docs openapi document', () => {
     });
   });
 
+  it('documents the tenant onboarding submission request payload', () => {
+    const onboardingSchema =
+      authDocsDocument.paths['/api/v1/platform/tenant'].post.requestBody.content['application/json']
+        .schema;
+
+    expect(onboardingSchema).toEqual({
+      $ref: '#/components/schemas/TenantCreateOnboardingSubmissionRequest',
+    });
+  });
+
   it('does not include a raw openapi json route in the document', () => {
     expect('/api/v1/openapi.json' in authDocsDocument.paths).toBe(false);
   });

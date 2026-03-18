@@ -27,6 +27,23 @@ const createProvisioned = (): ProvisionTenantResult => ({
   },
 });
 
+const createValidOnboardingPayload = () => ({
+  tenant: {
+    name: 'Acme',
+    slug: 'acme',
+    managementSystemTypeCode: 'transportation',
+  },
+  selectedRoleCodes: ['tenant_admin', 'dispatcher'],
+  initialUsers: [
+    {
+      firstName: 'Alex',
+      lastName: 'Admin',
+      email: 'alex.admin@example.com',
+      roleCode: 'tenant_admin',
+    },
+  ],
+});
+
 describe('platform tenant provisioning contract', () => {
   it('returns 201 for super_admin', async () => {
     const provision = vi.fn(async () => createProvisioned());
@@ -35,7 +52,7 @@ describe('platform tenant provisioning contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: 'Acme', slug: 'acme', managementSystemTypeCode: 'transportation' });
+      .send(createValidOnboardingPayload());
 
     expect(response.status).toBe(201);
     expect(response.body.status).toBe('provisioned');
@@ -50,20 +67,139 @@ describe('platform tenant provisioning contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: 'A', slug: 'INVALID', managementSystemTypeCode: 'transportation' });
+      .send({
+        tenant: {
+          name: 'A',
+          slug: 'INVALID',
+          managementSystemTypeCode: 'transportation',
+        },
+        selectedRoleCodes: ['tenant_admin'],
+        initialUsers: [
+          {
+            firstName: 'Alex',
+            lastName: 'Admin',
+            email: 'alex.admin@example.com',
+            roleCode: 'tenant_admin',
+          },
+        ],
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.errorCode).toBe('validation_error');
   });
 
-  it('returns 400 for missing managementSystemTypeCode', async () => {
+  it('returns 400 for missing tenant.managementSystemTypeCode', async () => {
     const provision = vi.fn(async () => createProvisioned());
     const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
 
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: 'Acme', slug: 'acme' });
+      .send({
+        tenant: {
+          name: 'Acme',
+          slug: 'acme',
+        },
+        selectedRoleCodes: ['tenant_admin'],
+        initialUsers: [
+          {
+            firstName: 'Alex',
+            lastName: 'Admin',
+            email: 'alex.admin@example.com',
+            roleCode: 'tenant_admin',
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errorCode).toBe('validation_error');
+  });
+
+  it('returns 400 when selectedRoleCodes omits tenant_admin', async () => {
+    const provision = vi.fn(async () => createProvisioned());
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
+
+    const response = await request(app)
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({
+        tenant: {
+          name: 'Acme',
+          slug: 'acme',
+          managementSystemTypeCode: 'transportation',
+        },
+        selectedRoleCodes: ['dispatcher'],
+        initialUsers: [
+          {
+            firstName: 'Alex',
+            lastName: 'Admin',
+            email: 'alex.admin@example.com',
+            roleCode: 'dispatcher',
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errorCode).toBe('validation_error');
+  });
+
+  it('returns 400 when no initial user is assigned tenant_admin', async () => {
+    const provision = vi.fn(async () => createProvisioned());
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
+
+    const response = await request(app)
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({
+        tenant: {
+          name: 'Acme',
+          slug: 'acme',
+          managementSystemTypeCode: 'transportation',
+        },
+        selectedRoleCodes: ['tenant_admin', 'dispatcher'],
+        initialUsers: [
+          {
+            firstName: 'Drew',
+            lastName: 'Dispatcher',
+            email: 'drew.dispatcher@example.com',
+            roleCode: 'dispatcher',
+          },
+        ],
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errorCode).toBe('validation_error');
+  });
+
+  it('returns 400 when an initial user role is not selected', async () => {
+    const provision = vi.fn(async () => createProvisioned());
+    const app = buildApp({ platformTenantsRouter: createPlatformTenantsRouter({ provision }) });
+
+    const response = await request(app)
+      .post('/api/v1/platform/tenant')
+      .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
+      .send({
+        tenant: {
+          name: 'Acme',
+          slug: 'acme',
+          managementSystemTypeCode: 'transportation',
+        },
+        selectedRoleCodes: ['tenant_admin'],
+        initialUsers: [
+          {
+            firstName: 'Alex',
+            lastName: 'Admin',
+            email: 'alex.admin@example.com',
+            roleCode: 'tenant_admin',
+          },
+          {
+            firstName: 'Drew',
+            lastName: 'Dispatcher',
+            email: 'drew.dispatcher@example.com',
+            roleCode: 'dispatcher',
+          },
+        ],
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.errorCode).toBe('validation_error');
@@ -75,7 +211,7 @@ describe('platform tenant provisioning contract', () => {
 
     const response = await request(app)
       .post('/api/v1/platform/tenant')
-      .send({ name: 'Acme', slug: 'acme', managementSystemTypeCode: 'transportation' });
+      .send(createValidOnboardingPayload());
 
     expect(response.status).toBe(401);
     expect(response.body.errorCode).toBe('unauthenticated');
@@ -88,7 +224,7 @@ describe('platform tenant provisioning contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(tenantAdminClaims)}`)
-      .send({ name: 'Acme', slug: 'acme', managementSystemTypeCode: 'transportation' });
+      .send(createValidOnboardingPayload());
 
     expect(response.status).toBe(403);
     expect(response.body.errorCode).toBe('forbidden_role');
@@ -103,7 +239,7 @@ describe('platform tenant provisioning contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: 'Acme', slug: 'acme', managementSystemTypeCode: 'transportation' });
+      .send(createValidOnboardingPayload());
 
     expect(response.status).toBe(409);
     expect(response.body.errorCode).toBe('conflict');
@@ -123,7 +259,7 @@ describe('platform tenant provisioning contract', () => {
     const response = await request(app)
       .post('/api/v1/platform/tenant')
       .set('Authorization', `Bearer ${createJwtToken(superAdminClaims)}`)
-      .send({ name: 'Acme', slug: 'acme', managementSystemTypeCode: 'transportation' });
+      .send(createValidOnboardingPayload());
 
     expect(response.status).toBe(429);
     expect(response.body.errorCode).toBe('rate_limited');
