@@ -781,8 +781,8 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
 
   await page.getByRole('button', { name: 'Add tenant admin' }).click();
   const adminRow = page.getByTestId('user-assignment-row-admin-0');
-  await adminRow.getByLabel('First name').fill('Alex');
-  await adminRow.getByLabel('Last name').fill('Admin');
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
   await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
 
   await page.getByRole('button', { name: 'Next' }).click();
@@ -790,8 +790,8 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
 
   await page.getByRole('button', { name: 'Back' }).click();
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
-  await expect(adminRow.locator('input[value="Alex"]')).toBeVisible();
-  await expect(adminRow.locator('input[value="Admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="Alex Admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="alex_admin"]')).toBeVisible();
   await expect(adminRow.locator('input[value="alex.admin@crown.test"]')).toBeVisible();
 });
 
@@ -816,14 +816,14 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
 
   await page.getByRole('button', { name: 'Add tenant admin' }).click();
   const adminRow = page.getByTestId('user-assignment-row-admin-0');
-  await adminRow.getByLabel('First name').fill('Alex');
-  await adminRow.getByLabel('Last name').fill('Admin');
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
   await adminRow.getByLabel('Email').fill('shared@crown.test');
 
   await page.getByRole('button', { name: 'Add Dispatcher' }).click();
   const dispatcherRow = page.getByTestId('user-assignment-row-dispatcher-0');
-  await dispatcherRow.getByLabel('First name').fill('Drew');
-  await dispatcherRow.getByLabel('Last name').fill('Dispatcher');
+  await dispatcherRow.getByLabel('Display name').fill('Drew Dispatcher');
+  await dispatcherRow.getByLabel('Username').fill('drew_dispatcher');
   await dispatcherRow.getByLabel('Email').fill('shared@crown.test');
 
   await page.getByRole('button', { name: 'Next' }).click();

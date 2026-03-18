@@ -90,25 +90,25 @@ const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}
 
 const createAssignmentDraftRow = (roleCode: RoleCode): TenantCreateInitialUserDraft => ({
   rowId: createDraftRowId(),
-  firstName: '',
-  lastName: '',
+  displayName: '',
   email: '',
+  username: '',
   roleCode,
 });
 
 const hasAnyAssignmentValue = (draft: TenantCreateInitialUserDraft) =>
-  Boolean(draft.firstName.trim() || draft.lastName.trim() || draft.email.trim());
+  Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
 
 const toOnboardingInitialUserInput = ({
+  displayName,
   email,
-  firstName,
-  lastName,
   roleCode,
+  username,
 }: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
+  displayName,
   email,
-  firstName,
-  lastName,
   roleCode,
+  username,
 });
 
 const getSelectedRoleSections = (
@@ -432,7 +432,7 @@ export const TenantCreateShell = () => {
     (
       roleCode: RoleCode,
       rowId: string,
-      field: keyof Pick<TenantCreateOnboardingInitialUser, 'firstName' | 'lastName' | 'email'>,
+      field: keyof Pick<TenantCreateOnboardingInitialUser, 'displayName' | 'email' | 'username'>,
       value: string,
     ) => {
       setAssignmentDraftsByRole((currentDraftsByRole) => ({

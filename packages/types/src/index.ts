@@ -151,9 +151,17 @@ export type TenantCreateOnboardingTenantInfo = z.infer<
 
 export const TenantCreateOnboardingInitialUserSchema = z
   .object({
-    firstName: z.string().trim().min(1).max(120),
-    lastName: z.string().trim().min(1).max(120),
+    displayName: z.string().trim().min(5).max(128),
     email: z.string().trim().email().max(320),
+    username: z
+      .string()
+      .trim()
+      .min(5)
+      .max(32)
+      .regex(
+        /^[a-z0-9_]+$/,
+        'username must contain only lowercase letters, numbers, and underscores',
+      ),
     roleCode: RoleCodeSchema,
   })
   .strict();
@@ -219,9 +227,43 @@ export const TenantCreateOnboardingSubmissionRequestSchema = z
       }
       normalizedEmailSet.add(normalizedEmail);
     });
+
+    const normalizedUsernameSet = new Set<string>();
+    value.initialUsers.forEach((initialUser, index) => {
+      const normalizedUsername = initialUser.username.trim().toLowerCase();
+      if (normalizedUsernameSet.has(normalizedUsername)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'initialUsers must not include duplicate username values',
+          path: ['initialUsers', index, 'username'],
+        });
+      }
+      normalizedUsernameSet.add(normalizedUsername);
+    });
   });
 export type TenantCreateOnboardingSubmissionRequest = z.infer<
   typeof TenantCreateOnboardingSubmissionRequestSchema
+>;
+
+export const TenantUserEmailAvailabilityRequestSchema = z
+  .object({
+    email: z.string().trim().email().max(320),
+  })
+  .strict();
+export type TenantUserEmailAvailabilityRequest = z.infer<
+  typeof TenantUserEmailAvailabilityRequestSchema
+>;
+
+export const TenantUserEmailAvailabilityResponseSchema = z
+  .object({
+    data: z.object({
+      email: z.string().trim().email().max(320),
+      isAvailable: z.boolean(),
+    }),
+  })
+  .strict();
+export type TenantUserEmailAvailabilityResponse = z.infer<
+  typeof TenantUserEmailAvailabilityResponseSchema
 >;
 
 export const TenantCreateOnboardingSubmissionResponseSchema = z

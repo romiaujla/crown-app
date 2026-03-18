@@ -16,7 +16,10 @@ import type {
 } from '@crown/types';
 import { RoleCodeEnum } from '@crown/types';
 
-type DraftField = keyof Pick<TenantCreateOnboardingInitialUser, 'firstName' | 'lastName' | 'email'>;
+type DraftField = keyof Pick<
+  TenantCreateOnboardingInitialUser,
+  'displayName' | 'email' | 'username'
+>;
 
 export type TenantCreateInitialUserDraft = TenantCreateOnboardingInitialUser & {
   rowId: string;
@@ -40,7 +43,7 @@ const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TEN
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const hasAnyDraftValue = (draft: TenantCreateInitialUserDraft) =>
-  Boolean(draft.firstName.trim() || draft.lastName.trim() || draft.email.trim());
+  Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
 
 const isAdminRole = (roleCode: RoleCode) => ADMIN_ROLE_CODES.has(roleCode);
 
@@ -61,21 +64,21 @@ const getFieldErrors = (
     return {};
   }
 
-  const trimmedFirstName = draft.firstName.trim();
-  const trimmedLastName = draft.lastName.trim();
+  const trimmedDisplayName = draft.displayName.trim();
+  const trimmedUsername = draft.username.trim();
   const trimmedEmail = draft.email.trim();
 
   return {
-    firstName:
-      !trimmedFirstName && (showErrors || trimmedLastName || trimmedEmail)
-        ? 'First name is required.'
+    displayName:
+      !trimmedDisplayName && (showErrors || trimmedUsername || trimmedEmail)
+        ? 'Display name is required.'
         : undefined,
-    lastName:
-      !trimmedLastName && (showErrors || trimmedFirstName || trimmedEmail)
-        ? 'Last name is required.'
+    username:
+      !trimmedUsername && (showErrors || trimmedDisplayName || trimmedEmail)
+        ? 'Username is required.'
         : undefined,
     email: !trimmedEmail
-      ? showErrors || trimmedFirstName || trimmedLastName
+      ? showErrors || trimmedDisplayName || trimmedUsername
         ? 'Email is required.'
         : undefined
       : !EMAIL_PATTERN.test(trimmedEmail)
@@ -117,7 +120,9 @@ export const TenantCreateStepUserAssignment = ({
         const sectionRows = assignmentDraftsByRole[role.roleCode] ?? [];
         const hasCompletedRows = sectionRows.some((draft) => {
           const errors = getFieldErrors(draft, duplicateEmailRowIds, true);
-          return hasAnyDraftValue(draft) && !errors.firstName && !errors.lastName && !errors.email;
+          return (
+            hasAnyDraftValue(draft) && !errors.displayName && !errors.username && !errors.email
+          );
         });
         const isRequiredSection = role.isRequired || isAdminRole(role.roleCode);
         const shouldShowRequiredError = isRequiredSection && showErrors && !hasCompletedRows;
@@ -193,49 +198,49 @@ export const TenantCreateStepUserAssignment = ({
 
                         <div className="grid gap-3 md:grid-cols-3">
                           <label className="space-y-2">
-                            <Label htmlFor={`${rowPrefix}-firstName`}>
-                              First name <span className="text-destructive">*</span>
+                            <Label htmlFor={`${rowPrefix}-displayName`}>
+                              Display name <span className="text-destructive">*</span>
                             </Label>
                             <Input
-                              id={`${rowPrefix}-firstName`}
+                              id={`${rowPrefix}-displayName`}
                               onChange={(event) =>
                                 onUpdateRow(
                                   role.roleCode,
                                   draft.rowId,
-                                  'firstName',
+                                  'displayName',
                                   event.target.value,
                                 )
                               }
-                              placeholder="Jane"
-                              value={draft.firstName}
+                              placeholder="Jane Doe"
+                              value={draft.displayName}
                             />
-                            {fieldErrors.firstName ? (
+                            {fieldErrors.displayName ? (
                               <p className="text-xs font-medium text-destructive">
-                                {fieldErrors.firstName}
+                                {fieldErrors.displayName}
                               </p>
                             ) : null}
                           </label>
 
                           <label className="space-y-2">
-                            <Label htmlFor={`${rowPrefix}-lastName`}>
-                              Last name <span className="text-destructive">*</span>
+                            <Label htmlFor={`${rowPrefix}-username`}>
+                              Username <span className="text-destructive">*</span>
                             </Label>
                             <Input
-                              id={`${rowPrefix}-lastName`}
+                              id={`${rowPrefix}-username`}
                               onChange={(event) =>
                                 onUpdateRow(
                                   role.roleCode,
                                   draft.rowId,
-                                  'lastName',
+                                  'username',
                                   event.target.value,
                                 )
                               }
-                              placeholder="Doe"
-                              value={draft.lastName}
+                              placeholder="jane_doe"
+                              value={draft.username}
                             />
-                            {fieldErrors.lastName ? (
+                            {fieldErrors.username ? (
                               <p className="text-xs font-medium text-destructive">
-                                {fieldErrors.lastName}
+                                {fieldErrors.username}
                               </p>
                             ) : null}
                           </label>
