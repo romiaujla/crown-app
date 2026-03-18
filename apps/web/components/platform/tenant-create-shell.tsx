@@ -8,11 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
 
-import type { TenantCreateReferenceData } from '@crown/types';
+import type { RoleCode, TenantCreateReferenceData } from '@crown/types';
 
 import { getTenantCreateReferenceData } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 
+import { TenantCreateStepRoleSelection } from './tenant-create-step-role-selection';
 import {
   TenantCreateStepTenantInfo,
   type TenantInfoStepData,
@@ -80,7 +81,11 @@ export const TenantCreateShell = () => {
   // Step 1 — typed tenant info
   const [tenantInfoData, setTenantInfoData] = useState<TenantInfoStepData>(INITIAL_TENANT_INFO);
 
-  // Steps 2–4 — placeholder inputs (preserved until those stories ship)
+  // Step 2 — selected role codes for the chosen management-system type
+  const [selectedRoleCodes, setSelectedRoleCodes] = useState<Set<RoleCode>>(new Set());
+  const [roleCodesInitialized, setRoleCodesInitialized] = useState(false);
+
+  // Steps 3–4 — placeholder inputs (preserved until those stories ship)
   const [stepInputByKey, setStepInputByKey] = useState<
     Partial<Record<TenantCreateStepKeyEnum, string>>
   >({});
@@ -105,13 +110,15 @@ export const TenantCreateShell = () => {
 
   const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
 
-  const downstreamDataExists = [
-    TenantCreateStepKeyEnum.ROLE_SELECTION,
-    TenantCreateStepKeyEnum.USER_ASSIGNMENT,
-    TenantCreateStepKeyEnum.REVIEW,
-  ].some((key) => Boolean(stepInputByKey[key]?.trim()));
+  const roleSelectionHasData = selectedRoleCodes.size > 0;
 
-  const hasUnsavedChanges = tenantInfoHasData || placeholderHasData;
+  const downstreamDataExists =
+    roleSelectionHasData ||
+    [TenantCreateStepKeyEnum.USER_ASSIGNMENT, TenantCreateStepKeyEnum.REVIEW].some((key) =>
+      Boolean(stepInputByKey[key]?.trim()),
+    );
+
+  const hasUnsavedChanges = tenantInfoHasData || roleSelectionHasData || placeholderHasData;
 
   // Fetch reference data on mount
   useEffect(() => {
@@ -176,9 +183,14 @@ export const TenantCreateShell = () => {
   }, []);
 
   const handleConfirmSystemTypeReset = useCallback((): boolean => {
-    return window.confirm(
+    const confirmed = window.confirm(
       'Changing the management system type may reset role and configuration selections made in later steps. Continue?',
     );
+    if (confirmed) {
+      setSelectedRoleCodes(new Set());
+      setRoleCodesInitialized(false);
+    }
+    return confirmed;
   }, []);
 
   // Step-level validity — gates Next button per step
@@ -190,7 +202,43 @@ export const TenantCreateShell = () => {
   }, []);
 
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
+  const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
   const isCurrentStepValid = isTenantInfoStep ? isTenantInfoValid : true;
+
+  // Resolve role options for the currently selected management-system type
+  const currentRoleOptions =
+    referenceData?.managementSystemTypeList.find(
+      (t) => t.typeCode === tenantInfoData.managementSystemTypeCode,
+    )?.roleOptions ?? [];
+
+  // Auto-initialize selected role codes from defaults when entering step 2 for the first time
+  useEffect(() => {
+    if (isRoleSelectionStep && !roleCodesInitialized && currentRoleOptions.length > 0) {
+      const defaults = new Set<RoleCode>(
+        currentRoleOptions.filter((r) => r.isDefault || r.isRequired).map((r) => r.roleCode),
+      );
+      setSelectedRoleCodes(defaults);
+      setRoleCodesInitialized(true);
+    }
+  }, [isRoleSelectionStep, roleCodesInitialized, currentRoleOptions]);
+
+  const handleRoleToggle = useCallback(
+    (roleCode: RoleCode) => {
+      const isRequired = currentRoleOptions.some((r) => r.roleCode === roleCode && r.isRequired);
+      if (isRequired) return;
+
+      setSelectedRoleCodes((prev) => {
+        const next = new Set(prev);
+        if (next.has(roleCode)) {
+          next.delete(roleCode);
+        } else {
+          next.add(roleCode);
+        }
+        return next;
+      });
+    },
+    [currentRoleOptions],
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -227,6 +275,12 @@ export const TenantCreateShell = () => {
                 referenceData={referenceData}
                 referenceDataLoading={referenceDataLoading}
                 showErrors={showStepErrors}
+              />
+            ) : isRoleSelectionStep ? (
+              <TenantCreateStepRoleSelection
+                onToggle={handleRoleToggle}
+                roleOptions={currentRoleOptions}
+                selectedRoleCodes={selectedRoleCodes}
               />
             ) : (
               <>

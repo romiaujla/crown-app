@@ -1,8 +1,7 @@
 import {
-  ManagementSystemTypeCodeEnum,
   RoleCodeEnum,
-  type TenantCreateReferenceDataFilter,
   TenantCreateReferenceDataResponseSchema,
+  type TenantCreateReferenceDataFilter,
   type TenantCreateReferenceDataResponse,
 } from '@crown/types';
 import type { PrismaClient } from '../../generated/prisma/client.js';
@@ -10,7 +9,7 @@ import { ManagementSystemTypeAvailabilityStatusEnum } from '../../generated/pris
 
 import { prisma } from '../../db/prisma.js';
 
-const REQUIRED_ROLE_CODE = RoleCodeEnum.TENANT_ADMIN;
+const REQUIRED_ROLE_CODE = RoleCodeEnum.ADMIN;
 
 type PlatformTenantReferenceDataDb = Pick<PrismaClient, 'managementSystemType'>;
 
