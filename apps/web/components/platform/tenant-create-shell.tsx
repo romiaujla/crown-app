@@ -185,7 +185,7 @@ export const TenantCreateShell = () => {
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto max-w-[660px] space-y-6">
       <div data-testid="tenant-create-stepper">
         <Stepper
           clickable
@@ -196,19 +196,17 @@ export const TenantCreateShell = () => {
           steps={stepperSteps}
         />
       </div>
-      <Card className="max-w-lg mx-auto bg-white border border-stone-200/60 shadow-md shadow-stone-200/40">
-        <CardHeader className="space-y-3">
+      <Card className="bg-white border border-stone-200/60 shadow-md shadow-stone-200/40">
+        <CardHeader className="space-y-1 pb-4">
           <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             Step {currentStepIndex + 1} of {tenantCreateSteps.length}
           </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-2xl text-stone-950">{currentStep.title}</CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-7 text-stone-600">
-              {currentStep.description}
-            </CardDescription>
-          </div>
+          <CardTitle className="text-xl text-stone-950">{currentStep.title}</CardTitle>
+          <CardDescription className="text-sm leading-6 text-stone-600">
+            {currentStep.description}
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6 pt-0">
+        <CardContent className="space-y-4 pt-0">
           {isTenantInfoStep ? (
             <TenantCreateStepTenantInfo
               data={tenantInfoData}
@@ -249,21 +247,16 @@ export const TenantCreateShell = () => {
               </label>
             </>
           )}
-        </CardContent>
-      </Card>
-      {/* Sticky footer CTA bar */}
-      <div className="sticky bottom-0 z-20 -mx-4 mt-4 border-t border-stone-200/80 bg-white/90 px-4 py-4 backdrop-blur-sm sm:-mx-6 sm:px-6">
-        <div className="mx-auto flex max-w-lg flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            className="gap-2 self-start rounded-full px-4"
-            onClick={attemptExit}
-            type="button"
-            variant="ghost"
-          >
-            <X aria-hidden="true" className="h-4 w-4" />
-            Cancel
-          </Button>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex items-center justify-end gap-2 border-t border-stone-100 pt-5">
+            <Button
+              className="gap-2 rounded-full px-4"
+              onClick={attemptExit}
+              type="button"
+              variant="ghost"
+            >
+              <X aria-hidden="true" className="h-4 w-4" />
+              Cancel
+            </Button>
             <Button
               className="gap-2 rounded-full px-4"
               disabled={!hasPreviousStep}
@@ -281,7 +274,7 @@ export const TenantCreateShell = () => {
               Back
             </Button>
             <Button
-              className="gap-2 rounded-full px-5 text-base"
+              className="gap-2 rounded-full px-5"
               disabled={!hasNextStep}
               onClick={() => {
                 if (!hasNextStep) {
@@ -296,8 +289,8 @@ export const TenantCreateShell = () => {
               <ChevronRight aria-hidden="true" className="h-4 w-4" />
             </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

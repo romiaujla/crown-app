@@ -50,7 +50,7 @@ export const Stepper = ({
   return (
     <ol
       aria-label="Progress"
-      className={cn('mx-auto grid w-full max-w-3xl', className)}
+      className={cn('mx-auto grid w-full max-w-[660px]', className)}
       style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}
     >
       {steps.map((step, index) => {

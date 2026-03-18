@@ -34,6 +34,7 @@ const authExpiryWarningMs = playwrightEnv.NEXT_PUBLIC_AUTH_EXPIRY_WARNING_MS ?? 
 
 export default defineConfig({
   testDir: './tests',
+  workers: 6,
   use: {
     baseURL,
   },
