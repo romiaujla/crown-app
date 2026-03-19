@@ -716,7 +716,12 @@ test('tenant directory action links route to stable detail, add, and edit entry 
   await expect(
     page.getByRole('heading', { name: 'Tenant Details', level: 3, exact: true }),
   ).toBeVisible();
-  await expect(page.getByText('Tenant reference:')).toContainText('northwind-tms');
+  await expect(page.getByText('Tenant reference')).toBeVisible();
+  await expect(page.getByText('northwind-tms')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Edit tenant' })).toBeVisible();
+  await page.getByRole('button', { name: 'More actions' }).click();
+  await expect(page.getByRole('link', { name: 'View directory' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Deprovision tenant' })).toBeDisabled();
 
   await page.goto('/platform/tenants');
   await page.getByRole('link', { name: 'Add new' }).click();
@@ -1243,8 +1248,8 @@ test('tenant create step 4 submits the onboarding payload and routes to tenant d
   await createResponse;
 
   await expect(page).toHaveURL(/\/platform\/tenants\/acme-logistics$/);
-  await expect(page.getByText('Tenant details coming soon')).toBeVisible();
-  await expect(page.getByText('Tenant reference:')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Edit tenant' })).toBeVisible();
+  await expect(page.getByText('Tenant reference')).toBeVisible();
   await expect(page.getByText('acme-logistics', { exact: true })).toBeVisible();
 });
 

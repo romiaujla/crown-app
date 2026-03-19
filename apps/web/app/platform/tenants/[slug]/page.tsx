@@ -1,5 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlatformShellFrame } from '@/components/platform/platform-shell-frame';
+import {
+  CrownDetailsActionIntentEnum,
+  CrownDetailsDensityEnum,
+} from '@/components/ui/crown-details-component.types';
+import { CrownDetailsComponent } from '@/components/ui/crown-details-component';
 
 type PlatformTenantDetailsEntryPageProps = {
   params: {
@@ -11,23 +15,63 @@ const PlatformTenantDetailsEntryPage = ({ params }: PlatformTenantDetailsEntryPa
   <PlatformShellFrame
     activeNavigationKey="tenants"
     sectionContent={
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Tenant management
-          </CardDescription>
-          <CardTitle className="text-2xl text-stone-950">Tenant details coming soon</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 pt-0 text-sm text-stone-600">
-          <p>
-            This route is a stable entry point for the future tenant-details workflow. Detailed
-            tenant management remains follow-up scope for this story.
-          </p>
-          <p>
-            Tenant reference: <span className="font-semibold text-stone-950">{params.slug}</span>
-          </p>
-        </CardContent>
-      </Card>
+      <CrownDetailsComponent
+        actions={[
+          {
+            key: 'edit-tenant',
+            label: 'Edit tenant',
+            href: `/platform/tenants/${params.slug}/edit`,
+          },
+          {
+            key: 'view-directory',
+            label: 'View directory',
+            href: '/platform/tenants',
+          },
+          {
+            key: 'deprovision-tenant',
+            label: 'Deprovision tenant',
+            disabled: true,
+            intent: CrownDetailsActionIntentEnum.DESTRUCTIVE,
+          },
+        ]}
+        density={CrownDetailsDensityEnum.DEFAULT}
+        fields={[
+          {
+            key: 'tenant-reference',
+            label: 'Tenant reference',
+            value: params.slug,
+          },
+          {
+            key: 'route-scope',
+            label: 'Route scope',
+            value: 'Platform tenant-details entry point',
+          },
+          {
+            key: 'details-status',
+            label: 'Details status',
+            value: 'Shared details component ready for future backend-backed adoption',
+          },
+          {
+            key: 'next-milestone',
+            label: 'Next milestone',
+            value: 'Connect live tenant profile data and lifecycle actions in a follow-up story',
+          },
+          {
+            key: 'layout-mode',
+            label: 'Layout mode',
+            value: 'Standard details grid with shared action overflow',
+          },
+          {
+            key: 'dense-preview',
+            label: 'Dense preview',
+            value: 'Dense mode is available for compact detail surfaces when the consumer needs it',
+          },
+        ]}
+        mobileCol={1}
+        subheading="This route remains the stable platform entry point for tenant-specific work. The shared details primitive now provides the consistent layout, action placement, and empty-state behavior that future tenant workflows can reuse."
+        tabletCol={2}
+        title="Tenant Details"
+      />
     }
     sectionDescription="Use this dedicated destination as the platform entry point for tenant-specific detail work."
     sectionEyebrow="Tenant management"
