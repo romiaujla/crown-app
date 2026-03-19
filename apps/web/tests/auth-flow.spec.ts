@@ -3,6 +3,7 @@ import {
   ManagementSystemTypeCodeEnum,
   RoleCodeEnum,
   TenantStatusEnum,
+  type TenantCreateOnboardingSubmissionResponse,
   type DashboardOverviewResponse,
   type TenantCreateReferenceDataResponse,
   type TenantDirectoryListResponse,
@@ -33,6 +34,7 @@ const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
 type Persona = 'super_admin' | 'tenant_admin' | 'tenant_user';
 type DashboardOverviewFixture = DashboardOverviewResponse;
 type TenantDirectoryFixture = TenantDirectoryListResponse;
+type TenantCreateFixture = TenantCreateOnboardingSubmissionResponse;
 
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
   widgets: {
@@ -228,6 +230,15 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
   },
 });
 
+const buildTenantCreateResponse = (slug = 'acme-logistics'): TenantCreateFixture => ({
+  appliedVersions: ['202603150001_initial'],
+  managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
+  schemaName: `tenant_${slug}`,
+  slug,
+  status: 'provisioned',
+  tenantId: 'tenant-created-1',
+});
+
 const setupAuthRoutes = async (
   page: Page,
   options: {
@@ -239,6 +250,9 @@ const setupAuthRoutes = async (
     overviewResponse?: DashboardOverviewFixture;
     tenantDirectoryStatus?: number;
     tenantDirectoryResponse?: TenantDirectoryFixture;
+    tenantCreateStatus?: number;
+    tenantCreateResponse?: TenantCreateFixture;
+    tenantCreateDelayMs?: number;
   } = {},
 ) => {
   await page.route(`${API_BASE_URL}/api/v1/**`, async (route) => {
@@ -329,6 +343,31 @@ const setupAuthRoutes = async (
         body: JSON.stringify(buildReferenceDataResponse()),
         contentType: 'application/json',
         status: 200,
+      });
+      return;
+    }
+
+    if (url.endsWith('/platform/tenant')) {
+      if (options.tenantCreateDelayMs) {
+        await new Promise((resolve) => setTimeout(resolve, options.tenantCreateDelayMs));
+      }
+
+      if (options.tenantCreateStatus && options.tenantCreateStatus !== 201) {
+        await route.fulfill({
+          body: JSON.stringify({
+            errorCode: 'tenant_create_failed',
+            message: 'Tenant provisioning could not be completed.',
+          }),
+          contentType: 'application/json',
+          status: options.tenantCreateStatus,
+        });
+        return;
+      }
+
+      await route.fulfill({
+        body: JSON.stringify(options.tenantCreateResponse ?? buildTenantCreateResponse()),
+        contentType: 'application/json',
+        status: options.tenantCreateStatus ?? 201,
       });
       return;
     }
@@ -931,6 +970,163 @@ test('tenant create step 3 blocks existing system emails returned by the availab
 
   await expect(page.getByText('This email already exists in the system')).toHaveCount(1);
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+});
+
+test('tenant create step 4 summarizes the latest draft data in a read-only review', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  await page.getByLabel('Tenant name').fill('Acme Logistics');
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminEmailResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
+  await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
+  await adminEmailResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
+  await expect(page.getByTestId('review-tenant-info')).toContainText('Acme Logistics');
+  await expect(page.getByTestId('review-tenant-info')).toContainText('acme-logistics');
+  await expect(page.getByTestId('review-role-admin')).toContainText('Enabled');
+  await expect(page.getByTestId('review-role-dispatcher')).toContainText('Enabled');
+  await expect(page.getByTestId('review-role-driver')).toContainText('Enabled');
+  await expect(page.getByTestId('review-tenant-admins-table')).toContainText('Alex Admin');
+  await expect(page.getByTestId('review-role-warning')).toContainText(
+    'Some roles do not have assigned users',
+  );
+  await expect(page.getByTestId('review-assignment-table-dispatcher-empty')).toContainText(
+    '[No users assigned]',
+  );
+});
+
+test('tenant create step 4 submits the onboarding payload and routes to tenant details on success', async ({
+  page,
+}) => {
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    tenantCreateDelayMs: 250,
+    tenantCreateResponse: buildTenantCreateResponse('acme-logistics'),
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
+  );
+
+  await page.goto('/platform/tenants/new');
+  await page.getByLabel('Tenant name').fill('Acme Logistics');
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminEmailResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
+  await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
+  await adminEmailResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const createResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/platform/tenant') && resp.status() === 201,
+  );
+  await page.getByRole('button', { name: 'Create tenant' }).click();
+
+  await expect(page.getByRole('button', { name: 'Creating tenant' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Back' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Cancel' })).toBeDisabled();
+  await createResponse;
+
+  await expect(page).toHaveURL(/\/platform\/tenants\/acme-logistics$/);
+  await expect(page.getByText('Tenant details coming soon')).toBeVisible();
+  await expect(page.getByText('Tenant reference:')).toBeVisible();
+  await expect(page.getByText('acme-logistics', { exact: true })).toBeVisible();
+});
+
+test('tenant create step 4 keeps draft state and allows retry-safe recovery after create failure', async ({
+  page,
+}) => {
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    tenantCreateStatus: 409,
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
+  );
+
+  await page.goto('/platform/tenants/new');
+  await page.getByLabel('Tenant name').fill('Acme Logistics');
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminEmailResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
+  await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
+  await adminEmailResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const createResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/platform/tenant') && resp.status() === 409,
+  );
+  await page.getByRole('button', { name: 'Create tenant' }).click();
+  await createResponse;
+
+  await expect(page.getByTestId('review-submit-error')).toContainText(
+    'Tenant provisioning could not be completed.',
+  );
+  await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+  await expect(adminRow.locator('input[value="Alex Admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="alex_admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="alex.admin@crown.test"]')).toBeVisible();
 });
 
 test('tenant create shell allows clean cancel when no step data has been entered', async ({
