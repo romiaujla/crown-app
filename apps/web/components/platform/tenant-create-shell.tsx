@@ -64,7 +64,7 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
     key: TenantCreateStepKeyEnum.ROLE_SELECTION,
     title: 'Role selection',
     description:
-      'Preview where default tenant roles and management-system selections will be configured later.',
+      'Confirm the required Tenant Admin bootstrap role and any separate workspace roles this tenant needs.',
     placeholderLabel: 'Role selection placeholder notes',
   },
   {

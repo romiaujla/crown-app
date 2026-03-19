@@ -14,8 +14,10 @@ type TenantCreateStepRoleSelectionProps = {
 };
 
 const ROLE_RATIONALE_FALLBACK: Record<string, string> = {
+  [RoleCodeEnum.TENANT_ADMIN]:
+    'Required bootstrap administrator for tenant shell access and first-run setup ownership.',
   [RoleCodeEnum.ADMIN]:
-    'Full administrative access to the tenant workspace. This role is required for every tenant.',
+    'Optional management-system administrator inside the tenant workspace. This is separate from Tenant Admin.',
   [RoleCodeEnum.DISPATCHER]:
     'Manages scheduling, routing, and real-time coordination of fleet operations.',
   [RoleCodeEnum.DRIVER]: 'Accesses assigned routes, delivery details, and mobile check-in tools.',
@@ -23,6 +25,18 @@ const ROLE_RATIONALE_FALLBACK: Record<string, string> = {
     'Handles invoicing, payment tracking, and financial reporting within the tenant.',
   [RoleCodeEnum.HUMAN_RESOURCES]:
     'Manages employee records, onboarding workflows, and compliance documentation.',
+};
+
+const getRoleContextLabel = (roleCode: RoleCode) => {
+  if (roleCode === RoleCodeEnum.TENANT_ADMIN) {
+    return 'Bootstrap role';
+  }
+
+  if (roleCode === RoleCodeEnum.ADMIN) {
+    return 'Workspace role';
+  }
+
+  return 'Operational role';
 };
 
 export const TenantCreateStepRoleSelection = ({
@@ -55,6 +69,17 @@ export const TenantCreateStepRoleSelection = ({
 
   return (
     <div className="space-y-3" data-testid="role-selection-list">
+      <div
+        className="rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
+        data-testid="role-selection-admin-guidance"
+      >
+        <p className="font-semibold">Tenant Admin and Admin are separate roles.</p>
+        <p className="mt-1 leading-6 text-amber-900/90">
+          Tenant Admin is the required bootstrap role for tenant setup. Admin is an optional
+          management-system role inside the tenant workspace when that product needs one.
+        </p>
+      </div>
+
       {sortedRoleOptions.map((role) => {
         const isSelected = selectedRoleCodes.has(role.roleCode);
         const rationale =
@@ -92,6 +117,9 @@ export const TenantCreateStepRoleSelection = ({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-stone-900">{role.displayName}</span>
+                <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-medium text-stone-600">
+                  {getRoleContextLabel(role.roleCode)}
+                </span>
                 {role.isRequired && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-medium text-stone-500">
                     <Lock aria-hidden="true" className="h-3 w-3" />

@@ -230,6 +230,42 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
   },
 });
 
+const buildReferenceDataResponseWithSeparateAdminRoles = (): TenantCreateReferenceDataResponse => ({
+  data: {
+    managementSystemTypeList: [
+      {
+        typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
+        version: '1.0',
+        displayName: 'Transportation',
+        description: 'Fleet and route management',
+        roleOptions: [
+          {
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
+            description: 'Tenant shell administrator role.',
+            isDefault: true,
+            isRequired: true,
+          },
+          {
+            roleCode: RoleCodeEnum.ADMIN,
+            displayName: 'Admin',
+            description: 'Management-system administrator role inside the tenant workspace.',
+            isDefault: true,
+            isRequired: false,
+          },
+          {
+            roleCode: RoleCodeEnum.DISPATCHER,
+            displayName: 'Dispatcher',
+            description: 'Coordinates fleet operations.',
+            isDefault: true,
+            isRequired: false,
+          },
+        ],
+      },
+    ],
+  },
+});
+
 const buildTenantCreateResponse = (slug = 'acme-logistics'): TenantCreateFixture => ({
   appliedVersions: ['202603150001_initial'],
   managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
@@ -253,6 +289,7 @@ const setupAuthRoutes = async (
     tenantCreateStatus?: number;
     tenantCreateResponse?: TenantCreateFixture;
     tenantCreateDelayMs?: number;
+    referenceDataResponse?: TenantCreateReferenceDataResponse;
   } = {},
 ) => {
   await page.route(`${API_BASE_URL}/api/v1/**`, async (route) => {
@@ -340,7 +377,7 @@ const setupAuthRoutes = async (
 
     if (url.endsWith('/platform/tenant/reference-data')) {
       await route.fulfill({
-        body: JSON.stringify(buildReferenceDataResponse()),
+        body: JSON.stringify(options.referenceDataResponse ?? buildReferenceDataResponse()),
         contentType: 'application/json',
         status: 200,
       });
@@ -745,15 +782,21 @@ test('tenant create shell advances through steps and protects entered progress o
 test('tenant create step 2 shows role options for selected management system type', async ({
   page,
 }) => {
-  await primeAuthenticatedSession(page, 'super_admin');
-
-  await page.goto('/platform/tenants/new');
-
-  // Wait for reference data to load, then select Transportation
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    referenceDataResponse: buildReferenceDataResponseWithSeparateAdminRoles(),
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
   );
-  await refDataResponse;
+
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await page.getByRole('option', { name: 'Transportation' }).click();
@@ -765,8 +808,16 @@ test('tenant create step 2 shows role options for selected management system typ
 
   // Verify role cards render for Transportation defaults
   await expect(page.getByTestId('role-option-tenant_admin')).toBeVisible();
+  await expect(page.getByTestId('role-option-admin')).toBeVisible();
   await expect(page.getByTestId('role-option-dispatcher')).toBeVisible();
-  await expect(page.getByTestId('role-option-driver')).toBeVisible();
+  await expect(page.getByTestId('role-selection-admin-guidance')).toContainText(
+    'Tenant Admin and Admin are separate roles.',
+  );
+  await expect(page.getByTestId('role-option-tenant_admin')).toContainText('Bootstrap role');
+  await expect(page.getByTestId('role-option-admin')).toContainText('Workspace role');
+  await expect(page.getByTestId('role-option-admin')).toContainText(
+    'Management-system administrator role inside the tenant workspace.',
+  );
 
   // Verify tenant admin role is checked and locked
   const tenantAdminCheckbox = page.getByRole('checkbox', { name: /Tenant Admin.*required/i });
@@ -774,6 +825,10 @@ test('tenant create step 2 shows role options for selected management system typ
   await expect(tenantAdminCheckbox).toBeDisabled();
 
   // Verify optional roles start checked (isDefault = true)
+  const adminCheckbox = page.getByRole('checkbox', { name: 'Admin', exact: true });
+  await expect(adminCheckbox).toBeChecked();
+  await expect(adminCheckbox).toBeEnabled();
+
   const dispatcherCheckbox = page.getByRole('checkbox', { name: 'Dispatcher' });
   await expect(dispatcherCheckbox).toBeChecked();
   await expect(dispatcherCheckbox).toBeEnabled();
