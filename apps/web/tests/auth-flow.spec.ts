@@ -772,12 +772,10 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
 
-  await page.goto('/platform/tenants/new');
-
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
-  );
-  await refDataResponse;
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await page.getByRole('option', { name: 'Transportation' }).click();
@@ -827,12 +825,10 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
 
-  await page.goto('/platform/tenants/new');
-
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
-  );
-  await refDataResponse;
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await page.getByRole('option', { name: 'Transportation' }).click();
@@ -879,12 +875,10 @@ test('tenant create step 3 auto-generates usernames until a manual edit is made'
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
 
-  await page.goto('/platform/tenants/new');
-
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
-  );
-  await refDataResponse;
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await page.getByRole('option', { name: 'Transportation' }).click();

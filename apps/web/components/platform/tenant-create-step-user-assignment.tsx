@@ -58,7 +58,7 @@ const getSectionTitle = (role: TenantCreateRoleOption) =>
 
 const getSectionDescription = (role: TenantCreateRoleOption) =>
   isAdminRole(role.roleCode)
-    ? 'At least one tenant admin is required'
+    ? 'Add at least one tenant admin to continue'
     : 'Add users to this role or leave it empty';
 
 const getRefKey = (roleCode: RoleCode, rowId: string, field: DraftField) =>
@@ -76,6 +76,8 @@ export const TenantCreateStepUserAssignment = ({
   showErrors,
 }: TenantCreateStepUserAssignmentProps) => {
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const showGlobalAlert =
+    showErrors && globalErrorMessage !== 'At least one tenant admin is required';
 
   if (roleSections.length === 0) {
     return (
@@ -95,7 +97,7 @@ export const TenantCreateStepUserAssignment = ({
 
   return (
     <div className="space-y-4" data-testid="user-assignment-step">
-      {showErrors && globalErrorMessage ? (
+      {showGlobalAlert && globalErrorMessage ? (
         <Alert severity="error">
           <AlertTriangle aria-hidden="true" className="h-4 w-4" />
           <AlertTitle>{globalErrorMessage}</AlertTitle>
@@ -107,7 +109,6 @@ export const TenantCreateStepUserAssignment = ({
         const sectionRows = assignmentDraftsByRole[role.roleCode] ?? [];
         const isRequiredSection = role.isRequired || isAdminRole(role.roleCode);
         const shouldShowRequiredError = roleCodesWithRequiredErrors.has(role.roleCode);
-        const shouldShowOptionalWarning = roleCodesWithOptionalWarnings.has(role.roleCode);
 
         return (
           <Card
@@ -137,118 +138,102 @@ export const TenantCreateStepUserAssignment = ({
                   At least one tenant admin is required
                 </p>
               ) : null}
-
-              {!isRequiredSection && shouldShowOptionalWarning ? (
-                <p className="text-sm text-stone-500">No users assigned to this role</p>
-              ) : null}
             </CardHeader>
 
             <CardContent className="space-y-3">
-              <div className="overflow-x-auto">
-                <div className="min-w-[720px]">
-                  <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1.35fr)_40px] gap-2 border-b border-stone-200 pb-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                      Display Name
-                    </p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                      Username
-                    </p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                      Email
-                    </p>
-                    <span className="sr-only">Delete</span>
-                  </div>
+              <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.3fr)_32px] gap-2 border-b border-stone-200 pb-2">
+                <p className="min-w-0 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  Display Name
+                </p>
+                <p className="min-w-0 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  Username
+                </p>
+                <p className="min-w-0 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                  Email
+                </p>
+                <span className="sr-only">Delete</span>
+              </div>
 
-                  <div className="space-y-2 pt-2">
-                    {sectionRows.map((draft, rowIndex) => {
-                      const fieldErrors = fieldErrorsByRowId[draft.rowId] ?? {};
+              <div className="space-y-2 pt-2">
+                {sectionRows.map((draft, rowIndex) => {
+                  const fieldErrors = fieldErrorsByRowId[draft.rowId] ?? {};
 
-                      return (
-                        <div
-                          className="group grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1.35fr)_40px] gap-2"
-                          data-testid={`user-assignment-row-${role.roleCode}-${rowIndex}`}
-                          key={draft.rowId}
-                        >
-                          {ROW_FIELDS.map((field) => {
-                            const errorMessage = fieldErrors[field];
-                            const placeholder =
-                              field === 'displayName'
-                                ? 'Display name'
-                                : field === 'username'
-                                  ? 'Username'
-                                  : 'Email';
+                  return (
+                    <div
+                      className="group grid grid-cols-[minmax(0,1.3fr)_minmax(0,0.9fr)_minmax(0,1.3fr)_32px] gap-2"
+                      data-testid={`user-assignment-row-${role.roleCode}-${rowIndex}`}
+                      key={draft.rowId}
+                    >
+                      {ROW_FIELDS.map((field) => {
+                        const errorMessage = fieldErrors[field];
+                        const placeholder =
+                          field === 'displayName'
+                            ? 'Display name'
+                            : field === 'username'
+                              ? 'Username'
+                              : 'Email';
 
-                            return (
-                              <div className="space-y-1" key={field}>
-                                <Label className="sr-only" htmlFor={`${draft.rowId}-${field}`}>
-                                  {placeholder}
-                                </Label>
-                                <Input
-                                  aria-label={placeholder}
-                                  className={
-                                    errorMessage
-                                      ? 'h-9 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 text-sm'
-                                      : 'h-9 rounded-md border-stone-200 bg-white px-2.5 py-1.5 text-sm'
-                                  }
-                                  id={`${draft.rowId}-${field}`}
-                                  onChange={(event) =>
-                                    onUpdateRow(
-                                      role.roleCode,
-                                      draft.rowId,
-                                      field,
-                                      event.target.value,
-                                    )
-                                  }
-                                  onKeyDown={(event) => {
-                                    if (event.key !== 'Enter') {
-                                      return;
-                                    }
+                        return (
+                          <div className="min-w-0 space-y-1" key={field}>
+                            <Label className="sr-only" htmlFor={`${draft.rowId}-${field}`}>
+                              {placeholder}
+                            </Label>
+                            <Input
+                              aria-label={placeholder}
+                              className={
+                                errorMessage
+                                  ? 'h-9 min-w-0 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 text-sm'
+                                  : 'h-9 min-w-0 rounded-md border-stone-200 bg-white px-2.5 py-1.5 text-sm'
+                              }
+                              id={`${draft.rowId}-${field}`}
+                              onChange={(event) =>
+                                onUpdateRow(role.roleCode, draft.rowId, field, event.target.value)
+                              }
+                              onKeyDown={(event) => {
+                                if (event.key !== 'Enter') {
+                                  return;
+                                }
 
-                                    event.preventDefault();
-                                    const nextRow = sectionRows[rowIndex + 1];
-                                    if (!nextRow) {
-                                      return;
-                                    }
+                                event.preventDefault();
+                                const nextRow = sectionRows[rowIndex + 1];
+                                if (!nextRow) {
+                                  return;
+                                }
 
-                                    requestAnimationFrame(() => {
-                                      inputRefs.current[
-                                        getRefKey(role.roleCode, nextRow.rowId, field)
-                                      ]?.focus();
-                                    });
-                                  }}
-                                  placeholder={placeholder}
-                                  ref={(element) => {
-                                    inputRefs.current[
-                                      getRefKey(role.roleCode, draft.rowId, field)
-                                    ] = element;
-                                  }}
-                                  type={field === 'email' ? 'email' : 'text'}
-                                  value={draft[field]}
-                                />
-                                {errorMessage ? (
-                                  <p className="text-xs font-medium text-destructive">
-                                    {errorMessage}
-                                  </p>
-                                ) : null}
-                              </div>
-                            );
-                          })}
-
-                          <div className="flex items-start justify-center pt-0.5">
-                            <button
-                              aria-label={`Remove ${getSectionTitle(role)} row ${rowIndex + 1}`}
-                              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-stone-400 opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:text-destructive"
-                              onClick={() => onRemoveRow(role.roleCode, draft.rowId)}
-                              type="button"
-                            >
-                              <Trash2 aria-hidden="true" className="h-4 w-4" />
-                            </button>
+                                requestAnimationFrame(() => {
+                                  inputRefs.current[
+                                    getRefKey(role.roleCode, nextRow.rowId, field)
+                                  ]?.focus();
+                                });
+                              }}
+                              placeholder={placeholder}
+                              ref={(element) => {
+                                inputRefs.current[getRefKey(role.roleCode, draft.rowId, field)] =
+                                  element;
+                              }}
+                              type={field === 'email' ? 'email' : 'text'}
+                              value={draft[field]}
+                            />
+                            {errorMessage ? (
+                              <p className="text-xs font-medium text-destructive">{errorMessage}</p>
+                            ) : null}
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                        );
+                      })}
+
+                      <div className="flex items-start justify-center pt-0.5">
+                        <button
+                          aria-label={`Remove ${getSectionTitle(role)} row ${rowIndex + 1}`}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-stone-400 opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:text-destructive"
+                          onClick={() => onRemoveRow(role.roleCode, draft.rowId)}
+                          type="button"
+                        >
+                          <Trash2 aria-hidden="true" className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
