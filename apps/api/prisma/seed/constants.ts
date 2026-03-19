@@ -158,6 +158,12 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
   {
     managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
     managementSystemTypeVersion: '1.0',
+    roleCode: RoleCodeEnum.TENANT_ADMIN,
+    isDefault: true,
+  },
+  {
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,
+    managementSystemTypeVersion: '1.0',
     roleCode: RoleCodeEnum.ADMIN,
     isDefault: true,
   },
@@ -188,7 +194,19 @@ export const LOCAL_SEED_MANAGEMENT_SYSTEM_TYPE_ROLES = [
   {
     managementSystemTypeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
     managementSystemTypeVersion: '1.0',
+    roleCode: RoleCodeEnum.TENANT_ADMIN,
+    isDefault: true,
+  },
+  {
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.DEALERSHIP,
+    managementSystemTypeVersion: '1.0',
     roleCode: RoleCodeEnum.ADMIN,
+    isDefault: true,
+  },
+  {
+    managementSystemTypeCode: ManagementSystemTypeCodeEnum.INVENTORY,
+    managementSystemTypeVersion: '1.0',
+    roleCode: RoleCodeEnum.TENANT_ADMIN,
     isDefault: true,
   },
   {

@@ -35,12 +35,24 @@ type TenantCreateStepReviewProps = {
   userRowsByRoleCode: Partial<Record<RoleCode, TenantCreateOnboardingInitialUser[]>>;
 };
 
-const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const BOOTSTRAP_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.TENANT_ADMIN]);
 
-const isAdminRole = (roleCode: RoleCode) => ADMIN_ROLE_CODES.has(roleCode);
+const isBootstrapRole = (roleCode: RoleCode) => BOOTSTRAP_ROLE_CODES.has(roleCode);
 
 const getSectionTitle = (role: TenantCreateRoleOption) =>
-  isAdminRole(role.roleCode) ? 'Tenant Admins' : role.displayName;
+  role.roleCode === RoleCodeEnum.TENANT_ADMIN ? 'Tenant Admin' : role.displayName;
+
+const getRoleContextLabel = (role: TenantCreateRoleOption) => {
+  if (role.roleCode === RoleCodeEnum.TENANT_ADMIN) {
+    return 'Bootstrap role';
+  }
+
+  if (role.roleCode === RoleCodeEnum.ADMIN) {
+    return 'Workspace role';
+  }
+
+  return null;
+};
 
 const getRoleSummaryStatus = (
   role: TenantCreateRoleOption,
@@ -96,10 +108,10 @@ export const TenantCreateStepReview = ({
   userRowsByRoleCode,
 }: TenantCreateStepReviewProps) => {
   const selectedRoleSections = roleOptions.filter((role) => selectedRoleCodes.has(role.roleCode));
-  const selectedNonAdminRoleSections = selectedRoleSections.filter(
-    (role) => !isAdminRole(role.roleCode),
+  const selectedWorkspaceRoleSections = selectedRoleSections.filter(
+    (role) => !isBootstrapRole(role.roleCode),
   );
-  const hasOptionalWarnings = selectedNonAdminRoleSections.some((role) =>
+  const hasOptionalWarnings = selectedWorkspaceRoleSections.some((role) =>
     roleCodesWithOptionalWarnings.has(role.roleCode),
   );
 
@@ -172,11 +184,18 @@ export const TenantCreateStepReview = ({
               >
                 <div className="space-y-1">
                   <p className="text-sm font-semibold text-stone-950">{role.displayName}</p>
-                  {role.isRequired ? (
-                    <p className="text-xs font-medium uppercase tracking-[0.14em] text-stone-500">
-                      Required
-                    </p>
-                  ) : null}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {role.isRequired ? (
+                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-stone-500">
+                        Required
+                      </p>
+                    ) : null}
+                    {getRoleContextLabel(role) ? (
+                      <p className="text-xs font-medium uppercase tracking-[0.14em] text-stone-500">
+                        {getRoleContextLabel(role)}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
                 <Badge variant={status === 'Enabled' ? 'success' : 'muted'}>{status}</Badge>
               </div>
@@ -190,14 +209,19 @@ export const TenantCreateStepReview = ({
         data-testid="review-tenant-admins"
       >
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg text-stone-950">Tenant Admins</CardTitle>
+          <div className="space-y-1">
+            <CardTitle className="text-lg text-stone-950">Tenant Admin</CardTitle>
+            <p className="text-sm text-stone-600">
+              Bootstrap assignments for tenant shell access and first-run administration.
+            </p>
+          </div>
         </CardHeader>
         <CardContent>
           {renderUserTable(tenantAdminRows, '[No users assigned]', 'review-tenant-admins-table')}
         </CardContent>
       </Card>
 
-      {selectedNonAdminRoleSections.map((role) => (
+      {selectedWorkspaceRoleSections.map((role) => (
         <Card
           className="rounded-3xl border-stone-200 bg-white shadow-sm"
           data-testid={`review-assignment-section-${role.roleCode}`}
@@ -205,7 +229,15 @@ export const TenantCreateStepReview = ({
         >
           <CardHeader className="pb-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <CardTitle className="text-lg text-stone-950">{getSectionTitle(role)}</CardTitle>
+              <div className="space-y-1">
+                <CardTitle className="text-lg text-stone-950">{getSectionTitle(role)}</CardTitle>
+                {role.roleCode === RoleCodeEnum.ADMIN ? (
+                  <p className="text-sm text-stone-600">
+                    Workspace administrator assignments stay separate from the bootstrap Tenant
+                    Admin role.
+                  </p>
+                ) : null}
+              </div>
               <Badge
                 variant={roleCodesWithOptionalWarnings.has(role.roleCode) ? 'warning' : 'success'}
               >

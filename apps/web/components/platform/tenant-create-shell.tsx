@@ -64,7 +64,7 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
     key: TenantCreateStepKeyEnum.ROLE_SELECTION,
     title: 'Role selection',
     description:
-      'Preview where default tenant roles and management-system selections will be configured later.',
+      'Confirm the required Tenant Admin bootstrap role and any separate workspace roles this tenant needs.',
     placeholderLabel: 'Role selection placeholder notes',
   },
   {
@@ -89,7 +89,7 @@ const INITIAL_TENANT_INFO: TenantInfoStepData = {
   managementSystemTypeCode: null,
 };
 
-const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const BOOTSTRAP_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.TENANT_ADMIN]);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^[a-z0-9_]+$/;
 
@@ -99,8 +99,6 @@ const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
 const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
 
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
-const normalizeSubmissionRoleCode = (roleCode: RoleCode): RoleCode =>
-  roleCode === RoleCodeEnum.ADMIN ? RoleCodeEnum.TENANT_ADMIN : roleCode;
 
 const normalizeUsernameInput = (value: string) =>
   value
@@ -156,7 +154,7 @@ const toOnboardingInitialUserInput = ({
 }: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
   displayName,
   email,
-  roleCode: normalizeSubmissionRoleCode(roleCode),
+  roleCode,
   username,
 });
 
@@ -166,7 +164,7 @@ type EmailAvailabilityState = {
 };
 
 const getRoleLabel = (role: TenantCreateRoleOption) =>
-  ADMIN_ROLE_CODES.has(role.roleCode) ? 'Tenant Admins' : role.displayName;
+  role.roleCode === RoleCodeEnum.TENANT_ADMIN ? 'Tenant Admin' : role.displayName;
 
 const getSelectedRoleSections = (
   roleOptions: TenantCreateRoleOption[],
@@ -175,8 +173,8 @@ const getSelectedRoleSections = (
   roleOptions
     .filter((role) => selectedRoleCodes.has(role.roleCode))
     .sort((left, right) => {
-      const leftIsAdmin = left.isRequired || ADMIN_ROLE_CODES.has(left.roleCode);
-      const rightIsAdmin = right.isRequired || ADMIN_ROLE_CODES.has(right.roleCode);
+      const leftIsAdmin = left.isRequired || BOOTSTRAP_ROLE_CODES.has(left.roleCode);
+      const rightIsAdmin = right.isRequired || BOOTSTRAP_ROLE_CODES.has(right.roleCode);
 
       if (leftIsAdmin !== rightIsAdmin) {
         return leftIsAdmin ? -1 : 1;
@@ -222,7 +220,7 @@ const getUserAssignmentValidationState = (
 
     if (
       !roleSection.isRequired &&
-      !ADMIN_ROLE_CODES.has(roleSection.roleCode) &&
+      !BOOTSTRAP_ROLE_CODES.has(roleSection.roleCode) &&
       !hasAnyPopulatedRow
     ) {
       optionalWarningRoleCodes.add(roleSection.roleCode);
@@ -306,17 +304,17 @@ const getUserAssignmentValidationState = (
 
   emailRowsByValue.forEach((rows, normalizedEmail) => {
     if (rows.length > 1) {
-      const hasAdminRow = rows.some((row) => ADMIN_ROLE_CODES.has(row.roleCode));
-      const hasNonAdminRow = rows.some((row) => !ADMIN_ROLE_CODES.has(row.roleCode));
+      const hasBootstrapRow = rows.some((row) => BOOTSTRAP_ROLE_CODES.has(row.roleCode));
+      const hasNonBootstrapRow = rows.some((row) => !BOOTSTRAP_ROLE_CODES.has(row.roleCode));
       const roleCodes = new Set(rows.map((row) => row.roleCode));
 
-      if (hasAdminRow && hasNonAdminRow) {
+      if (hasBootstrapRow && hasNonBootstrapRow) {
         rows.forEach((row) => {
           setRowFieldError(
             fieldErrorsByRowId,
             row.rowId,
             'email',
-            'Admins cannot be assigned to roles',
+            'Tenant Admin cannot be assigned to additional roles',
           );
         });
         return;
@@ -389,13 +387,13 @@ const getUserAssignmentValidationState = (
       hasPendingEmailAvailabilityChecks = true;
     }
 
-    if (ADMIN_ROLE_CODES.has(draft.roleCode) && !rowHasErrors) {
+    if (BOOTSTRAP_ROLE_CODES.has(draft.roleCode) && !rowHasErrors) {
       hasValidAdmin = true;
     }
   });
 
   for (const roleSection of roleSections) {
-    if (roleSection.isRequired || ADMIN_ROLE_CODES.has(roleSection.roleCode)) {
+    if (roleSection.isRequired || BOOTSTRAP_ROLE_CODES.has(roleSection.roleCode)) {
       const draftRowsForRole = assignmentDraftsByRole[roleSection.roleCode] ?? [];
       const hasValidRow = draftRowsForRole.some((draft) => {
         if (isDraftEmpty(draft)) {
@@ -537,9 +535,7 @@ export const TenantCreateShell = () => {
   );
   const onboardingPayloadCandidate = {
     initialUsers: populatedAssignmentRows.map(toOnboardingInitialUserInput),
-    selectedRoleCodes: selectedRoleSections.map((roleSection) =>
-      normalizeSubmissionRoleCode(roleSection.roleCode),
-    ),
+    selectedRoleCodes: selectedRoleSections.map((roleSection) => roleSection.roleCode),
     tenant: {
       managementSystemTypeCode: tenantInfoData.managementSystemTypeCode,
       name: tenantInfoData.name,
@@ -945,7 +941,7 @@ export const TenantCreateShell = () => {
                 selectedRoleCodes={selectedRoleCodes}
                 submissionErrorMessage={submissionErrorMessage}
                 tenantAdminRows={populatedAssignmentRows.filter((row) =>
-                  ADMIN_ROLE_CODES.has(row.roleCode),
+                  BOOTSTRAP_ROLE_CODES.has(row.roleCode),
                 )}
                 tenantInfoFields={[
                   { label: 'Tenant Name', value: tenantInfoData.name.trim() || 'Not provided' },

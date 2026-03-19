@@ -40,10 +40,20 @@ describe('platform tenant create reference data integration', () => {
             id: 'transportation-admin',
             isDefault: true,
             role: {
-              id: 'tenant-admin',
+              id: 'workspace-admin',
               roleCode: RoleCodeEnum.ADMIN,
               displayName: 'Admin',
-              description: 'Baseline administrator role.',
+              description: 'Management-system administrator role inside the tenant workspace.',
+            },
+          },
+          {
+            id: 'transportation-tenant-admin',
+            isDefault: true,
+            role: {
+              id: 'tenant-admin',
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
+              displayName: 'Tenant Admin',
+              description: 'Bootstrap tenant shell administrator role.',
             },
           },
         ],
@@ -67,9 +77,9 @@ describe('platform tenant create reference data integration', () => {
               {
                 roleCode: RoleCodeEnum.ADMIN,
                 displayName: 'Admin',
-                description: 'Baseline administrator role.',
+                description: 'Management-system administrator role inside the tenant workspace.',
                 isDefault: true,
-                isRequired: true,
+                isRequired: false,
               },
               {
                 roleCode: RoleCodeEnum.DRIVER,
@@ -77,6 +87,13 @@ describe('platform tenant create reference data integration', () => {
                 description: 'Executes transportation work.',
                 isDefault: true,
                 isRequired: false,
+              },
+              {
+                roleCode: RoleCodeEnum.TENANT_ADMIN,
+                displayName: 'Tenant Admin',
+                description: 'Bootstrap tenant shell administrator role.',
+                isDefault: true,
+                isRequired: true,
               },
             ],
           },
@@ -126,8 +143,8 @@ describe('platform tenant create reference data integration', () => {
             isDefault: true,
             role: {
               id: 'tenant-admin',
-              roleCode: RoleCodeEnum.ADMIN,
-              displayName: 'Admin',
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
+              displayName: 'Tenant Admin',
               description: null,
             },
           },
@@ -147,8 +164,8 @@ describe('platform tenant create reference data integration', () => {
       description: null,
       roleOptions: [
         {
-          roleCode: RoleCodeEnum.ADMIN,
-          displayName: 'Admin',
+          roleCode: RoleCodeEnum.TENANT_ADMIN,
+          displayName: 'Tenant Admin',
           description: null,
           isDefault: true,
           isRequired: true,

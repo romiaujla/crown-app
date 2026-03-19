@@ -47,18 +47,20 @@ type TenantCreateStepUserAssignmentProps = {
   showErrors: boolean;
 };
 
-const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const BOOTSTRAP_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.TENANT_ADMIN]);
 const ROW_FIELDS: DraftField[] = ['displayName', 'username', 'email'];
 
-const isAdminRole = (roleCode: RoleCode) => ADMIN_ROLE_CODES.has(roleCode);
+const isBootstrapRole = (roleCode: RoleCode) => BOOTSTRAP_ROLE_CODES.has(roleCode);
 
 const getSectionTitle = (role: TenantCreateRoleOption) =>
-  isAdminRole(role.roleCode) ? 'Tenant Admins' : role.displayName;
+  role.roleCode === RoleCodeEnum.TENANT_ADMIN ? 'Tenant Admin' : role.displayName;
 
 const getSectionDescription = (role: TenantCreateRoleOption) =>
-  isAdminRole(role.roleCode)
+  role.roleCode === RoleCodeEnum.TENANT_ADMIN
     ? 'Add at least one tenant admin to continue'
-    : 'Add users to this role or leave it empty';
+    : role.roleCode === RoleCodeEnum.ADMIN
+      ? 'Add workspace administrators or leave this role empty'
+      : 'Add users to this role or leave it empty';
 
 const getRefKey = (roleCode: RoleCode, rowId: string, field: DraftField) =>
   `${roleCode}:${rowId}:${field}`;
@@ -107,7 +109,7 @@ export const TenantCreateStepUserAssignment = ({
 
       {roleSections.map((role) => {
         const sectionRows = assignmentDraftsByRole[role.roleCode] ?? [];
-        const isRequiredSection = role.isRequired || isAdminRole(role.roleCode);
+        const isRequiredSection = role.isRequired || isBootstrapRole(role.roleCode);
         const shouldShowRequiredError =
           showErrors && roleCodesWithRequiredErrors.has(role.roleCode);
 
