@@ -110,7 +110,8 @@ export const TenantCreateStepUserAssignment = ({
       {roleSections.map((role) => {
         const sectionRows = assignmentDraftsByRole[role.roleCode] ?? [];
         const isRequiredSection = role.isRequired || isAdminRole(role.roleCode);
-        const shouldShowRequiredError = roleCodesWithRequiredErrors.has(role.roleCode);
+        const shouldShowRequiredError =
+          showErrors && roleCodesWithRequiredErrors.has(role.roleCode);
 
         return (
           <Card
@@ -136,9 +137,10 @@ export const TenantCreateStepUserAssignment = ({
               </div>
 
               {shouldShowRequiredError ? (
-                <p className="text-sm font-medium text-destructive">
-                  At least one tenant admin is required
-                </p>
+                <Alert severity="error">
+                  <AlertTriangle aria-hidden="true" className="h-4 w-4" />
+                  <AlertTitle>At least one tenant admin is required</AlertTitle>
+                </Alert>
               ) : null}
             </CardHeader>
 
