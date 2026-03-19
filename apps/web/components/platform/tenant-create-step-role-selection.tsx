@@ -53,7 +53,7 @@ export const TenantCreateStepRoleSelection = ({
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
           No roles available
         </p>
-        <p className="mt-3 text-sm leading-7 text-stone-600">
+        <p className="mt-3 text-sm text-stone-600">
           Select a management system type in step 1 to see the available roles for this tenant.
         </p>
       </div>
@@ -74,7 +74,7 @@ export const TenantCreateStepRoleSelection = ({
         data-testid="role-selection-admin-guidance"
       >
         <p className="font-semibold">Tenant Admin and Admin are separate roles.</p>
-        <p className="mt-1 leading-6 text-amber-900/90">
+        <p className="mt-1 text-amber-900/90">
           Tenant Admin is the required bootstrap role for tenant setup. Admin is an optional
           management-system role inside the tenant workspace when that product needs one.
         </p>
@@ -117,17 +117,17 @@ export const TenantCreateStepRoleSelection = ({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-stone-900">{role.displayName}</span>
-                <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-medium text-stone-600">
+                <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600">
                   {getRoleContextLabel(role.roleCode)}
                 </span>
                 {role.isRequired && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-medium text-stone-500">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
                     <Lock aria-hidden="true" className="h-3 w-3" />
                     Required
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm leading-relaxed text-stone-500">{rationale}</p>
+              <p className="mt-1 text-sm text-stone-500">{rationale}</p>
             </div>
           </div>
         );

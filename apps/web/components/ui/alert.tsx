@@ -83,10 +83,7 @@ AlertTitle.displayName = 'AlertTitle';
 const AlertDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
-      className={cn(
-        'text-sm leading-6 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-0.5',
-        className,
-      )}
+      className={cn('text-sm [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-0.5', className)}
       ref={ref}
       {...props}
     />

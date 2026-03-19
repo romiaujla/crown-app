@@ -111,6 +111,29 @@ Use consistent spacing tokens:
 - Do not introduce arbitrary font sizes
 - Avoid excessive uppercase usage
 - Keep descriptions concise (1–2 lines max)
+- Use `Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` as the only UI font stack
+- Stay within the approved type scale only:
+  - `text-xs` = 12px
+  - `text-sm` = 13px
+  - `text-base` = 14px
+  - `text-lg` = 16px
+  - `text-xl` = 18px
+  - `text-2xl` = 20px
+  - `text-3xl` = 24px
+- Do not use sizes below 12px or above 24px in the product UI
+- Limit font weights to `400`, `500`, and `600`
+- Keep headings within `1.2` to `1.3` line height
+- Keep form copy within `1.4` to `1.5` line height
+- Keep table text within `1.3` to `1.4` line height and apply `tabular-nums` for numeric data
+
+## 3.3 Component Typography
+
+- Page titles: `text-2xl` to `text-3xl`, `font-semibold`
+- Section titles: `text-xl`, `font-semibold`
+- Form labels: `text-sm`, `font-medium`
+- Form inputs/selects: `text-base`, `font-normal`
+- Helper text and validation hints: `text-xs`
+- Table body cells: `text-sm`, `font-normal`
 
 ---
 

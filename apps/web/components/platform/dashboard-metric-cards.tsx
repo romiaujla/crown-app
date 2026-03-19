@@ -41,8 +41,8 @@ export const SummaryMetricCard = ({ title, value, description }: SummaryMetricCa
   <Card className="rounded-3xl border-stone-200 bg-stone-50/90 shadow-sm">
     <CardContent className="p-5">
       <h4 className="mt-3 text-lg font-semibold text-stone-950">{title}</h4>
-      <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
-      <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
+      <p className="mt-4 text-3xl font-semibold tabular-nums text-stone-950">{value}</p>
+      <p className="mt-4 text-sm text-stone-600">{description}</p>
     </CardContent>
   </Card>
 );
@@ -68,7 +68,7 @@ export const WindowMetricCard = ({
             <Button
               key={window}
               aria-pressed={isSelected}
-              className="min-w-0 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] xl:px-3"
+              className="min-w-0 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] xl:px-3"
               onClick={() => onSelectWindow(window)}
               size="sm"
               type="button"
@@ -80,8 +80,8 @@ export const WindowMetricCard = ({
         })}
       </div>
       <h4 className="mt-4 text-lg font-semibold text-stone-950">{title}</h4>
-      <p className="mt-4 text-4xl font-semibold tracking-tight text-stone-950">{value}</p>
-      <p className="mt-4 text-sm leading-6 text-stone-600">{description}</p>
+      <p className="mt-4 text-3xl font-semibold tabular-nums text-stone-950">{value}</p>
+      <p className="mt-4 text-sm text-stone-600">{description}</p>
     </CardContent>
   </Card>
 );

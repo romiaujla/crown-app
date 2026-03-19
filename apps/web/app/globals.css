@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 :root {
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 24px;
   --background-hsl: 40 22% 92%;
   --foreground-hsl: 35 27% 9%;
   --card-hsl: 36 33% 95%;
@@ -70,7 +77,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-base text-foreground antialiased;
   }
 }
 
@@ -83,7 +90,15 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: var(--text-md);
+  line-height: 1.5;
   background: transparent;
   color: var(--ink);
 }
@@ -93,15 +108,26 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
 p,
 h1,
 h2,
-h3 {
+h3,
+h4 {
   margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: 600;
 }
 
 .navigation-card,
@@ -175,7 +201,7 @@ h3 {
 
 .field-error {
   color: rgba(177, 62, 46, 0.82);
-  font-size: 0.78rem;
+  font-size: var(--text-xs);
   line-height: 1.3;
 }
 

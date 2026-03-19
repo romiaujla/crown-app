@@ -88,7 +88,7 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
   const labelButton = (
     <button
       aria-label={label}
-      className="block w-full truncate text-left text-[9px] font-semibold uppercase leading-tight tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:text-[11px] sm:tracking-[0.14em]"
+      className="block w-full truncate text-left text-xs font-semibold uppercase tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:tracking-[0.14em]"
       data-testid={`platform-footprint-kpi-label-${status}`}
       onFocus={refreshTruncation}
       onClick={() => {
@@ -234,7 +234,7 @@ const DashboardOverviewSection = () => {
             <CardTitle className="text-3xl text-stone-950">
               {tenantSummary.totalTenantCount} tenants
             </CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+            <CardDescription className="max-w-2xl text-sm text-stone-600">
               Current tenant count with lifecycle status KPIs for the platform.
             </CardDescription>
           </div>
@@ -251,7 +251,7 @@ const DashboardOverviewSection = () => {
                 data-testid="platform-footprint-kpi-card"
               >
                 <DashboardStatusKpiLabel status={entry.status} />
-                <p className="mt-2 text-lg font-semibold leading-none text-stone-950 sm:mt-3 sm:text-[1.75rem]">
+                <p className="mt-2 text-3xl font-semibold tabular-nums text-stone-950 sm:mt-3">
                   {entry.count}
                 </p>
               </div>
@@ -266,7 +266,7 @@ const DashboardOverviewSection = () => {
           </CardDescription>
           <div className="space-y-2">
             <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
-            <CardDescription className="max-w-2xl text-sm leading-6 text-stone-600">
+            <CardDescription className="max-w-2xl text-sm text-stone-600">
               Review total users plus the currently selected trailing window for new tenants and
               tenant growth rate.
             </CardDescription>

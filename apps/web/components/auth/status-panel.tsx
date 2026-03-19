@@ -34,10 +34,10 @@ export const StatusPanel = ({
     )}
   >
     <CardHeader className="space-y-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">{eyebrow}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{eyebrow}</p>
       <div className="space-y-2">
-        <h1 className="text-4xl leading-none tracking-tight text-stone-950 sm:text-5xl">{title}</h1>
-        <CardDescription className="max-w-xl text-base leading-7 text-stone-600">
+        <h1 className="text-3xl text-stone-950">{title}</h1>
+        <CardDescription className="max-w-xl text-base text-stone-600">
           {description}
         </CardDescription>
       </div>

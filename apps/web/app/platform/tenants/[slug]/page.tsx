@@ -18,7 +18,7 @@ const PlatformTenantDetailsEntryPage = ({ params }: PlatformTenantDetailsEntryPa
           </CardDescription>
           <CardTitle className="text-2xl text-stone-950">Tenant details coming soon</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 pt-0 text-sm leading-7 text-stone-600">
+        <CardContent className="space-y-3 pt-0 text-sm text-stone-600">
           <p>
             This route is a stable entry point for the future tenant-details workflow. Detailed
             tenant management remains follow-up scope for this story.

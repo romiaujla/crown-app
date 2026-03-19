@@ -151,7 +151,7 @@ export const WorkspaceShell = ({
           <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
             <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-stone-500">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500">
                   Authenticated as
                 </p>
                 <p className="text-lg font-semibold text-stone-950">{userDisplayName}</p>
@@ -168,7 +168,7 @@ export const WorkspaceShell = ({
                 {shellLabel ? (
                   <p
                     className={cn(
-                      'text-xs font-semibold uppercase tracking-[0.28em]',
+                      'text-xs font-semibold uppercase tracking-[0.22em]',
                       style.accent,
                     )}
                   >
@@ -176,17 +176,15 @@ export const WorkspaceShell = ({
                   </p>
                 ) : null}
                 <div className="space-y-3">
-                  <h1 className="text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-                    {title}
-                  </h1>
-                  <p className="max-w-3xl text-base leading-7 text-stone-600">{description}</p>
+                  <h1 className="text-3xl text-stone-950">{title}</h1>
+                  <p className="max-w-3xl text-base text-stone-600">{description}</p>
                 </div>
               </div>
               <Card className={cn('border shadow-none', style.panel)}>
                 <CardHeader className="space-y-2">
                   <CardDescription
                     className={cn(
-                      'text-xs font-semibold uppercase tracking-[0.22em]',
+                      'text-xs font-semibold uppercase tracking-[0.14em]',
                       style.accent,
                     )}
                   >
@@ -196,9 +194,7 @@ export const WorkspaceShell = ({
                     {contextValue}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-0 text-sm leading-6 text-stone-600">
-                  {contextNote}
-                </CardContent>
+                <CardContent className="pt-0 text-sm text-stone-600">{contextNote}</CardContent>
               </Card>
             </CardContent>
           </Card>
@@ -250,7 +246,7 @@ export const WorkspaceShell = ({
                             <span className="sidebar-nav__label">{item.title}</span>
                             <span
                               aria-hidden="true"
-                              className="sidebar-nav__tooltip rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold tracking-[0.08em] text-stone-950 shadow-xl"
+                              className="sidebar-nav__tooltip rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold tracking-[0.14em] text-stone-950 shadow-xl"
                               role="tooltip"
                             >
                               {item.title}
@@ -316,18 +312,18 @@ export const WorkspaceShell = ({
                   <div className="min-w-0 flex-1 space-y-2 sm:space-y-3">
                     <CardDescription
                       className={cn(
-                        'text-[0.65rem] font-semibold uppercase tracking-[0.22em] sm:text-xs sm:tracking-[0.28em]',
+                        'text-xs font-semibold uppercase tracking-[0.14em]',
                         style.accent,
                       )}
                     >
                       {layoutProps.sectionEyebrow}
                     </CardDescription>
                     <div className="space-y-2 sm:space-y-3">
-                      <CardTitle className="text-2xl leading-tight tracking-tight text-stone-950 sm:text-3xl">
+                      <CardTitle className="text-2xl text-stone-950 sm:text-3xl">
                         {layoutProps.sectionTitle}
                       </CardTitle>
                       {layoutProps.sectionDescription ? (
-                        <CardDescription className="max-w-3xl text-base leading-7 text-stone-600">
+                        <CardDescription className="max-w-3xl text-base text-stone-600">
                           {layoutProps.sectionDescription}
                         </CardDescription>
                       ) : null}
@@ -350,11 +346,11 @@ export const WorkspaceShell = ({
             >
               <CardHeader className="space-y-2">
                 <CardDescription
-                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                  className={cn('text-xs font-semibold uppercase tracking-[0.22em]', style.accent)}
                 >
                   Primary navigation
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">
+                <CardTitle className="text-3xl text-stone-950">
                   {layoutProps.navigationTitle}
                 </CardTitle>
               </CardHeader>
@@ -364,7 +360,7 @@ export const WorkspaceShell = ({
                     <CardHeader className="space-y-3">
                       <CardDescription
                         className={cn(
-                          'text-xs font-semibold uppercase tracking-[0.22em]',
+                          'text-xs font-semibold uppercase tracking-[0.14em]',
                           style.accent,
                         )}
                       >
@@ -372,7 +368,7 @@ export const WorkspaceShell = ({
                       </CardDescription>
                       <CardTitle className="text-xl text-stone-950">{item.title}</CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">
+                    <CardContent className="pt-0 text-sm text-stone-600">
                       {item.description}
                     </CardContent>
                   </Card>
@@ -385,11 +381,11 @@ export const WorkspaceShell = ({
             >
               <CardHeader className="space-y-2">
                 <CardDescription
-                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                  className={cn('text-xs font-semibold uppercase tracking-[0.22em]', style.accent)}
                 >
                   {layoutProps.overviewEyebrow}
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">
+                <CardTitle className="text-3xl text-stone-950">
                   {layoutProps.overviewTitle}
                 </CardTitle>
               </CardHeader>
@@ -399,17 +395,17 @@ export const WorkspaceShell = ({
                     <CardHeader className="space-y-3">
                       <CardDescription
                         className={cn(
-                          'text-xs font-semibold uppercase tracking-[0.22em]',
+                          'text-xs font-semibold uppercase tracking-[0.14em]',
                           style.accent,
                         )}
                       >
                         {card.title}
                       </CardDescription>
-                      <CardTitle className="text-2xl text-stone-950">{card.value}</CardTitle>
+                      <CardTitle className="text-2xl tabular-nums text-stone-950">
+                        {card.value}
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0 text-sm leading-6 text-stone-600">
-                      {card.detail}
-                    </CardContent>
+                    <CardContent className="pt-0 text-sm text-stone-600">{card.detail}</CardContent>
                   </Card>
                 ))}
               </CardContent>
@@ -418,15 +414,13 @@ export const WorkspaceShell = ({
             <Card className={cn('border shadow-lg shadow-stone-950/5 backdrop-blur', style.empty)}>
               <CardHeader className="space-y-2">
                 <CardDescription
-                  className={cn('text-xs font-semibold uppercase tracking-[0.28em]', style.accent)}
+                  className={cn('text-xs font-semibold uppercase tracking-[0.22em]', style.accent)}
                 >
                   {layoutProps.emptyEyebrow}
                 </CardDescription>
-                <CardTitle className="text-3xl tracking-tight text-stone-950">
-                  {layoutProps.emptyTitle}
-                </CardTitle>
+                <CardTitle className="text-3xl text-stone-950">{layoutProps.emptyTitle}</CardTitle>
               </CardHeader>
-              <CardContent className="pt-0 text-base leading-7 text-stone-600">
+              <CardContent className="pt-0 text-base text-stone-600">
                 {layoutProps.emptyDescription}
               </CardContent>
             </Card>
