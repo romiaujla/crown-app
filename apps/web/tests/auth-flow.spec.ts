@@ -942,7 +942,9 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
   await dispatcherRow.getByLabel('Email').fill('shared@crown.test');
 
   await page.getByRole('button', { name: 'Next' }).click();
-  await expect(page.getByText('Admins cannot be assigned to roles')).toHaveCount(2);
+  await expect(page.getByText('Tenant Admin cannot be assigned to additional roles')).toHaveCount(
+    2,
+  );
 
   await page.getByRole('button', { name: 'Step 1: Tenant info' }).click();
   await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
@@ -962,6 +964,57 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
   await expect(page.getByTestId('user-assignment-section-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-dispatcher')).toHaveCount(0);
   await expect(page.locator('input[value="shared@crown.test"]')).toHaveCount(0);
+});
+
+test('tenant create step 3 keeps Admin separate from Tenant Admin requirements', async ({
+  page,
+}) => {
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    referenceDataResponse: buildReferenceDataResponseWithSeparateAdminRoles(),
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
+  );
+
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  await expect(page.getByTestId('user-assignment-section-tenant_admin')).toContainText(
+    'Tenant Admin',
+  );
+  await expect(page.getByTestId('user-assignment-section-tenant_admin')).toContainText(
+    'Add at least one tenant admin to continue',
+  );
+  await expect(page.getByTestId('user-assignment-section-admin')).toContainText('Admin');
+  await expect(page.getByTestId('user-assignment-section-admin')).toContainText(
+    'Add workspace administrators or leave this role empty',
+  );
+  await expect(page.getByTestId('user-assignment-section-admin')).toContainText('Optional');
+
+  const tenantAdminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
+  const tenantAdminEmailResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await tenantAdminRow.getByLabel('Display name').fill('Taylor Tenant Admin');
+  await tenantAdminRow.getByLabel('Username').fill('taylor_tenant_admin');
+  await tenantAdminRow.getByLabel('Email').fill('taylor.tenant.admin@crown.test');
+  await tenantAdminEmailResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
 });
 
 test('tenant create step 3 auto-generates usernames until a manual edit is made', async ({
