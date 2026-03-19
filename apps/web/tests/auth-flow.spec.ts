@@ -1126,6 +1126,59 @@ test('tenant create step 4 summarizes the latest draft data in a read-only revie
   );
 });
 
+test('tenant create step 4 keeps Admin separate from the Tenant Admin review summary', async ({
+  page,
+}) => {
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    referenceDataResponse: buildReferenceDataResponseWithSeparateAdminRoles(),
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
+  );
+
+  await page.goto('/platform/tenants/new');
+  await page.getByLabel('Tenant name').fill('Separation Logistics');
+  const slugResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/slug-availability') && resp.status() === 200,
+  );
+  await slugResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const tenantAdminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
+  const tenantAdminEmailResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await tenantAdminRow.getByLabel('Display name').fill('Taylor Tenant Admin');
+  await tenantAdminRow.getByLabel('Username').fill('taylor_tenant_admin');
+  await tenantAdminRow.getByLabel('Email').fill('taylor.tenant.admin@crown.test');
+  await tenantAdminEmailResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  await expect(page.getByTestId('review-role-tenant_admin')).toContainText('Bootstrap role');
+  await expect(page.getByTestId('review-role-admin')).toContainText('Workspace role');
+  await expect(page.getByTestId('review-tenant-admins')).toContainText('Tenant Admin');
+  await expect(page.getByTestId('review-tenant-admins')).toContainText(
+    'Bootstrap assignments for tenant shell access',
+  );
+  await expect(page.getByTestId('review-assignment-section-admin')).toContainText('Admin');
+  await expect(page.getByTestId('review-assignment-section-admin')).toContainText(
+    'Workspace administrator assignments stay separate',
+  );
+  await expect(page.getByTestId('review-assignment-table-admin-empty')).toContainText(
+    '[No users assigned]',
+  );
+});
+
 test('tenant create step 4 submits the onboarding payload and routes to tenant details on success', async ({
   page,
 }) => {
