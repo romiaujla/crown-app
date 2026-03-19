@@ -40,6 +40,16 @@ describe('platform tenant create reference data integration', () => {
             id: 'transportation-admin',
             isDefault: true,
             role: {
+              id: 'workspace-admin',
+              roleCode: RoleCodeEnum.ADMIN,
+              displayName: 'Admin',
+              description: 'Management-system administrator role inside the tenant workspace.',
+            },
+          },
+          {
+            id: 'transportation-tenant-admin',
+            isDefault: true,
+            role: {
               id: 'tenant-admin',
               roleCode: RoleCodeEnum.TENANT_ADMIN,
               displayName: 'Tenant Admin',
@@ -64,6 +74,13 @@ describe('platform tenant create reference data integration', () => {
             displayName: 'Transportation Management System',
             description: 'Transportation workflows',
             roleOptions: [
+              {
+                roleCode: RoleCodeEnum.ADMIN,
+                displayName: 'Admin',
+                description: 'Management-system administrator role inside the tenant workspace.',
+                isDefault: true,
+                isRequired: false,
+              },
               {
                 roleCode: RoleCodeEnum.DRIVER,
                 displayName: 'Driver',

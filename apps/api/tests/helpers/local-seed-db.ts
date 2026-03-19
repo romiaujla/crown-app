@@ -914,9 +914,12 @@ export const createExpectedCanonicalSnapshot = (): Record<string, unknown> => ({
     'super_admin',
   ].sort(),
   managementSystemTypeRoleKeys: [
+    `dealership:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
     `dealership:1.0:${RoleCodeEnum.ADMIN}:true`,
+    `inventory:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
     `inventory:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.ACCOUNTANT}:false`,
+    `transportation:1.0:${RoleCodeEnum.TENANT_ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.ADMIN}:true`,
     `transportation:1.0:${RoleCodeEnum.DISPATCHER}:true`,
     `transportation:1.0:${RoleCodeEnum.DRIVER}:true`,
