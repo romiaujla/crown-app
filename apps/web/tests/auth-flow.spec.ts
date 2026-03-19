@@ -174,8 +174,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Fleet and route management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.ADMIN,
-            displayName: 'Admin',
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -203,8 +203,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Vehicle sales management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.ADMIN,
-            displayName: 'Admin',
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -218,8 +218,8 @@ const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
         description: 'Stock and warehouse management',
         roleOptions: [
           {
-            roleCode: RoleCodeEnum.ADMIN,
-            displayName: 'Admin',
+            roleCode: RoleCodeEnum.TENANT_ADMIN,
+            displayName: 'Tenant Admin',
             description: null,
             isDefault: true,
             isRequired: true,
@@ -764,14 +764,14 @@ test('tenant create step 2 shows role options for selected management system typ
   await expect(page.getByTestId('role-selection-list')).toBeVisible();
 
   // Verify role cards render for Transportation defaults
-  await expect(page.getByTestId('role-option-admin')).toBeVisible();
+  await expect(page.getByTestId('role-option-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('role-option-dispatcher')).toBeVisible();
   await expect(page.getByTestId('role-option-driver')).toBeVisible();
 
-  // Verify admin role is checked and locked
-  const adminCheckbox = page.getByRole('checkbox', { name: /Admin.*required/i });
-  await expect(adminCheckbox).toBeChecked();
-  await expect(adminCheckbox).toBeDisabled();
+  // Verify tenant admin role is checked and locked
+  const tenantAdminCheckbox = page.getByRole('checkbox', { name: /Tenant Admin.*required/i });
+  await expect(tenantAdminCheckbox).toBeChecked();
+  await expect(tenantAdminCheckbox).toBeDisabled();
 
   // Verify optional roles start checked (isDefault = true)
   const dispatcherCheckbox = page.getByRole('checkbox', { name: 'Dispatcher' });
@@ -824,7 +824,7 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
 
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
-  await expect(page.getByTestId('user-assignment-section-admin')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-dispatcher')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-driver')).toBeVisible();
   await expect(page.getByText('Add users to this role or leave it empty')).toHaveCount(2);
@@ -832,13 +832,13 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(
     page
-      .getByTestId('user-assignment-section-admin')
+      .getByTestId('user-assignment-section-tenant_admin')
       .getByText('At least one tenant admin is required')
       .last(),
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const emailAvailabilityResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
@@ -847,7 +847,7 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
   await adminRow.getByLabel('Username').fill('alex_admin');
   await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
   await emailAvailabilityResponse;
-  await expect(page.getByTestId('user-assignment-row-admin-1')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-row-tenant_admin-1')).toBeVisible();
 
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
@@ -876,7 +876,7 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   await adminRow.getByLabel('Display name').fill('Alex Admin');
   await adminRow.getByLabel('Username').fill('alex_admin');
   await adminRow.getByLabel('Email').fill('shared@crown.test');
@@ -899,12 +899,12 @@ test('tenant create step 3 validates duplicate emails and clears assignments aft
   await expect(dialog).not.toBeVisible();
 
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
-  await expect(page.getByTestId('role-option-admin')).toBeVisible();
+  await expect(page.getByTestId('role-option-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('role-option-dispatcher')).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
-  await expect(page.getByTestId('user-assignment-section-admin')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-dispatcher')).toHaveCount(0);
   await expect(page.locator('input[value="shared@crown.test"]')).toHaveCount(0);
 });
@@ -925,7 +925,7 @@ test('tenant create step 3 auto-generates usernames until a manual edit is made'
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const usernameInput = adminRow.getByLabel('Username');
 
   await adminRow.getByLabel('Display name').fill('Jane Doe');
@@ -955,7 +955,7 @@ test('tenant create step 3 blocks existing system emails returned by the availab
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const emailAvailabilityResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
@@ -991,7 +991,7 @@ test('tenant create step 4 summarizes the latest draft data in a read-only revie
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const adminEmailResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
@@ -1006,7 +1006,7 @@ test('tenant create step 4 summarizes the latest draft data in a read-only revie
   await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
   await expect(page.getByTestId('review-tenant-info')).toContainText('Acme Logistics');
   await expect(page.getByTestId('review-tenant-info')).toContainText('acme-logistics');
-  await expect(page.getByTestId('review-role-admin')).toContainText('Enabled');
+  await expect(page.getByTestId('review-role-tenant_admin')).toContainText('Enabled');
   await expect(page.getByTestId('review-role-dispatcher')).toContainText('Enabled');
   await expect(page.getByTestId('review-role-driver')).toContainText('Enabled');
   await expect(page.getByTestId('review-tenant-admins-table')).toContainText('Alex Admin');
@@ -1045,7 +1045,7 @@ test('tenant create step 4 submits the onboarding payload and routes to tenant d
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const adminEmailResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
@@ -1057,10 +1057,26 @@ test('tenant create step 4 submits the onboarding payload and routes to tenant d
 
   await page.getByRole('button', { name: 'Next' }).click();
 
+  const tenantCreateRequest = page.waitForRequest((request) => {
+    if (!request.url().includes('/platform/tenant') || request.method() !== 'POST') {
+      return false;
+    }
+
+    const payload = request.postDataJSON() as {
+      initialUsers?: Array<{ roleCode?: string }>;
+      selectedRoleCodes?: string[];
+    } | null;
+
+    return (
+      payload?.selectedRoleCodes?.includes('tenant_admin') === true &&
+      payload.initialUsers?.some((initialUser) => initialUser.roleCode === 'tenant_admin') === true
+    );
+  });
   const createResponse = page.waitForResponse(
     (resp) => resp.url().includes('/platform/tenant') && resp.status() === 201,
   );
   await page.getByRole('button', { name: 'Create tenant' }).click();
+  await tenantCreateRequest;
 
   await expect(page.getByRole('button', { name: 'Creating tenant' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Back' })).toBeDisabled();
@@ -1099,7 +1115,7 @@ test('tenant create step 4 keeps draft state and allows retry-safe recovery afte
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 
-  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
   const adminEmailResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,

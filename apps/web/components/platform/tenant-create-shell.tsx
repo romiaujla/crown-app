@@ -99,8 +99,6 @@ const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
 const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
 
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
-const normalizeSubmissionRoleCode = (roleCode: RoleCode): RoleCode =>
-  roleCode === RoleCodeEnum.ADMIN ? RoleCodeEnum.TENANT_ADMIN : roleCode;
 
 const normalizeUsernameInput = (value: string) =>
   value
@@ -156,7 +154,7 @@ const toOnboardingInitialUserInput = ({
 }: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
   displayName,
   email,
-  roleCode: normalizeSubmissionRoleCode(roleCode),
+  roleCode,
   username,
 });
 
@@ -537,9 +535,7 @@ export const TenantCreateShell = () => {
   );
   const onboardingPayloadCandidate = {
     initialUsers: populatedAssignmentRows.map(toOnboardingInitialUserInput),
-    selectedRoleCodes: selectedRoleSections.map((roleSection) =>
-      normalizeSubmissionRoleCode(roleSection.roleCode),
-    ),
+    selectedRoleCodes: selectedRoleSections.map((roleSection) => roleSection.roleCode),
     tenant: {
       managementSystemTypeCode: tenantInfoData.managementSystemTypeCode,
       name: tenantInfoData.name,
