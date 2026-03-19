@@ -896,7 +896,7 @@ export const TenantCreateShell = () => {
               Step {currentStepIndex + 1} of {tenantCreateSteps.length}
             </p>
             <h3 className="text-xl font-semibold text-stone-950">{currentStep.title}</h3>
-            <p className="text-sm leading-6 text-stone-600">{currentStep.description}</p>
+            <p className="text-sm text-stone-600">{currentStep.description}</p>
           </div>
 
           <div className="space-y-4">
@@ -968,7 +968,7 @@ export const TenantCreateShell = () => {
                   <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
                     Placeholder wiring
                   </p>
-                  <p className="mt-3 text-sm leading-7 text-stone-600">
+                  <p className="mt-3 text-sm text-stone-600">
                     This step is here to anchor the guided layout, progress indicator, and future
                     extension point for tenant onboarding work. The actual form rules, validation,
                     and submission behavior ship separately.

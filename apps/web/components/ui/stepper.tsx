@@ -75,7 +75,7 @@ export const Stepper = ({
         );
 
         const labelClassName = cn(
-          'text-[0.65rem] font-medium uppercase tracking-wider transition-colors duration-200',
+          'text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-200',
           isCompleted ? 'text-[#22C55E]/70' : isCurrent ? 'text-primary/60' : 'text-stone-300',
         );
 
@@ -84,7 +84,7 @@ export const Stepper = ({
           isCompleted
             ? 'text-sm font-semibold text-[#22C55E]'
             : isCurrent
-              ? 'text-sm font-bold text-primary'
+              ? 'text-sm font-semibold text-primary'
               : 'text-sm font-medium text-stone-400/80',
         );
 

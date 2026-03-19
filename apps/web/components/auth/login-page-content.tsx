@@ -77,14 +77,10 @@ export const LoginPageContent = () => {
           <CardContent className="grid min-h-[560px] gap-8 p-8 lg:grid-cols-[0.9fr_minmax(0,1.1fr)] lg:items-center">
             <div className="flex h-full items-center">
               <div className="space-y-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
                   Sign in to
                 </p>
-                <h1
-                  id="login-title"
-                  aria-label="Enter Crown"
-                  className="text-5xl font-semibold tracking-tight text-stone-950 sm:text-6xl"
-                >
+                <h1 id="login-title" aria-label="Enter Crown" className="text-3xl text-stone-950">
                   Crown
                 </h1>
               </div>
@@ -92,14 +88,12 @@ export const LoginPageContent = () => {
 
             <Card className="border-white/70 bg-[#ede7de]/95 shadow-sm">
               <CardHeader className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
                   Login
                 </p>
                 <div className="space-y-2">
-                  <CardTitle className="text-3xl tracking-tight text-stone-950">
-                    Access your workspace
-                  </CardTitle>
-                  <CardDescription className="text-base leading-7 text-stone-600">
+                  <CardTitle className="text-2xl text-stone-950">Access your workspace</CardTitle>
+                  <CardDescription className="text-base text-stone-600">
                     Enter your credentials so Crown can take you to your destination.
                   </CardDescription>
                 </div>

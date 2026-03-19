@@ -114,7 +114,7 @@ type PlatformShellFrameProps = {
 
 export const PlatformSectionPlaceholder = ({ description }: { description: string }) => (
   <Card className="border-white/70 bg-white/92 shadow-sm">
-    <CardContent className="pt-6 text-sm leading-7 text-stone-600">{description}</CardContent>
+    <CardContent className="pt-6 text-sm text-stone-600">{description}</CardContent>
   </Card>
 );
 

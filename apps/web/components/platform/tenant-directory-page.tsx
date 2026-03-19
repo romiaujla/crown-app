@@ -217,7 +217,7 @@ export const TenantDirectoryPage = () => {
       ) : null}
       {viewState.status === ViewStatusEnum.SUCCESS ? (
         viewState.response.data.tenantList.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-sm leading-7 text-stone-600">
+          <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-sm text-stone-600">
             No tenants matched the current filters.
           </div>
         ) : (

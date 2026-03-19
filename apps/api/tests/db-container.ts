@@ -14,6 +14,31 @@ export interface TestDatabaseContainer {
 
 let container: any = undefined;
 
+const TEST_CONTAINER_RUNTIME_ERROR = 'Could not find a working container runtime strategy';
+
+function buildContainerRuntimeError(error: unknown): Error {
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+        ? error
+        : 'Unknown container runtime error';
+
+  if (!message.includes(TEST_CONTAINER_RUNTIME_ERROR)) {
+    return error instanceof Error ? error : new Error(message);
+  }
+
+  return new Error(
+    [
+      'API tests require a working container runtime for testcontainers.',
+      'Start Docker Desktop (or another supported runtime) and make sure this shell can reach it.',
+      'A quick check is `docker info`.',
+      'Original error: Could not find a working container runtime strategy.',
+    ].join(' '),
+    { cause: error instanceof Error ? error : undefined },
+  );
+}
+
 /**
  * Starts an ephemeral PostgreSQL test container
  * @returns Container connection details
@@ -61,7 +86,7 @@ export async function startTestContainer(): Promise<TestDatabaseContainer> {
     return details;
   } catch (error) {
     logger.error({ error }, 'Failed to start test container');
-    throw error;
+    throw buildContainerRuntimeError(error);
   }
 }
 

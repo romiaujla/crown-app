@@ -11,7 +11,7 @@ export const SessionExpiryNotification = ({ secondsRemaining }: SessionExpiryNot
         Your session is about to expire
       </AlertTitle>
       <AlertDescription>
-        <p className="leading-6">You will be logged out soon and will need to sign in again.</p>
+        <p>You will be logged out soon and will need to sign in again.</p>
         <p className="mt-2 font-medium">
           Signing out in {secondsRemaining} second{secondsRemaining === 1 ? '' : 's'}.
         </p>

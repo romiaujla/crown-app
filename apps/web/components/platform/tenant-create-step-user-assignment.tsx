@@ -91,7 +91,7 @@ export const TenantCreateStepUserAssignment = ({
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">
           No roles selected
         </p>
-        <p className="mt-3 text-sm leading-7 text-stone-600">
+        <p className="mt-3 text-sm text-stone-600">
           Select roles in step 2 before assigning the tenant&apos;s initial users.
         </p>
       </div>

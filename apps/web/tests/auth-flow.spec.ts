@@ -596,7 +596,7 @@ test('invalid return paths fall back to the safe recommended shell', async ({ pa
 test('manual wrong-shell navigation is corrected for authenticated users', async ({ page }) => {
   await primeAuthenticatedSession(page, 'tenant_user');
 
-  await page.goto('/platform');
+  await page.goto('/platform', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/tenant$/);
   await expect(
     page.getByRole('heading', { name: 'Northwind Operations Workspace', level: 1 }),
@@ -1050,12 +1050,10 @@ test('tenant create step 3 blocks existing system emails returned by the availab
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
 
-  await page.goto('/platform/tenants/new');
-
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
-  );
-  await refDataResponse;
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await page.getByRole('option', { name: 'Transportation' }).click();
@@ -1371,12 +1369,10 @@ test('tenant create step 1 populates management system type from reference data'
 }) => {
   await primeAuthenticatedSession(page, 'super_admin');
 
-  await page.goto('/platform/tenants/new');
-
-  const refDataResponse = page.waitForResponse(
-    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
-  );
-  await refDataResponse;
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
 
   await page.getByLabel('Management system type').click();
   await expect(page.getByRole('option', { name: 'Transportation' })).toBeVisible();
@@ -1624,7 +1620,10 @@ test('tenant admin logout clears the browser token and returns to the login page
 }) => {
   await primeAuthenticatedSession(page, 'tenant_admin');
 
-  await page.goto('/tenant');
+  await page.goto('/tenant', { waitUntil: 'domcontentloaded' });
+  await expect(
+    page.getByRole('heading', { name: 'Northwind Operations Workspace', level: 1 }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Log out' }).click();
 
   await expect(page).toHaveURL(/\/login$/);

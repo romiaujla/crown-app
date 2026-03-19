@@ -67,7 +67,7 @@ const renderUserTable = (
 ) => {
   if (rows.length === 0) {
     return (
-      <p className="text-sm leading-6 text-stone-600" data-testid={`${testId}-empty`}>
+      <p className="text-sm text-stone-600" data-testid={`${testId}-empty`}>
         {emptyMessage}
       </p>
     );

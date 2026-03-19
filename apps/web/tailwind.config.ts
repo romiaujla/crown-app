@@ -8,6 +8,18 @@ const config: Config = {
     './lib/**/*.{ts,tsx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Inter', 'system-ui', 'sans-serif'],
+    },
+    fontSize: {
+      xs: ['12px', { lineHeight: '1.4' }],
+      sm: ['13px', { lineHeight: '1.45' }],
+      base: ['14px', { lineHeight: '1.5' }],
+      lg: ['16px', { lineHeight: '1.4' }],
+      xl: ['18px', { lineHeight: '1.3' }],
+      '2xl': ['20px', { lineHeight: '1.25' }],
+      '3xl': ['24px', { lineHeight: '1.2' }],
+    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
