@@ -5,10 +5,12 @@ import {
   TenantSlugAvailabilityRequestSchema,
   TenantSlugSchema,
   TenantStatusEnum,
+  TenantUserEmailAvailabilityRequestSchema,
   type TenantCreateReferenceDataFilter,
   type TenantCreateReferenceDataResponse,
   type TenantDirectoryListResponse,
   type TenantSlugAvailabilityResponse,
+  type TenantUserEmailAvailabilityResponse,
 } from '@crown/types';
 import { Router, type RequestHandler } from 'express';
 
@@ -21,6 +23,7 @@ import { sendAuthError } from '../types/errors.js';
 import { getPlatformTenantDirectory } from '../platform/tenants/directory-service.js';
 import { getPlatformTenantCreateReferenceData } from '../platform/tenants/reference-data-service.js';
 import { getPlatformTenantSlugAvailability } from '../platform/tenants/slug-availability-service.js';
+import { getPlatformTenantUserEmailAvailability } from '../platform/tenants/user-email-availability-service.js';
 import {
   DeprovisionTenantRequestSchema,
   HardDeprovisionTenantResponseSchema,
@@ -35,6 +38,9 @@ import type { DeprovisionTenantResult } from '../tenant/types.js';
 
 type PlatformTenantsRouterOptions = {
   getSlugAvailability?: (input: { slug: string }) => Promise<TenantSlugAvailabilityResponse>;
+  getUserEmailAvailability?: (input: {
+    email: string;
+  }) => Promise<TenantUserEmailAvailabilityResponse>;
   getReferenceData?: (
     filter: TenantCreateReferenceDataFilter,
   ) => Promise<TenantCreateReferenceDataResponse>;
@@ -54,6 +60,8 @@ type PlatformTenantsRouterOptions = {
 export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOptions = {}) => {
   const router = Router();
   const getSlugAvailability = options.getSlugAvailability ?? getPlatformTenantSlugAvailability;
+  const getUserEmailAvailability =
+    options.getUserEmailAvailability ?? getPlatformTenantUserEmailAvailability;
   const getReferenceData = options.getReferenceData ?? getPlatformTenantCreateReferenceData;
   const listTenants = options.listTenants ?? getPlatformTenantDirectory;
   const provision = options.provision ?? provisionTenant;
@@ -101,6 +109,28 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       }
 
       const response = await getSlugAvailability({ slug: validatedSlug.data });
+      return res.status(200).json(response);
+    },
+  );
+
+  router.post(
+    '/platform/tenant/user-email-availability',
+    authenticate,
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    searchRateLimitMiddleware,
+    async (req, res) => {
+      const parsed = TenantUserEmailAvailabilityRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant user email availability payload',
+        );
+      }
+
+      const normalizedEmail = parsed.data.email.trim().toLowerCase();
+      const response = await getUserEmailAvailability({ email: normalizedEmail });
       return res.status(200).json(response);
     },
   );

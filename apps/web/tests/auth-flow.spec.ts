@@ -160,6 +160,7 @@ const buildCurrentUser = (persona: Persona) => {
 };
 
 const knownTenantSlugs: Set<string> = new Set(baseTenantDirectoryList.map((t) => t.slug));
+const knownUserEmails = new Set(['existing.user@crown.test']);
 
 const buildReferenceDataResponse = (): TenantCreateReferenceDataResponse => ({
   data: {
@@ -299,6 +300,22 @@ const setupAuthRoutes = async (
           data: {
             slug,
             isAvailable: !knownTenantSlugs.has(slug),
+          },
+        }),
+        contentType: 'application/json',
+        status: 200,
+      });
+      return;
+    }
+
+    if (url.endsWith('/platform/tenant/user-email-availability')) {
+      const payload = request.postDataJSON() as { email?: string } | null;
+      const email = payload?.email?.trim().toLowerCase() ?? '';
+      await route.fulfill({
+        body: JSON.stringify({
+          data: {
+            email,
+            isAvailable: !knownUserEmails.has(email),
           },
         }),
         contentType: 'application/json',
@@ -748,6 +765,172 @@ test('tenant create step 2 shows empty state when no management system type sele
   await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
   await expect(page.getByTestId('role-selection-empty-state')).toBeVisible();
   await expect(page.getByText('No roles available')).toBeVisible();
+});
+
+test('tenant create step 3 requires a tenant admin before review and preserves assignment rows', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await expect(page.getByTestId('role-selection-list')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-admin')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-dispatcher')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-driver')).toBeVisible();
+  await expect(page.getByText('Add users to this role or leave it empty')).toHaveCount(2);
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(
+    page
+      .getByTestId('user-assignment-section-admin')
+      .getByText('At least one tenant admin is required')
+      .last(),
+  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const emailAvailabilityResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
+  await adminRow.getByLabel('Email').fill('alex.admin@crown.test');
+  await emailAvailabilityResponse;
+  await expect(page.getByTestId('user-assignment-row-admin-1')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'Review' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Back' }).click();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+  await expect(adminRow.locator('input[value="Alex Admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="alex_admin"]')).toBeVisible();
+  await expect(adminRow.locator('input[value="alex.admin@crown.test"]')).toBeVisible();
+});
+
+test('tenant create step 3 validates duplicate emails and clears assignments after upstream reset', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  await adminRow.getByLabel('Display name').fill('Alex Admin');
+  await adminRow.getByLabel('Username').fill('alex_admin');
+  await adminRow.getByLabel('Email').fill('shared@crown.test');
+
+  const dispatcherRow = page.getByTestId('user-assignment-row-dispatcher-0');
+  await dispatcherRow.getByLabel('Display name').fill('Drew Dispatcher');
+  await dispatcherRow.getByLabel('Username').fill('drew_dispatcher');
+  await dispatcherRow.getByLabel('Email').fill('shared@crown.test');
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByText('Admins cannot be assigned to roles')).toHaveCount(2);
+
+  await page.getByRole('button', { name: 'Step 1: Tenant info' }).click();
+  await expect(page.getByRole('heading', { name: 'Tenant info' })).toBeVisible();
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Dealership' }).click();
+  const dialog = page.getByTestId('confirm-dialog');
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Continue' }).click();
+  await expect(dialog).not.toBeVisible();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await expect(page.getByTestId('role-option-admin')).toBeVisible();
+  await expect(page.getByTestId('role-option-dispatcher')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-admin')).toBeVisible();
+  await expect(page.getByTestId('user-assignment-section-dispatcher')).toHaveCount(0);
+  await expect(page.locator('input[value="shared@crown.test"]')).toHaveCount(0);
+});
+
+test('tenant create step 3 auto-generates usernames until a manual edit is made', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await Promise.all([
+    page.waitForResponse((resp) => resp.url().includes('/reference-data') && resp.status() === 200),
+    page.goto('/platform/tenants/new'),
+  ]);
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const usernameInput = adminRow.getByLabel('Username');
+
+  await adminRow.getByLabel('Display name').fill('Jane Doe');
+  await expect(usernameInput).toHaveValue('jane_doe');
+
+  await usernameInput.fill('custom_admin');
+  await adminRow.getByLabel('Display name').fill('Jane Changed');
+
+  await expect(usernameInput).toHaveValue('custom_admin');
+});
+
+test('tenant create step 3 blocks existing system emails returned by the availability service', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/new');
+
+  const refDataResponse = page.waitForResponse(
+    (resp) => resp.url().includes('/reference-data') && resp.status() === 200,
+  );
+  await refDataResponse;
+
+  await page.getByLabel('Management system type').click();
+  await page.getByRole('option', { name: 'Transportation' }).click();
+
+  await page.getByRole('button', { name: 'Step 2: Role selection' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  const adminRow = page.getByTestId('user-assignment-row-admin-0');
+  const emailAvailabilityResponse = page.waitForResponse(
+    (resp) =>
+      resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
+  );
+
+  await adminRow.getByLabel('Display name').fill('Existing User');
+  await adminRow.getByLabel('Username').fill('existing_user');
+  await adminRow.getByLabel('Email').fill('existing.user@crown.test');
+  await emailAvailabilityResponse;
+
+  await page.getByRole('button', { name: 'Next' }).click();
+
+  await expect(page.getByText('This email already exists in the system')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
 });
 
 test('tenant create shell allows clean cancel when no step data has been entered', async ({

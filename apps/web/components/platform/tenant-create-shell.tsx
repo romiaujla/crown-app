@@ -2,18 +2,31 @@
 
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
 
-import type { RoleCode, TenantCreateReferenceData } from '@crown/types';
+import type {
+  RoleCode,
+  TenantCreateOnboardingInitialUser,
+  TenantCreateReferenceData,
+  TenantCreateRoleOption,
+} from '@crown/types';
+import { RoleCodeEnum } from '@crown/types';
 
-import { getTenantCreateReferenceData } from '@/lib/auth/api';
+import { checkTenantUserEmailAvailability, getTenantCreateReferenceData } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 
+import {
+  type DraftField,
+  type TenantCreateAssignmentFieldErrorsByRowId,
+  TenantCreateStepUserAssignment,
+  type TenantCreateAssignmentDraftsByRole,
+  type TenantCreateInitialUserDraft,
+} from './tenant-create-step-user-assignment';
 import { TenantCreateStepRoleSelection } from './tenant-create-step-role-selection';
 import {
   TenantCreateStepTenantInfo,
@@ -52,7 +65,7 @@ const tenantCreateSteps: TenantCreateStepDefinition[] = [
     key: TenantCreateStepKeyEnum.USER_ASSIGNMENT,
     title: 'User assignment',
     description:
-      'Reserve the guided handoff point for assigning the first tenant users in a future story.',
+      'Add tenant admins and assign new users to the selected roles before the final review step.',
     placeholderLabel: 'User assignment placeholder notes',
   },
   {
@@ -70,8 +83,358 @@ const INITIAL_TENANT_INFO: TenantInfoStepData = {
   managementSystemTypeCode: null,
 };
 
+const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_PATTERN = /^[a-z0-9_]+$/;
+
 const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
   tenantCreateSteps.findIndex((step) => step.key === stepKey);
+
+const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
+
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
+
+const normalizeUsernameInput = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9_]/g, '');
+
+const autoGenerateUsername = (displayName: string) =>
+  displayName
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '');
+
+const createAssignmentDraftRow = (roleCode: RoleCode): TenantCreateInitialUserDraft => ({
+  rowId: createDraftRowId(),
+  displayName: '',
+  email: '',
+  username: '',
+  usernameManuallyEdited: false,
+  roleCode,
+});
+
+const hasAnyAssignmentValue = (draft: TenantCreateInitialUserDraft) =>
+  Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
+
+const isDraftEmpty = (draft: TenantCreateInitialUserDraft) => !hasAnyAssignmentValue(draft);
+
+const ensureTrailingEmptyAssignmentRow = (
+  draftRows: TenantCreateInitialUserDraft[],
+  roleCode: RoleCode,
+) => {
+  const rows = [...draftRows];
+
+  while (rows.length > 1 && isDraftEmpty(rows.at(-1)!) && isDraftEmpty(rows.at(-2)!)) {
+    rows.pop();
+  }
+
+  if (rows.length === 0 || !isDraftEmpty(rows.at(-1)!)) {
+    rows.push(createAssignmentDraftRow(roleCode));
+  }
+
+  return rows;
+};
+
+const toOnboardingInitialUserInput = ({
+  displayName,
+  email,
+  roleCode,
+  username,
+}: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
+  displayName,
+  email,
+  roleCode,
+  username,
+});
+
+type EmailAvailabilityState = {
+  isAvailable: boolean;
+  status: 'available' | 'checking' | 'unavailable';
+};
+
+const getRoleLabel = (role: TenantCreateRoleOption) =>
+  ADMIN_ROLE_CODES.has(role.roleCode) ? 'Tenant Admins' : role.displayName;
+
+const getSelectedRoleSections = (
+  roleOptions: TenantCreateRoleOption[],
+  selectedRoleCodes: ReadonlySet<RoleCode>,
+) =>
+  roleOptions
+    .filter((role) => selectedRoleCodes.has(role.roleCode))
+    .sort((left, right) => {
+      const leftIsAdmin = left.isRequired || ADMIN_ROLE_CODES.has(left.roleCode);
+      const rightIsAdmin = right.isRequired || ADMIN_ROLE_CODES.has(right.roleCode);
+
+      if (leftIsAdmin !== rightIsAdmin) {
+        return leftIsAdmin ? -1 : 1;
+      }
+
+      return left.displayName.localeCompare(right.displayName);
+    });
+
+const getAssignmentDraftRows = (assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole) =>
+  Object.values(assignmentDraftsByRole).flatMap((draftRows) => draftRows ?? []);
+
+const setRowFieldError = (
+  fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId,
+  rowId: string,
+  field: DraftField,
+  message: string,
+) => {
+  const currentErrors = fieldErrorsByRowId[rowId] ?? {};
+  if (currentErrors[field]) {
+    return;
+  }
+
+  fieldErrorsByRowId[rowId] = {
+    ...currentErrors,
+    [field]: message,
+  };
+};
+
+const getUserAssignmentValidationState = (
+  roleSections: TenantCreateRoleOption[],
+  assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole,
+  emailAvailabilityByEmail: Record<string, EmailAvailabilityState>,
+) => {
+  const fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId = {};
+  const roleByCode = new Map(roleSections.map((role) => [role.roleCode, role]));
+  const optionalWarningRoleCodes = new Set<RoleCode>();
+  const requiredErrorRoleCodes = new Set<RoleCode>();
+  const draftRows = getAssignmentDraftRows(assignmentDraftsByRole);
+
+  for (const roleSection of roleSections) {
+    const draftRowsForRole = assignmentDraftsByRole[roleSection.roleCode] ?? [];
+    const hasAnyPopulatedRow = draftRowsForRole.some((draft) => hasAnyAssignmentValue(draft));
+
+    if (
+      !roleSection.isRequired &&
+      !ADMIN_ROLE_CODES.has(roleSection.roleCode) &&
+      !hasAnyPopulatedRow
+    ) {
+      optionalWarningRoleCodes.add(roleSection.roleCode);
+    }
+  }
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const trimmedDisplayName = draft.displayName.trim();
+    const normalizedEmail = normalizeEmail(draft.email);
+    const trimmedUsername = draft.username.trim();
+
+    if (!trimmedDisplayName) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'displayName', 'Display name is required');
+    } else if (trimmedDisplayName.length < 5 || trimmedDisplayName.length > 128) {
+      setRowFieldError(
+        fieldErrorsByRowId,
+        draft.rowId,
+        'displayName',
+        'Display name must be between 5 and 128 characters',
+      );
+    }
+
+    if (!trimmedUsername) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'username', 'Username is required');
+    } else if (
+      trimmedUsername.length < 5 ||
+      trimmedUsername.length > 32 ||
+      !USERNAME_PATTERN.test(trimmedUsername)
+    ) {
+      setRowFieldError(
+        fieldErrorsByRowId,
+        draft.rowId,
+        'username',
+        'Username must be between 5 and 32 characters',
+      );
+    }
+
+    if (!normalizedEmail) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'email', 'Email is required');
+    } else if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      setRowFieldError(fieldErrorsByRowId, draft.rowId, 'email', 'Enter a valid email address');
+    }
+  });
+
+  const usernameRowsByValue = new Map<string, string[]>();
+  const emailRowsByValue = new Map<string, TenantCreateInitialUserDraft[]>();
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const normalizedUsername = draft.username.trim();
+    if (normalizedUsername && !fieldErrorsByRowId[draft.rowId]?.username) {
+      const rowIds = usernameRowsByValue.get(normalizedUsername) ?? [];
+      rowIds.push(draft.rowId);
+      usernameRowsByValue.set(normalizedUsername, rowIds);
+    }
+
+    const normalizedEmail = normalizeEmail(draft.email);
+    if (normalizedEmail && !fieldErrorsByRowId[draft.rowId]?.email) {
+      const rows = emailRowsByValue.get(normalizedEmail) ?? [];
+      rows.push(draft);
+      emailRowsByValue.set(normalizedEmail, rows);
+    }
+  });
+
+  usernameRowsByValue.forEach((rowIds) => {
+    if (rowIds.length < 2) {
+      return;
+    }
+
+    rowIds.forEach((rowId) => {
+      setRowFieldError(fieldErrorsByRowId, rowId, 'username', 'Username already exists');
+    });
+  });
+
+  emailRowsByValue.forEach((rows, normalizedEmail) => {
+    if (rows.length > 1) {
+      const hasAdminRow = rows.some((row) => ADMIN_ROLE_CODES.has(row.roleCode));
+      const hasNonAdminRow = rows.some((row) => !ADMIN_ROLE_CODES.has(row.roleCode));
+      const roleCodes = new Set(rows.map((row) => row.roleCode));
+
+      if (hasAdminRow && hasNonAdminRow) {
+        rows.forEach((row) => {
+          setRowFieldError(
+            fieldErrorsByRowId,
+            row.rowId,
+            'email',
+            'Admins cannot be assigned to roles',
+          );
+        });
+        return;
+      }
+
+      if (roleCodes.size > 1) {
+        rows.forEach((row) => {
+          const conflictingRow = rows.find((candidate) => candidate.roleCode !== row.roleCode);
+          const conflictingRole = conflictingRow
+            ? roleByCode.get(conflictingRow.roleCode)
+            : undefined;
+
+          setRowFieldError(
+            fieldErrorsByRowId,
+            row.rowId,
+            'email',
+            conflictingRole
+              ? `User already assigned to ${getRoleLabel(conflictingRole)}`
+              : 'This email already exists in the system',
+          );
+        });
+        return;
+      }
+
+      rows.forEach((row) => {
+        setRowFieldError(
+          fieldErrorsByRowId,
+          row.rowId,
+          'email',
+          'This email already exists in the system',
+        );
+      });
+      return;
+    }
+
+    const availability = emailAvailabilityByEmail[normalizedEmail];
+    if (availability?.status === 'unavailable') {
+      const row = rows[0];
+      if (row) {
+        setRowFieldError(
+          fieldErrorsByRowId,
+          row.rowId,
+          'email',
+          'This email already exists in the system',
+        );
+      }
+    }
+  });
+
+  let hasValidAdmin = false;
+  let hasPendingEmailAvailabilityChecks = false;
+
+  draftRows.forEach((draft) => {
+    if (isDraftEmpty(draft)) {
+      return;
+    }
+
+    const normalizedEmail = normalizeEmail(draft.email);
+    const emailAvailability = normalizedEmail
+      ? emailAvailabilityByEmail[normalizedEmail]
+      : undefined;
+    const rowErrors = fieldErrorsByRowId[draft.rowId];
+    const rowHasErrors = Boolean(rowErrors && Object.keys(rowErrors).length > 0);
+
+    if (
+      normalizedEmail &&
+      !rowErrors?.email &&
+      (!emailAvailability || emailAvailability.status === 'checking')
+    ) {
+      hasPendingEmailAvailabilityChecks = true;
+    }
+
+    if (ADMIN_ROLE_CODES.has(draft.roleCode) && !rowHasErrors) {
+      hasValidAdmin = true;
+    }
+  });
+
+  for (const roleSection of roleSections) {
+    if (roleSection.isRequired || ADMIN_ROLE_CODES.has(roleSection.roleCode)) {
+      const draftRowsForRole = assignmentDraftsByRole[roleSection.roleCode] ?? [];
+      const hasValidRow = draftRowsForRole.some((draft) => {
+        if (isDraftEmpty(draft)) {
+          return false;
+        }
+
+        const rowErrors = fieldErrorsByRowId[draft.rowId];
+        return !rowErrors || Object.keys(rowErrors).length === 0;
+      });
+
+      if (!hasValidRow) {
+        requiredErrorRoleCodes.add(roleSection.roleCode);
+      }
+    }
+  }
+
+  const hasFieldErrors = Object.keys(fieldErrorsByRowId).length > 0;
+  const hasBlockingIssues = !hasValidAdmin || hasFieldErrors || hasPendingEmailAvailabilityChecks;
+
+  return {
+    fieldErrorsByRowId,
+    globalErrorMessage: !hasValidAdmin
+      ? 'At least one tenant admin is required'
+      : hasFieldErrors || hasPendingEmailAvailabilityChecks
+        ? 'Resolve the highlighted user assignment issues'
+        : undefined,
+    hasBlockingIssues,
+    optionalWarningRoleCodes,
+    requiredErrorRoleCodes,
+  };
+};
+
+const getUserAssignmentStepValidity = (
+  roleSections: TenantCreateRoleOption[],
+  assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole,
+  emailAvailabilityByEmail: Record<string, EmailAvailabilityState>,
+) => {
+  if (roleSections.length === 0) {
+    return false;
+  }
+
+  return !getUserAssignmentValidationState(
+    roleSections,
+    assignmentDraftsByRole,
+    emailAvailabilityByEmail,
+  ).hasBlockingIssues;
+};
 
 export const TenantCreateShell = () => {
   const router = useRouter();
@@ -79,25 +442,25 @@ export const TenantCreateShell = () => {
     TenantCreateStepKeyEnum.TENANT_INFO,
   );
 
-  // Step 1 — typed tenant info
   const [tenantInfoData, setTenantInfoData] = useState<TenantInfoStepData>(INITIAL_TENANT_INFO);
-
-  // Step 2 — selected role codes for the chosen management-system type
   const [selectedRoleCodes, setSelectedRoleCodes] = useState<Set<RoleCode>>(new Set());
   const [roleCodesInitialized, setRoleCodesInitialized] = useState(false);
-
-  // Steps 3–4 — placeholder inputs (preserved until those stories ship)
+  const [assignmentDraftsByRole, setAssignmentDraftsByRole] =
+    useState<TenantCreateAssignmentDraftsByRole>({});
   const [stepInputByKey, setStepInputByKey] = useState<
     Partial<Record<TenantCreateStepKeyEnum, string>>
   >({});
 
-  // Confirm-dialog state
   const [exitDialogOpen, setExitDialogOpen] = useState(false);
   const [pendingSystemTypeValue, setPendingSystemTypeValue] = useState<string | null>(null);
-
-  // Reference data for management-system type select
   const [referenceData, setReferenceData] = useState<TenantCreateReferenceData | null>(null);
   const [referenceDataLoading, setReferenceDataLoading] = useState(false);
+  const [emailAvailabilityByEmail, setEmailAvailabilityByEmail] = useState<
+    Record<string, EmailAvailabilityState>
+  >({});
+
+  const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
+  const [showStepErrors, setShowStepErrors] = useState(false);
 
   const currentStepIndex = getStepIndex(currentStepKey);
   const currentStep = tenantCreateSteps[currentStepIndex] ?? tenantCreateSteps[0];
@@ -113,22 +476,55 @@ export const TenantCreateShell = () => {
     Boolean(tenantInfoData.slug.trim()) ||
     tenantInfoData.managementSystemTypeCode !== null;
 
-  const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
-
   const roleSelectionHasData = selectedRoleCodes.size > 0;
+  const assignmentHasData = Object.values(assignmentDraftsByRole).some((draftRows) =>
+    (draftRows ?? []).some(hasAnyAssignmentValue),
+  );
+  const placeholderHasData = Object.values(stepInputByKey).some((value) => Boolean(value?.trim()));
 
   const downstreamDataExists =
     roleSelectionHasData ||
-    [TenantCreateStepKeyEnum.USER_ASSIGNMENT, TenantCreateStepKeyEnum.REVIEW].some((key) =>
-      Boolean(stepInputByKey[key]?.trim()),
-    );
+    assignmentHasData ||
+    Boolean(stepInputByKey[TenantCreateStepKeyEnum.REVIEW]?.trim());
 
-  const hasUnsavedChanges = tenantInfoHasData || roleSelectionHasData || placeholderHasData;
+  const hasUnsavedChanges =
+    tenantInfoHasData || roleSelectionHasData || assignmentHasData || placeholderHasData;
 
-  // Fetch reference data on mount
+  const currentRoleOptions =
+    referenceData?.managementSystemTypeList.find(
+      (typeOption) => typeOption.typeCode === tenantInfoData.managementSystemTypeCode,
+    )?.roleOptions ?? [];
+
+  const selectedRoleSections = useMemo(
+    () => getSelectedRoleSections(currentRoleOptions, selectedRoleCodes),
+    [currentRoleOptions, selectedRoleCodes],
+  );
+  const userAssignmentValidationState = getUserAssignmentValidationState(
+    selectedRoleSections,
+    assignmentDraftsByRole,
+    emailAvailabilityByEmail,
+  );
+
+  const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
+  const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
+  const isUserAssignmentStep = currentStepKey === TenantCreateStepKeyEnum.USER_ASSIGNMENT;
+
+  const isUserAssignmentValid = getUserAssignmentStepValidity(
+    selectedRoleSections,
+    assignmentDraftsByRole,
+    emailAvailabilityByEmail,
+  );
+  const isCurrentStepValid = isTenantInfoStep
+    ? isTenantInfoValid
+    : isUserAssignmentStep
+      ? isUserAssignmentValid
+      : true;
+
   useEffect(() => {
     const accessToken = getStoredAccessToken();
-    if (!accessToken) return;
+    if (!accessToken) {
+      return;
+    }
 
     let cancelled = false;
     setReferenceDataLoading(true);
@@ -140,7 +536,7 @@ export const TenantCreateShell = () => {
         }
       })
       .catch(() => {
-        // Reference data load failure is non-blocking; select stays disabled
+        // Reference data load failure is non-blocking; downstream steps stay empty.
       })
       .finally(() => {
         if (!cancelled) {
@@ -170,6 +566,122 @@ export const TenantCreateShell = () => {
     };
   }, [hasUnsavedChanges]);
 
+  useEffect(() => {
+    if (
+      currentStepKey !== TenantCreateStepKeyEnum.TENANT_INFO &&
+      !roleCodesInitialized &&
+      currentRoleOptions.length > 0
+    ) {
+      const defaults = new Set<RoleCode>(
+        currentRoleOptions
+          .filter((roleOption) => roleOption.isDefault || roleOption.isRequired)
+          .map((roleOption) => roleOption.roleCode),
+      );
+
+      setSelectedRoleCodes(defaults);
+      setRoleCodesInitialized(true);
+    }
+  }, [currentRoleOptions, currentStepKey, roleCodesInitialized]);
+
+  useEffect(() => {
+    const selectedRoleCodeSet = new Set(
+      selectedRoleSections.map((roleSection) => roleSection.roleCode),
+    );
+
+    setAssignmentDraftsByRole((currentDraftsByRole) => {
+      const nextDraftsByRole: TenantCreateAssignmentDraftsByRole = {};
+      let didChange = false;
+
+      selectedRoleSections.forEach((roleSection) => {
+        const currentDraftRows = currentDraftsByRole[roleSection.roleCode] ?? [];
+        const nextDraftRows = ensureTrailingEmptyAssignmentRow(
+          currentDraftRows,
+          roleSection.roleCode,
+        );
+
+        nextDraftsByRole[roleSection.roleCode] = nextDraftRows;
+
+        if (
+          currentDraftRows !== nextDraftRows ||
+          currentDraftRows.length !== nextDraftRows.length ||
+          !selectedRoleCodeSet.has(roleSection.roleCode)
+        ) {
+          didChange = true;
+        }
+      });
+
+      Object.keys(currentDraftsByRole).forEach((roleCode) => {
+        if (!selectedRoleCodeSet.has(roleCode as RoleCode)) {
+          didChange = true;
+        }
+      });
+
+      return didChange ? nextDraftsByRole : currentDraftsByRole;
+    });
+  }, [selectedRoleSections]);
+
+  useEffect(() => {
+    const accessToken = getStoredAccessToken();
+    if (!accessToken) {
+      return;
+    }
+
+    const normalizedEmails = Array.from(
+      new Set(
+        getAssignmentDraftRows(assignmentDraftsByRole)
+          .map((draft) => normalizeEmail(draft.email))
+          .filter((email) => email.length > 0 && EMAIL_PATTERN.test(email)),
+      ),
+    );
+    const emailsToCheck = normalizedEmails.filter((email) => !emailAvailabilityByEmail[email]);
+
+    if (emailsToCheck.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+
+    emailsToCheck.forEach((email) => {
+      setEmailAvailabilityByEmail((currentValue) => ({
+        ...currentValue,
+        [email]: {
+          isAvailable: true,
+          status: 'checking',
+        },
+      }));
+
+      checkTenantUserEmailAvailability(accessToken, email)
+        .then((response) => {
+          if (cancelled) {
+            return;
+          }
+
+          setEmailAvailabilityByEmail((currentValue) => ({
+            ...currentValue,
+            [email]: {
+              isAvailable: response.data.isAvailable,
+              status: response.data.isAvailable ? 'available' : 'unavailable',
+            },
+          }));
+        })
+        .catch(() => {
+          if (cancelled) {
+            return;
+          }
+
+          setEmailAvailabilityByEmail((currentValue) => {
+            const nextValue = { ...currentValue };
+            delete nextValue[email];
+            return nextValue;
+          });
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [assignmentDraftsByRole]);
+
   const attemptExit = () => {
     if (hasUnsavedChanges) {
       setExitDialogOpen(true);
@@ -180,75 +692,106 @@ export const TenantCreateShell = () => {
   };
 
   const handleTenantInfoChange = useCallback((update: Partial<TenantInfoStepData>) => {
-    setTenantInfoData((prev) => ({ ...prev, ...update }));
+    setTenantInfoData((currentValue) => ({ ...currentValue, ...update }));
   }, []);
 
   const handleConfirmSystemTypeReset = useCallback((pendingValue: string): void => {
     setPendingSystemTypeValue(pendingValue);
   }, []);
 
-  // Step-level validity — gates Next button per step
-  const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
-  const [showStepErrors, setShowStepErrors] = useState(false);
-  const handleTenantInfoValidityChange = useCallback((isValid: boolean) => {
-    setIsTenantInfoValid(isValid);
-    if (isValid) setShowStepErrors(false);
-  }, []);
-
-  const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
-  const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
-  const isCurrentStepValid = isTenantInfoStep ? isTenantInfoValid : true;
-
-  // Resolve role options for the currently selected management-system type
-  const currentRoleOptions =
-    referenceData?.managementSystemTypeList.find(
-      (t) => t.typeCode === tenantInfoData.managementSystemTypeCode,
-    )?.roleOptions ?? [];
-
-  // Auto-initialize selected role codes from defaults when entering step 2 for the first time
-  useEffect(() => {
-    if (isRoleSelectionStep && !roleCodesInitialized && currentRoleOptions.length > 0) {
-      const defaults = new Set<RoleCode>(
-        currentRoleOptions.filter((r) => r.isDefault || r.isRequired).map((r) => r.roleCode),
-      );
-      setSelectedRoleCodes(defaults);
-      setRoleCodesInitialized(true);
+  const handleTenantInfoValidityChange = useCallback((nextIsValid: boolean) => {
+    setIsTenantInfoValid(nextIsValid);
+    if (nextIsValid) {
+      setShowStepErrors(false);
     }
-  }, [isRoleSelectionStep, roleCodesInitialized, currentRoleOptions]);
+  }, []);
 
   const handleRoleToggle = useCallback(
     (roleCode: RoleCode) => {
-      const isRequired = currentRoleOptions.some((r) => r.roleCode === roleCode && r.isRequired);
-      if (isRequired) return;
+      const isRequired = currentRoleOptions.some(
+        (roleOption) => roleOption.roleCode === roleCode && roleOption.isRequired,
+      );
+      if (isRequired) {
+        return;
+      }
 
-      setSelectedRoleCodes((prev) => {
-        const next = new Set(prev);
-        if (next.has(roleCode)) {
-          next.delete(roleCode);
+      setSelectedRoleCodes((currentValue) => {
+        const nextValue = new Set(currentValue);
+        if (nextValue.has(roleCode)) {
+          nextValue.delete(roleCode);
         } else {
-          next.add(roleCode);
+          nextValue.add(roleCode);
         }
-        return next;
+        return nextValue;
       });
     },
     [currentRoleOptions],
   );
 
+  const handleRemoveAssignmentRow = useCallback((roleCode: RoleCode, rowId: string) => {
+    setAssignmentDraftsByRole((currentDraftsByRole) => {
+      return {
+        ...currentDraftsByRole,
+        [roleCode]: ensureTrailingEmptyAssignmentRow(
+          (currentDraftsByRole[roleCode] ?? []).filter((draftRow) => draftRow.rowId !== rowId),
+          roleCode,
+        ),
+      };
+    });
+  }, []);
+
+  const handleUpdateAssignmentRow = useCallback(
+    (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => {
+      setAssignmentDraftsByRole((currentDraftsByRole) => {
+        const nextRoleDrafts = ensureTrailingEmptyAssignmentRow(
+          (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
+            draftRow.rowId === rowId
+              ? field === 'username'
+                ? {
+                    ...draftRow,
+                    username: normalizeUsernameInput(value),
+                    usernameManuallyEdited: true,
+                  }
+                : field === 'displayName'
+                  ? {
+                      ...draftRow,
+                      displayName: value,
+                      username: draftRow.usernameManuallyEdited
+                        ? draftRow.username
+                        : autoGenerateUsername(value),
+                    }
+                  : {
+                      ...draftRow,
+                      email: value,
+                    }
+              : draftRow,
+          ),
+          roleCode,
+        );
+
+        return {
+          ...currentDraftsByRole,
+          [roleCode]: nextRoleDrafts,
+        };
+      });
+    },
+    [],
+  );
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {/* Stepper — centered, capped width */}
       <div className="mx-auto w-full max-w-[660px] pb-6" data-testid="tenant-create-stepper">
         <Stepper
           clickable
           currentStep={currentStepIndex}
           onStepClick={(index) => {
+            setShowStepErrors(false);
             setCurrentStepKey(tenantCreateSteps[index]?.key ?? currentStepKey);
           }}
           steps={stepperSteps}
         />
       </div>
 
-      {/* Scrollable form area — full width, content centered */}
       <div className="-mx-6 flex-1 overflow-y-auto border-t border-stone-200/60 bg-stone-50/60 px-6 pt-6">
         <div className="mx-auto max-w-[660px]">
           <div className="space-y-1 pb-4">
@@ -258,6 +801,7 @@ export const TenantCreateShell = () => {
             <h3 className="text-xl font-semibold text-stone-950">{currentStep.title}</h3>
             <p className="text-sm leading-6 text-stone-600">{currentStep.description}</p>
           </div>
+
           <div className="space-y-4">
             {isTenantInfoStep ? (
               <TenantCreateStepTenantInfo
@@ -275,6 +819,20 @@ export const TenantCreateShell = () => {
                 onToggle={handleRoleToggle}
                 roleOptions={currentRoleOptions}
                 selectedRoleCodes={selectedRoleCodes}
+              />
+            ) : isUserAssignmentStep ? (
+              <TenantCreateStepUserAssignment
+                assignmentDraftsByRole={assignmentDraftsByRole}
+                fieldErrorsByRowId={userAssignmentValidationState.fieldErrorsByRowId}
+                globalErrorMessage={userAssignmentValidationState.globalErrorMessage}
+                onRemoveRow={handleRemoveAssignmentRow}
+                onUpdateRow={handleUpdateAssignmentRow}
+                roleSections={selectedRoleSections}
+                roleCodesWithOptionalWarnings={
+                  userAssignmentValidationState.optionalWarningRoleCodes
+                }
+                roleCodesWithRequiredErrors={userAssignmentValidationState.requiredErrorRoleCodes}
+                showErrors={showStepErrors}
               />
             ) : (
               <>
@@ -311,7 +869,6 @@ export const TenantCreateShell = () => {
         </div>
       </div>
 
-      {/* Sticky bottom button bar — full width, buttons at far right */}
       <div className="-mx-6 border-t border-stone-200 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-end gap-2 px-6 py-3">
           <Button
@@ -331,6 +888,7 @@ export const TenantCreateShell = () => {
                 return;
               }
 
+              setShowStepErrors(false);
               setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
             }}
             type="button"
@@ -363,7 +921,6 @@ export const TenantCreateShell = () => {
         </div>
       </div>
 
-      {/* Exit confirmation dialog */}
       <ConfirmDialog
         cancelLabel="Stay"
         confirmLabel="Discard"
@@ -378,21 +935,23 @@ export const TenantCreateShell = () => {
         variant="destructive"
       />
 
-      {/* System-type reset confirmation dialog */}
       <ConfirmDialog
         confirmLabel="Continue"
         description="Changing the management system type may reset role and configuration selections made in later steps. Continue?"
         onCancel={() => setPendingSystemTypeValue(null)}
         onConfirm={() => {
-          const pendingValue = pendingSystemTypeValue;
+          const nextSystemTypeValue = pendingSystemTypeValue;
           setPendingSystemTypeValue(null);
           setSelectedRoleCodes(new Set());
           setRoleCodesInitialized(false);
-          if (pendingValue) {
-            setTenantInfoData((prev) => ({
-              ...prev,
+          setAssignmentDraftsByRole({});
+          setEmailAvailabilityByEmail({});
+
+          if (nextSystemTypeValue) {
+            setTenantInfoData((currentValue) => ({
+              ...currentValue,
               managementSystemTypeCode:
-                pendingValue as TenantInfoStepData['managementSystemTypeCode'],
+                nextSystemTypeValue as TenantInfoStepData['managementSystemTypeCode'],
             }));
           }
         }}

@@ -36,9 +36,9 @@ const createValidOnboardingPayload = () => ({
   selectedRoleCodes: ['tenant_admin', 'dispatcher'],
   initialUsers: [
     {
-      firstName: 'Alex',
-      lastName: 'Admin',
+      displayName: 'Alex Admin',
       email: 'alex.admin@example.com',
+      username: 'alex_admin',
       roleCode: 'tenant_admin',
     },
   ],
@@ -77,9 +77,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin', 'dispatcher'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'tenant_admin',
           },
         ],
@@ -103,9 +103,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'tenant_admin',
           },
         ],
@@ -130,9 +130,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'tenant_admin',
           },
         ],
@@ -158,9 +158,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['dispatcher'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'dispatcher',
           },
         ],
@@ -186,9 +186,9 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin', 'dispatcher'],
         initialUsers: [
           {
-            firstName: 'Drew',
-            lastName: 'Dispatcher',
+            displayName: 'Drew Dispatcher',
             email: 'drew.dispatcher@example.com',
+            username: 'drew_dispatcher',
             roleCode: 'dispatcher',
           },
         ],
@@ -214,15 +214,15 @@ describe('platform tenant provisioning contract', () => {
         selectedRoleCodes: ['tenant_admin'],
         initialUsers: [
           {
-            firstName: 'Alex',
-            lastName: 'Admin',
+            displayName: 'Alex Admin',
             email: 'alex.admin@example.com',
+            username: 'alex_admin',
             roleCode: 'tenant_admin',
           },
           {
-            firstName: 'Drew',
-            lastName: 'Dispatcher',
+            displayName: 'Drew Dispatcher',
             email: 'drew.dispatcher@example.com',
+            username: 'drew_dispatcher',
             roleCode: 'dispatcher',
           },
         ],
