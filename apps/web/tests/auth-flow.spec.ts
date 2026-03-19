@@ -596,7 +596,7 @@ test('invalid return paths fall back to the safe recommended shell', async ({ pa
 test('manual wrong-shell navigation is corrected for authenticated users', async ({ page }) => {
   await primeAuthenticatedSession(page, 'tenant_user');
 
-  await page.goto('/platform');
+  await page.goto('/platform', { waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/tenant$/);
   await expect(
     page.getByRole('heading', { name: 'Northwind Operations Workspace', level: 1 }),
@@ -1620,7 +1620,10 @@ test('tenant admin logout clears the browser token and returns to the login page
 }) => {
   await primeAuthenticatedSession(page, 'tenant_admin');
 
-  await page.goto('/tenant');
+  await page.goto('/tenant', { waitUntil: 'domcontentloaded' });
+  await expect(
+    page.getByRole('heading', { name: 'Northwind Operations Workspace', level: 1 }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Log out' }).click();
 
   await expect(page).toHaveURL(/\/login$/);
