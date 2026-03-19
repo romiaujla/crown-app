@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Input } from '@/components/ui/input';
 import { Stepper } from '@/components/ui/stepper';
+import { useAlerts } from '@/components/ui/alert-toast';
 
 import type {
   RoleCode,
@@ -15,9 +16,13 @@ import type {
   TenantCreateReferenceData,
   TenantCreateRoleOption,
 } from '@crown/types';
-import { RoleCodeEnum } from '@crown/types';
+import { RoleCodeEnum, TenantCreateOnboardingSubmissionRequestSchema } from '@crown/types';
 
-import { checkTenantUserEmailAvailability, getTenantCreateReferenceData } from '@/lib/auth/api';
+import {
+  checkTenantUserEmailAvailability,
+  getTenantCreateReferenceData,
+  submitTenantCreateOnboarding,
+} from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 
 import {
@@ -27,6 +32,7 @@ import {
   type TenantCreateAssignmentDraftsByRole,
   type TenantCreateInitialUserDraft,
 } from './tenant-create-step-user-assignment';
+import { TenantCreateStepReview } from './tenant-create-step-review';
 import { TenantCreateStepRoleSelection } from './tenant-create-step-role-selection';
 import {
   TenantCreateStepTenantInfo,
@@ -93,6 +99,8 @@ const getStepIndex = (stepKey: TenantCreateStepKeyEnum) =>
 const createDraftRowId = () => `draft_${Math.random().toString(36).slice(2, 11)}`;
 
 const normalizeEmail = (value: string) => value.trim().toLowerCase();
+const normalizeSubmissionRoleCode = (roleCode: RoleCode): RoleCode =>
+  roleCode === RoleCodeEnum.ADMIN ? RoleCodeEnum.TENANT_ADMIN : roleCode;
 
 const normalizeUsernameInput = (value: string) =>
   value
@@ -148,7 +156,7 @@ const toOnboardingInitialUserInput = ({
 }: TenantCreateInitialUserDraft): TenantCreateOnboardingInitialUser => ({
   displayName,
   email,
-  roleCode,
+  roleCode: normalizeSubmissionRoleCode(roleCode),
   username,
 });
 
@@ -438,6 +446,7 @@ const getUserAssignmentStepValidity = (
 
 export const TenantCreateShell = () => {
   const router = useRouter();
+  const { showAlert } = useAlerts();
   const [currentStepKey, setCurrentStepKey] = useState<TenantCreateStepKeyEnum>(
     TenantCreateStepKeyEnum.TENANT_INFO,
   );
@@ -461,6 +470,8 @@ export const TenantCreateShell = () => {
 
   const [isTenantInfoValid, setIsTenantInfoValid] = useState(false);
   const [showStepErrors, setShowStepErrors] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionErrorMessage, setSubmissionErrorMessage] = useState<string | undefined>();
 
   const currentStepIndex = getStepIndex(currentStepKey);
   const currentStep = tenantCreateSteps[currentStepIndex] ?? tenantCreateSteps[0];
@@ -490,10 +501,12 @@ export const TenantCreateShell = () => {
   const hasUnsavedChanges =
     tenantInfoHasData || roleSelectionHasData || assignmentHasData || placeholderHasData;
 
-  const currentRoleOptions =
+  const currentManagementSystemType =
     referenceData?.managementSystemTypeList.find(
       (typeOption) => typeOption.typeCode === tenantInfoData.managementSystemTypeCode,
-    )?.roleOptions ?? [];
+    ) ?? null;
+
+  const currentRoleOptions = currentManagementSystemType?.roleOptions ?? [];
 
   const selectedRoleSections = useMemo(
     () => getSelectedRoleSections(currentRoleOptions, selectedRoleCodes),
@@ -508,17 +521,50 @@ export const TenantCreateShell = () => {
   const isTenantInfoStep = currentStepKey === TenantCreateStepKeyEnum.TENANT_INFO;
   const isRoleSelectionStep = currentStepKey === TenantCreateStepKeyEnum.ROLE_SELECTION;
   const isUserAssignmentStep = currentStepKey === TenantCreateStepKeyEnum.USER_ASSIGNMENT;
+  const isReviewStep = currentStepKey === TenantCreateStepKeyEnum.REVIEW;
 
   const isUserAssignmentValid = getUserAssignmentStepValidity(
     selectedRoleSections,
     assignmentDraftsByRole,
     emailAvailabilityByEmail,
   );
+  const populatedAssignmentRows = useMemo(
+    () =>
+      selectedRoleSections.flatMap((roleSection) =>
+        (assignmentDraftsByRole[roleSection.roleCode] ?? []).filter(hasAnyAssignmentValue),
+      ),
+    [assignmentDraftsByRole, selectedRoleSections],
+  );
+  const onboardingPayloadCandidate = {
+    initialUsers: populatedAssignmentRows.map(toOnboardingInitialUserInput),
+    selectedRoleCodes: selectedRoleSections.map((roleSection) =>
+      normalizeSubmissionRoleCode(roleSection.roleCode),
+    ),
+    tenant: {
+      managementSystemTypeCode: tenantInfoData.managementSystemTypeCode,
+      name: tenantInfoData.name,
+      slug: tenantInfoData.slug,
+    },
+  };
+  const onboardingPayloadParseResult = TenantCreateOnboardingSubmissionRequestSchema.safeParse(
+    onboardingPayloadCandidate,
+  );
+  const reviewBlockingMessage =
+    !isTenantInfoValid && showStepErrors
+      ? 'Complete the required tenant information before creating the tenant.'
+      : userAssignmentValidationState.globalErrorMessage
+        ? userAssignmentValidationState.globalErrorMessage
+        : showStepErrors && !onboardingPayloadParseResult.success
+          ? (onboardingPayloadParseResult.error.issues[0]?.message ??
+            'Review the tenant setup before creating the tenant.')
+          : undefined;
   const isCurrentStepValid = isTenantInfoStep
     ? isTenantInfoValid
     : isUserAssignmentStep
       ? isUserAssignmentValid
       : true;
+  const isReviewSubmittable =
+    isTenantInfoValid && isUserAssignmentValid && onboardingPayloadParseResult.success;
 
   useEffect(() => {
     const accessToken = getStoredAccessToken();
@@ -683,6 +729,10 @@ export const TenantCreateShell = () => {
   }, [assignmentDraftsByRole]);
 
   const attemptExit = () => {
+    if (isSubmitting) {
+      return;
+    }
+
     if (hasUnsavedChanges) {
       setExitDialogOpen(true);
       return;
@@ -692,6 +742,7 @@ export const TenantCreateShell = () => {
   };
 
   const handleTenantInfoChange = useCallback((update: Partial<TenantInfoStepData>) => {
+    setSubmissionErrorMessage(undefined);
     setTenantInfoData((currentValue) => ({ ...currentValue, ...update }));
   }, []);
 
@@ -708,6 +759,7 @@ export const TenantCreateShell = () => {
 
   const handleRoleToggle = useCallback(
     (roleCode: RoleCode) => {
+      setSubmissionErrorMessage(undefined);
       const isRequired = currentRoleOptions.some(
         (roleOption) => roleOption.roleCode === roleCode && roleOption.isRequired,
       );
@@ -729,6 +781,7 @@ export const TenantCreateShell = () => {
   );
 
   const handleRemoveAssignmentRow = useCallback((roleCode: RoleCode, rowId: string) => {
+    setSubmissionErrorMessage(undefined);
     setAssignmentDraftsByRole((currentDraftsByRole) => {
       return {
         ...currentDraftsByRole,
@@ -742,6 +795,7 @@ export const TenantCreateShell = () => {
 
   const handleUpdateAssignmentRow = useCallback(
     (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => {
+      setSubmissionErrorMessage(undefined);
       setAssignmentDraftsByRole((currentDraftsByRole) => {
         const nextRoleDrafts = ensureTrailingEmptyAssignmentRow(
           (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
@@ -778,14 +832,61 @@ export const TenantCreateShell = () => {
     [],
   );
 
+  const handleCreateTenant = useCallback(async () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!isReviewSubmittable || !onboardingPayloadParseResult.success) {
+      setShowStepErrors(true);
+      return;
+    }
+
+    const accessToken = getStoredAccessToken();
+    if (!accessToken) {
+      setSubmissionErrorMessage(
+        'Your platform session could not be confirmed. Sign in again before creating the tenant.',
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmissionErrorMessage(undefined);
+    setShowStepErrors(false);
+
+    try {
+      const response = await submitTenantCreateOnboarding(
+        accessToken,
+        onboardingPayloadParseResult.data,
+      );
+
+      showAlert({
+        description: `${response.slug} is ready for platform follow-up.`,
+        severity: 'success',
+        title: 'Tenant created',
+      });
+      router.push(`/platform/tenants/${response.slug}`);
+    } catch (error) {
+      setSubmissionErrorMessage(
+        error instanceof Error ? error.message : 'Tenant could not be created. Try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [isReviewSubmittable, isSubmitting, onboardingPayloadParseResult, router, showAlert]);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="mx-auto w-full max-w-[660px] pb-6" data-testid="tenant-create-stepper">
         <Stepper
-          clickable
+          clickable={!isSubmitting}
           currentStep={currentStepIndex}
           onStepClick={(index) => {
+            if (isSubmitting) {
+              return;
+            }
             setShowStepErrors(false);
+            setSubmissionErrorMessage(undefined);
             setCurrentStepKey(tenantCreateSteps[index]?.key ?? currentStepKey);
           }}
           steps={stepperSteps}
@@ -834,6 +935,37 @@ export const TenantCreateShell = () => {
                 roleCodesWithRequiredErrors={userAssignmentValidationState.requiredErrorRoleCodes}
                 showErrors={showStepErrors}
               />
+            ) : isReviewStep ? (
+              <TenantCreateStepReview
+                blockingMessage={reviewBlockingMessage}
+                roleCodesWithOptionalWarnings={
+                  userAssignmentValidationState.optionalWarningRoleCodes
+                }
+                roleOptions={currentRoleOptions}
+                selectedRoleCodes={selectedRoleCodes}
+                submissionErrorMessage={submissionErrorMessage}
+                tenantAdminRows={populatedAssignmentRows.filter((row) =>
+                  ADMIN_ROLE_CODES.has(row.roleCode),
+                )}
+                tenantInfoFields={[
+                  { label: 'Tenant Name', value: tenantInfoData.name.trim() || 'Not provided' },
+                  { label: 'Tenant Slug', value: tenantInfoData.slug.trim() || 'Not provided' },
+                  {
+                    label: 'Management System',
+                    value: currentManagementSystemType?.displayName ?? 'Not selected',
+                  },
+                ]}
+                userRowsByRoleCode={selectedRoleSections.reduce<
+                  Partial<Record<RoleCode, TenantCreateOnboardingInitialUser[]>>
+                >((result, roleSection) => {
+                  result[roleSection.roleCode] = (
+                    assignmentDraftsByRole[roleSection.roleCode] ?? []
+                  )
+                    .filter(hasAnyAssignmentValue)
+                    .map(toOnboardingInitialUserInput);
+                  return result;
+                }, {})}
+              />
             ) : (
               <>
                 <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-5">
@@ -873,6 +1005,7 @@ export const TenantCreateShell = () => {
         <div className="flex items-center justify-end gap-2 px-6 py-3">
           <Button
             className="gap-2 rounded-full px-4 text-red-600 hover:bg-red-50 hover:text-red-700"
+            disabled={isSubmitting}
             onClick={attemptExit}
             type="button"
             variant="ghost"
@@ -882,13 +1015,14 @@ export const TenantCreateShell = () => {
           </Button>
           <Button
             className="gap-2 rounded-full px-4"
-            disabled={!hasPreviousStep}
+            disabled={!hasPreviousStep || isSubmitting}
             onClick={() => {
-              if (!hasPreviousStep) {
+              if (!hasPreviousStep || isSubmitting) {
                 return;
               }
 
               setShowStepErrors(false);
+              setSubmissionErrorMessage(undefined);
               setCurrentStepKey(tenantCreateSteps[currentStepIndex - 1]?.key ?? currentStepKey);
             }}
             type="button"
@@ -897,27 +1031,51 @@ export const TenantCreateShell = () => {
             <ChevronLeft aria-hidden="true" className="h-4 w-4" />
             Back
           </Button>
-          <Button
-            className="gap-2 rounded-full px-5"
-            disabled={!hasNextStep}
-            onClick={() => {
-              if (!hasNextStep) {
-                return;
-              }
+          {isReviewStep ? (
+            <Button
+              className="gap-2 rounded-full px-5"
+              disabled={isSubmitting}
+              onClick={() => {
+                void handleCreateTenant();
+              }}
+              type="button"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
+                  Creating tenant
+                </>
+              ) : (
+                <>
+                  Create tenant
+                  <ChevronRight aria-hidden="true" className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              className="gap-2 rounded-full px-5"
+              disabled={!hasNextStep || isSubmitting}
+              onClick={() => {
+                if (!hasNextStep || isSubmitting) {
+                  return;
+                }
 
-              if (!isCurrentStepValid) {
-                setShowStepErrors(true);
-                return;
-              }
+                if (!isCurrentStepValid) {
+                  setShowStepErrors(true);
+                  return;
+                }
 
-              setShowStepErrors(false);
-              setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
-            }}
-            type="button"
-          >
-            Next
-            <ChevronRight aria-hidden="true" className="h-4 w-4" />
-          </Button>
+                setShowStepErrors(false);
+                setSubmissionErrorMessage(undefined);
+                setCurrentStepKey(tenantCreateSteps[currentStepIndex + 1]?.key ?? currentStepKey);
+              }}
+              type="button"
+            >
+              Next
+              <ChevronRight aria-hidden="true" className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -946,6 +1104,7 @@ export const TenantCreateShell = () => {
           setRoleCodesInitialized(false);
           setAssignmentDraftsByRole({});
           setEmailAvailabilityByEmail({});
+          setSubmissionErrorMessage(undefined);
 
           if (nextSystemTypeValue) {
             setTenantInfoData((currentValue) => ({

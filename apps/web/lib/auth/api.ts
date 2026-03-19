@@ -1,5 +1,7 @@
 import {
   DashboardOverviewResponseSchema,
+  TenantCreateOnboardingSubmissionRequestSchema,
+  TenantCreateOnboardingSubmissionResponseSchema,
   TenantCreateReferenceDataResponseSchema,
   TenantDirectoryListRequestSchema,
   TenantDirectoryListResponseSchema,
@@ -8,6 +10,8 @@ import {
   TenantUserEmailAvailabilityRequestSchema,
   TenantUserEmailAvailabilityResponseSchema,
   type DashboardOverviewResponse,
+  type TenantCreateOnboardingSubmissionRequest,
+  type TenantCreateOnboardingSubmissionResponse,
   type TenantCreateReferenceDataResponse,
   type TenantDirectoryListRequest,
   type TenantDirectoryListResponse,
@@ -208,3 +212,17 @@ export const getTenantCreateReferenceData = async (accessToken: string) =>
       method: 'POST',
     }),
   ) as TenantCreateReferenceDataResponse;
+
+export const submitTenantCreateOnboarding = async (
+  accessToken: string,
+  input: TenantCreateOnboardingSubmissionRequest,
+) =>
+  TenantCreateOnboardingSubmissionResponseSchema.parse(
+    await request('/api/v1/platform/tenant', {
+      body: JSON.stringify(TenantCreateOnboardingSubmissionRequestSchema.parse(input)),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }),
+  ) as TenantCreateOnboardingSubmissionResponse;
