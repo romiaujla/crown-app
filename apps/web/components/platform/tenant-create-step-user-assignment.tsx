@@ -1,10 +1,10 @@
 'use client';
 
-import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
+import { useRef } from 'react';
+import { AlertTriangle, Trash2 } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -40,7 +40,6 @@ type TenantCreateStepUserAssignmentProps = {
   assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole;
   fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId;
   globalErrorMessage?: string;
-  onAddRow: (roleCode: RoleCode) => void;
   onRemoveRow: (roleCode: RoleCode, rowId: string) => void;
   onUpdateRow: (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => void;
   roleSections: TenantCreateRoleOption[];
@@ -50,6 +49,7 @@ type TenantCreateStepUserAssignmentProps = {
 };
 
 const ADMIN_ROLE_CODES = new Set<RoleCode>([RoleCodeEnum.ADMIN, RoleCodeEnum.TENANT_ADMIN]);
+const ROW_FIELDS: DraftField[] = ['displayName', 'username', 'email'];
 
 const isAdminRole = (roleCode: RoleCode) => ADMIN_ROLE_CODES.has(roleCode);
 
@@ -58,14 +58,16 @@ const getSectionTitle = (role: TenantCreateRoleOption) =>
 
 const getSectionDescription = (role: TenantCreateRoleOption) =>
   isAdminRole(role.roleCode)
-    ? 'At least one tenant admin is required before this flow can continue.'
-    : `Assign new ${role.displayName.toLowerCase()} users now or leave this role unstaffed for v1.`;
+    ? 'At least one tenant admin is required'
+    : 'Add users to this role or leave it empty';
+
+const getRefKey = (roleCode: RoleCode, rowId: string, field: DraftField) =>
+  `${roleCode}:${rowId}:${field}`;
 
 export const TenantCreateStepUserAssignment = ({
   assignmentDraftsByRole,
   fieldErrorsByRowId,
   globalErrorMessage,
-  onAddRow,
   onRemoveRow,
   onUpdateRow,
   roleSections,
@@ -73,6 +75,8 @@ export const TenantCreateStepUserAssignment = ({
   roleCodesWithRequiredErrors,
   showErrors,
 }: TenantCreateStepUserAssignmentProps) => {
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
   if (roleSections.length === 0) {
     return (
       <div
@@ -117,11 +121,11 @@ export const TenantCreateStepUserAssignment = ({
             data-testid={`user-assignment-section-${role.roleCode}`}
             key={role.roleCode}
           >
-            <CardHeader className="space-y-3 pb-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <CardHeader className="space-y-2 pb-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-lg text-stone-950">{getSectionTitle(role)}</CardTitle>
-                  <p className="text-sm leading-6 text-stone-600">{getSectionDescription(role)}</p>
+                  <p className="text-sm text-stone-600">{getSectionDescription(role)}</p>
                 </div>
                 <Badge variant={isRequiredSection ? 'warning' : 'muted'}>
                   {isRequiredSection ? 'Required' : 'Optional'}
@@ -129,164 +133,123 @@ export const TenantCreateStepUserAssignment = ({
               </div>
 
               {shouldShowRequiredError ? (
-                <Alert severity="error">
-                  <AlertTitle>At least one tenant admin is required</AlertTitle>
-                  <AlertDescription>
-                    Add at least one valid tenant admin before continuing.
-                  </AlertDescription>
-                </Alert>
+                <p className="text-sm font-medium text-destructive">
+                  At least one tenant admin is required
+                </p>
               ) : null}
 
               {!isRequiredSection && shouldShowOptionalWarning ? (
-                <Alert severity="warning">
-                  <AlertTitle>No users assigned to this role</AlertTitle>
-                  <AlertDescription>
-                    This role can stay unstaffed in v1, but the tenant will start without an
-                    assigned {role.displayName.toLowerCase()} user.
-                  </AlertDescription>
-                </Alert>
+                <p className="text-sm text-stone-500">No users assigned to this role</p>
               ) : null}
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              {sectionRows.length > 0 ? (
-                <div className="space-y-3">
-                  {sectionRows.map((draft, rowIndex) => {
-                    const fieldErrors = fieldErrorsByRowId[draft.rowId] ?? {};
-                    const rowPrefix = `${role.roleCode}-${draft.rowId}`;
+            <CardContent className="space-y-3">
+              <div className="overflow-x-auto">
+                <div className="min-w-[720px]">
+                  <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1.35fr)_40px] gap-2 border-b border-stone-200 pb-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                      Display Name
+                    </p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                      Username
+                    </p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                      Email
+                    </p>
+                    <span className="sr-only">Delete</span>
+                  </div>
 
-                    return (
-                      <div
-                        className="rounded-2xl border border-stone-200 bg-stone-50/60 p-4"
-                        data-testid={`user-assignment-row-${role.roleCode}-${rowIndex}`}
-                        key={draft.rowId}
-                      >
-                        <div className="hidden items-center gap-3 pb-2 md:grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto]">
-                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                            Display Name
-                          </Label>
-                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                            Username
-                          </Label>
-                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
-                            Email
-                          </Label>
-                          <span className="sr-only">Remove row</span>
-                        </div>
+                  <div className="space-y-2 pt-2">
+                    {sectionRows.map((draft, rowIndex) => {
+                      const fieldErrors = fieldErrorsByRowId[draft.rowId] ?? {};
 
-                        <div className="grid gap-3 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto] md:items-start">
-                          <label className="space-y-2">
-                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-displayName`}>
-                              Display name <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                              aria-label="Display name"
-                              id={`${rowPrefix}-displayName`}
-                              onChange={(event) =>
-                                onUpdateRow(
-                                  role.roleCode,
-                                  draft.rowId,
-                                  'displayName',
-                                  event.target.value,
-                                )
-                              }
-                              placeholder="Jane Doe"
-                              value={draft.displayName}
-                            />
-                            {fieldErrors.displayName ? (
-                              <p className="text-xs font-medium text-destructive">
-                                {fieldErrors.displayName}
-                              </p>
-                            ) : null}
-                          </label>
+                      return (
+                        <div
+                          className="group grid grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)_minmax(0,1.35fr)_40px] gap-2"
+                          data-testid={`user-assignment-row-${role.roleCode}-${rowIndex}`}
+                          key={draft.rowId}
+                        >
+                          {ROW_FIELDS.map((field) => {
+                            const errorMessage = fieldErrors[field];
+                            const placeholder =
+                              field === 'displayName'
+                                ? 'Display name'
+                                : field === 'username'
+                                  ? 'Username'
+                                  : 'Email';
 
-                          <label className="space-y-2">
-                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-username`}>
-                              Username <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                              aria-label="Username"
-                              id={`${rowPrefix}-username`}
-                              onChange={(event) =>
-                                onUpdateRow(
-                                  role.roleCode,
-                                  draft.rowId,
-                                  'username',
-                                  event.target.value,
-                                )
-                              }
-                              placeholder="jane_doe"
-                              value={draft.username}
-                            />
-                            {fieldErrors.username ? (
-                              <p className="text-xs font-medium text-destructive">
-                                {fieldErrors.username}
-                              </p>
-                            ) : null}
-                          </label>
+                            return (
+                              <div className="space-y-1" key={field}>
+                                <Label className="sr-only" htmlFor={`${draft.rowId}-${field}`}>
+                                  {placeholder}
+                                </Label>
+                                <Input
+                                  aria-label={placeholder}
+                                  className={
+                                    errorMessage
+                                      ? 'h-9 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 text-sm'
+                                      : 'h-9 rounded-md border-stone-200 bg-white px-2.5 py-1.5 text-sm'
+                                  }
+                                  id={`${draft.rowId}-${field}`}
+                                  onChange={(event) =>
+                                    onUpdateRow(
+                                      role.roleCode,
+                                      draft.rowId,
+                                      field,
+                                      event.target.value,
+                                    )
+                                  }
+                                  onKeyDown={(event) => {
+                                    if (event.key !== 'Enter') {
+                                      return;
+                                    }
 
-                          <label className="space-y-2">
-                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-email`}>
-                              Email <span className="text-destructive">*</span>
-                            </Label>
-                            <Input
-                              aria-label="Email"
-                              id={`${rowPrefix}-email`}
-                              onChange={(event) =>
-                                onUpdateRow(role.roleCode, draft.rowId, 'email', event.target.value)
-                              }
-                              placeholder="jane@crown.test"
-                              type="email"
-                              value={draft.email}
-                            />
-                            {fieldErrors.email ? (
-                              <p className="text-xs font-medium text-destructive">
-                                {fieldErrors.email}
-                              </p>
-                            ) : null}
-                          </label>
+                                    event.preventDefault();
+                                    const nextRow = sectionRows[rowIndex + 1];
+                                    if (!nextRow) {
+                                      return;
+                                    }
 
-                          <div className="flex justify-end md:pt-0.5">
-                            <Button
+                                    requestAnimationFrame(() => {
+                                      inputRefs.current[
+                                        getRefKey(role.roleCode, nextRow.rowId, field)
+                                      ]?.focus();
+                                    });
+                                  }}
+                                  placeholder={placeholder}
+                                  ref={(element) => {
+                                    inputRefs.current[
+                                      getRefKey(role.roleCode, draft.rowId, field)
+                                    ] = element;
+                                  }}
+                                  type={field === 'email' ? 'email' : 'text'}
+                                  value={draft[field]}
+                                />
+                                {errorMessage ? (
+                                  <p className="text-xs font-medium text-destructive">
+                                    {errorMessage}
+                                  </p>
+                                ) : null}
+                              </div>
+                            );
+                          })}
+
+                          <div className="flex items-start justify-center pt-0.5">
+                            <button
                               aria-label={`Remove ${getSectionTitle(role)} row ${rowIndex + 1}`}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-stone-400 opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:text-destructive"
                               onClick={() => onRemoveRow(role.roleCode, draft.rowId)}
-                              size="icon"
                               type="button"
-                              variant="ghost"
                             >
                               <Trash2 aria-hidden="true" className="h-4 w-4" />
-                            </Button>
+                            </button>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-dashed border-stone-300 bg-stone-50/70 p-4">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle aria-hidden="true" className="mt-0.5 h-4 w-4 text-stone-400" />
-                    <div className="space-y-1 text-sm text-stone-600">
-                      <p className="font-medium text-stone-900">No users added yet</p>
-                      <p>
-                        Add a new{' '}
-                        {isRequiredSection ? 'tenant-admin' : role.displayName.toLowerCase()} user
-                        to populate this section.
-                      </p>
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
-              )}
-
-              <Button
-                className="gap-2 rounded-full"
-                onClick={() => onAddRow(role.roleCode)}
-                type="button"
-                variant={isRequiredSection ? 'default' : 'outline'}
-              >
-                <Plus aria-hidden="true" className="h-4 w-4" />
-                {isRequiredSection ? 'Add tenant admin' : `Add ${role.displayName}`}
-              </Button>
+              </div>
             </CardContent>
           </Card>
         );

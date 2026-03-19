@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
@@ -122,6 +122,23 @@ const hasAnyAssignmentValue = (draft: TenantCreateInitialUserDraft) =>
   Boolean(draft.displayName.trim() || draft.username.trim() || draft.email.trim());
 
 const isDraftEmpty = (draft: TenantCreateInitialUserDraft) => !hasAnyAssignmentValue(draft);
+
+const ensureTrailingEmptyAssignmentRow = (
+  draftRows: TenantCreateInitialUserDraft[],
+  roleCode: RoleCode,
+) => {
+  const rows = [...draftRows];
+
+  while (rows.length > 1 && isDraftEmpty(rows.at(-1)!) && isDraftEmpty(rows.at(-2)!)) {
+    rows.pop();
+  }
+
+  if (rows.length === 0 || !isDraftEmpty(rows.at(-1)!)) {
+    rows.push(createAssignmentDraftRow(roleCode));
+  }
+
+  return rows;
+};
 
 const toOnboardingInitialUserInput = ({
   displayName,
@@ -478,7 +495,10 @@ export const TenantCreateShell = () => {
       (typeOption) => typeOption.typeCode === tenantInfoData.managementSystemTypeCode,
     )?.roleOptions ?? [];
 
-  const selectedRoleSections = getSelectedRoleSections(currentRoleOptions, selectedRoleCodes);
+  const selectedRoleSections = useMemo(
+    () => getSelectedRoleSections(currentRoleOptions, selectedRoleCodes),
+    [currentRoleOptions, selectedRoleCodes],
+  );
   const userAssignmentValidationState = getUserAssignmentValidationState(
     selectedRoleSections,
     assignmentDraftsByRole,
@@ -572,13 +592,28 @@ export const TenantCreateShell = () => {
       const nextDraftsByRole: TenantCreateAssignmentDraftsByRole = {};
       let didChange = false;
 
-      Object.entries(currentDraftsByRole).forEach(([roleCode, draftRows]) => {
+      selectedRoleSections.forEach((roleSection) => {
+        const currentDraftRows = currentDraftsByRole[roleSection.roleCode] ?? [];
+        const nextDraftRows = ensureTrailingEmptyAssignmentRow(
+          currentDraftRows,
+          roleSection.roleCode,
+        );
+
+        nextDraftsByRole[roleSection.roleCode] = nextDraftRows;
+
+        if (
+          currentDraftRows !== nextDraftRows ||
+          currentDraftRows.length !== nextDraftRows.length ||
+          !selectedRoleCodeSet.has(roleSection.roleCode)
+        ) {
+          didChange = true;
+        }
+      });
+
+      Object.keys(currentDraftsByRole).forEach((roleCode) => {
         if (!selectedRoleCodeSet.has(roleCode as RoleCode)) {
           didChange = true;
-          return;
         }
-
-        nextDraftsByRole[roleCode as RoleCode] = draftRows;
       });
 
       return didChange ? nextDraftsByRole : currentDraftsByRole;
@@ -693,59 +728,52 @@ export const TenantCreateShell = () => {
     [currentRoleOptions],
   );
 
-  const handleAddAssignmentRow = useCallback((roleCode: RoleCode) => {
-    setAssignmentDraftsByRole((currentDraftsByRole) => ({
-      ...currentDraftsByRole,
-      [roleCode]: [...(currentDraftsByRole[roleCode] ?? []), createAssignmentDraftRow(roleCode)],
-    }));
-  }, []);
-
   const handleRemoveAssignmentRow = useCallback((roleCode: RoleCode, rowId: string) => {
     setAssignmentDraftsByRole((currentDraftsByRole) => {
-      const nextRoleDrafts = (currentDraftsByRole[roleCode] ?? []).filter(
-        (draftRow) => draftRow.rowId !== rowId,
-      );
-
-      if (nextRoleDrafts.length === 0) {
-        const nextDraftsByRole = { ...currentDraftsByRole };
-        delete nextDraftsByRole[roleCode];
-        return nextDraftsByRole;
-      }
-
       return {
         ...currentDraftsByRole,
-        [roleCode]: nextRoleDrafts,
+        [roleCode]: ensureTrailingEmptyAssignmentRow(
+          (currentDraftsByRole[roleCode] ?? []).filter((draftRow) => draftRow.rowId !== rowId),
+          roleCode,
+        ),
       };
     });
   }, []);
 
   const handleUpdateAssignmentRow = useCallback(
     (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => {
-      setAssignmentDraftsByRole((currentDraftsByRole) => ({
-        ...currentDraftsByRole,
-        [roleCode]: (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
-          draftRow.rowId === rowId
-            ? field === 'username'
-              ? {
-                  ...draftRow,
-                  username: normalizeUsernameInput(value),
-                  usernameManuallyEdited: true,
-                }
-              : field === 'displayName'
+      setAssignmentDraftsByRole((currentDraftsByRole) => {
+        const nextRoleDrafts = ensureTrailingEmptyAssignmentRow(
+          (currentDraftsByRole[roleCode] ?? []).map((draftRow) =>
+            draftRow.rowId === rowId
+              ? field === 'username'
                 ? {
                     ...draftRow,
-                    displayName: value,
-                    username: draftRow.usernameManuallyEdited
-                      ? draftRow.username
-                      : autoGenerateUsername(value),
+                    username: normalizeUsernameInput(value),
+                    usernameManuallyEdited: true,
                   }
-                : {
-                    ...draftRow,
-                    email: value,
-                  }
-            : draftRow,
-        ),
-      }));
+                : field === 'displayName'
+                  ? {
+                      ...draftRow,
+                      displayName: value,
+                      username: draftRow.usernameManuallyEdited
+                        ? draftRow.username
+                        : autoGenerateUsername(value),
+                    }
+                  : {
+                      ...draftRow,
+                      email: value,
+                    }
+              : draftRow,
+          ),
+          roleCode,
+        );
+
+        return {
+          ...currentDraftsByRole,
+          [roleCode]: nextRoleDrafts,
+        };
+      });
     },
     [],
   );
@@ -797,7 +825,6 @@ export const TenantCreateShell = () => {
                 assignmentDraftsByRole={assignmentDraftsByRole}
                 fieldErrorsByRowId={userAssignmentValidationState.fieldErrorsByRowId}
                 globalErrorMessage={userAssignmentValidationState.globalErrorMessage}
-                onAddRow={handleAddAssignmentRow}
                 onRemoveRow={handleRemoveAssignmentRow}
                 onUpdateRow={handleUpdateAssignmentRow}
                 roleSections={selectedRoleSections}
