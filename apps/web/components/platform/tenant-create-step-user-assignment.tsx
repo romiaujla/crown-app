@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -76,6 +76,8 @@ export const TenantCreateStepUserAssignment = ({
   showErrors,
 }: TenantCreateStepUserAssignmentProps) => {
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [touchedFieldKeys, setTouchedFieldKeys] = useState<Set<string>>(() => new Set());
+  const [focusedFieldKey, setFocusedFieldKey] = useState<string | null>(null);
   const showGlobalAlert =
     showErrors && globalErrorMessage !== 'At least one tenant admin is required';
 
@@ -165,7 +167,13 @@ export const TenantCreateStepUserAssignment = ({
                       key={draft.rowId}
                     >
                       {ROW_FIELDS.map((field) => {
+                        const fieldKey = getRefKey(role.roleCode, draft.rowId, field);
                         const errorMessage = fieldErrors[field];
+                        const shouldShowError = Boolean(
+                          errorMessage &&
+                          (showErrors ||
+                            (touchedFieldKeys.has(fieldKey) && focusedFieldKey !== fieldKey)),
+                        );
                         const placeholder =
                           field === 'displayName'
                             ? 'Display name'
@@ -181,7 +189,7 @@ export const TenantCreateStepUserAssignment = ({
                             <Input
                               aria-label={placeholder}
                               className={
-                                errorMessage
+                                shouldShowError
                                   ? 'h-9 min-w-0 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 text-sm'
                                   : 'h-9 min-w-0 rounded-md border-stone-200 bg-white px-2.5 py-1.5 text-sm'
                               }
@@ -189,6 +197,19 @@ export const TenantCreateStepUserAssignment = ({
                               onChange={(event) =>
                                 onUpdateRow(role.roleCode, draft.rowId, field, event.target.value)
                               }
+                              onBlur={() => {
+                                setTouchedFieldKeys((currentValue) => {
+                                  const nextValue = new Set(currentValue);
+                                  nextValue.add(fieldKey);
+                                  return nextValue;
+                                });
+                                setFocusedFieldKey((currentValue) =>
+                                  currentValue === fieldKey ? null : currentValue,
+                                );
+                              }}
+                              onFocus={() => {
+                                setFocusedFieldKey(fieldKey);
+                              }}
                               onKeyDown={(event) => {
                                 if (event.key !== 'Enter') {
                                   return;
@@ -208,13 +229,12 @@ export const TenantCreateStepUserAssignment = ({
                               }}
                               placeholder={placeholder}
                               ref={(element) => {
-                                inputRefs.current[getRefKey(role.roleCode, draft.rowId, field)] =
-                                  element;
+                                inputRefs.current[fieldKey] = element;
                               }}
                               type={field === 'email' ? 'email' : 'text'}
                               value={draft[field]}
                             />
-                            {errorMessage ? (
+                            {shouldShowError ? (
                               <p className="text-xs font-medium text-destructive">{errorMessage}</p>
                             ) : null}
                           </div>
