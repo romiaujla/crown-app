@@ -161,27 +161,26 @@ export const TenantCreateStepUserAssignment = ({
                         data-testid={`user-assignment-row-${role.roleCode}-${rowIndex}`}
                         key={draft.rowId}
                       >
-                        <div className="mb-3 flex items-center justify-between gap-3">
-                          <p className="text-sm font-semibold text-stone-900">
-                            User {rowIndex + 1}
-                          </p>
-                          <Button
-                            aria-label={`Remove ${getSectionTitle(role)} user ${rowIndex + 1}`}
-                            onClick={() => onRemoveRow(role.roleCode, draft.rowId)}
-                            size="icon"
-                            type="button"
-                            variant="ghost"
-                          >
-                            <Trash2 aria-hidden="true" className="h-4 w-4" />
-                          </Button>
+                        <div className="hidden items-center gap-3 pb-2 md:grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto]">
+                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                            Display Name
+                          </Label>
+                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                            Username
+                          </Label>
+                          <Label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                            Email
+                          </Label>
+                          <span className="sr-only">Remove row</span>
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-3">
+                        <div className="grid gap-3 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.2fr)_auto] md:items-start">
                           <label className="space-y-2">
-                            <Label htmlFor={`${rowPrefix}-displayName`}>
+                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-displayName`}>
                               Display name <span className="text-destructive">*</span>
                             </Label>
                             <Input
+                              aria-label="Display name"
                               id={`${rowPrefix}-displayName`}
                               onChange={(event) =>
                                 onUpdateRow(
@@ -202,10 +201,11 @@ export const TenantCreateStepUserAssignment = ({
                           </label>
 
                           <label className="space-y-2">
-                            <Label htmlFor={`${rowPrefix}-username`}>
+                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-username`}>
                               Username <span className="text-destructive">*</span>
                             </Label>
                             <Input
+                              aria-label="Username"
                               id={`${rowPrefix}-username`}
                               onChange={(event) =>
                                 onUpdateRow(
@@ -226,10 +226,11 @@ export const TenantCreateStepUserAssignment = ({
                           </label>
 
                           <label className="space-y-2">
-                            <Label htmlFor={`${rowPrefix}-email`}>
+                            <Label className="md:sr-only" htmlFor={`${rowPrefix}-email`}>
                               Email <span className="text-destructive">*</span>
                             </Label>
                             <Input
+                              aria-label="Email"
                               id={`${rowPrefix}-email`}
                               onChange={(event) =>
                                 onUpdateRow(role.roleCode, draft.rowId, 'email', event.target.value)
@@ -244,6 +245,18 @@ export const TenantCreateStepUserAssignment = ({
                               </p>
                             ) : null}
                           </label>
+
+                          <div className="flex justify-end md:pt-0.5">
+                            <Button
+                              aria-label={`Remove ${getSectionTitle(role)} row ${rowIndex + 1}`}
+                              onClick={() => onRemoveRow(role.roleCode, draft.rowId)}
+                              size="icon"
+                              type="button"
+                              variant="ghost"
+                            >
+                              <Trash2 aria-hidden="true" className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     );
