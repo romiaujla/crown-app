@@ -41,9 +41,9 @@ describe('platform tenant create reference data integration', () => {
             isDefault: true,
             role: {
               id: 'tenant-admin',
-              roleCode: RoleCodeEnum.ADMIN,
-              displayName: 'Admin',
-              description: 'Baseline administrator role.',
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
+              displayName: 'Tenant Admin',
+              description: 'Bootstrap tenant shell administrator role.',
             },
           },
         ],
@@ -65,18 +65,18 @@ describe('platform tenant create reference data integration', () => {
             description: 'Transportation workflows',
             roleOptions: [
               {
-                roleCode: RoleCodeEnum.ADMIN,
-                displayName: 'Admin',
-                description: 'Baseline administrator role.',
-                isDefault: true,
-                isRequired: true,
-              },
-              {
                 roleCode: RoleCodeEnum.DRIVER,
                 displayName: 'Driver',
                 description: 'Executes transportation work.',
                 isDefault: true,
                 isRequired: false,
+              },
+              {
+                roleCode: RoleCodeEnum.TENANT_ADMIN,
+                displayName: 'Tenant Admin',
+                description: 'Bootstrap tenant shell administrator role.',
+                isDefault: true,
+                isRequired: true,
               },
             ],
           },
@@ -126,8 +126,8 @@ describe('platform tenant create reference data integration', () => {
             isDefault: true,
             role: {
               id: 'tenant-admin',
-              roleCode: RoleCodeEnum.ADMIN,
-              displayName: 'Admin',
+              roleCode: RoleCodeEnum.TENANT_ADMIN,
+              displayName: 'Tenant Admin',
               description: null,
             },
           },
@@ -147,8 +147,8 @@ describe('platform tenant create reference data integration', () => {
       description: null,
       roleOptions: [
         {
-          roleCode: RoleCodeEnum.ADMIN,
-          displayName: 'Admin',
+          roleCode: RoleCodeEnum.TENANT_ADMIN,
+          displayName: 'Tenant Admin',
           description: null,
           isDefault: true,
           isRequired: true,

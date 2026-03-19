@@ -19,9 +19,9 @@ describe('platform tenant create reference data contract', () => {
             description: 'Transportation workflows',
             roleOptions: [
               {
-                roleCode: RoleCodeEnum.ADMIN,
-                displayName: 'Admin',
-                description: 'Baseline administrator role.',
+                roleCode: RoleCodeEnum.TENANT_ADMIN,
+                displayName: 'Tenant Admin',
+                description: 'Bootstrap tenant shell administrator role.',
                 isDefault: true,
                 isRequired: true,
               },
@@ -41,6 +41,9 @@ describe('platform tenant create reference data contract', () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.managementSystemTypeList).toHaveLength(1);
+    expect(response.body.data.managementSystemTypeList[0]?.roleOptions[0]?.roleCode).toBe(
+      RoleCodeEnum.TENANT_ADMIN,
+    );
     expect(response.body.data.managementSystemTypeList[0]?.roleOptions[0]?.isRequired).toBe(true);
     expect(getReferenceData).toHaveBeenCalledWith({
       typeCode: ManagementSystemTypeCodeEnum.TRANSPORTATION,

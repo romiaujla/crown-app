@@ -9,7 +9,7 @@ import { ManagementSystemTypeAvailabilityStatusEnum } from '../../generated/pris
 
 import { prisma } from '../../db/prisma.js';
 
-const REQUIRED_ROLE_CODE = RoleCodeEnum.ADMIN;
+const REQUIRED_ROLE_CODE = RoleCodeEnum.TENANT_ADMIN;
 
 type PlatformTenantReferenceDataDb = Pick<PrismaClient, 'managementSystemType'>;
 
