@@ -1,13 +1,12 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { AlertTriangle, Trash2 } from 'lucide-react';
-
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { AlertTriangle, Trash2 } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 import type {
   RoleCode,
@@ -102,7 +101,6 @@ export const TenantCreateStepUserAssignment = ({
       {showGlobalAlert && globalErrorMessage ? (
         <Alert severity="error">
           <AlertTriangle aria-hidden="true" className="h-4 w-4" />
-          <AlertTitle>{globalErrorMessage}</AlertTitle>
           <AlertDescription>Resolve the highlighted issues before continuing.</AlertDescription>
         </Alert>
       ) : null}
@@ -138,7 +136,6 @@ export const TenantCreateStepUserAssignment = ({
 
               {shouldShowRequiredError ? (
                 <Alert severity="error">
-                  <AlertTriangle aria-hidden="true" className="h-4 w-4" />
                   <AlertTitle>At least one tenant admin is required</AlertTitle>
                 </Alert>
               ) : null}
