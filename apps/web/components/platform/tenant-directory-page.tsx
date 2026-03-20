@@ -1,7 +1,7 @@
 'use client';
 
 import { TenantStatusEnum, type TenantDirectoryListResponse } from '@crown/types';
-import { ArrowUpRight, PencilLine, Plus, Search } from 'lucide-react';
+import { ArrowUpRight, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -283,14 +283,11 @@ export const TenantDirectoryPage = () => {
                       {canEditTenant(tenant.status) ? (
                         <Button
                           asChild
-                          className="platform-outline-button"
+                          className="platform-primary-button rounded-full px-4 text-xs"
                           size="sm"
-                          variant="outline"
+                          variant="default"
                         >
-                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>
-                            <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
-                            Edit
-                          </Link>
+                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>Edit tenant</Link>
                         </Button>
                       ) : null}
                     </TableCell>
