@@ -279,7 +279,12 @@ export const TenantDirectoryPage = () => {
                     </TableCell>
                     <TableCell className="align-top text-right">
                       {canEditTenant(tenant.status) ? (
-                        <Button asChild size="sm" variant="outline">
+                        <Button
+                          asChild
+                          className="platform-outline-button"
+                          size="sm"
+                          variant="outline"
+                        >
                           <Link href={`/platform/tenants/${tenant.slug}/edit`}>
                             <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
                             Edit
