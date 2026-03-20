@@ -2,10 +2,11 @@
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 import type {
@@ -39,6 +40,7 @@ type TenantCreateStepUserAssignmentProps = {
   assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole;
   fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId;
   globalErrorMessage?: string;
+  onAddRow: (roleCode: RoleCode) => string | undefined;
   onRemoveRow: (roleCode: RoleCode, rowId: string) => void;
   onUpdateRow: (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => void;
   roleSections: TenantCreateRoleOption[];
@@ -69,6 +71,7 @@ export const TenantCreateStepUserAssignment = ({
   assignmentDraftsByRole,
   fieldErrorsByRowId,
   globalErrorMessage,
+  onAddRow,
   onRemoveRow,
   onUpdateRow,
   roleSections,
@@ -81,6 +84,12 @@ export const TenantCreateStepUserAssignment = ({
   const [focusedFieldKey, setFocusedFieldKey] = useState<string | null>(null);
   const showGlobalAlert =
     showErrors && globalErrorMessage !== 'At least one tenant admin is required';
+
+  const focusDraftDisplayName = (roleCode: RoleCode, rowId: string) => {
+    requestAnimationFrame(() => {
+      inputRefs.current[getRefKey(roleCode, rowId, 'displayName')]?.focus();
+    });
+  };
 
   if (roleSections.length === 0) {
     return (
@@ -112,6 +121,19 @@ export const TenantCreateStepUserAssignment = ({
         const isRequiredSection = role.isRequired || isBootstrapRole(role.roleCode);
         const shouldShowRequiredError =
           showErrors && roleCodesWithRequiredErrors.has(role.roleCode);
+        const handleAddRowClick = () => {
+          const lastDraft = sectionRows.at(-1);
+
+          if (lastDraft) {
+            focusDraftDisplayName(role.roleCode, lastDraft.rowId);
+            return;
+          }
+
+          const nextRowId = onAddRow(role.roleCode);
+          if (nextRowId) {
+            focusDraftDisplayName(role.roleCode, nextRowId);
+          }
+        };
 
         return (
           <Card
@@ -263,6 +285,18 @@ export const TenantCreateStepUserAssignment = ({
                   );
                 })}
               </div>
+
+              <Button
+                className="w-full justify-center rounded-xl border-dashed"
+                data-testid={`user-assignment-add-row-${role.roleCode}`}
+                onClick={handleAddRowClick}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                <Plus aria-hidden="true" className="mr-2 h-4 w-4" />
+                Add {getSectionTitle(role)}
+              </Button>
             </CardContent>
           </Card>
         );

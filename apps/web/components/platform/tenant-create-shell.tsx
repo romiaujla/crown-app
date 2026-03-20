@@ -789,6 +789,26 @@ export const TenantCreateShell = () => {
     });
   }, []);
 
+  const handleAddAssignmentRow = useCallback((roleCode: RoleCode) => {
+    setSubmissionErrorMessage(undefined);
+    const nextDraftRow = createAssignmentDraftRow(roleCode);
+
+    setAssignmentDraftsByRole((currentDraftsByRole) => {
+      const currentRoleDrafts = currentDraftsByRole[roleCode] ?? [];
+
+      if (currentRoleDrafts.length > 0) {
+        return currentDraftsByRole;
+      }
+
+      return {
+        ...currentDraftsByRole,
+        [roleCode]: ensureTrailingEmptyAssignmentRow([nextDraftRow], roleCode),
+      };
+    });
+
+    return nextDraftRow.rowId;
+  }, []);
+
   const handleUpdateAssignmentRow = useCallback(
     (roleCode: RoleCode, rowId: string, field: DraftField, value: string) => {
       setSubmissionErrorMessage(undefined);
@@ -922,6 +942,7 @@ export const TenantCreateShell = () => {
                 assignmentDraftsByRole={assignmentDraftsByRole}
                 fieldErrorsByRowId={userAssignmentValidationState.fieldErrorsByRowId}
                 globalErrorMessage={userAssignmentValidationState.globalErrorMessage}
+                onAddRow={handleAddAssignmentRow}
                 onRemoveRow={handleRemoveAssignmentRow}
                 onUpdateRow={handleUpdateAssignmentRow}
                 roleSections={selectedRoleSections}
