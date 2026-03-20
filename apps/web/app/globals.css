@@ -617,6 +617,33 @@ html[data-platform-theme='dark'] .platform-primary-button:focus-visible {
   border-color: var(--platform-border);
 }
 
+.platform-confirm-dialog {
+  background: var(--platform-panel-strong);
+  border-color: var(--platform-border);
+  color: var(--platform-ink);
+}
+
+.platform-confirm-dialog__title {
+  color: var(--platform-ink);
+}
+
+.platform-confirm-dialog__description {
+  color: var(--platform-copy);
+}
+
+.platform-dialog-cancel-button {
+  background: transparent !important;
+  border-color: var(--platform-border) !important;
+  color: var(--platform-ink) !important;
+}
+
+.platform-dialog-cancel-button:hover,
+.platform-dialog-cancel-button:focus-visible {
+  background: var(--platform-toggle-hover) !important;
+  border-color: var(--platform-accent) !important;
+  color: var(--platform-ink) !important;
+}
+
 .platform-cancel-button {
   color: #d14c4c !important;
 }
@@ -635,6 +662,16 @@ html[data-platform-theme='dark'] .platform-cancel-button:hover,
 html[data-platform-theme='dark'] .platform-cancel-button:focus-visible {
   background: rgba(255, 112, 112, 0.14) !important;
   color: #ffb2b2 !important;
+}
+
+html[data-platform-theme='dark'] .platform-dialog-cancel-button {
+  background: rgba(14, 19, 16, 0.92) !important;
+}
+
+html[data-platform-theme='dark'] .platform-dialog-cancel-button:hover,
+html[data-platform-theme='dark'] .platform-dialog-cancel-button:focus-visible {
+  background: rgba(31, 47, 38, 0.96) !important;
+  color: #f5fff8 !important;
 }
 
 .platform-directory-table-header {
