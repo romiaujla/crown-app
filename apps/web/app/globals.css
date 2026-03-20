@@ -772,6 +772,22 @@ html[data-platform-theme='dark'] .platform-dialog-cancel-button:focus-visible {
   color: #4b5c55;
 }
 
+.platform-assignment-role-chip {
+  border: 1px solid transparent;
+}
+
+.platform-assignment-role-chip--required {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.24);
+  color: #8a4b00;
+}
+
+.platform-assignment-role-chip--optional {
+  background: rgba(86, 242, 140, 0.14);
+  border-color: rgba(86, 242, 140, 0.22);
+  color: #14532d;
+}
+
 html[data-platform-theme='dark'] .platform-directory-table-header {
   background: rgba(18, 27, 22, 0.96);
 }
@@ -839,6 +855,18 @@ html[data-platform-theme='dark'] .platform-role-guidance {
 html[data-platform-theme='dark'] .platform-role-required-chip {
   background: rgba(230, 237, 233, 0.18);
   color: #e9f5ee;
+}
+
+html[data-platform-theme='dark'] .platform-assignment-role-chip--required {
+  background: rgba(250, 204, 21, 0.18);
+  border-color: rgba(250, 204, 21, 0.28);
+  color: #fef3c7;
+}
+
+html[data-platform-theme='dark'] .platform-assignment-role-chip--optional {
+  background: rgba(99, 255, 160, 0.2);
+  border-color: rgba(99, 255, 160, 0.3);
+  color: #e7fff0;
 }
 
 .platform-stepper__indicator--completed {

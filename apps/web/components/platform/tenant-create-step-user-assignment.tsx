@@ -131,7 +131,14 @@ export const TenantCreateStepUserAssignment = ({
                   <CardTitle className="text-lg text-stone-950">{getSectionTitle(role)}</CardTitle>
                   <p className="text-sm text-stone-600">{getSectionDescription(role)}</p>
                 </div>
-                <Badge variant={isRequiredSection ? 'warning' : 'muted'}>
+                <Badge
+                  className={
+                    isRequiredSection
+                      ? 'platform-assignment-role-chip platform-assignment-role-chip--required'
+                      : 'platform-assignment-role-chip platform-assignment-role-chip--optional'
+                  }
+                  variant={isRequiredSection ? 'warning' : 'muted'}
+                >
                   {isRequiredSection ? 'Required' : 'Optional'}
                 </Badge>
               </div>
