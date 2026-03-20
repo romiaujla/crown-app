@@ -223,10 +223,10 @@ export const WorkspaceShell = ({
                             className={cn(
                               'sidebar-nav__item relative flex items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-stone-600 transition hover:border-stone-200 hover:bg-white/90 hover:text-stone-950',
                               isActive &&
-                                cn(
-                                  'border-white/80 bg-white text-stone-950 shadow-sm',
-                                  style.accent,
-                                ),
+                              cn(
+                                'border-white/80 bg-white text-stone-950 shadow-sm',
+                                style.accent,
+                              ),
                             )}
                             data-active={isActive ? 'true' : 'false'}
                             href={item.href}
