@@ -48,15 +48,15 @@ const canEditTenant = (status: TenantStatusEnum) => status !== TenantStatusEnum.
 const formatTenantSchemaName = (status: TenantStatusEnum, schemaName: string) =>
   status === TenantStatusEnum.HARD_DEPROVISIONED ? '-' : schemaName;
 
-const tenantStatusBadgeVariants: Record<
-  TenantStatusEnum,
-  'success' | 'muted' | 'warning' | 'destructive' | 'contrast'
-> = {
-  [TenantStatusEnum.ACTIVE]: 'success',
-  [TenantStatusEnum.INACTIVE]: 'muted',
-  [TenantStatusEnum.PROVISIONING]: 'warning',
-  [TenantStatusEnum.PROVISIONING_FAILED]: 'destructive',
-  [TenantStatusEnum.HARD_DEPROVISIONED]: 'contrast',
+const tenantStatusBadgeClasses: Record<TenantStatusEnum, string> = {
+  [TenantStatusEnum.ACTIVE]: 'platform-tenant-status-chip platform-tenant-status-chip--active',
+  [TenantStatusEnum.INACTIVE]: 'platform-tenant-status-chip platform-tenant-status-chip--inactive',
+  [TenantStatusEnum.PROVISIONING]:
+    'platform-tenant-status-chip platform-tenant-status-chip--provisioning',
+  [TenantStatusEnum.PROVISIONING_FAILED]:
+    'platform-tenant-status-chip platform-tenant-status-chip--failed',
+  [TenantStatusEnum.HARD_DEPROVISIONED]:
+    'platform-tenant-status-chip platform-tenant-status-chip--deprovisioned',
 };
 
 const formatTimestamp = (value: string) =>
@@ -268,7 +268,7 @@ export const TenantDirectoryPage = () => {
                       </Link>
                     </TableCell>
                     <TableCell className="align-top">
-                      <Badge variant={tenantStatusBadgeVariants[tenant.status]}>
+                      <Badge className={tenantStatusBadgeClasses[tenant.status]} variant="default">
                         {formatTenantStatusLabel(tenant.status)}
                       </Badge>
                     </TableCell>
