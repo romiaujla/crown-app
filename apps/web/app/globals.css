@@ -645,12 +645,57 @@ html[data-platform-theme='dark'] .platform-cancel-button:focus-visible {
   color: var(--platform-soft-copy) !important;
 }
 
+.platform-role-option {
+  background: var(--platform-panel-strong);
+  border-color: var(--platform-border);
+}
+
+.platform-role-option:hover,
+.platform-role-option:focus-visible {
+  background: color-mix(in srgb, var(--platform-panel-strong) 88%, var(--platform-highlight) 12%);
+  border-color: var(--platform-border-strong);
+}
+
+.platform-role-option--selected {
+  background:
+    linear-gradient(135deg, rgba(86, 242, 140, 0.16), transparent 90%), var(--platform-panel-strong) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--platform-accent) 46%,
+    var(--platform-border) 54%
+  ) !important;
+  box-shadow: inset 0 0 0 1px rgba(86, 242, 140, 0.18);
+}
+
+.platform-role-option__title {
+  color: var(--platform-ink);
+}
+
+.platform-role-option__description {
+  color: var(--platform-copy);
+}
+
 html[data-platform-theme='dark'] .platform-directory-table-header {
   background: rgba(18, 27, 22, 0.96);
 }
 
 html[data-platform-theme='dark'] .platform-directory-table-head {
   color: #dff2e7 !important;
+}
+
+html[data-platform-theme='dark'] .platform-role-option {
+  background: rgba(14, 20, 16, 0.96);
+}
+
+html[data-platform-theme='dark'] .platform-role-option:hover,
+html[data-platform-theme='dark'] .platform-role-option:focus-visible {
+  background: rgba(19, 29, 23, 0.98);
+}
+
+html[data-platform-theme='dark'] .platform-role-option--selected {
+  background:
+    linear-gradient(135deg, rgba(99, 255, 160, 0.18), transparent 92%), rgba(15, 25, 19, 0.98) !important;
+  box-shadow: inset 0 0 0 1px rgba(99, 255, 160, 0.22);
 }
 
 .platform-shell-grid {

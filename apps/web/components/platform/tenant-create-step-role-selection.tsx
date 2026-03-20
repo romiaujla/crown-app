@@ -88,11 +88,11 @@ export const TenantCreateStepRoleSelection = ({
         return (
           <div
             key={role.roleCode}
-            className={`flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
+            className={`platform-role-option flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
               role.isRequired ? 'cursor-default pointer-events-none opacity-90' : 'cursor-pointer'
             } ${
               isSelected
-                ? 'border-primary/30 bg-primary/5'
+                ? 'platform-role-option--selected border-primary/30 bg-primary/5'
                 : 'border-stone-200 bg-white hover:border-stone-300'
             }`}
             data-testid={`role-option-${role.roleCode}`}
@@ -116,7 +116,9 @@ export const TenantCreateStepRoleSelection = ({
             />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-stone-900">{role.displayName}</span>
+                <span className="platform-role-option__title text-sm font-semibold text-stone-900">
+                  {role.displayName}
+                </span>
                 <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600">
                   {getRoleContextLabel(role.roleCode)}
                 </span>
@@ -127,7 +129,9 @@ export const TenantCreateStepRoleSelection = ({
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-stone-500">{rationale}</p>
+              <p className="platform-role-option__description mt-1 text-sm text-stone-500">
+                {rationale}
+              </p>
             </div>
           </div>
         );
