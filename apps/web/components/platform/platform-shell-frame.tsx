@@ -17,7 +17,9 @@ import type { ReactNode } from 'react';
 import { StatusPanel } from '@/components/auth/status-panel';
 import { useProtectedShell } from '@/components/auth/use-protected-shell';
 import { WorkspaceShell } from '@/components/auth/workspace-shell';
+import { CrownActionGroup } from '@/components/ui/crown-action-group';
 import { Card, CardContent } from '@/components/ui/card';
+import type { CrownDetailsAction } from '@/components/ui/crown-details-component.types';
 
 export const platformNavigation = [
   {
@@ -109,6 +111,7 @@ type PlatformShellFrameProps = {
   sectionTitle: string;
   sectionDescription?: string;
   sectionActions?: ReactNode;
+  sectionActionItems?: CrownDetailsAction[];
   sectionContent: ReactNode;
 };
 
@@ -124,6 +127,7 @@ export const PlatformShellFrame = ({
   sectionTitle,
   sectionDescription,
   sectionActions,
+  sectionActionItems = [],
   sectionContent,
 }: PlatformShellFrameProps) => {
   const pathname = usePathname();
@@ -169,7 +173,12 @@ export const PlatformShellFrame = ({
       navigationItems={platformNavigation}
       navigationTitle="Control-plane sections"
       sectionContent={sectionContent}
-      sectionActions={sectionActions}
+      sectionActions={
+        sectionActions ??
+        (sectionActionItems.length > 0 ? (
+          <CrownActionGroup actions={sectionActionItems} />
+        ) : undefined)
+      }
       sectionDescription={sectionDescription}
       sectionEyebrow={sectionEyebrow}
       sectionTitle={sectionTitle}

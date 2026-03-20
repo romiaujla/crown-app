@@ -1,9 +1,11 @@
 import { PlatformShellFrame } from '@/components/platform/platform-shell-frame';
+import { CrownDetailsComponent } from '@/components/ui/crown-details-component';
 import {
   CrownDetailsActionIntentEnum,
   CrownDetailsDensityEnum,
+  CrownDetailsFieldSurfaceEnum,
+  CrownDetailsFrameVariantEnum,
 } from '@/components/ui/crown-details-component.types';
-import { CrownDetailsComponent } from '@/components/ui/crown-details-component';
 
 type PlatformTenantDetailsEntryPageProps = {
   params: {
@@ -14,27 +16,28 @@ type PlatformTenantDetailsEntryPageProps = {
 const PlatformTenantDetailsEntryPage = ({ params }: PlatformTenantDetailsEntryPageProps) => (
   <PlatformShellFrame
     activeNavigationKey="tenants"
+    sectionActionItems={[
+      {
+        key: 'edit-tenant',
+        label: 'Edit tenant',
+        href: `/platform/tenants/${params.slug}/edit`,
+      },
+      {
+        key: 'view-directory',
+        label: 'View directory',
+        href: '/platform/tenants',
+      },
+      {
+        key: 'deprovision-tenant',
+        label: 'Deprovision tenant',
+        disabled: true,
+        intent: CrownDetailsActionIntentEnum.DESTRUCTIVE,
+      },
+    ]}
     sectionContent={
       <CrownDetailsComponent
-        actions={[
-          {
-            key: 'edit-tenant',
-            label: 'Edit tenant',
-            href: `/platform/tenants/${params.slug}/edit`,
-          },
-          {
-            key: 'view-directory',
-            label: 'View directory',
-            href: '/platform/tenants',
-          },
-          {
-            key: 'deprovision-tenant',
-            label: 'Deprovision tenant',
-            disabled: true,
-            intent: CrownDetailsActionIntentEnum.DESTRUCTIVE,
-          },
-        ]}
         density={CrownDetailsDensityEnum.DEFAULT}
+        fieldSurface={CrownDetailsFieldSurfaceEnum.DIVIDED}
         fields={[
           {
             key: 'tenant-reference',
@@ -59,7 +62,7 @@ const PlatformTenantDetailsEntryPage = ({ params }: PlatformTenantDetailsEntryPa
           {
             key: 'layout-mode',
             label: 'Layout mode',
-            value: 'Standard details grid with shared action overflow',
+            value: 'Borderless details rows with shared shell action overflow',
           },
           {
             key: 'dense-preview',
@@ -67,10 +70,10 @@ const PlatformTenantDetailsEntryPage = ({ params }: PlatformTenantDetailsEntryPa
             value: 'Dense mode is available for compact detail surfaces when the consumer needs it',
           },
         ]}
+        frameVariant={CrownDetailsFrameVariantEnum.FLUSH}
         mobileCol={1}
-        subheading="This route remains the stable platform entry point for tenant-specific work. The shared details primitive now provides the consistent layout, action placement, and empty-state behavior that future tenant workflows can reuse."
+        showHeader={false}
         tabletCol={2}
-        title="Tenant Details"
       />
     }
     sectionDescription="Use this dedicated destination as the platform entry point for tenant-specific detail work."

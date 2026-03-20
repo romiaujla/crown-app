@@ -5,6 +5,16 @@ export enum CrownDetailsDensityEnum {
   DENSE = 'dense',
 }
 
+export enum CrownDetailsFrameVariantEnum {
+  CARD = 'card',
+  FLUSH = 'flush',
+}
+
+export enum CrownDetailsFieldSurfaceEnum {
+  CARD = 'card',
+  DIVIDED = 'divided',
+}
+
 export enum CrownDetailsActionIntentEnum {
   DEFAULT = 'default',
   DESTRUCTIVE = 'destructive',
@@ -29,13 +39,15 @@ export type CrownDetailsAction = {
 };
 
 export type CrownDetailsComponentProps = {
-  title: string;
+  title?: string;
   subheading?: string;
   fields: CrownDetailsField[];
   actions?: CrownDetailsAction[];
   density?: CrownDetailsDensityEnum;
   showHeader?: boolean;
   showActions?: boolean;
+  frameVariant?: CrownDetailsFrameVariantEnum;
+  fieldSurface?: CrownDetailsFieldSurfaceEnum;
   desktopCol?: number;
   tabletCol?: number;
   mobileCol?: number;
