@@ -71,11 +71,11 @@ export const TenantDirectoryPrimaryAction = () => (
   <Button
     asChild
     aria-label="Add new tenant"
-    className="rounded-full px-3 sm:px-4"
+    className="platform-primary-button gap-2 rounded-full px-4 sm:px-5"
     title="Add new tenant"
   >
     <Link href="/platform/tenants/new">
-      <Plus aria-hidden="true" className="h-4 w-4 sm:mr-2" />
+      <Plus aria-hidden="true" className="h-4 w-4" />
       <span className="sr-only sm:not-sr-only">Add new</span>
     </Link>
   </Button>
