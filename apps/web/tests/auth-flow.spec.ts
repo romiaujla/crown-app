@@ -887,6 +887,9 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
   await expect(page.getByTestId('user-assignment-section-tenant_admin')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-dispatcher')).toBeVisible();
   await expect(page.getByTestId('user-assignment-section-driver')).toBeVisible();
+  const addTenantAdminButton = page.getByTestId('user-assignment-add-row-tenant_admin');
+  await expect(addTenantAdminButton).toBeVisible();
+  await addTenantAdminButton.click();
   await expect(page.getByText('Add users to this role or leave it empty')).toHaveCount(2);
 
   await page.getByRole('button', { name: 'Next' }).click();
@@ -899,6 +902,7 @@ test('tenant create step 3 requires a tenant admin before review and preserves a
   await expect(page.getByRole('heading', { name: 'User assignment' })).toBeVisible();
 
   const adminRow = page.getByTestId('user-assignment-row-tenant_admin-0');
+  await expect(adminRow.getByLabel('Display name')).toBeFocused();
   const emailAvailabilityResponse = page.waitForResponse(
     (resp) =>
       resp.url().includes('/platform/tenant/user-email-availability') && resp.status() === 200,
