@@ -95,7 +95,10 @@ export const CrownDetailsComponent = ({
         ) : (
           <div className="overflow-x-auto">
             <div
-              className="grid gap-4 [grid-template-columns:repeat(var(--crown-details-mobile-cols),minmax(0,1fr))] md:[grid-template-columns:repeat(var(--crown-details-tablet-cols),minmax(0,1fr))] xl:[grid-template-columns:repeat(var(--crown-details-desktop-cols),minmax(0,1fr))]"
+              className={cn(
+                'grid [grid-template-columns:repeat(var(--crown-details-mobile-cols),minmax(0,1fr))] md:[grid-template-columns:repeat(var(--crown-details-tablet-cols),minmax(0,1fr))] xl:[grid-template-columns:repeat(var(--crown-details-desktop-cols),minmax(0,1fr))]',
+                isDividedFieldSurface ? 'gap-x-4 gap-y-2' : 'gap-4',
+              )}
               style={gridStyle}
             >
               {displayFields.map((field) => (
@@ -103,12 +106,12 @@ export const CrownDetailsComponent = ({
                   className={cn(
                     'min-w-0',
                     isDividedFieldSurface
-                      ? 'border-b border-stone-200 bg-transparent px-0 py-3'
+                      ? 'border-b border-stone-200 bg-transparent px-0 py-2.5'
                       : 'rounded-2xl border border-stone-200 bg-stone-50/75 px-4 py-3',
                     density === CrownDetailsDensityEnum.DENSE
                       ? 'space-y-0'
                       : isDividedFieldSurface
-                        ? 'space-y-1'
+                        ? 'space-y-0.5'
                         : 'space-y-1.5',
                   )}
                   key={field.key}
@@ -120,7 +123,12 @@ export const CrownDetailsComponent = ({
                     </p>
                   ) : (
                     <>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
+                      <p
+                        className={cn(
+                          'text-xs font-semibold uppercase text-stone-500',
+                          isDividedFieldSurface ? 'tracking-[0.16em]' : 'tracking-[0.18em]',
+                        )}
+                      >
                         {field.label}
                       </p>
                       <div className="text-base font-medium leading-6 text-stone-950">
