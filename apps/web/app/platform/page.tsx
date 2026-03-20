@@ -6,7 +6,7 @@ import {
   type TenantStatusEnum,
 } from '@crown/types';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 
 import {
   formatGrowthRateValue,
@@ -88,7 +88,7 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
   const labelButton = (
     <button
       aria-label={label}
-      className="block w-full truncate text-left text-xs font-semibold uppercase tracking-[0.08em] text-stone-500 outline-none focus-visible:rounded-md focus-visible:ring-1 focus-visible:ring-primary sm:tracking-[0.14em]"
+      className="platform-status-label block w-full truncate text-left text-xs font-semibold uppercase tracking-[0.08em] outline-none focus-visible:rounded-md sm:tracking-[0.14em]"
       data-testid={`platform-footprint-kpi-label-${status}`}
       onFocus={refreshTruncation}
       onClick={() => {
@@ -114,7 +114,7 @@ const DashboardStatusKpiLabel = ({ status }: { status: TenantStatusEnum }) => {
     <Popover onOpenChange={setIsPopoverOpen} open={isPopoverOpen}>
       <PopoverAnchor asChild>{labelButton}</PopoverAnchor>
       <PopoverContent
-        className="w-fit max-w-[12rem]"
+        className="platform-popover-card w-fit max-w-[12rem]"
         data-testid={`platform-footprint-kpi-popover-${status}`}
       >
         {label}
@@ -178,15 +178,13 @@ const DashboardOverviewSection = () => {
 
   if (overviewState.status === ViewStatusEnum.LOADING) {
     return (
-      <Card className="border-white/70 bg-white/92 shadow-sm">
+      <Card className="platform-section-card shadow-sm">
         <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Platform footprint
-          </CardDescription>
+          <CardDescription className="platform-section-eyebrow">Platform footprint</CardDescription>
           <CardTitle className="text-2xl text-stone-950">Loading tenant overview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 pt-0">
-          <div className="h-12 animate-pulse rounded-2xl bg-stone-100" />
+          <div className="platform-skeleton h-12 animate-pulse rounded-2xl" />
           <div
             className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3"
             data-testid="platform-footprint-kpi-grid"
@@ -194,7 +192,7 @@ const DashboardOverviewSection = () => {
             {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
-                className="h-20 animate-pulse rounded-2xl border border-stone-100 bg-stone-50"
+                className="platform-skeleton h-20 animate-pulse rounded-2xl border"
                 data-testid="platform-footprint-kpi-card"
               />
             ))}
@@ -206,7 +204,7 @@ const DashboardOverviewSection = () => {
 
   if (overviewState.status === ViewStatusEnum.ERROR) {
     return (
-      <Alert severity="warning">
+      <Alert className="platform-warning-alert" severity="warning">
         <AlertTitle className="font-semibold uppercase tracking-[0.22em]">
           Dashboard overview unavailable
         </AlertTitle>
@@ -224,57 +222,53 @@ const DashboardOverviewSection = () => {
     tenantSummary.tenantGrowthRates[0];
 
   return (
-    <div className="space-y-6">
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Platform footprint
-          </CardDescription>
-          <div className="space-y-2">
-            <CardTitle className="text-3xl text-stone-950">
-              {tenantSummary.totalTenantCount} tenants
-            </CardTitle>
-            <CardDescription className="max-w-2xl text-sm text-stone-600">
-              Current tenant count with lifecycle status KPIs for the platform.
-            </CardDescription>
+    <div className="space-y-5">
+      <Card className="platform-section-card shadow-sm">
+        <CardHeader className="space-y-4">
+          <CardDescription className="platform-section-eyebrow">Platform footprint</CardDescription>
+          <div className="platform-footprint-header">
+            <div className="space-y-2">
+              <CardTitle className="text-3xl text-stone-950">
+                {tenantSummary.totalTenantCount} tenants
+              </CardTitle>
+              <CardDescription className="max-w-2xl text-sm text-stone-600">
+                Lifecycle distribution across the platform with a more compact operational view.
+              </CardDescription>
+            </div>
+            <div className="platform-total-pill">
+              <span className="platform-total-pill__label">Control-plane total</span>
+              <span className="platform-total-pill__value">{tenantSummary.totalTenantCount}</span>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <div
-            className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3"
-            data-testid="platform-footprint-kpi-grid"
-          >
+          <div className="platform-status-grid" data-testid="platform-footprint-kpi-grid">
             {tenantSummary.tenantStatusCounts.map((entry) => (
               <div
                 key={entry.status}
-                className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50/80 p-3 sm:p-3.5"
+                className="platform-status-stat"
                 data-testid="platform-footprint-kpi-card"
               >
                 <DashboardStatusKpiLabel status={entry.status} />
-                <p className="mt-2 text-3xl font-semibold tabular-nums text-stone-950 sm:mt-3">
-                  {entry.count}
-                </p>
+                <p className="platform-status-value mt-2 tabular-nums sm:mt-3">{entry.count}</p>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <CardDescription className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Current scale
-          </CardDescription>
+      <Card className="platform-section-card shadow-sm">
+        <CardHeader className="space-y-4">
+          <CardDescription className="platform-section-eyebrow">Current scale</CardDescription>
           <div className="space-y-2">
             <CardTitle className="text-3xl text-stone-950">Platform momentum</CardTitle>
             <CardDescription className="max-w-2xl text-sm text-stone-600">
-              Review total users plus the currently selected trailing window for new tenants and
-              tenant growth rate.
+              Compare active scale and recent growth without the oversized card treatment.
             </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className="grid gap-4 pt-0 xl:grid-cols-3">
+        <CardContent className="platform-metrics-grid pt-0">
           <SummaryMetricCard
-            description="Current number of tenant users across all tenant workspaces."
+            description="Tenant users currently provisioned across all workspaces."
             title="Total users"
             value={tenantSummary.tenantUserCount.toString()}
           />
@@ -348,7 +342,7 @@ const platformSections = {
   },
 } as const;
 
-const PlatformPage = () => {
+const PlatformPageContent = () => {
   const searchParams = useSearchParams();
   const requestedSection = searchParams.get('section') ?? 'dashboard';
   const activeSectionKey = (
@@ -372,5 +366,22 @@ const PlatformPage = () => {
     />
   );
 };
+
+const PlatformPage = () => (
+  <Suspense
+    fallback={
+      <PlatformShellFrame
+        activeNavigationKey="dashboard"
+        sectionContent={
+          <PlatformSectionPlaceholder description="Loading the control-plane dashboard." />
+        }
+        sectionEyebrow="Platform overview"
+        sectionTitle="Dashboard"
+      />
+    }
+  >
+    <PlatformPageContent />
+  </Suspense>
+);
 
 export default PlatformPage;

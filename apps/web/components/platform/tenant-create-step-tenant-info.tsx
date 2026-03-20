@@ -259,7 +259,7 @@ export const TenantCreateStepTenantInfo = ({
         </Label>
         <Input
           aria-invalid={visibleNameError ? 'true' : 'false'}
-          className={`rounded-2xl border-stone-200 bg-white ${visibleNameError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
+          className={`platform-form-input rounded-2xl border-stone-200 bg-white ${visibleNameError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
           id="tenant-name"
           maxLength={NAME_MAX}
           onBlur={handleNameBlur}
@@ -278,7 +278,7 @@ export const TenantCreateStepTenantInfo = ({
         <div className="relative">
           <Input
             aria-invalid={visibleSlugError || slugStatus === 'taken' ? 'true' : 'false'}
-            className={`rounded-2xl border-stone-200 bg-white pr-10 ${visibleSlugError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
+            className={`platform-form-input rounded-2xl border-stone-200 bg-white pr-10 ${visibleSlugError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
             id="tenant-slug"
             maxLength={SLUG_MAX}
             onBlur={handleSlugBlur}
@@ -327,7 +327,7 @@ export const TenantCreateStepTenantInfo = ({
           value={data.managementSystemTypeCode ?? undefined}
         >
           <SelectTrigger
-            className={visibleTypeError ? 'border-red-300 ring-1 ring-red-300' : ''}
+            className={`platform-form-input ${visibleTypeError ? 'border-red-300 ring-1 ring-red-300' : ''}`}
             id="management-system-type"
           >
             <SelectValue

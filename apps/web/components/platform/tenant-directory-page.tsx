@@ -1,7 +1,7 @@
 'use client';
 
 import { TenantStatusEnum, type TenantDirectoryListResponse } from '@crown/types';
-import { ArrowUpRight, PencilLine, Plus, Search } from 'lucide-react';
+import { ArrowUpRight, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -48,15 +48,15 @@ const canEditTenant = (status: TenantStatusEnum) => status !== TenantStatusEnum.
 const formatTenantSchemaName = (status: TenantStatusEnum, schemaName: string) =>
   status === TenantStatusEnum.HARD_DEPROVISIONED ? '-' : schemaName;
 
-const tenantStatusBadgeVariants: Record<
-  TenantStatusEnum,
-  'success' | 'muted' | 'warning' | 'destructive' | 'contrast'
-> = {
-  [TenantStatusEnum.ACTIVE]: 'success',
-  [TenantStatusEnum.INACTIVE]: 'muted',
-  [TenantStatusEnum.PROVISIONING]: 'warning',
-  [TenantStatusEnum.PROVISIONING_FAILED]: 'destructive',
-  [TenantStatusEnum.HARD_DEPROVISIONED]: 'contrast',
+const tenantStatusBadgeClasses: Record<TenantStatusEnum, string> = {
+  [TenantStatusEnum.ACTIVE]: 'platform-tenant-status-chip platform-tenant-status-chip--active',
+  [TenantStatusEnum.INACTIVE]: 'platform-tenant-status-chip platform-tenant-status-chip--inactive',
+  [TenantStatusEnum.PROVISIONING]:
+    'platform-tenant-status-chip platform-tenant-status-chip--provisioning',
+  [TenantStatusEnum.PROVISIONING_FAILED]:
+    'platform-tenant-status-chip platform-tenant-status-chip--failed',
+  [TenantStatusEnum.HARD_DEPROVISIONED]:
+    'platform-tenant-status-chip platform-tenant-status-chip--deprovisioned',
 };
 
 const formatTimestamp = (value: string) =>
@@ -71,11 +71,11 @@ export const TenantDirectoryPrimaryAction = () => (
   <Button
     asChild
     aria-label="Add new tenant"
-    className="rounded-full px-3 sm:px-4"
+    className="platform-primary-button gap-2 rounded-full px-4 sm:px-5"
     title="Add new tenant"
   >
     <Link href="/platform/tenants/new">
-      <Plus aria-hidden="true" className="h-4 w-4 sm:mr-2" />
+      <Plus aria-hidden="true" className="h-4 w-4" />
       <span className="sr-only sm:not-sr-only">Add new</span>
     </Link>
   </Button>
@@ -240,14 +240,16 @@ export const TenantDirectoryPage = () => {
               </p>
             </div>
             <Table className="min-w-full border-collapse text-left">
-              <TableHeader className="bg-white/70">
+              <TableHeader className="platform-directory-table-header bg-white/70">
                 <TableRow className="border-stone-200">
-                  <TableHead>Tenant name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Schema</TableHead>
-                  <TableHead>Updated</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="platform-directory-table-head">Tenant name</TableHead>
+                  <TableHead className="platform-directory-table-head">Status</TableHead>
+                  <TableHead className="platform-directory-table-head">Slug</TableHead>
+                  <TableHead className="platform-directory-table-head">Schema</TableHead>
+                  <TableHead className="platform-directory-table-head">Updated</TableHead>
+                  <TableHead className="platform-directory-table-head text-right">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -266,7 +268,7 @@ export const TenantDirectoryPage = () => {
                       </Link>
                     </TableCell>
                     <TableCell className="align-top">
-                      <Badge variant={tenantStatusBadgeVariants[tenant.status]}>
+                      <Badge className={tenantStatusBadgeClasses[tenant.status]} variant="default">
                         {formatTenantStatusLabel(tenant.status)}
                       </Badge>
                     </TableCell>
@@ -279,11 +281,13 @@ export const TenantDirectoryPage = () => {
                     </TableCell>
                     <TableCell className="align-top text-right">
                       {canEditTenant(tenant.status) ? (
-                        <Button asChild size="sm" variant="outline">
-                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>
-                            <PencilLine aria-hidden="true" className="mr-2 h-4 w-4" />
-                            Edit
-                          </Link>
+                        <Button
+                          asChild
+                          className="platform-primary-button rounded-full px-4 text-xs"
+                          size="sm"
+                          variant="default"
+                        >
+                          <Link href={`/platform/tenants/${tenant.slug}/edit`}>Edit tenant</Link>
                         </Button>
                       ) : null}
                     </TableCell>

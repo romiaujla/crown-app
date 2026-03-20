@@ -70,11 +70,13 @@ export const TenantCreateStepRoleSelection = ({
   return (
     <div className="space-y-3" data-testid="role-selection-list">
       <div
-        className="rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
+        className="platform-role-guidance rounded-3xl border p-4 text-sm"
         data-testid="role-selection-admin-guidance"
       >
-        <p className="font-semibold">Tenant Admin and Admin are separate roles.</p>
-        <p className="mt-1 text-amber-900/90">
+        <p className="platform-role-guidance__title font-semibold">
+          Tenant Admin and Admin are separate roles.
+        </p>
+        <p className="platform-role-guidance__copy mt-1">
           Tenant Admin is the required bootstrap role for tenant setup. Admin is an optional
           management-system role inside the tenant workspace when that product needs one.
         </p>
@@ -88,11 +90,11 @@ export const TenantCreateStepRoleSelection = ({
         return (
           <div
             key={role.roleCode}
-            className={`flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
+            className={`platform-role-option flex items-start gap-3 rounded-2xl border p-4 transition-colors ${
               role.isRequired ? 'cursor-default pointer-events-none opacity-90' : 'cursor-pointer'
             } ${
               isSelected
-                ? 'border-primary/30 bg-primary/5'
+                ? 'platform-role-option--selected border-primary/30 bg-primary/5'
                 : 'border-stone-200 bg-white hover:border-stone-300'
             }`}
             data-testid={`role-option-${role.roleCode}`}
@@ -116,18 +118,22 @@ export const TenantCreateStepRoleSelection = ({
             />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-stone-900">{role.displayName}</span>
-                <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600">
+                <span className="platform-role-option__title text-sm font-semibold text-stone-900">
+                  {role.displayName}
+                </span>
+                <span className="platform-role-context-chip inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
                   {getRoleContextLabel(role.roleCode)}
                 </span>
                 {role.isRequired && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
+                  <span className="platform-role-required-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
                     <Lock aria-hidden="true" className="h-3 w-3" />
                     Required
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-sm text-stone-500">{rationale}</p>
+              <p className="platform-role-option__description mt-1 text-sm text-stone-500">
+                {rationale}
+              </p>
             </div>
           </div>
         );

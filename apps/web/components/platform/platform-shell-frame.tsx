@@ -17,6 +17,7 @@ import type { ReactNode } from 'react';
 import { StatusPanel } from '@/components/auth/status-panel';
 import { useProtectedShell } from '@/components/auth/use-protected-shell';
 import { WorkspaceShell } from '@/components/auth/workspace-shell';
+import { PlatformThemeToggle } from '@/components/platform/platform-theme-toggle';
 import { CrownActionGroup } from '@/components/ui/crown-action-group';
 import { Card, CardContent } from '@/components/ui/card';
 import type { CrownDetailsAction } from '@/components/ui/crown-details-component.types';
@@ -116,7 +117,7 @@ type PlatformShellFrameProps = {
 };
 
 export const PlatformSectionPlaceholder = ({ description }: { description: string }) => (
-  <Card className="border-white/70 bg-white/92 shadow-sm">
+  <Card className="platform-surface-card shadow-sm">
     <CardContent className="pt-6 text-sm text-stone-600">{description}</CardContent>
   </Card>
 );
@@ -132,6 +133,7 @@ export const PlatformShellFrame = ({
 }: PlatformShellFrameProps) => {
   const pathname = usePathname();
   const protectedShell = useProtectedShell(pathname);
+  const showThemeToggle = activeNavigationKey === 'dashboard';
 
   if (protectedShell.kind === 'bootstrapping') {
     return (
@@ -176,7 +178,12 @@ export const PlatformShellFrame = ({
       sectionActions={
         sectionActions ??
         (sectionActionItems.length > 0 ? (
-          <CrownActionGroup actions={sectionActionItems} />
+          <div className="flex items-center gap-2">
+            <CrownActionGroup actions={sectionActionItems} />
+            {showThemeToggle ? <PlatformThemeToggle /> : null}
+          </div>
+        ) : showThemeToggle ? (
+          <PlatformThemeToggle />
         ) : undefined)
       }
       sectionDescription={sectionDescription}

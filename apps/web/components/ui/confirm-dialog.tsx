@@ -67,18 +67,24 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       {/* Panel */}
       <div
         className={cn(
-          'relative z-10 mx-4 w-full max-w-md rounded-2xl border border-stone-200 bg-white px-6 py-5 shadow-lg',
+          'platform-confirm-dialog relative z-10 mx-4 w-full max-w-md rounded-2xl border px-6 py-5 shadow-lg',
         )}
       >
-        <h2 className="text-base font-semibold text-stone-900" id="confirm-dialog-title">
+        <h2
+          className="platform-confirm-dialog__title text-base font-semibold"
+          id="confirm-dialog-title"
+        >
           {title}
         </h2>
-        <p className="mt-2 text-sm text-stone-600" id="confirm-dialog-description">
+        <p
+          className="platform-confirm-dialog__description mt-2 text-sm"
+          id="confirm-dialog-description"
+        >
           {description}
         </p>
         <div className="mt-5 flex items-center justify-end gap-2">
           <Button
-            className="rounded-full px-4"
+            className="platform-dialog-cancel-button rounded-full px-4"
             onClick={onCancel}
             ref={cancelRef}
             type="button"
@@ -87,7 +93,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             {cancelLabel}
           </Button>
           <Button
-            className="rounded-full px-4"
+            className="platform-primary-button rounded-full px-4"
             onClick={onConfirm}
             type="button"
             variant={variant === 'destructive' ? 'destructive' : 'default'}
