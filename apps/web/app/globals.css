@@ -597,6 +597,21 @@ html[data-platform-theme='dark'] .platform-primary-button:focus-visible {
   color: var(--platform-ink);
 }
 
+.platform-form-input {
+  background: var(--platform-panel-strong) !important;
+  border-color: var(--platform-border) !important;
+  color: var(--platform-ink) !important;
+}
+
+.platform-form-input::placeholder {
+  color: var(--platform-soft-copy);
+}
+
+.platform-form-input:hover,
+.platform-form-input:focus-visible {
+  border-color: var(--platform-accent) !important;
+}
+
 .platform-create-footer {
   background: var(--platform-panel-strong);
   border-color: var(--platform-border);
