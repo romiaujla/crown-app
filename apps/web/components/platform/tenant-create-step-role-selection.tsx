@@ -119,11 +119,11 @@ export const TenantCreateStepRoleSelection = ({
                 <span className="platform-role-option__title text-sm font-semibold text-stone-900">
                   {role.displayName}
                 </span>
-                <span className="inline-flex items-center rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-600">
+                <span className="platform-role-context-chip inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
                   {getRoleContextLabel(role.roleCode)}
                 </span>
                 {role.isRequired && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-xs font-medium text-stone-500">
+                  <span className="platform-role-required-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
                     <Lock aria-hidden="true" className="h-3 w-3" />
                     Required
                   </span>
