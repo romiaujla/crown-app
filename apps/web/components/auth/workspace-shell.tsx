@@ -145,7 +145,12 @@ export const WorkspaceShell = ({
   }, [isProfileMenuOpen]);
 
   return (
-    <main className="flex h-screen flex-col overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+    <main
+      className={cn(
+        'flex h-screen flex-col overflow-hidden px-4 py-8 sm:px-6 lg:px-8',
+        tone === 'platform' && 'platform-shell',
+      )}
+    >
       <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
         {layoutProps.layout === 'sidebar' ? null : (
           <Card className="border-white/70 bg-white/80 shadow-lg shadow-stone-950/5 backdrop-blur">
@@ -205,6 +210,7 @@ export const WorkspaceShell = ({
             <Card
               className={cn(
                 'sidebar-shell-card border shadow-lg shadow-stone-950/5 backdrop-blur',
+                tone === 'platform' && 'platform-sidebar-card',
                 style.section,
               )}
             >
@@ -222,11 +228,12 @@ export const WorkspaceShell = ({
                             aria-label={item.title}
                             className={cn(
                               'sidebar-nav__item relative flex items-center gap-3 rounded-2xl border border-transparent px-4 py-3 text-sm font-medium text-stone-600 transition hover:border-stone-200 hover:bg-white/90 hover:text-stone-950',
+                              tone === 'platform' && 'platform-sidebar-nav-item',
                               isActive &&
-                              cn(
-                                'border-white/80 bg-white text-stone-950 shadow-sm',
-                                style.accent,
-                              ),
+                                cn(
+                                  'border-white/80 bg-white text-stone-950 shadow-sm',
+                                  style.accent,
+                                ),
                             )}
                             data-active={isActive ? 'true' : 'false'}
                             href={item.href}
@@ -238,6 +245,7 @@ export const WorkspaceShell = ({
                             <span
                               className={cn(
                                 'flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 text-stone-700',
+                                tone === 'platform' && 'platform-sidebar-nav-icon',
                                 isActive && 'bg-white text-stone-950',
                               )}
                             >
@@ -294,7 +302,13 @@ export const WorkspaceShell = ({
                         <p className="sidebar-profile__menu-name">{userDisplayName}</p>
                         <p className="sidebar-profile__menu-role">{roleLabel}</p>
                       </div>
-                      <LogoutButton className="sidebar-profile__logout" size="sm" />
+                      <LogoutButton
+                        className={cn(
+                          'sidebar-profile__logout',
+                          tone === 'platform' && 'platform-outline-button',
+                        )}
+                        size="sm"
+                      />
                     </div>
                   ) : null}
                 </div>
@@ -304,6 +318,7 @@ export const WorkspaceShell = ({
             <Card
               className={cn(
                 'flex min-h-0 flex-col border shadow-lg shadow-stone-950/5 backdrop-blur',
+                tone === 'platform' && 'platform-main-card',
                 style.section,
               )}
             >

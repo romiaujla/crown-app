@@ -1018,10 +1018,10 @@ export const TenantCreateShell = () => {
         </div>
       </div>
 
-      <div className="-mx-6 border-t border-stone-200 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
+      <div className="platform-create-footer -mx-6 border-t shadow-[0_-2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-end gap-2 px-6 py-3">
           <Button
-            className="gap-2 rounded-full px-4 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="platform-cancel-button gap-2 rounded-full px-4"
             disabled={isSubmitting}
             onClick={attemptExit}
             type="button"
@@ -1031,7 +1031,7 @@ export const TenantCreateShell = () => {
             Cancel
           </Button>
           <Button
-            className="gap-2 rounded-full px-4"
+            className="platform-outline-button gap-2 rounded-full px-4"
             disabled={!hasPreviousStep || isSubmitting}
             onClick={() => {
               if (!hasPreviousStep || isSubmitting) {
@@ -1050,7 +1050,7 @@ export const TenantCreateShell = () => {
           </Button>
           {isReviewStep ? (
             <Button
-              className="gap-2 rounded-full px-5"
+              className="platform-primary-button gap-2 rounded-full px-5"
               disabled={isSubmitting}
               onClick={() => {
                 void handleCreateTenant();
@@ -1071,7 +1071,7 @@ export const TenantCreateShell = () => {
             </Button>
           ) : (
             <Button
-              className="gap-2 rounded-full px-5"
+              className="platform-primary-button gap-2 rounded-full px-5"
               disabled={!hasNextStep || isSubmitting}
               onClick={() => {
                 if (!hasNextStep || isSubmitting) {

@@ -76,11 +76,16 @@ export const CrownActionGroup = ({ actions, className }: CrownActionGroupProps) 
     <div className={cn('flex items-center gap-2 self-start', className)}>
       {primaryAction ? (
         primaryAction.href ? (
-          <Button asChild>
+          <Button asChild className="platform-primary-button">
             <Link href={primaryAction.href}>{primaryAction.label}</Link>
           </Button>
         ) : (
-          <Button disabled={primaryAction.disabled} onClick={primaryAction.onClick} type="button">
+          <Button
+            className="platform-primary-button"
+            disabled={primaryAction.disabled}
+            onClick={primaryAction.onClick}
+            type="button"
+          >
             {primaryAction.label}
           </Button>
         )
@@ -90,7 +95,7 @@ export const CrownActionGroup = ({ actions, className }: CrownActionGroupProps) 
           <PopoverTrigger asChild>
             <Button
               aria-label="More actions"
-              className="rounded-full"
+              className="platform-outline-button rounded-full"
               size="icon"
               type="button"
               variant="outline"

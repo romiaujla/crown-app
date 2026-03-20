@@ -38,11 +38,11 @@ type WindowMetricCardProps = {
 };
 
 export const SummaryMetricCard = ({ title, value, description }: SummaryMetricCardProps) => (
-  <Card className="rounded-3xl border-stone-200 bg-stone-50/90 shadow-sm">
-    <CardContent className="p-5">
-      <h4 className="mt-3 text-lg font-semibold text-stone-950">{title}</h4>
-      <p className="mt-4 text-3xl font-semibold tabular-nums text-stone-950">{value}</p>
-      <p className="mt-4 text-sm text-stone-600">{description}</p>
+  <Card className="platform-metric-card rounded-3xl shadow-sm">
+    <CardContent className="p-4 sm:p-5">
+      <h4 className="platform-metric-label">{title}</h4>
+      <p className="platform-metric-value mt-3 tabular-nums">{value}</p>
+      <p className="platform-metric-description mt-3">{description}</p>
     </CardContent>
   </Card>
 );
@@ -54,9 +54,9 @@ export const WindowMetricCard = ({
   onSelectWindow,
   value,
 }: WindowMetricCardProps) => (
-  <Card className="rounded-3xl border-stone-200 bg-stone-50/90 shadow-sm">
-    <CardContent className="p-5">
-      <div className="flex flex-nowrap gap-1.5 xl:gap-2">
+  <Card className="platform-metric-card rounded-3xl shadow-sm">
+    <CardContent className="p-4 sm:p-5">
+      <div className="platform-window-switcher">
         {[
           DashboardMetricWindowEnum.WEEK,
           DashboardMetricWindowEnum.MONTH,
@@ -68,20 +68,20 @@ export const WindowMetricCard = ({
             <Button
               key={window}
               aria-pressed={isSelected}
-              className="min-w-0 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] xl:px-3"
+              className="platform-window-button min-w-0 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.14em] xl:px-3"
               onClick={() => onSelectWindow(window)}
               size="sm"
               type="button"
-              variant={isSelected ? 'default' : 'outline'}
+              variant={isSelected ? 'default' : 'ghost'}
             >
               {formatMetricWindowLabel(window)}
             </Button>
           );
         })}
       </div>
-      <h4 className="mt-4 text-lg font-semibold text-stone-950">{title}</h4>
-      <p className="mt-4 text-3xl font-semibold tabular-nums text-stone-950">{value}</p>
-      <p className="mt-4 text-sm text-stone-600">{description}</p>
+      <h4 className="platform-metric-label mt-4">{title}</h4>
+      <p className="platform-metric-value mt-3 tabular-nums">{value}</p>
+      <p className="platform-metric-description mt-3">{description}</p>
     </CardContent>
   </Card>
 );
