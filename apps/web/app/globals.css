@@ -597,6 +597,31 @@ html[data-platform-theme='dark'] .platform-primary-button:focus-visible {
   color: var(--platform-ink);
 }
 
+.platform-create-footer {
+  background: var(--platform-panel-strong);
+  border-color: var(--platform-border);
+}
+
+.platform-cancel-button {
+  color: #d14c4c !important;
+}
+
+.platform-cancel-button:hover,
+.platform-cancel-button:focus-visible {
+  background: rgba(209, 76, 76, 0.12) !important;
+  color: #c83d3d !important;
+}
+
+html[data-platform-theme='dark'] .platform-cancel-button {
+  color: #ff8f8f !important;
+}
+
+html[data-platform-theme='dark'] .platform-cancel-button:hover,
+html[data-platform-theme='dark'] .platform-cancel-button:focus-visible {
+  background: rgba(255, 112, 112, 0.14) !important;
+  color: #ffb2b2 !important;
+}
+
 .platform-shell-grid {
   align-items: stretch;
   grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
