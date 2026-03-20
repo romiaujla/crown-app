@@ -1,5 +1,7 @@
 import {
   DashboardOverviewResponseSchema,
+  PlatformTenantDetailRequestSchema,
+  PlatformTenantDetailResponseSchema,
   TenantCreateOnboardingSubmissionRequestSchema,
   TenantCreateOnboardingSubmissionResponseSchema,
   TenantCreateReferenceDataResponseSchema,
@@ -10,6 +12,7 @@ import {
   TenantUserEmailAvailabilityRequestSchema,
   TenantUserEmailAvailabilityResponseSchema,
   type DashboardOverviewResponse,
+  type PlatformTenantDetailResponse,
   type TenantCreateOnboardingSubmissionRequest,
   type TenantCreateOnboardingSubmissionResponse,
   type TenantCreateReferenceDataResponse,
@@ -179,6 +182,17 @@ export const searchPlatformTenants = async (
       method: 'POST',
     }),
   ) as TenantDirectoryListResponse;
+
+export const getPlatformTenantDetail = async (accessToken: string, slug: string) =>
+  PlatformTenantDetailResponseSchema.parse(
+    await request('/api/v1/platform/tenant/details', {
+      body: JSON.stringify(PlatformTenantDetailRequestSchema.parse({ slug })),
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+      method: 'POST',
+    }),
+  ) as PlatformTenantDetailResponse;
 
 export const checkTenantSlugAvailability = async (accessToken: string, slug: string) =>
   TenantSlugAvailabilityResponseSchema.parse(

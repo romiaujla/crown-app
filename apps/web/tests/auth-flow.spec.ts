@@ -1,6 +1,7 @@
 import {
   DashboardMetricWindowEnum,
   ManagementSystemTypeCodeEnum,
+  type PlatformTenantDetailResponse,
   RoleCodeEnum,
   TenantStatusEnum,
   type TenantCreateOnboardingSubmissionResponse,
@@ -34,6 +35,7 @@ const createAccessToken = (persona: Persona, expiresInSeconds = 300) => {
 type Persona = 'super_admin' | 'tenant_admin' | 'tenant_user';
 type DashboardOverviewFixture = DashboardOverviewResponse;
 type TenantDirectoryFixture = TenantDirectoryListResponse;
+type TenantDetailFixture = PlatformTenantDetailResponse;
 type TenantCreateFixture = TenantCreateOnboardingSubmissionResponse;
 
 const buildDashboardOverview = (): DashboardOverviewFixture => ({
@@ -123,6 +125,24 @@ const buildTenantDirectoryResponse = (filters?: {
         name: filters?.name?.trim() || null,
         status: filters?.status ?? null,
       },
+    },
+  };
+};
+
+const buildTenantDetailResponse = (slug: string): TenantDetailFixture => {
+  const tenant = baseTenantDirectoryList.find((entry) => entry.slug === slug) ?? {
+    tenantId: 'tenant-created-1',
+    name: 'Acme Logistics',
+    slug,
+    schemaName: `tenant_${slug.replace(/-/g, '_')}`,
+    status: TenantStatusEnum.PROVISIONING,
+    createdAt: '2026-03-15T15:00:00.000Z',
+    updatedAt: '2026-03-15T15:00:00.000Z',
+  };
+
+  return {
+    data: {
+      ...tenant,
     },
   };
 };
@@ -286,6 +306,8 @@ const setupAuthRoutes = async (
     overviewResponse?: DashboardOverviewFixture;
     tenantDirectoryStatus?: number;
     tenantDirectoryResponse?: TenantDirectoryFixture;
+    tenantDetailStatus?: number;
+    tenantDetailResponse?: TenantDetailFixture;
     tenantCreateStatus?: number;
     tenantCreateResponse?: TenantCreateFixture;
     tenantCreateDelayMs?: number;
@@ -337,6 +359,34 @@ const setupAuthRoutes = async (
               status: filters.status ?? null,
             }),
         ),
+        contentType: 'application/json',
+        status: 200,
+      });
+      return;
+    }
+
+    if (url.endsWith('/platform/tenant/details')) {
+      if (options.tenantDetailStatus && options.tenantDetailStatus !== 200) {
+        await route.fulfill({
+          body: JSON.stringify({
+            errorCode:
+              options.tenantDetailStatus === 404 ? 'not_found' : 'tenant_detail_unavailable',
+            message:
+              options.tenantDetailStatus === 404
+                ? 'Tenant not found'
+                : 'Tenant details are unavailable.',
+          }),
+          contentType: 'application/json',
+          status: options.tenantDetailStatus,
+        });
+        return;
+      }
+
+      const rawPayload = request.postDataJSON() as { slug?: string } | null;
+      const slug = rawPayload?.slug ?? baseTenantDirectoryList[0].slug;
+
+      await route.fulfill({
+        body: JSON.stringify(options.tenantDetailResponse ?? buildTenantDetailResponse(slug)),
         contentType: 'application/json',
         status: 200,
       });
@@ -716,8 +766,12 @@ test('tenant directory action links route to stable detail, add, and edit entry 
   await expect(
     page.getByRole('heading', { name: 'Tenant Details', level: 3, exact: true }),
   ).toBeVisible();
-  await expect(page.getByText('Tenant reference')).toBeVisible();
-  await expect(page.getByText('northwind-tms')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Northwind TMS' })).toBeVisible();
+  await expect(page.getByText('Schema name')).toBeVisible();
+  await expect(page.getByText('tenant_northwind_tms')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Administration sections', level: 3 }),
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Edit tenant' })).toBeVisible();
   await page.getByRole('button', { name: 'More actions' }).click();
   await expect(page.getByRole('link', { name: 'View directory' })).toBeVisible();
@@ -735,6 +789,20 @@ test('tenant directory action links route to stable detail, add, and edit entry 
 
   await expect(page).toHaveURL(/\/platform\/tenants\/northwind-tms\/edit$/);
   await expect(page.getByRole('heading', { name: 'Edit Tenant', level: 3 })).toBeVisible();
+});
+
+test('tenant details supports returning to the tenant directory from the control-plane route', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/northwind-tms');
+
+  await page.getByRole('button', { name: 'More actions' }).click();
+  await page.getByRole('link', { name: 'View directory' }).click();
+
+  await expect(page).toHaveURL(/\/platform\/tenants$/);
+  await expect(page.getByRole('heading', { name: 'Tenant Directory', level: 3 })).toBeVisible();
 });
 
 test('tenant create shell advances through steps and protects entered progress on cancel', async ({
@@ -1253,7 +1321,7 @@ test('tenant create step 4 submits the onboarding payload and routes to tenant d
 
   await expect(page).toHaveURL(/\/platform\/tenants\/acme-logistics$/);
   await expect(page.getByRole('link', { name: 'Edit tenant' })).toBeVisible();
-  await expect(page.getByText('Tenant reference')).toBeVisible();
+  await expect(page.getByText('Schema name')).toBeVisible();
   await expect(page.getByText('acme-logistics', { exact: true })).toBeVisible();
 });
 

@@ -123,6 +123,21 @@ export type TenantDirectoryListResponse = {
   meta: TenantDirectoryListMeta;
 };
 
+export const PlatformTenantDetailSchema = TenantDirectoryListItemSchema;
+export type PlatformTenantDetail = z.infer<typeof PlatformTenantDetailSchema>;
+
+export const PlatformTenantDetailRequestSchema = z
+  .object({
+    slug: TenantSlugSchema,
+  })
+  .strict();
+export type PlatformTenantDetailRequest = z.infer<typeof PlatformTenantDetailRequestSchema>;
+
+export const PlatformTenantDetailResponseSchema = z.object({
+  data: PlatformTenantDetailSchema,
+});
+export type PlatformTenantDetailResponse = z.infer<typeof PlatformTenantDetailResponseSchema>;
+
 export const TenantSlugAvailabilityRequestSchema = z
   .object({
     slug: z.string().trim().min(1).max(48),
