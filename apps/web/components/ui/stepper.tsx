@@ -50,7 +50,7 @@ export const Stepper = ({
   return (
     <ol
       aria-label="Progress"
-      className={cn('mx-auto grid w-full max-w-[660px]', className)}
+      className={cn('platform-stepper mx-auto grid w-full max-w-[660px]', className)}
       style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}
     >
       {steps.map((step, index) => {
@@ -61,31 +61,29 @@ export const Stepper = ({
         const stepState = isCompleted ? 'completed' : isCurrent ? 'current' : 'upcoming';
 
         const indicatorClassName = cn(
-          'relative z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200',
-          isCompleted
-            ? 'bg-[#22C55E] text-white'
-            : isCurrent
-              ? 'scale-110 bg-primary text-white ring-4 ring-primary/20'
-              : 'border-2 border-[#ADD8E6] bg-white text-[#ADD8E6]',
+          'platform-stepper__indicator relative z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-200',
+          isCompleted && 'platform-stepper__indicator--completed',
+          isCurrent && 'platform-stepper__indicator--current scale-110',
+          !isCompleted && !isCurrent && 'platform-stepper__indicator--upcoming',
         );
 
         const connectorClassName = cn(
-          'absolute top-[1.15rem] left-[calc(55%+1rem)] right-[calc(-45%+1rem)] h-px transition-colors duration-200',
-          isCompleted ? 'bg-[#22C55E]' : 'bg-[#ADD8E6]/50',
+          'platform-stepper__connector absolute top-[1.15rem] left-[calc(55%+1rem)] right-[calc(-45%+1rem)] h-px transition-colors duration-200',
+          isCompleted && 'platform-stepper__connector--completed',
         );
 
         const labelClassName = cn(
-          'text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-200',
-          isCompleted ? 'text-[#22C55E]/70' : isCurrent ? 'text-primary/60' : 'text-stone-300',
+          'platform-stepper__label text-xs font-medium uppercase tracking-[0.14em] transition-colors duration-200',
+          isCompleted && 'platform-stepper__label--completed',
+          isCurrent && 'platform-stepper__label--current',
+          !isCompleted && !isCurrent && 'platform-stepper__label--upcoming',
         );
 
         const titleClassName = cn(
-          'transition-colors duration-200',
-          isCompleted
-            ? 'text-sm font-semibold text-[#22C55E]'
-            : isCurrent
-              ? 'text-sm font-semibold text-primary'
-              : 'text-sm font-medium text-stone-400/80',
+          'platform-stepper__title transition-colors duration-200',
+          isCompleted && 'platform-stepper__title--completed text-sm font-semibold',
+          isCurrent && 'platform-stepper__title--current text-sm font-semibold',
+          !isCompleted && !isCurrent && 'platform-stepper__title--upcoming text-sm font-medium',
         );
 
         const content = (
