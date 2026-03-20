@@ -680,6 +680,21 @@ html[data-platform-theme='dark'] .platform-cancel-button:focus-visible {
   color: #2d3d36;
 }
 
+.platform-role-guidance {
+  background:
+    linear-gradient(135deg, rgba(86, 242, 140, 0.12), transparent 92%), var(--platform-panel-strong);
+  border-color: color-mix(in srgb, var(--platform-accent) 34%, var(--platform-border) 66%);
+  color: var(--platform-ink);
+}
+
+.platform-role-guidance__title {
+  color: var(--platform-ink);
+}
+
+.platform-role-guidance__copy {
+  color: var(--platform-copy);
+}
+
 .platform-role-required-chip {
   background: rgba(11, 17, 14, 0.08);
   color: #4b5c55;
@@ -711,6 +726,12 @@ html[data-platform-theme='dark'] .platform-role-option--selected {
 html[data-platform-theme='dark'] .platform-role-context-chip {
   background: rgba(99, 255, 160, 0.24);
   color: #072112;
+}
+
+html[data-platform-theme='dark'] .platform-role-guidance {
+  background:
+    linear-gradient(135deg, rgba(99, 255, 160, 0.16), transparent 92%), rgba(16, 24, 19, 0.98);
+  border-color: rgba(99, 255, 160, 0.24);
 }
 
 html[data-platform-theme='dark'] .platform-role-required-chip {

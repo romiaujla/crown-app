@@ -70,11 +70,13 @@ export const TenantCreateStepRoleSelection = ({
   return (
     <div className="space-y-3" data-testid="role-selection-list">
       <div
-        className="rounded-3xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950"
+        className="platform-role-guidance rounded-3xl border p-4 text-sm"
         data-testid="role-selection-admin-guidance"
       >
-        <p className="font-semibold">Tenant Admin and Admin are separate roles.</p>
-        <p className="mt-1 text-amber-900/90">
+        <p className="platform-role-guidance__title font-semibold">
+          Tenant Admin and Admin are separate roles.
+        </p>
+        <p className="platform-role-guidance__copy mt-1">
           Tenant Admin is the required bootstrap role for tenant setup. Admin is an optional
           management-system role inside the tenant workspace when that product needs one.
         </p>
