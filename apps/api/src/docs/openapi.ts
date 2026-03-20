@@ -432,6 +432,24 @@ export const authDocsDocument = {
           meta: { $ref: '#/components/schemas/TenantDirectoryListMeta' },
         },
       },
+      PlatformTenantDetailRequest: {
+        type: 'object',
+        required: ['slug'],
+        properties: {
+          slug: {
+            type: 'string',
+            pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+            maxLength: 48,
+          },
+        },
+      },
+      PlatformTenantDetailResponse: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: { $ref: '#/components/schemas/TenantDirectoryListItem' },
+        },
+      },
       TenantSlugAvailabilityRequest: {
         type: 'object',
         required: ['slug'],
@@ -1383,6 +1401,50 @@ export const authDocsDocument = {
             'validation_error',
             'Invalid tenant directory filter',
           ),
+          '429': errorResponse(
+            'Rate limited request',
+            'rate_limited',
+            'Too many tenant directory requests',
+          ),
+          '401': errorResponse(
+            'Unauthenticated request',
+            'unauthenticated',
+            'Missing bearer token',
+          ),
+          '403': errorResponse('Role not allowed', 'forbidden_role', 'Insufficient role'),
+        },
+      },
+    },
+    '/api/v1/platform/tenant/details': {
+      post: {
+        tags: ['Platform Tenants'],
+        summary: 'Get tenant details for the control plane',
+        description:
+          'Protected super-admin route that returns the core tenant profile required by the tenant details view. Accepts the tenant slug in the request body and returns the canonical control-plane tenant fields needed for inspection.',
+        security: bearerSecurity,
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/PlatformTenantDetailRequest' },
+            },
+          },
+        },
+        responses: {
+          '200': {
+            description: 'Tenant details response',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PlatformTenantDetailResponse' },
+              },
+            },
+          },
+          '400': errorResponse(
+            'Invalid tenant detail payload',
+            'validation_error',
+            'Invalid tenant detail payload',
+          ),
+          '404': errorResponse('Tenant not found', 'not_found', 'Tenant not found'),
           '429': errorResponse(
             'Rate limited request',
             'rate_limited',

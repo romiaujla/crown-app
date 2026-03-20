@@ -10,6 +10,7 @@ describe('api docs openapi document', () => {
         '/api/v1/auth/me',
         '/api/v1/auth/logout',
         '/api/v1/platform/ping',
+        '/api/v1/platform/tenant/details',
         '/api/v1/platform/tenant/slug-availability',
         '/api/v1/platform/tenant/user-email-availability',
         '/api/v1/platform/tenant/reference-data',
@@ -23,6 +24,9 @@ describe('api docs openapi document', () => {
   it('marks protected routes with bearer auth', () => {
     expect(authDocsDocument.paths['/api/v1/auth/me'].get.security).toEqual([{ bearerAuth: [] }]);
     expect(authDocsDocument.paths['/api/v1/platform/ping'].get.security).toEqual([
+      { bearerAuth: [] },
+    ]);
+    expect(authDocsDocument.paths['/api/v1/platform/tenant/details'].post.security).toEqual([
       { bearerAuth: [] },
     ]);
     expect(
@@ -69,6 +73,17 @@ describe('api docs openapi document', () => {
 
     expect(referenceDataSchema).toEqual({
       $ref: '#/components/schemas/TenantCreateReferenceDataRequest',
+    });
+  });
+
+  it('documents the tenant detail request payload', () => {
+    const detailSchema =
+      authDocsDocument.paths['/api/v1/platform/tenant/details'].post.requestBody.content[
+        'application/json'
+      ].schema;
+
+    expect(detailSchema).toEqual({
+      $ref: '#/components/schemas/PlatformTenantDetailRequest',
     });
   });
 

@@ -1,11 +1,13 @@
 import {
   DeprovisionTypeEnum,
+  PlatformTenantDetailRequestSchema,
   TenantCreateReferenceDataRequestSchema,
   TenantDirectoryListRequestSchema,
   TenantSlugAvailabilityRequestSchema,
   TenantSlugSchema,
   TenantStatusEnum,
   TenantUserEmailAvailabilityRequestSchema,
+  type PlatformTenantDetailResponse,
   type TenantCreateReferenceDataFilter,
   type TenantCreateReferenceDataResponse,
   type TenantDirectoryListResponse,
@@ -20,6 +22,7 @@ import { authorize } from '../middleware/authorize.js';
 import { createRateLimitMiddleware } from '../middleware/rate-limit.js';
 import { sendAuthError } from '../types/errors.js';
 
+import { getPlatformTenantDetail } from '../platform/tenants/detail-service.js';
 import { getPlatformTenantDirectory } from '../platform/tenants/directory-service.js';
 import { getPlatformTenantCreateReferenceData } from '../platform/tenants/reference-data-service.js';
 import { getPlatformTenantSlugAvailability } from '../platform/tenants/slug-availability-service.js';
@@ -44,6 +47,7 @@ type PlatformTenantsRouterOptions = {
   getReferenceData?: (
     filter: TenantCreateReferenceDataFilter,
   ) => Promise<TenantCreateReferenceDataResponse>;
+  getTenantDetail?: (slug: string) => Promise<PlatformTenantDetailResponse | null>;
   listTenants?: (input: {
     name?: string;
     status?: TenantStatusEnum;
@@ -63,6 +67,7 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
   const getUserEmailAvailability =
     options.getUserEmailAvailability ?? getPlatformTenantUserEmailAvailability;
   const getReferenceData = options.getReferenceData ?? getPlatformTenantCreateReferenceData;
+  const getTenantDetail = options.getTenantDetail ?? getPlatformTenantDetail;
   const listTenants = options.listTenants ?? getPlatformTenantDirectory;
   const provision = options.provision ?? provisionTenant;
   const rateLimitMiddleware =
@@ -152,6 +157,31 @@ export const createPlatformTenantsRouter = (options: PlatformTenantsRouterOption
       }
 
       const response = await getReferenceData(parsed.data.filter ?? {});
+      return res.status(200).json(response);
+    },
+  );
+
+  router.post(
+    '/platform/tenant/details',
+    authenticate,
+    authorize({ namespace: 'platform', allowedRoles: [RoleEnum.SUPER_ADMIN] }),
+    searchRateLimitMiddleware,
+    async (req, res) => {
+      const parsed = PlatformTenantDetailRequestSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return sendAuthError(
+          res,
+          400,
+          AuthErrorCodeEnum.VALIDATION_ERROR,
+          'Invalid tenant detail payload',
+        );
+      }
+
+      const response = await getTenantDetail(parsed.data.slug);
+      if (!response) {
+        return sendAuthError(res, 404, AuthErrorCodeEnum.NOT_FOUND, 'Tenant not found');
+      }
+
       return res.status(200).json(response);
     },
   );
