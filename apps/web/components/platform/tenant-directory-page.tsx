@@ -240,14 +240,16 @@ export const TenantDirectoryPage = () => {
               </p>
             </div>
             <Table className="min-w-full border-collapse text-left">
-              <TableHeader className="bg-white/70">
+              <TableHeader className="platform-directory-table-header bg-white/70">
                 <TableRow className="border-stone-200">
-                  <TableHead>Tenant name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Schema</TableHead>
-                  <TableHead>Updated</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="platform-directory-table-head">Tenant name</TableHead>
+                  <TableHead className="platform-directory-table-head">Status</TableHead>
+                  <TableHead className="platform-directory-table-head">Slug</TableHead>
+                  <TableHead className="platform-directory-table-head">Schema</TableHead>
+                  <TableHead className="platform-directory-table-head">Updated</TableHead>
+                  <TableHead className="platform-directory-table-head text-right">
+                    Actions
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
