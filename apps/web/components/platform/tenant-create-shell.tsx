@@ -166,6 +166,69 @@ type EmailAvailabilityState = {
 const getRoleLabel = (role: TenantCreateRoleOption) =>
   role.roleCode === RoleCodeEnum.TENANT_ADMIN ? 'Tenant Admin' : role.displayName;
 
+const ensureBootstrapRoleOption = (roleOptions: TenantCreateRoleOption[]) => {
+  const existingBootstrapRole = roleOptions.find(
+    (roleOption) => roleOption.roleCode === RoleCodeEnum.TENANT_ADMIN,
+  );
+
+  if (existingBootstrapRole) {
+    return roleOptions.map((roleOption) =>
+      roleOption.roleCode === RoleCodeEnum.TENANT_ADMIN
+        ? {
+            ...roleOption,
+            description:
+              roleOption.description ?? 'Required bootstrap administrator for tenant setup.',
+            displayName: 'Tenant Admin',
+            isDefault: true,
+            isRequired: true,
+          }
+        : roleOption,
+    );
+  }
+
+  return [
+    {
+      roleCode: RoleCodeEnum.TENANT_ADMIN,
+      displayName: 'Tenant Admin',
+      description: 'Required bootstrap administrator for tenant setup.',
+      isDefault: true,
+      isRequired: true,
+    },
+    ...roleOptions,
+  ];
+};
+
+const areRoleCodeSetsEqual = (left: ReadonlySet<RoleCode>, right: ReadonlySet<RoleCode>) =>
+  left.size === right.size && Array.from(left).every((roleCode) => right.has(roleCode));
+
+const normalizeSelectedRoleCodes = (
+  roleOptions: TenantCreateRoleOption[],
+  selectedRoleCodes: ReadonlySet<RoleCode>,
+) => {
+  const availableRoleCodes = new Set(roleOptions.map((roleOption) => roleOption.roleCode));
+  const nextSelectedRoleCodes = new Set<RoleCode>(
+    Array.from(selectedRoleCodes).filter((roleCode) => availableRoleCodes.has(roleCode)),
+  );
+
+  roleOptions.forEach((roleOption) => {
+    if (roleOption.isRequired || BOOTSTRAP_ROLE_CODES.has(roleOption.roleCode)) {
+      nextSelectedRoleCodes.add(roleOption.roleCode);
+    }
+  });
+
+  return nextSelectedRoleCodes;
+};
+
+const getDefaultSelectedRoleCodes = (roleOptions: TenantCreateRoleOption[]) =>
+  normalizeSelectedRoleCodes(
+    roleOptions,
+    new Set(
+      roleOptions
+        .filter((roleOption) => roleOption.isDefault || roleOption.isRequired)
+        .map((roleOption) => roleOption.roleCode),
+    ),
+  );
+
 const getSelectedRoleSections = (
   roleOptions: TenantCreateRoleOption[],
   selectedRoleCodes: ReadonlySet<RoleCode>,
@@ -417,9 +480,11 @@ const getUserAssignmentValidationState = (
     fieldErrorsByRowId,
     globalErrorMessage: !hasValidAdmin
       ? 'At least one tenant admin is required'
-      : hasFieldErrors || hasPendingEmailAvailabilityChecks
-        ? 'Resolve the highlighted user assignment issues'
-        : undefined,
+      : hasPendingEmailAvailabilityChecks
+        ? 'Wait for email availability checks to finish before continuing'
+        : hasFieldErrors
+          ? 'Resolve the highlighted user assignment issues'
+          : undefined,
     hasBlockingIssues,
     optionalWarningRoleCodes,
     requiredErrorRoleCodes,
@@ -504,11 +569,21 @@ export const TenantCreateShell = () => {
       (typeOption) => typeOption.typeCode === tenantInfoData.managementSystemTypeCode,
     ) ?? null;
 
-  const currentRoleOptions = currentManagementSystemType?.roleOptions ?? [];
+  const currentRoleOptions = useMemo(
+    () =>
+      currentManagementSystemType
+        ? ensureBootstrapRoleOption(currentManagementSystemType.roleOptions)
+        : [],
+    [currentManagementSystemType],
+  );
+  const effectiveSelectedRoleCodes = useMemo(
+    () => normalizeSelectedRoleCodes(currentRoleOptions, selectedRoleCodes),
+    [currentRoleOptions, selectedRoleCodes],
+  );
 
   const selectedRoleSections = useMemo(
-    () => getSelectedRoleSections(currentRoleOptions, selectedRoleCodes),
-    [currentRoleOptions, selectedRoleCodes],
+    () => getSelectedRoleSections(currentRoleOptions, effectiveSelectedRoleCodes),
+    [currentRoleOptions, effectiveSelectedRoleCodes],
   );
   const userAssignmentValidationState = getUserAssignmentValidationState(
     selectedRoleSections,
@@ -609,18 +684,20 @@ export const TenantCreateShell = () => {
   }, [hasUnsavedChanges]);
 
   useEffect(() => {
+    if (areRoleCodeSetsEqual(selectedRoleCodes, effectiveSelectedRoleCodes)) {
+      return;
+    }
+
+    setSelectedRoleCodes(effectiveSelectedRoleCodes);
+  }, [effectiveSelectedRoleCodes, selectedRoleCodes]);
+
+  useEffect(() => {
     if (
       currentStepKey !== TenantCreateStepKeyEnum.TENANT_INFO &&
       !roleCodesInitialized &&
       currentRoleOptions.length > 0
     ) {
-      const defaults = new Set<RoleCode>(
-        currentRoleOptions
-          .filter((roleOption) => roleOption.isDefault || roleOption.isRequired)
-          .map((roleOption) => roleOption.roleCode),
-      );
-
-      setSelectedRoleCodes(defaults);
+      setSelectedRoleCodes(getDefaultSelectedRoleCodes(currentRoleOptions));
       setRoleCodesInitialized(true);
     }
   }, [currentRoleOptions, currentStepKey, roleCodesInitialized]);
@@ -935,11 +1012,12 @@ export const TenantCreateShell = () => {
               <TenantCreateStepRoleSelection
                 onToggle={handleRoleToggle}
                 roleOptions={currentRoleOptions}
-                selectedRoleCodes={selectedRoleCodes}
+                selectedRoleCodes={effectiveSelectedRoleCodes}
               />
             ) : isUserAssignmentStep ? (
               <TenantCreateStepUserAssignment
                 assignmentDraftsByRole={assignmentDraftsByRole}
+                emailAvailabilityByEmail={emailAvailabilityByEmail}
                 fieldErrorsByRowId={userAssignmentValidationState.fieldErrorsByRowId}
                 globalErrorMessage={userAssignmentValidationState.globalErrorMessage}
                 onAddRow={handleAddAssignmentRow}
@@ -959,7 +1037,7 @@ export const TenantCreateShell = () => {
                   userAssignmentValidationState.optionalWarningRoleCodes
                 }
                 roleOptions={currentRoleOptions}
-                selectedRoleCodes={selectedRoleCodes}
+                selectedRoleCodes={effectiveSelectedRoleCodes}
                 submissionErrorMessage={submissionErrorMessage}
                 tenantAdminRows={populatedAssignmentRows.filter((row) =>
                   BOOTSTRAP_ROLE_CODES.has(row.roleCode),

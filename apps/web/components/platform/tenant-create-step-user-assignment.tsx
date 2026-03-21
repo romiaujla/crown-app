@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Check, Loader2, Plus, Trash2, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 import type {
@@ -38,6 +38,13 @@ export type TenantCreateAssignmentFieldErrorsByRowId = Record<
 
 type TenantCreateStepUserAssignmentProps = {
   assignmentDraftsByRole: TenantCreateAssignmentDraftsByRole;
+  emailAvailabilityByEmail: Record<
+    string,
+    {
+      isAvailable: boolean;
+      status: 'available' | 'checking' | 'unavailable';
+    }
+  >;
   fieldErrorsByRowId: TenantCreateAssignmentFieldErrorsByRowId;
   globalErrorMessage?: string;
   onAddRow: (roleCode: RoleCode) => string | undefined;
@@ -67,8 +74,11 @@ const getSectionDescription = (role: TenantCreateRoleOption) =>
 const getRefKey = (roleCode: RoleCode, rowId: string, field: DraftField) =>
   `${roleCode}:${rowId}:${field}`;
 
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
+
 export const TenantCreateStepUserAssignment = ({
   assignmentDraftsByRole,
+  emailAvailabilityByEmail,
   fieldErrorsByRowId,
   globalErrorMessage,
   onAddRow,
@@ -83,12 +93,19 @@ export const TenantCreateStepUserAssignment = ({
   const [touchedFieldKeys, setTouchedFieldKeys] = useState<Set<string>>(() => new Set());
   const [focusedFieldKey, setFocusedFieldKey] = useState<string | null>(null);
   const showGlobalAlert =
-    showErrors && globalErrorMessage !== 'At least one tenant admin is required';
+    showErrors &&
+    globalErrorMessage !== 'At least one tenant admin is required' &&
+    globalErrorMessage !== 'Wait for email availability checks to finish before continuing';
 
   const focusDraftDisplayName = (roleCode: RoleCode, rowId: string) => {
-    requestAnimationFrame(() => {
+    const focusInput = () => {
       inputRefs.current[getRefKey(roleCode, rowId, 'displayName')]?.focus();
-    });
+    };
+
+    focusInput();
+    requestAnimationFrame(focusInput);
+    setTimeout(focusInput, 0);
+    setTimeout(focusInput, 50);
   };
 
   if (roleSections.length === 0) {
@@ -199,11 +216,26 @@ export const TenantCreateStepUserAssignment = ({
                       {ROW_FIELDS.map((field) => {
                         const fieldKey = getRefKey(role.roleCode, draft.rowId, field);
                         const errorMessage = fieldErrors[field];
+                        const normalizedEmail =
+                          field === 'email' ? normalizeEmail(draft.email) : '';
+                        const emailAvailability = normalizedEmail
+                          ? emailAvailabilityByEmail[normalizedEmail]
+                          : undefined;
                         const shouldShowError = Boolean(
                           errorMessage &&
                           (showErrors ||
                             (touchedFieldKeys.has(fieldKey) && focusedFieldKey !== fieldKey)),
                         );
+                        const emailStatusMessage =
+                          field !== 'email' || !normalizedEmail || shouldShowError
+                            ? undefined
+                            : emailAvailability?.status === 'checking'
+                              ? 'Checking email availability...'
+                              : emailAvailability?.status === 'available'
+                                ? 'Email is available.'
+                                : emailAvailability?.status === 'unavailable'
+                                  ? 'This email already exists in the system.'
+                                  : undefined;
                         const placeholder =
                           field === 'displayName'
                             ? 'Display name'
@@ -216,56 +248,93 @@ export const TenantCreateStepUserAssignment = ({
                             <Label className="sr-only" htmlFor={`${draft.rowId}-${field}`}>
                               {placeholder}
                             </Label>
-                            <Input
-                              aria-label={placeholder}
-                              className={
-                                shouldShowError
-                                  ? 'h-9 min-w-0 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 text-sm'
-                                  : 'h-9 min-w-0 rounded-md border-stone-200 bg-white px-2.5 py-1.5 text-sm'
-                              }
-                              id={`${draft.rowId}-${field}`}
-                              onChange={(event) =>
-                                onUpdateRow(role.roleCode, draft.rowId, field, event.target.value)
-                              }
-                              onBlur={() => {
-                                setTouchedFieldKeys((currentValue) => {
-                                  const nextValue = new Set(currentValue);
-                                  nextValue.add(fieldKey);
-                                  return nextValue;
-                                });
-                                setFocusedFieldKey((currentValue) =>
-                                  currentValue === fieldKey ? null : currentValue,
-                                );
-                              }}
-                              onFocus={() => {
-                                setFocusedFieldKey(fieldKey);
-                              }}
-                              onKeyDown={(event) => {
-                                if (event.key !== 'Enter') {
-                                  return;
+                            <div className="relative">
+                              <Input
+                                aria-label={placeholder}
+                                className={
+                                  shouldShowError
+                                    ? 'h-9 min-w-0 rounded-md border-destructive/70 bg-white px-2.5 py-1.5 pr-9 text-sm'
+                                    : 'h-9 min-w-0 rounded-md border-stone-200 bg-white px-2.5 py-1.5 pr-9 text-sm'
                                 }
-
-                                event.preventDefault();
-                                const nextRow = sectionRows[rowIndex + 1];
-                                if (!nextRow) {
-                                  return;
+                                id={`${draft.rowId}-${field}`}
+                                onChange={(event) =>
+                                  onUpdateRow(role.roleCode, draft.rowId, field, event.target.value)
                                 }
+                                onBlur={() => {
+                                  setTouchedFieldKeys((currentValue) => {
+                                    const nextValue = new Set(currentValue);
+                                    nextValue.add(fieldKey);
+                                    return nextValue;
+                                  });
+                                  setFocusedFieldKey((currentValue) =>
+                                    currentValue === fieldKey ? null : currentValue,
+                                  );
+                                }}
+                                onFocus={() => {
+                                  setFocusedFieldKey(fieldKey);
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key !== 'Enter') {
+                                    return;
+                                  }
 
-                                requestAnimationFrame(() => {
-                                  inputRefs.current[
-                                    getRefKey(role.roleCode, nextRow.rowId, field)
-                                  ]?.focus();
-                                });
-                              }}
-                              placeholder={placeholder}
-                              ref={(element) => {
-                                inputRefs.current[fieldKey] = element;
-                              }}
-                              type={field === 'email' ? 'email' : 'text'}
-                              value={draft[field]}
-                            />
+                                  event.preventDefault();
+                                  const nextRow = sectionRows[rowIndex + 1];
+                                  if (!nextRow) {
+                                    return;
+                                  }
+
+                                  requestAnimationFrame(() => {
+                                    inputRefs.current[
+                                      getRefKey(role.roleCode, nextRow.rowId, field)
+                                    ]?.focus();
+                                  });
+                                }}
+                                placeholder={placeholder}
+                                ref={(element) => {
+                                  inputRefs.current[fieldKey] = element;
+                                }}
+                                type={field === 'email' ? 'email' : 'text'}
+                                value={draft[field]}
+                              />
+                              {field === 'email' && emailAvailability && !shouldShowError ? (
+                                <span
+                                  aria-live="polite"
+                                  className="pointer-events-none absolute inset-y-0 right-3 flex items-center"
+                                >
+                                  {emailAvailability.status === 'checking' ? (
+                                    <Loader2
+                                      aria-label="Checking email availability"
+                                      className="h-4 w-4 animate-spin text-stone-400"
+                                    />
+                                  ) : emailAvailability.status === 'available' ? (
+                                    <Check
+                                      aria-label="Email available"
+                                      className="h-4 w-4 text-green-600"
+                                    />
+                                  ) : (
+                                    <X
+                                      aria-label="Email unavailable"
+                                      className="h-4 w-4 text-destructive"
+                                    />
+                                  )}
+                                </span>
+                              ) : null}
+                            </div>
                             {shouldShowError ? (
                               <p className="text-xs font-medium text-destructive">{errorMessage}</p>
+                            ) : field === 'email' ? (
+                              <p
+                                className={
+                                  emailAvailability?.status === 'available'
+                                    ? 'min-h-4 text-xs text-green-600'
+                                    : emailAvailability?.status === 'unavailable'
+                                      ? 'min-h-4 text-xs text-destructive'
+                                      : 'min-h-4 text-xs text-stone-500'
+                                }
+                              >
+                                {emailStatusMessage ?? ' '}
+                              </p>
                             ) : null}
                           </div>
                         );
