@@ -184,8 +184,8 @@ const main = async () => {
   );
   await ensureFileContains(
     'AGENTS.md',
-    /Create or validate the Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
-    'AGENTS requires transitioning Jira to In Progress on branch creation',
+    /git co main && git pull[\s\S]*Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
+    'AGENTS requires refreshing main before branch creation and transitioning Jira to In Progress',
   );
   await ensureFileContains(
     'AGENTS.md',
@@ -204,13 +204,13 @@ const main = async () => {
   );
   await ensureFileContains(
     'docs/process/spec-kit-workflow.md',
-    /Create or validate the Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
-    'Spec workflow requires transitioning Jira to In Progress on branch creation',
+    /git co main && git pull[\s\S]*Jira-linked branch[\s\S]*transition that issue to `In Progress`/i,
+    'Spec workflow requires refreshing main before branch creation and transitioning Jira to In Progress',
   );
   await ensureFileContains(
     'docs/process/spec-kit-installation.md',
-    /--speckit CROWN-<id>[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
-    'Spec installation guidance preserves --speckit /specify rule',
+    /--speckit CROWN-<id>[\s\S]*git co main && git pull[\s\S]*Do not skip `?\/specify`?[\s\S]*before implementation/i,
+    'Spec installation guidance preserves main refresh and --speckit /specify rule',
   );
   await ensureFileContains(
     'README.md',
@@ -219,8 +219,8 @@ const main = async () => {
   );
   await ensureFileContains(
     'README.md',
-    /Jira-linked branch[\s\S]*`In Progress`[\s\S]*Jira-linked pull request[\s\S]*`In Review`/i,
-    'README documents Jira status transitions for branch and PR creation',
+    /git co main && git pull[\s\S]*Jira-linked branch[\s\S]*`In Progress`[\s\S]*Jira-linked pull request[\s\S]*`In Review`/i,
+    'README documents refreshing main before branch creation and Jira status transitions',
   );
   await ensureFileContains(
     'docs/process/ai-agent-prompt-help.md',
