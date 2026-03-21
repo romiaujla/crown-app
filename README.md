@@ -229,7 +229,7 @@ Tagged workflow examples:
 
 Expected repository behavior for prompt-driven starts:
 
-- Resolve the Jira issue first and create or validate the Jira-linked branch.
+- Resolve the Jira issue first. Before creating a new Jira-linked branch, run `git co main && git pull`, then create the Jira-linked branch; if the Jira-linked branch already exists, validate and use that branch.
 - When a Jira-linked branch is created, transition that issue to `In Progress`.
 - Use `--help` to list the documented repository AI-agent prompt patterns and their behavior.
 - Use `--speckit CROWN-<id>` to start with `/specify`, then proceed through `/plan`, `/tasks`, implementation, and pull request creation in order.

@@ -33,7 +33,7 @@ For tagged workflow commands:
 0. If the prompt is `--help`, return the supported prompt patterns and behavior descriptions from `docs/process/ai-agent-prompt-help.md`.
 1. Resolve the Jira issue and determine the issue type before branch creation.
 2. Use `docs/process/engineering-constitution.md` as the canonical policy source.
-3. Create or validate the Jira-linked branch and matching feature artifact location.
+3. Before creating a new Jira-linked branch, run `git co main && git pull`, then create the Jira-linked branch and matching feature artifact location; if the Jira-linked branch already exists, validate and use that existing branch.
 4. When a Jira-linked branch is created for the issue, transition that issue to `In Progress`.
 5. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 6. If the prompt is `--speckit CROWN-<id>`, start the workflow with `/specify`.
