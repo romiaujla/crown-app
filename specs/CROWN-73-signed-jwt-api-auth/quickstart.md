@@ -19,7 +19,7 @@ pnpm --filter @crown/api dev
 ```bash
 curl -s http://localhost:4000/api/v1/auth/login \
   -H 'content-type: application/json' \
-  -d '{"identifier":"super-admin@acme-local.test","password":"Password123!"}'
+  -d '{"identifier":"super-admin@acme-local.test","password":"<your-local-super-admin-password>"}'
 ```
 
 4. Reuse the returned bearer token against an authenticated route such as:

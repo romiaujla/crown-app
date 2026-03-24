@@ -1158,13 +1158,13 @@ export const authDocsDocument = {
                 username: {
                   value: {
                     identifier: 'super.admin',
-                    password: 'SeedSuperAdmin123!',
+                    password: '<your-local-super-admin-password>',
                   },
                 },
                 email: {
                   value: {
                     identifier: 'super-admin@acme-local.test',
-                    password: 'SeedSuperAdmin123!',
+                    password: '<your-local-super-admin-password>',
                   },
                 },
               },

@@ -10,13 +10,15 @@ Use this guide when you want to exercise the seeded Crown login flows locally.
 - Run the canonical bootstrap workflow: `pnpm db:bootstrap:local`
 - Start the applications: `pnpm dev`
 
-The copied API env file provides the default seeded auth password values and access-token lifetime used by local login flows:
+The copied API env file provides the local auth configuration used by login flows:
 
 - `JWT_ACCESS_TTL_SECONDS=7200`
-- `SEED_SUPER_ADMIN_PASSWORD=SeedSuperAdmin123!`
-- `SEED_TENANT_ADMIN_PASSWORD=SeedTenantAdmin123!`
-- `SEED_TENANT_USER_PASSWORD=SeedTenantUser123!`
-- `SEED_DEFAULT_PASSWORD=Password123!` remains the fallback for seeded records that do not have a role-specific override.
+- `SEED_SUPER_ADMIN_PASSWORD=<set-a-local-only-password>`
+- `SEED_TENANT_ADMIN_PASSWORD=<set-a-local-only-password>`
+- `SEED_TENANT_USER_PASSWORD=<set-a-local-only-password>`
+- `SEED_DEFAULT_PASSWORD=<set-a-local-only-password>` remains the fallback for seeded records that do not have a role-specific override.
+
+Choose local-only values in `apps/api/.env.local`. Do not commit or share those passwords.
 
 Default local endpoints:
 
@@ -39,19 +41,19 @@ If the local database is already prepared and you only need to refresh seeded te
 
 Primary seeded accounts for local login. The "Auth Class" column shows the `roles.auth_class` value derived from each user's assigned role via the normalized role-assignment tables — it is not a direct column on the `users` table.
 
-| Auth Class     | Identifier                     | Alternate Identifier | Password              | Expected Destination |
-| -------------- | ------------------------------ | -------------------- | --------------------- | -------------------- |
-| `super_admin`  | `super-admin@acme-local.test`  | `super.admin`        | `SeedSuperAdmin123!`  | `/platform`          |
-| `tenant_admin` | `tenant-admin@acme-local.test` | `tenant.admin`       | `SeedTenantAdmin123!` | `/tenant`            |
-| `tenant_user`  | `tenant-user@acme-local.test`  | `tenant.user`        | `SeedTenantUser123!`  | `/tenant`            |
+| Auth Class     | Identifier                     | Alternate Identifier | Password Source                              | Expected Destination |
+| -------------- | ------------------------------ | -------------------- | -------------------------------------------- | -------------------- |
+| `super_admin`  | `super-admin@acme-local.test`  | `super.admin`        | `SEED_SUPER_ADMIN_PASSWORD` in `.env.local`  | `/platform`          |
+| `tenant_admin` | `tenant-admin@acme-local.test` | `tenant.admin`       | `SEED_TENANT_ADMIN_PASSWORD` in `.env.local` | `/tenant`            |
+| `tenant_user`  | `tenant-user@acme-local.test`  | `tenant.user`        | `SEED_TENANT_USER_PASSWORD` in `.env.local`  | `/tenant`            |
 
 Additional seeded auth records used for negative-path validation:
 
-| Case                        | Identifier                           | Password       | Expected Outcome          |
-| --------------------------- | ------------------------------------ | -------------- | ------------------------- |
-| Disabled account            | `disabled-user@acme-local.test`      | `Password123!` | Sign-in denied            |
-| No tenant membership        | `tenant-user-orphan@acme-local.test` | `Password123!` | Access denied             |
-| Multiple tenant memberships | `tenant-admin-multi@acme-local.test` | `Password123!` | Tenant selection required |
+| Case                        | Identifier                           | Password Source                         | Expected Outcome          |
+| --------------------------- | ------------------------------------ | --------------------------------------- | ------------------------- |
+| Disabled account            | `disabled-user@acme-local.test`      | `SEED_DEFAULT_PASSWORD` in `.env.local` | Sign-in denied            |
+| No tenant membership        | `tenant-user-orphan@acme-local.test` | `SEED_DEFAULT_PASSWORD` in `.env.local` | Access denied             |
+| Multiple tenant memberships | `tenant-admin-multi@acme-local.test` | `SEED_DEFAULT_PASSWORD` in `.env.local` | Tenant selection required |
 
 ## Login Journeys
 
