@@ -89,6 +89,7 @@ const TenantPage = () => {
       emptyDescription="This tenant workspace is ready even before live operational data arrives. Use the workspace areas above to begin organizing organizations, people, work items, and activity records."
       emptyEyebrow="No-data guidance"
       emptyTitle="Start by setting up your first management-system records"
+      layout="cards"
       navigationItems={tenantNavigation}
       navigationTitle="Tenant workspace areas"
       overviewCards={tenantOverviewCards}
