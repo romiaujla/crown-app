@@ -42,7 +42,7 @@ type SharedWorkspaceShellProps = {
 };
 
 type CardLayoutWorkspaceShellProps = SharedWorkspaceShellProps & {
-  layout?: 'cards';
+  layout: 'cards';
   navigationTitle: string;
   navigationItems: readonly NavigationCardItem[];
   overviewEyebrow: string;
