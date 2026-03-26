@@ -28,81 +28,54 @@ export const platformNavigation = [
     title: 'Dashboard',
     href: '/platform',
     icon: LayoutDashboard,
-    eyebrow: 'Platform overview',
-    description:
-      "Review Crown's platform posture, tenant readiness, and next setup steps from the control-plane home.",
   },
   {
     key: 'tenants',
     title: 'Tenants',
     href: '/platform/tenants',
     icon: Building2,
-    eyebrow: 'Tenant management',
-    description:
-      'Review tenant readiness, provisioning status, and lifecycle actions from one platform entry point.',
   },
   {
     key: 'users',
     title: 'Users',
     href: '/platform?section=users',
     icon: Users,
-    eyebrow: 'Identity oversight',
-    description:
-      'Review operator access, account hygiene, and user-related follow-up without leaving the control plane.',
   },
   {
     key: 'activity',
     title: 'Activity',
     href: '/platform?section=activity',
     icon: Activity,
-    eyebrow: 'Recent platform activity',
-    description:
-      'Track operational events, platform follow-up, and the latest control-plane changes from one stream.',
   },
   {
     key: 'system-health',
     title: 'System Health',
     href: '/platform?section=system-health',
     icon: HeartPulse,
-    eyebrow: 'Operational posture',
-    description:
-      'Monitor service posture, readiness indicators, and environment follow-up work for the platform.',
   },
   {
     key: 'security',
     title: 'Security',
     href: '/platform?section=security',
     icon: Shield,
-    eyebrow: 'Security posture',
-    description:
-      'Review security-focused controls, audits, and platform hardening work as the control plane evolves.',
   },
   {
     key: 'billing',
     title: 'Billing',
     href: '/platform?section=billing',
     icon: BadgeDollarSign,
-    eyebrow: 'Commercial controls',
-    description:
-      'Track billing readiness, commercial workflows, and platform-wide financial administration from one area.',
   },
   {
     key: 'audit-log',
     title: 'Audit Log',
     href: '/platform?section=audit-log',
     icon: FileText,
-    eyebrow: 'Platform traceability',
-    description:
-      'Review change history, governance evidence, and audit-oriented activity as those capabilities come online.',
   },
   {
     key: 'settings',
     title: 'Settings',
     href: '/platform?section=settings',
     icon: Settings,
-    eyebrow: 'Platform defaults',
-    description:
-      'Adjust global platform settings, conventions, and future control-plane defaults as they are delivered.',
   },
 ] as const;
 
