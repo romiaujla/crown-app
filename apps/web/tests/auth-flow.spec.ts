@@ -1,6 +1,7 @@
 import {
   DashboardMetricWindowEnum,
   ManagementSystemTypeCodeEnum,
+  PlatformUserAccountStatusEnum,
   type PlatformTenantDetailResponse,
   RoleCodeEnum,
   TenantStatusEnum,
@@ -811,9 +812,19 @@ test('tenant directory action links route to stable detail, add, and edit entry 
   await expect(page.getByRole('heading', { name: 'Northwind TMS' })).toBeVisible();
   await expect(page.getByText('Schema name')).toBeVisible();
   await expect(page.getByText('tenant_northwind_tms')).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Administration sections', level: 3 }),
-  ).toBeVisible();
+  const usersSectionTrigger = page.getByRole('button', { name: /Users/i });
+  await expect(usersSectionTrigger).toBeVisible();
+  await expect(usersSectionTrigger).toHaveAttribute('aria-expanded', 'false');
+  await usersSectionTrigger.click();
+  await expect(usersSectionTrigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Email' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Role' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Status' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Last Active' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Actions' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'Avery Stone' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Manage users' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Edit tenant' })).toBeVisible();
   await page.getByRole('button', { name: 'More actions' }).click();
   await expect(page.getByRole('link', { name: 'View directory' })).toBeVisible();
@@ -845,6 +856,50 @@ test('tenant details supports returning to the tenant directory from the control
 
   await expect(page).toHaveURL(/\/platform\/tenants$/);
   await expect(page.getByRole('heading', { name: 'Tenant Directory', level: 3 })).toBeVisible();
+});
+
+test('tenant details users section renders an empty state for inactive tenants', async ({
+  page,
+}) => {
+  await primeAuthenticatedSession(page, 'super_admin');
+
+  await page.goto('/platform/tenants/atlas-freight');
+
+  await page.getByRole('button', { name: /Users/i }).click();
+
+  await expect(page.getByText('No users available yet')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Add first user' })).toBeVisible();
+});
+
+test('tenant details users section renders a loading state for provisioning tenants', async ({
+  page,
+}) => {
+  await setupAuthRoutes(page, {
+    mePersona: 'super_admin',
+    tenantDetailResponse: {
+      data: {
+        tenantId: 'tenant-3',
+        name: 'Summit Logistics',
+        slug: 'summit-logistics',
+        schemaName: 'tenant_summit_logistics',
+        status: TenantStatusEnum.PROVISIONING,
+        createdAt: '2026-03-03T15:00:00.000Z',
+        updatedAt: '2026-03-12T15:00:00.000Z',
+      },
+    },
+  });
+  await page.addInitScript(
+    ({ key, value }: { key: string; value: string }) => {
+      window.sessionStorage.setItem(key, value);
+    },
+    { key: ACCESS_TOKEN_STORAGE_KEY, value: createAccessToken('super_admin') },
+  );
+
+  await page.goto('/platform/tenants/summit-logistics');
+
+  await page.getByRole('button', { name: /Users/i }).click();
+
+  await expect(page.getByText('Loading users for this tenant')).toBeVisible();
 });
 
 test('tenant create shell advances through steps and protects entered progress on cancel', async ({
