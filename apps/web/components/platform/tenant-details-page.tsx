@@ -1,10 +1,10 @@
 'use client';
 
 import { TenantStatusEnum, type PlatformTenantDetailResponse } from '@crown/types';
-import { Layers3 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { TenantDetailsSections } from '@/components/platform/tenant-details-sections';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { CrownDetailsComponent } from '@/components/ui/crown-details-component';
@@ -13,7 +13,6 @@ import {
   CrownDetailsFieldSurfaceEnum,
   CrownDetailsFrameVariantEnum,
 } from '@/components/ui/crown-details-component.types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPlatformTenantDetail } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 import { ViewState, ViewStatusEnum } from '@/lib/view-state';
@@ -187,47 +186,7 @@ export const TenantDetailsPage = ({ slug }: { slug: string }) => {
         title={tenant.name}
       />
 
-      <Card className="border-white/70 bg-white/92 shadow-sm">
-        <CardHeader className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="rounded-2xl border border-stone-200 bg-stone-50 p-2 text-stone-700">
-              <Layers3 aria-hidden="true" className="h-5 w-5" />
-            </div>
-            <div className="space-y-1">
-              <CardTitle className="text-xl text-stone-950">Administration sections</CardTitle>
-              <CardDescription className="text-sm leading-6 text-stone-600">
-                This details view is ready to expand with tenant-specific administration surfaces
-                without changing how super admins enter the route.
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              title: 'Tenant profile',
-              description: 'Keep foundational tenant metadata and lifecycle context grouped here.',
-            },
-            {
-              title: 'Tenant operators',
-              description: 'Add tenant membership, role, and access administration here later.',
-            },
-            {
-              title: 'Lifecycle actions',
-              description:
-                'Introduce provisioning, deprovisioning, and audit-oriented actions in follow-up stories.',
-            },
-          ].map((section) => (
-            <div
-              key={section.title}
-              className="rounded-2xl border border-stone-200 bg-stone-50/70 p-4"
-            >
-              <p className="text-sm font-semibold text-stone-950">{section.title}</p>
-              <p className="mt-2 text-sm leading-6 text-stone-600">{section.description}</p>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <TenantDetailsSections tenant={tenant} />
 
       <p className="text-sm leading-6 text-stone-600">
         Need a broader tenant overview?{' '}
