@@ -1,7 +1,7 @@
 import { Button } from './button';
 
 const meta = {
-  title: 'Button',
+  title: 'UI/Button',
   component: Button,
   tags: ['autodocs'],
   args: {
