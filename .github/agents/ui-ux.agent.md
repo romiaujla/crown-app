@@ -494,6 +494,215 @@ All status indicators across Crown follow these rules:
 
 ---
 
+## State Transitions
+
+Components move through predictable state sequences. Spec every transition path:
+
+```
+Initial Load:   Empty → Loading → Success (data) | Error | Empty (no data)
+User Action:    Default → Loading → Success | Error → Default (retry)
+Optimistic:     Default → Success (immediate) → Error (rollback) | stays Success
+Filter Change:  Success → Loading → Success (new data) | Filtered-Empty
+Pagination:     Success → Loading (section) → Success (new page)
+```
+
+### Transition Rules
+
+- Never skip the Loading state for server-fetched data — even if the response is fast, show skeleton for ≥ 200ms to avoid flash-of-content.
+- On error after a successful state, do not clear the existing data — show an error banner above the stale content and let the user retry.
+- On filter change, replace only the table body (section-level skeleton), not the entire page.
+- Transitions must be smooth: no layout shift between states. Skeleton dimensions must match the content they replace.
+
+---
+
+## Optimistic UI Rollback Behavior
+
+When an optimistic update fails, the UI must revert cleanly:
+
+| Scenario                       | Optimistic Behavior               | On Failure                                                 |
+| ------------------------------ | --------------------------------- | ---------------------------------------------------------- |
+| Toggle (e.g., active/inactive) | Badge flips immediately           | Revert badge to original state + error toast               |
+| Inline edit (e.g., rename)     | Field shows new value immediately | Revert to original value + error toast + re-open edit mode |
+| Status change                  | Row updates immediately           | Revert row to original state + error toast                 |
+| Delete / archive               | Row fades out immediately         | Row reappears at original position + error toast           |
+| Reorder                        | Item moves to new position        | Item snaps back to original position + error toast         |
+
+### Rules
+
+- Always show an error toast explaining what failed: "Failed to update status. Reverted."
+- Never silently revert — the user must know the action didn't persist.
+- For destructive optimistic actions (delete), prefer confirm-first over optimistic-with-rollback.
+- Rollback animation should take 200–300ms — fast enough to feel responsive, slow enough to be noticed.
+
+---
+
+## Undo vs Confirm Decision Rules
+
+| Scenario                                                                    | Pattern             | Rationale                                           |
+| --------------------------------------------------------------------------- | ------------------- | --------------------------------------------------- |
+| **Reversible + low risk** (archive, soft-delete, remove from list)          | **Undo toast** (8s) | Faster workflow; user can undo without interruption |
+| **Irreversible + high risk** (permanent delete, data wipe, role revocation) | **ConfirmDialog**   | Cannot be undone; user must explicitly acknowledge  |
+| **Reversible + affects others** (publish, send notification, reassign)      | **ConfirmDialog**   | Side effects are visible to other users             |
+| **Reversible + self-only** (dismiss, mark as read, collapse)                | **No confirmation** | Trivial, instant, easily undone                     |
+
+### Rules
+
+- Default to undo toast for reversible actions — it's faster than confirm dialogs.
+- ConfirmDialog must state what will happen and what cannot be undone: "This will permanently delete 3 tenants. This action cannot be undone."
+- Undo toasts must include: action description + "Undo" button + countdown indicator.
+- If the undo window expires, the action commits silently — no second confirmation.
+
+---
+
+## Global vs Local Search
+
+| Type              | Location                                           | Scope                                                    | Behavior                                                                           |
+| ----------------- | -------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Global search** | Top navigation bar, always visible                 | Searches across all entity types (tenants, users, roles) | Returns grouped results by entity type; selecting a result navigates to the entity |
+| **Table search**  | Inline in the filter bar, above the specific table | Searches within the current entity listing only          | Filters the current table; interacts with other active filters                     |
+
+### Rules
+
+- Global search uses `/` keyboard shortcut; table search uses the filter bar input directly.
+- Global search results show: entity type icon + name + status badge + breadcrumb context.
+- Global search is always server-side with 300ms debounce.
+- Table search and global search are independent — activating one does not clear the other.
+- Global search opens as a command-palette-style overlay (centered, 600px wide, max 10 results visible).
+- Pressing `Escape` closes global search and returns focus to the previous context.
+
+---
+
+## Cross-Entity Linking Patterns
+
+When an entity reference appears inside another entity's view (e.g., a user name inside a tenant detail):
+
+| Context                              | Pattern                                                                                  | Example                                                   |
+| ------------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Linked entity in a **table cell**    | Clickable text link → opens detail drawer for the linked entity                          | User name in tenant members table → opens user drawer     |
+| Linked entity in a **detail drawer** | Clickable text link → navigates to the linked entity's full page (closes current drawer) | Tenant name in user drawer → navigates to tenant page     |
+| Linked entity in a **full page**     | Clickable text link → opens detail drawer for the linked entity                          | Created-by user on tenant detail page → opens user drawer |
+
+### Rules
+
+- Cross-entity links use `--accent` color and underline on hover — standard link affordance.
+- Never open a drawer from inside another drawer. If the user clicks a cross-entity link in a drawer, navigate to the linked entity's page.
+- Breadcrumbs update to reflect cross-entity navigation.
+- Linked entity names always show as much context as possible: display name + role/status badge when space allows.
+
+---
+
+## Inline vs Drawer vs Full Edit Mode
+
+Explicit decision rules for how editing surfaces based on complexity:
+
+| Edit Complexity                | Pattern                     | When to Use                                                                                                                                  |
+| ------------------------------ | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1 field**                    | Inline edit (click-to-edit) | Renaming, toggling status, changing a single value. The field becomes editable in-place; save on blur or Enter.                              |
+| **2–5 fields**                 | Drawer edit                 | Editing a focused subset of an entity (e.g., contact info, role assignment). Opens a drawer with a small form.                               |
+| **6+ fields or multi-section** | Full page edit              | Editing a complex entity with grouped sections (e.g., tenant settings with system config, branding, defaults). Uses a full-page form layout. |
+
+### Rules
+
+- Inline edit: show a pencil icon on hover to indicate editability. Save on `Enter` or blur; cancel on `Escape`.
+- Drawer edit: form follows Form UX Rules (explicit Save button, disabled until dirty, close on save).
+- Full page edit: use the same URL with an `/edit` suffix or a query parameter. Show a "Cancel" link that discards changes and returns to view mode.
+- Never mix edit modes in a single view — all editable fields in a section use the same edit surface.
+
+---
+
+## Batch Operations Feedback
+
+For bulk actions that take > 2 seconds (mass update, bulk assign, export, import):
+
+### Progress Indicators
+
+- Show a progress bar in the bulk action toolbar with: percentage, items processed / total items.
+- If the operation runs server-side and progress is not trackable, show an indeterminate progress bar with estimated time.
+- Keep the table visible but non-interactive (dimmed overlay) while a batch operation is in progress.
+
+### Completion
+
+- On success: dismiss progress bar, show success toast with summary ("12 of 12 tenants updated"), refresh table data.
+- On partial failure: show a warning toast ("10 of 12 updated. 2 failed.") + link to view failed items.
+- On full failure: show error toast + table returns to pre-operation state.
+
+### Cancellation
+
+- For long-running batch operations (> 5 seconds), show a "Cancel" button in the progress bar.
+- Cancellation stops processing remaining items but does not rollback already-processed items. Toast confirms: "Cancelled. 6 of 12 processed."
+
+---
+
+## Long-Running Operations UX
+
+For operations that exceed the request-response cycle (exports, imports, report generation, background provisioning):
+
+### Tracking Pattern
+
+- Initiate: user clicks the action → immediate toast: "Export started. We'll notify you when it's ready."
+- In progress: a status indicator appears in the notification center (bell icon in top nav) with a progress line.
+- Complete: notification center shows "Export ready. [Download]" as a persistent entry. Optional: browser notification if the tab is in the background.
+
+### Rules
+
+- Never make the user wait on-page for a background job. Return control immediately.
+- The initiating page does not show a loading state for background jobs — the notification center owns the status.
+- Failed background jobs surface as an error notification: "Import failed. [View details]" with a link to the error report.
+- Background job history is viewable in the notification center with status: Pending, In Progress, Completed, Failed.
+
+---
+
+## Notification Center Pattern
+
+A persistent notification center for system events, background job results, and admin alerts:
+
+### Structure
+
+- **Trigger**: Bell icon in the top navigation, right side. Shows unread count badge.
+- **Panel**: Popover or drawer from the top-right, max 400px wide.
+- **Entries**: Chronological list, newest first. Each entry shows: icon, title, description, timestamp, read/unread indicator.
+
+### Entry Types
+
+| Type                    | Icon           | Persistence     | Example                            |
+| ----------------------- | -------------- | --------------- | ---------------------------------- |
+| Background job complete | Download/check | Until dismissed | "Export ready. [Download]"         |
+| Background job failed   | Alert triangle | Until dismissed | "Import failed. [View details]"    |
+| System alert            | Info circle    | Until dismissed | "Scheduled maintenance at 2am UTC" |
+| Admin action needed     | Warning        | Until resolved  | "3 pending user approvals"         |
+
+### Rules
+
+- Clicking an entry navigates to the relevant context (download, error detail, approval queue) and marks it as read.
+- "Mark all as read" link at the top of the panel.
+- Notification center is read-only — no inline actions other than dismiss and navigate.
+- Max 50 recent notifications; older entries are paginated or available in a "View all" full page.
+- Notifications are not a replacement for toasts — toasts are for immediate action feedback; notifications are for async/background events.
+
+---
+
+## Empty vs Zero vs Null State Distinctions
+
+Enterprise data has nuanced absence states. The UI must distinguish them:
+
+| State                  | Meaning                                                        | Visual Treatment                                                         |
+| ---------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Empty (no records)** | The entity type has never had data created                     | Full empty state with illustration + CTA ("Create your first tenant")    |
+| **Filtered empty**     | Records exist but current filters exclude all of them          | "No results match your filters" + "Clear filters" CTA. No create button. |
+| **Zero value**         | A numeric field has a legitimate value of 0                    | Display "0" — never hide it, never show as empty. Use `tabular-nums`.    |
+| **Null / not set**     | A field has no value assigned (optional or not yet configured) | Display "—" (em dash) in `--muted` color. Tooltip: "Not set".            |
+| **Loading**            | Data has not arrived yet                                       | Skeleton shimmer placeholder matching the expected layout.               |
+| **Permission denied**  | Data exists but user cannot view it                            | "You don't have permission to view this." No skeleton, no empty state.   |
+
+### Rules
+
+- Never show blank space for null fields — always use "—" to indicate intentional absence.
+- "0" is a real value. Never coalesce zero to empty/null in the display layer.
+- Filtered-empty must never show the "Create first record" CTA — the user's issue is their filters, not missing data.
+- Null fields in table cells use left-aligned "—"; null fields in detail views use "Not set" text in muted style.
+
+---
+
 ## Design System Reference
 
 Read these files before every design task:
