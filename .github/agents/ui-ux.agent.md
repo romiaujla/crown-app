@@ -703,6 +703,200 @@ Enterprise data has nuanced absence states. The UI must distinguish them:
 
 ---
 
+## Terminology Consistency
+
+Use a single canonical verb for each action across all surfaces. Never mix synonyms:
+
+| Canonical Term | Forbidden Alternatives             | Context                                                  |
+| -------------- | ---------------------------------- | -------------------------------------------------------- |
+| **Create**     | Add, New, Insert                   | Creating a new record (button labels, page titles, CTAs) |
+| **Edit**       | Modify, Change, Update (as a verb) | Modifying an existing record                             |
+| **Delete**     | Remove, Destroy, Erase             | Permanently removing a record                            |
+| **Archive**    | Deactivate, Soft-delete, Hide      | Reversibly retiring a record                             |
+| **Save**       | Submit, Apply, Confirm (for forms) | Persisting form changes                                  |
+| **Cancel**     | Close, Dismiss, Back (for forms)   | Discarding form changes and closing the surface          |
+| **Search**     | Find, Look up, Query               | Text-based lookup                                        |
+| **Filter**     | Narrow, Refine, Limit              | Constraining a list by attribute                         |
+| **Export**     | Download, Extract                  | Generating a file from data                              |
+| **Import**     | Upload, Ingest                     | Loading data from a file                                 |
+
+### Rules
+
+- Button labels, page titles, toasts, and empty-state CTAs must use the canonical term only.
+- Sentence-case for all UI labels: "Create tenant", not "CREATE TENANT" or "Create Tenant".
+- Exception: proper nouns and product names retain their casing.
+
+---
+
+## Date & Time Formatting Standard
+
+### Display Rules
+
+| Context                    | Format                       | Example                         |
+| -------------------------- | ---------------------------- | ------------------------------- |
+| Table cell (recent, < 24h) | Relative                     | "2 hours ago"                   |
+| Table cell (older, ≥ 24h)  | Absolute short               | "Mar 15, 2026"                  |
+| Detail view / drawer       | Absolute full                | "March 15, 2026 at 3:42 PM"     |
+| Tooltip on any date        | Absolute full + timezone     | "March 15, 2026 at 3:42 PM EST" |
+| Activity timeline          | Relative + absolute on hover | "3 days ago" → tooltip: full    |
+| Form input (date picker)   | ISO-friendly display         | "2026-03-15" or locale default  |
+
+### Timezone Rules
+
+- All timestamps stored and transmitted as **UTC**.
+- Display in the **user's local timezone** by default.
+- Show the timezone abbreviation when ambiguity is possible (cross-tenant views, exports, shared links).
+- Never display raw UTC to end users.
+
+### Relative Time Thresholds
+
+| Elapsed      | Display         |
+| ------------ | --------------- |
+| < 1 minute   | "Just now"      |
+| 1–59 minutes | "X minutes ago" |
+| 1–23 hours   | "X hours ago"   |
+| 1–6 days     | "X days ago"    |
+| 7–29 days    | "Mon DD"        |
+| ≥ 30 days    | "Mon DD, YYYY"  |
+
+---
+
+## Number Formatting Rules
+
+| Type           | Format                       | Example        |
+| -------------- | ---------------------------- | -------------- |
+| Integers       | Thousands separator (comma)  | "1,234"        |
+| Decimals       | Up to 2 decimal places       | "1,234.56"     |
+| Currency       | Symbol + 2 decimals          | "$1,234.56"    |
+| Percentage     | Up to 1 decimal + `%` suffix | "87.5%"        |
+| Large numbers  | Compact notation (optional)  | "1.2M", "350K" |
+| Zero           | "0" — never blank            | "0"            |
+| Null / not set | "—" (em dash, muted)         | "—"            |
+
+### Rules
+
+- Use `tabular-nums` font feature for all numeric table columns — digits must align vertically.
+- Currency symbol and precision are driven by tenant configuration, not hardcoded.
+- Compact notation (K, M, B) is allowed only in metric cards and chart axes — never in table cells or forms where precision matters.
+- Negative numbers: use minus sign prefix (`-1,234`), never parentheses.
+- Right-align all numeric columns in tables.
+
+---
+
+## Icon Usage Rules
+
+Crown uses **Lucide React** (`lucide-react`) as the sole icon library. No other icon sets are permitted.
+
+### When to Use Icons
+
+| Context                           | Pattern                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| Button with short label           | Icon + text (`<Icon size={16} /> Label`). Icon on the left.               |
+| Icon-only button (toolbar, table) | Icon only + mandatory `aria-label` + tooltip on hover.                    |
+| Status badge                      | No icon — text label inside the badge is sufficient.                      |
+| Navigation sidebar                | Icon + label. Icon size `20px`. Collapsed sidebar shows icon only.        |
+| Empty state                       | Large muted icon (`48px`) centered above the headline.                    |
+| Notification/toast                | Small icon (`16px`) left of the message matching the toast type.          |
+| Table action column               | Icon-only buttons for common actions (edit, delete, more). Max 3 visible. |
+
+### Rules
+
+- Every icon-only interactive element must have an `aria-label` and a visible tooltip.
+- Icon size in buttons and inline contexts: `16px`. Sidebar nav: `20px`. Empty states and illustrations: `48px`.
+- Use consistent icons for the same concept across all surfaces (e.g., `Pencil` for edit everywhere, never `PenLine` in one place and `Edit` in another).
+- Do not use icons purely for decoration — every icon must communicate meaning or reinforce a label.
+- Stroke width: default Lucide stroke (`2`). Do not customize per-icon.
+
+### Canonical Icon Mapping
+
+| Concept       | Lucide Icon      |
+| ------------- | ---------------- |
+| Create        | `Plus`           |
+| Edit          | `Pencil`         |
+| Delete        | `Trash2`         |
+| Search        | `Search`         |
+| Filter        | `Filter`         |
+| Settings      | `Settings`       |
+| Close         | `X`              |
+| Back          | `ArrowLeft`      |
+| More actions  | `MoreHorizontal` |
+| Download      | `Download`       |
+| Upload        | `Upload`         |
+| Refresh       | `RefreshCw`      |
+| Info          | `Info`           |
+| Warning       | `AlertTriangle`  |
+| Error         | `AlertCircle`    |
+| Success       | `CheckCircle`    |
+| User          | `User`           |
+| Tenant        | `Building2`      |
+| Notifications | `Bell`           |
+| Help          | `HelpCircle`     |
+
+---
+
+## Animation & Motion Guidelines
+
+### Principles
+
+- Motion is **functional, not decorative**. Every animation must serve a purpose: indicate state change, guide attention, or show spatial relationships.
+- Respect `prefers-reduced-motion` — all animations must be disabled or minimized when the user's OS setting requests reduced motion.
+
+### Duration Scale
+
+| Type                   | Duration  | Easing        | Use Case                                           |
+| ---------------------- | --------- | ------------- | -------------------------------------------------- |
+| Micro-interactions     | 100–150ms | `ease-out`    | Button hover, toggle flip, badge update, icon swap |
+| Component transitions  | 200–300ms | `ease-in-out` | Drawer open/close, accordion expand/collapse, fade |
+| Page-level transitions | 300–400ms | `ease-in-out` | Route change crossfade, skeleton → content reveal  |
+| Optimistic rollback    | 200–300ms | `ease-in-out` | Reverting an optimistic UI update on failure       |
+
+### Allowed Animations
+
+| Animation           | Where                                    | Notes                                    |
+| ------------------- | ---------------------------------------- | ---------------------------------------- |
+| Fade in/out         | Toasts, modals, drawers, popovers        | Opacity 0 → 1 / 1 → 0                    |
+| Slide in from right | Drawers (Sheet)                          | Transform from `translateX(100%)`        |
+| Slide down          | Accordion/collapsible sections expanding | Height 0 → auto with overflow hidden     |
+| Skeleton shimmer    | Loading placeholders                     | Continuous subtle left-to-right gradient |
+| Scale subtle        | Button press feedback                    | `scale(0.98)` on `:active`, 100ms        |
+| Row fade-out        | Optimistic delete/archive                | Opacity 1 → 0 + height collapse          |
+
+### Forbidden
+
+- No bounce, wobble, spring, or elastic easing — this is a data-dense management system, not a consumer app.
+- No entrance animations on page load for static content — content appears instantly.
+- No animation on scroll (parallax, scroll-triggered reveals).
+- No animated loaders or spinners except the Button loading spinner (the only permitted spinner).
+- No animation longer than 400ms.
+
+---
+
+## Skeleton-to-Content Fidelity Rule
+
+Skeleton placeholders must be a **pixel-accurate silhouette** of the content they replace:
+
+### Rules
+
+- Skeleton shapes must exactly match the dimensions and positions of the final rendered elements (text lines, avatars, badges, buttons).
+- A table skeleton must show the correct number of columns, matching column widths, and the expected number of rows (equal to the page size, default 25).
+- A card skeleton must match the card's height, padding, and internal layout (title line, metric line, subtitle line).
+- A detail drawer skeleton must mirror the header, section headings, and field rows of the real content.
+- Never use a generic centered skeleton block for a complex layout — each layout gets its own skeleton template.
+
+### Mismatches to Avoid
+
+| Mismatch                                     | Problem                                                                       |
+| -------------------------------------------- | ----------------------------------------------------------------------------- |
+| Skeleton shows 3 rows but content has 10     | Layout shift when content loads — user loses scroll position.                 |
+| Skeleton has wrong column count              | Columns snap into place causing a jarring width adjustment.                   |
+| Skeleton is shorter than actual content      | Page jumps taller on load — disorienting, especially below the fold.          |
+| Single skeleton bar for a multi-field layout | No visual mapping between placeholder and real content — defeats the purpose. |
+
+- If content height is unknown (variable-length lists), the skeleton should render the expected page size and clip with a fade-out at the bottom.
+- Minimum skeleton display time: **200ms** — even if data arrives faster, hold the skeleton to prevent flash-of-placeholder.
+
+---
+
 ## Design System Reference
 
 Read these files before every design task:
