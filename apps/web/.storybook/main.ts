@@ -1,4 +1,11 @@
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import type { StorybookConfig } from '@storybook/experimental-nextjs-vite';
+import { mergeConfig } from 'vite';
+
+const storybookDir = dirname(fileURLToPath(import.meta.url));
+const appDir = resolve(storybookDir, '..');
 
 const config: StorybookConfig = {
   stories: ['../components/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -10,6 +17,14 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
+  viteFinal: async (config) =>
+    mergeConfig(config, {
+      resolve: {
+        alias: {
+          '@': appDir,
+        },
+      },
+    }),
 };
 
 export default config;
