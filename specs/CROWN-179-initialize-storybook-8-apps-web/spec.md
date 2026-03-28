@@ -3,7 +3,7 @@
 **Feature Branch**: `feat/CROWN-179-initialize-storybook-8-apps-web`  
 **Created**: 2026-03-28  
 **Status**: Draft  
-**Input**: Jira issue `CROWN-179` - "UI | Initialize Storybook 8 in apps/web"
+**Input**: Jira issue `CROWN-179` - "UI | Initialize Storybook 8 in apps/web", clarified to align implementation with current official Storybook guidance for Next.js + Vite-based testing support
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -65,8 +65,8 @@ As a frontend engineer, I want an initial `Button` story checked into the reposi
 
 ### Functional Requirements
 
-- **FR-001**: The repository MUST add Storybook 8 dependencies needed for `apps/web` to run with the Next.js framework and the essentials, interactions, test, and accessibility addons called for by Jira.
-- **FR-002**: The implementation MUST create a `.storybook/main.ts` configuration that targets `apps/web`, registers the Next.js Storybook framework, and includes the approved addon set.
+- **FR-001**: The repository MUST add Storybook 8 dependencies needed for `apps/web` to run with the recommended Vite-based Next.js Storybook framework plus the essentials, interactions, accessibility, and current Storybook testing support packages.
+- **FR-002**: The implementation MUST create a `.storybook/main.ts` configuration that targets `apps/web`, registers the Vite-based Next.js Storybook framework, and includes the approved addon set.
 - **FR-003**: The implementation MUST create a `.storybook/preview.ts` configuration that imports `apps/web/app/globals.css` for Storybook previews.
 - **FR-004**: The Storybook preview configuration MUST provide a Crown preview decorator that wraps stories with the same platform theme context used by the web application.
 - **FR-005**: The Storybook preview baseline MUST default to a stable light-theme rendering that matches the current `apps/web` bootstrap behavior unless a story explicitly opts into another theme.
@@ -74,9 +74,10 @@ As a frontend engineer, I want an initial `Button` story checked into the reposi
 - **FR-007**: The implementation MUST add a starter story at `apps/web/components/ui/button.stories.tsx` that documents the existing reusable `Button` component.
 - **FR-008**: The starter story MUST establish the repository-local story placement and metadata pattern for future reusable UI components.
 - **FR-009**: Storybook configuration MUST preserve the existing `@/*` path alias usage so stories can import current `apps/web` modules without relative-path rewrites.
-- **FR-010**: The setup MUST stay scoped to frontend tooling and reusable-component documentation support for `apps/web`; it MUST NOT widen into unrelated page redesign or production route behavior changes.
-- **FR-011**: The implementation MUST remain aligned with `docs/process/component-development.md` so future reusable components can be delivered with colocated stories before page integration.
-- **FR-012**: The implementation MUST remain aligned with `docs/process/ui-guidlines.md` and reuse the existing Crown design tokens and UI primitives rather than introducing a separate Storybook-only visual system.
+- **FR-010**: The implementation MUST use current Storybook-supported testing integration for the chosen Vite-based framework rather than retaining an outdated package choice from Jira when the two conflict.
+- **FR-011**: The setup MUST stay scoped to frontend tooling and reusable-component documentation support for `apps/web`; it MUST NOT widen into unrelated page redesign or production route behavior changes.
+- **FR-012**: The implementation MUST remain aligned with `docs/process/component-development.md` so future reusable components can be delivered with colocated stories before page integration.
+- **FR-013**: The implementation MUST remain aligned with `docs/process/ui-guidlines.md` and reuse the existing Crown design tokens and UI primitives rather than introducing a separate Storybook-only visual system.
 
 ### Key Entities _(include if feature involves data)_
 
@@ -90,6 +91,7 @@ As a frontend engineer, I want an initial `Button` story checked into the reposi
 - The existing `PlatformThemeProvider` is the correct reusable theme wrapper for Storybook previews because it is already the app-level source of truth for platform theming.
 - The initial story can stay focused on the existing `Button` primitive and does not need to cover every visual state in this foundation story as long as it becomes the template for future story expansion.
 - Because this story is tooling-focused, no API contract, Prisma, or OpenAPI artifacts are required beyond noting that no API changes are in scope.
+- Jira’s originally listed package names are treated as intent-level guidance; when they conflict with current official Storybook guidance for Next.js testing support, the implementation follows the current Storybook-recommended package path.
 
 ### Dependencies
 
