@@ -14,8 +14,6 @@
     "db:setup": "pnpm postgres && pnpm db:push",
     "build": "turbo run build",
     "storybook": "pnpm --filter @crown/web2 run storybook",
-    "storybook:web": "pnpm --filter @crown/web run storybook",
-    "storybook:web2": "pnpm --filter @crown/web2 run storybook",
     "lint": "turbo run lint",
     "format:check": "prettier --check .",
     "typecheck": "turbo run typecheck",
