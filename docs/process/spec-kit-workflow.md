@@ -94,13 +94,30 @@ If any stop condition is active, pause for user clarification instead of auto-ad
 - Jira key present in branch name.
 - PR title matches `<type>: CROWN-<id> - <message>` so squash merge produces a release-safe commit subject on `main`.
 - Links to artifact files for `spec`, `plan`, and `tasks`.
+- For UI features: link to `specs/CROWN-<id>/wireframe.md`.
 - `pnpm specify.audit` passes.
 - Scope statement confirms changes map to Jira issue scope.
 - Validation evidence included (tests/lint/typecheck as applicable).
 - Documentation updates included for behavior/process changes.
+- For UI features: pre-PR UI validation from `docs/process/development-workflow.md` Section 4 passes.
 - Pull request is created only after implementation has been committed and pushed.
 - Creating a Jira-linked pull request transitions the issue to `In Review`.
 - API route changes must keep the manual OpenAPI source in `apps/api/src/docs/openapi.ts` aligned for created, materially changed, and deleted routes.
+
+## UI Feature Integration
+
+For `--speckit CROWN-<id>` when the feature involves UI work:
+
+1. During `/specify`, include the API contract surface (if applicable) and wireframe spec requirements.
+2. During `/plan`, reference the wireframe spec location (`specs/CROWN-<id>/wireframe.md`) and identify which components are new vs. reused.
+3. During `/tasks`, structure tasks in this mandatory order:
+   - UI Spec tasks (wireframe generation, component inventory)
+   - Component/Storybook tasks (new component creation with stories)
+   - Page assembly tasks (compose pages from validated components)
+   - API tasks (if applicable)
+4. Before generating implementation tasks, the wireframe spec must exist at `specs/CROWN-<id>/wireframe.md`.
+5. Every new reusable component must have a Storybook task before any page implementation task.
+6. Follow `docs/process/development-workflow.md` for the full ordered flow and `docs/process/component-development.md` for component delivery rules.
 
 ## Convention Source of Truth
 

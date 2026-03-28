@@ -6,6 +6,8 @@ All AI agents working in this repository must follow:
 
 - `docs/process/engineering-constitution.md`
 - `docs/process/ui-guidlines.md`
+- `docs/process/development-workflow.md`
+- `docs/process/component-development.md`
 
 This is mandatory for code changes, branch naming, commits, Jira issue updates, pull requests, and release-related work.
 
@@ -31,10 +33,21 @@ When a user prompt is in the form `--speckit CROWN-<id>` or `--implement CROWN-<
 4. When a Jira-linked branch is created for the issue, transition that issue to `In Progress`.
 5. If the prompt is `--implement CROWN-<id>`, skip `/specify`, `/plan`, and `/tasks` and proceed directly to implementation.
 6. If the prompt is `--speckit CROWN-<id>`, begin with `/specify`, then continue in this order only: `/plan`, `/tasks`, implementation, and pull request creation.
-7. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
-8. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
-9. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, and `tasks.md` when the Spec Kit phases were used, a scope statement, and validation notes in the PR description.
-10. When a Jira-linked pull request is created for the issue, transition that issue to `In Review`.
+7. For UI-related features under `--speckit`, enforce the full development workflow from `docs/process/development-workflow.md`:
+   a. During `/specify`, include the API contract surface (if applicable) and the wireframe spec requirements.
+   b. During `/plan`, reference the wireframe spec location and identify which components are new vs. reused.
+   c. During `/tasks`, structure tasks in this mandatory order: UI Spec tasks → Component/Storybook tasks → Page assembly tasks → API tasks (if applicable). Wireframe spec tasks must appear before component tasks, and component tasks must appear before page implementation tasks.
+   d. Before generating implementation tasks, generate or reference a wireframe spec and save it to `specs/CROWN-<id>/wireframe.md`. Do not proceed to implementation without this artifact.
+   e. For any new reusable component identified in the wireframe, create a Storybook task before the page implementation task. Follow `docs/process/component-development.md` for component delivery.
+8. After completing `/specify`, `/plan`, `/tasks`, and implementation, commit and push that phase before moving to the next phase when no unresolved clarification remains.
+9. Pause for user clarification instead of auto-advancing when scope, requirements, repository state, validation evidence, or Jira-to-branch alignment are ambiguous or blocked.
+10. Before PR creation for UI features, run the pre-PR UI validation from `docs/process/development-workflow.md` Section 4:
+    a. Verify `specs/CROWN-<id>/wireframe.md` exists and covers layout, states, accessibility, responsive behavior, and component reuse.
+    b. Verify every new reusable component has Storybook stories covering all required states.
+    c. Verify implementation follows `docs/process/ui-guidlines.md` — no new patterns introduced without justification.
+    d. Verify no reusable UI was built directly inside page files.
+11. Create the final pull request only after implementation is complete, committed, and pushed, and include Jira linkage, links to `spec.md`, `plan.md`, `tasks.md`, and `wireframe.md` when the Spec Kit phases were used for UI work, a scope statement, and validation notes in the PR description.
+12. When a Jira-linked pull request is created for the issue, transition that issue to `In Review`.
 
 When a user prompt is `--help`:
 
@@ -61,6 +74,38 @@ When a user prompt is `--clean-code-api` or `--clean-code-web`:
 4. Evaluate findings against `docs/process/engineering-constitution.md` and any relevant engineering/process guidance referenced by the repository workflow documents.
 5. Report findings first, before summaries, with concrete file references and clear coding-standard violations or maintainability risks.
 6. Do not widen the audit into unrelated repository areas, feature design changes, or speculative implementation work.
+
+## UI/UX Development Workflow (Mandatory for UI Features)
+
+All UI-related features must follow the ordered development flow defined in `docs/process/development-workflow.md`:
+
+1. API contract (if applicable)
+2. UI wireframe spec generation → saved to `specs/CROWN-<id>/wireframe.md`
+3. Storybook component identification and creation per `docs/process/component-development.md`
+4. Page assembly using Storybook-validated components
+5. Implementation (API integration, state management, business logic)
+6. PR creation with pre-PR UI validation
+
+### Wireframe Spec Requirement
+
+- Every UI feature must have a wireframe spec before implementation tasks are generated.
+- The spec must define: layout structure, action hierarchy, required states (loading, empty, error, success), accessibility behavior, responsive behavior, component reuse, and design token usage.
+- Do not proceed to implementation without this artifact.
+
+### Storybook Enforcement
+
+- Before building a new reusable component, check existing components in `apps/web/components/ui/` and `apps/web/components/platform/`.
+- Every new reusable component must have Storybook stories covering all required states (default, hover, focus, disabled, loading, error as applicable) before page integration.
+- Never build reusable UI directly inside page files.
+- Never duplicate existing components.
+
+### Prohibited UI Practices
+
+- Do not generate UI directly from vague descriptions without a wireframe spec.
+- Do not skip Storybook for reusable components.
+- Do not create UI that violates the Rich Table / CRM-first guidelines in `docs/process/ui-guidlines.md`.
+- Do not bypass the wireframe spec step for any UI feature.
+- Do not introduce new UI patterns without documented justification.
 
 ## Operational Rules
 
