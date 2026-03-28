@@ -217,6 +217,283 @@ Empty states are not just "no data" messages. Every empty state must include:
 
 ---
 
+## Navigation Patterns
+
+Use the right navigation primitive for the context:
+
+| Pattern         | When to Use                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| **Breadcrumbs** | Nested entity drill-down (Platform → Tenant → User). Always visible in the page header when depth ≥ 2. |
+| **Sidebar**     | Top-level section switching (Dashboard, Tenants, Users, Settings). Persistent, collapsible on desktop. |
+| **Tabs**        | Sub-sections within a single entity page (Overview, Roles, Settings). Never for top-level nav.         |
+| **Stepper**     | Multi-step creation/onboarding wizards. Max 5 steps. Numbered with progress indication.                |
+
+- Breadcrumbs and sidebar can coexist — breadcrumbs show position within the sidebar's active section.
+- Tabs replace page navigation only when all tab content belongs to the same entity.
+- Never nest a stepper inside tabs. Never nest tabs inside a stepper.
+
+---
+
+## Drawer vs Page vs Modal Decision Rules
+
+| Surface            | Use When                                                                                                          | Examples                                                                   |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Drawer (Sheet)** | Viewing or editing a single record from a list. Content is 1–3 sections. User needs table context visible behind. | Tenant detail from list, user profile edit, role assignment                |
+| **Full Page**      | Record has 4+ distinct sections, deep sub-navigation, or its own entity listing within.                           | Tenant management page, user full profile with activity + roles + settings |
+| **Modal (Dialog)** | Binary confirmation, single input, or acknowledgement. No scrolling content. Closes on action.                    | Delete confirmation, rename prompt, permission acknowledgement             |
+
+Hard rules:
+
+- If the content scrolls more than 2 viewport heights → promote to full page.
+- If the user needs to reference the list behind → use drawer, never modal.
+- Modals must never contain forms with more than 3 fields — use a drawer instead.
+- Never stack modals. Never open a drawer from a modal.
+
+---
+
+## Detail Drawer Structure Standard
+
+Every detail drawer follows this canonical layout:
+
+```
+Drawer Header   → Entity name + status badge + close button
+Actions         → Primary CTA + secondary dropdown (right-aligned in header)
+Sections        → Grouped fields in CollapsibleSections
+                   • Summary (expanded by default)
+                   • Details (expanded)
+                   • Related records (collapsed)
+Activity        → Timeline (collapsed by default)
+```
+
+- Drawer width: `480px` on desktop, full-width on tablet/mobile.
+- Scrollable body, fixed header.
+- Close on `Escape` or clicking the overlay.
+
+---
+
+## Form UX Rules
+
+### Inline Validation
+
+- Validate on blur, not on keystroke. Show error immediately after the field loses focus.
+- Do not validate while the user is still typing — wait for blur.
+- Mark fields with errors using `--danger` border and error text below the input.
+
+### Required Fields
+
+- Mark required fields with a red asterisk (`*`) after the label.
+- Do not mark optional fields — required is the expected default in CRM forms.
+
+### Error Placement
+
+- Field-level errors appear directly below the input in `text-xs` with `--danger` color.
+- Form-level errors (e.g., server rejection) appear in an `Alert` component above the form actions.
+- Never use toast for validation errors — toasts are for asynchronous feedback only.
+
+### Save Behavior
+
+- Forms use explicit **Save** button — never auto-save without user action.
+- **Save** button is disabled until the form is dirty (has changes).
+- On successful save: close the drawer/modal, show a success toast, refresh the parent data.
+- On save error: keep the form open, show the error inline, do not discard user input.
+
+### Layout
+
+- Single-column forms for drawers and modals (max-width `480px`).
+- Two-column grid allowed only on full-page forms at desktop width.
+- Group related fields with section headings, not just whitespace.
+
+---
+
+## Search Behavior Standards
+
+### Debounce
+
+- All search inputs debounce at **300ms** before firing a request.
+- Show a subtle loading indicator inside the search input while a request is in-flight.
+
+### Server vs Client Search
+
+- **Server-side search** — Default for any list > 100 records or paginated data. The search term is sent as a query parameter.
+- **Client-side filter** — Allowed only for small, fully-loaded datasets (e.g., role list, status options < 50 items).
+
+### Highlighting Matches
+
+- Highlight matching text in results using `<mark>` with `--accent-soft` background.
+- Match highlighting is optional for table columns but required for dropdown search results.
+
+### Clear Behavior
+
+- Search input always shows a clear button (`×`) when non-empty.
+- Clearing search resets to the full unfiltered list.
+
+---
+
+## Column Configurability Rules
+
+### Show / Hide Columns
+
+- Every Rich Table must support a column visibility toggle (gear icon in toolbar).
+- Identifier/name column is always visible and cannot be hidden.
+- Columns hidden by default: created date, internal IDs, audit fields.
+
+### Column Reorder
+
+- Drag-and-drop column reorder is optional. If supported, the identifier column stays pinned to the left.
+
+### Persistence
+
+- Column visibility and order preferences persist per user per table (localStorage keyed by table ID).
+- Reset to defaults option available in the column config popover.
+
+---
+
+## Pagination vs Infinite Scroll
+
+| Pattern             | When to Use                                                                                        |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| **Pagination**      | Default for all CRM tables. Users need to know total count, jump to a page, and control page size. |
+| **Infinite Scroll** | Activity timelines and chat-like feeds only. Never for entity listings.                            |
+
+### Pagination Rules
+
+- Default page size: **25 rows**. Options: 10, 25, 50, 100.
+- Show: current page, total pages, total record count, page size selector.
+- Previous/Next buttons + direct page number input for large datasets.
+- Persist page size preference per user per table.
+
+---
+
+## Filter Complexity Scaling
+
+| Level                | When                                                  | UI                                                                                   |
+| -------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Simple filters**   | ≤ 3 filter dimensions                                 | Inline dropdowns in the filter bar, always visible                                   |
+| **Advanced filters** | 4–8 filter dimensions                                 | Filter bar shows top 3; "More Filters" button expands a dropdown/panel with the rest |
+| **Saved views**      | Users repeatedly apply the same complex filter combos | Named presets selectable from a dropdown above the filter bar                        |
+
+### Saved Views / Presets
+
+- Users can save the current filter + sort + column config as a named view.
+- Saved views appear in a dropdown to the left of the filter bar.
+- System-provided default views: "All", "Active", "Recently Created".
+- User-created views are private by default. Admins can promote views to shared/team-visible.
+- Active saved view name is displayed as the table title; clearing filters deselects the view.
+
+---
+
+## Real-Time / Refresh Behavior
+
+- **No auto-refresh by default** — CRM data changes are not real-time. Users expect to see what they fetched until they explicitly refresh.
+- **Manual refresh button** — Every table and detail view has a refresh icon button in the toolbar. Tooltip: "Refresh data".
+- **Stale indicator** — If the page has been open > 5 minutes without refresh, show a subtle banner: "Data may be outdated. [Refresh]".
+- **After mutations** — When the user creates, updates, or deletes a record, automatically refresh the affected list/view. Do not require manual refresh for the user's own changes.
+
+---
+
+## Toast / Feedback System Rules
+
+| Type        | Duration                     | Dismissible | Undo                 | Example                             |
+| ----------- | ---------------------------- | ----------- | -------------------- | ----------------------------------- |
+| **Success** | 5s auto-dismiss              | Yes         | Optional             | "Tenant created successfully"       |
+| **Error**   | Persistent (no auto-dismiss) | Yes         | No                   | "Failed to save. Please try again." |
+| **Info**    | 5s auto-dismiss              | Yes         | No                   | "3 records exported"                |
+| **Undo**    | 8s auto-dismiss              | Yes         | Yes (primary action) | "Tenant archived. [Undo]"           |
+
+- Toasts stack vertically in the bottom-right corner, max 3 visible.
+- Newest toast appears at the bottom of the stack.
+- Never use toasts for validation errors — those are inline.
+- Include a brief action description, never just "Success" or "Error".
+
+---
+
+## Loading Hierarchy
+
+| Scope               | Pattern                    | Behavior                                                                                                             |
+| ------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Page-level**      | Full-page skeleton         | Matches the page layout (header skeleton + table skeleton). Shown on initial page load.                              |
+| **Section-level**   | Section skeleton           | Skeleton for a specific card or section while the rest of the page is interactive (e.g., Activity timeline loading). |
+| **Component-level** | Inline skeleton or shimmer | Individual field, cell, or badge placeholder (e.g., loading a user avatar).                                          |
+| **Action-level**    | Button loading state       | `Button` shows spinner + disabled state while an async action is in-flight. Only case where a spinner is allowed.    |
+
+- Never block the entire page for a section-level load.
+- Page-level skeletons appear for ≤ 2 seconds; if data takes longer, add a "Still loading..." message.
+
+---
+
+## Error State Patterns
+
+| Type                  | Trigger                        | UI Pattern                                                                                                                 |
+| --------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| **Field validation**  | User input fails schema rules  | Red border + error text below the field (`--danger`)                                                                       |
+| **Form submission**   | Server rejects the payload     | `Alert` component above form actions with error message. Keep form open, preserve input.                                   |
+| **API failure**       | Network error, 500, timeout    | Full-section error state: icon + "Something went wrong" + "Retry" button. Replace the section content, not the whole page. |
+| **Permission denied** | 403 from API                   | Inline message: "You don't have permission to view this." No retry button.                                                 |
+| **Not found**         | 404 from API                   | Empty state variant: "This record doesn't exist or was deleted." Link back to the list.                                    |
+| **Empty (no data)**   | Successful fetch, zero results | Empty state with CTA (see Empty State UX Rules).                                                                           |
+| **Filtered empty**    | Filters produce zero results   | "No results match your filters" + "Clear filters" button.                                                                  |
+
+- Never show raw error messages or stack traces to users.
+- Always provide an actionable next step (retry, go back, clear filters, contact admin).
+
+---
+
+## Permission UX Patterns
+
+Expand on the role-based rules with explicit rendering behavior:
+
+| Scenario                                       | Pattern                 | Example                                                             |
+| ---------------------------------------------- | ----------------------- | ------------------------------------------------------------------- |
+| User lacks permission to **perform** an action | **Disabled + tooltip**  | Button grayed out, tooltip: "Requires tenant-admin role"            |
+| User lacks permission to **view** a section    | **Hidden**              | Admin-only settings tab not rendered for members                    |
+| User has **read-only** access                  | **Read-only fields**    | Inputs replaced with static text, no edit affordance                |
+| Mixed permissions in a form                    | **Per-field read-only** | Some fields editable, others rendered as static text with lock icon |
+
+- Prefer disabled + tooltip over hidden for actions — users should understand the system model.
+- Hide entire sections/tabs only when showing them would be confusing or a security concern.
+- Read-only mode must be visually distinct: no input borders, no hover states, muted text color.
+
+---
+
+## Keyboard Shortcuts (Power Users)
+
+Crown supports global keyboard shortcuts for frequent operations:
+
+| Shortcut | Action                                           |
+| -------- | ------------------------------------------------ |
+| `/`      | Focus the search input                           |
+| `n`      | Open "Create new" for the current entity context |
+| `Escape` | Close the active drawer, modal, or popover       |
+| `?`      | Show keyboard shortcut help overlay              |
+
+### Rules
+
+- Shortcuts are active only when no input/textarea is focused (to avoid conflicts with typing).
+- All shortcuts must be discoverable via the `?` help overlay.
+- Shortcuts are optional progressive enhancements — every shortcut must have an equivalent mouse/tap action.
+- Do not require shortcuts for any core workflow.
+
+---
+
+## Status + Badge Consistency
+
+All status indicators across Crown follow these rules:
+
+| Status                | Badge Variant | Color Token     | Label      |
+| --------------------- | ------------- | --------------- | ---------- |
+| Active / Enabled      | `default`     | `--accent`      | "Active"   |
+| Inactive / Disabled   | `secondary`   | `--muted`       | "Inactive" |
+| Pending / In Progress | `outline`     | `--accent-soft` | "Pending"  |
+| Error / Failed        | `destructive` | `--danger`      | "Failed"   |
+| Archived              | `secondary`   | `--muted`       | "Archived" |
+
+- Always use the canonical label — never "On"/"Off", "Yes"/"No", or "True"/"False" for status.
+- Badges are placed immediately after the entity name in headers, table cells, and drawer headers.
+- Use consistent badge sizing: `text-xs`, `px-2`, `py-0.5`, `rounded-full`.
+- Color must not be the only signal — always include a text label inside the badge.
+
+---
+
 ## Design System Reference
 
 Read these files before every design task:
