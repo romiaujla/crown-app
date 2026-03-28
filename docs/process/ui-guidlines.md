@@ -27,6 +27,26 @@ Each screen must clearly communicate:
 
 Keyboard navigation, focus states, labels, and semantic structure are required—not optional.
 
+## 1.5 Wireframe-First Workflow
+
+All new or materially changed UI work must follow this order:
+
+1. UI agent input
+2. Wireframe / UI spec
+3. Implementation
+
+### Required workflow outputs
+
+- **UI agent input** must define the target surface, primary user, core task, layout pattern, and component reuse expectations.
+- **Wireframe / UI spec** must define structure, primary action hierarchy, required states, responsive behavior, accessibility notes, and token usage.
+- **Implementation handoff** must reference the approved wireframe/spec and stay within the documented component patterns unless the spec is updated.
+
+### Rules
+
+- Do not begin implementation from a loose idea or screenshot alone.
+- For Jira-scoped UI work, save the wireframe spec to `specs/CROWN-<id>/wireframe.md`.
+- Treat the UI agent as the design-system guide, not as a replacement for this document.
+
 ---
 
 # 2. Layout System
@@ -111,7 +131,7 @@ Use consistent spacing tokens:
 - Do not introduce arbitrary font sizes
 - Avoid excessive uppercase usage
 - Keep descriptions concise (1–2 lines max)
-- Use `Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` as the only UI font stack
+- Use the web-v2 app font stack from `apps/web/app/globals.css`: `"Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
 - Stay within the approved type scale only:
   - `text-xs` = 12px
   - `text-sm` = 13px
@@ -152,6 +172,41 @@ Use consistent spacing tokens:
 - Avoid overusing colored backgrounds
 - Borders should be subtle
 
+## 4.3 Design Token Reference
+
+Use CSS custom properties from `apps/web/app/globals.css` as the source of truth for web-v2 styling decisions. Do not introduce hex values in product guidance when a shared token already exists.
+
+### Foundational tokens
+
+- HSL-backed shadcn tokens: `--background-hsl`, `--foreground-hsl`, `--card-hsl`, `--popover-hsl`, `--primary-hsl`, `--secondary-hsl`, `--muted-hsl`, `--accent-hsl`, `--destructive-hsl`, `--border-hsl`, `--input-hsl`, `--ring-hsl`
+- Typography scale: `--text-xs`, `--text-sm`, `--text-md`, `--text-lg`, `--text-xl`, `--text-2xl`, `--text-3xl`
+- Radius: `--radius`
+
+### Product surface tokens
+
+- Page background: `--background`
+- Standard panel surface: `--surface`
+- Elevated panel surface: `--surface-strong`
+- Surface border: `--surface-border`
+- Primary text: `--ink`
+- Muted text: `--muted`
+
+### Action and status tokens
+
+- Primary accent: `--accent`
+- Soft accent / highlight: `--accent-soft`
+- Strong accent / hover: `--accent-strong`
+- Tenant accent: `--tenant-accent`
+- Destructive / error: `--danger`
+
+### Usage rules
+
+- Use semantic tokens, not raw color literals, in specs and implementation guidance.
+- Prefer `--surface` and `--surface-strong` for layered panels and cards.
+- Use `--accent` and `--accent-strong` for primary-action emphasis.
+- Use `--danger` for destructive and error treatments.
+- Use `--tenant-accent` only for tenant-branded surfaces.
+
 ---
 
 # 5. Component Guidelines
@@ -174,17 +229,25 @@ Preferred components:
 
 ---
 
-## 5.2 Shared App Components
+## 5.2 Approved Web-v2 Component Library
 
-Create reusable components for:
+Prefer the following reusable patterns before introducing new UI:
 
-- PageHeader
-- SectionCard
-- FormSection
-- EmptyState
-- StatusBadge
-- AppStepper
-- ConfirmDialog
+| Component / Pattern  | Use When                                                                 |
+| -------------------- | ------------------------------------------------------------------------ |
+| `PageHeader`         | A page needs title, description, status, and top-level actions           |
+| `SectionCard`        | Related information should be grouped within a bounded surface           |
+| `FormSection`        | A form needs grouped fields and section-level copy                       |
+| `Rich Table`         | A management view is primarily a list of records, filters, and actions   |
+| `Filter Bar`         | A list needs inline search and filter controls above the data surface    |
+| `Smart Filter Chips` | Active filters need to stay visible and removable after selection        |
+| `EmptyState`         | A view has no records or no results for the current filter state         |
+| `Skeleton`           | A known layout is loading and should preserve structure without spinners |
+| `StatusBadge`        | Status needs a compact semantic indicator with text, not color alone     |
+| `Breadcrumb`         | A user needs orientation inside nested admin navigation                  |
+| `AppStepper`         | A multi-step workflow needs explicit progress and sequence visibility    |
+| `ConfirmDialog`      | A destructive or irreversible action needs confirmation                  |
+| `Action Group`       | Primary, secondary, and overflow actions must stay organized             |
 
 ---
 
@@ -230,6 +293,62 @@ Use cards for:
 - dashboards
 
 Do not wrap everything in cards unnecessarily.
+
+## 5.6 Toggle And Multi-Toggle
+
+### Toggle
+
+Use a single toggle for a binary state where the effect is immediate and easy to reverse.
+
+- Best for: enabled/disabled, active/inactive, on/off settings
+- Show the current state clearly in adjacent text or helper copy
+- If the toggle triggers an async save, reflect loading and failure feedback immediately
+- Do not use a toggle for destructive actions or multi-step confirmation flows
+
+### Multi-toggle
+
+Use a multi-toggle when the user must choose exactly one option from a small set of mutually exclusive modes.
+
+- Best for: view mode, density mode, week/month/year window selection
+- Limit to 2–4 options; larger sets should become Tabs, Select, or segmented filters
+- Only one option can be active at a time
+- The active option must be visually distinct and keyboard reachable
+
+## 5.7 Breadcrumb
+
+Use Breadcrumbs for nested admin navigation where users need to understand position quickly.
+
+- Show breadcrumbs in the page header when the user is 2 or more levels deep
+- Order: highest-level context → current location
+- Keep labels short and entity-based
+- Breadcrumbs should orient the user, not duplicate sidebar navigation labels
+
+## 5.8 Empty State
+
+Every empty state must explain what would normally appear here and what the user can do next.
+
+### Required parts
+
+- Contextual icon or illustration
+- Clear headline
+- One-sentence explanation
+- Primary CTA when the user can create or recover from the state
+
+### Variants
+
+- **No data**: show a create or get-started CTA
+- **Filtered empty**: show "Clear filters" rather than a create CTA
+- **Not found**: explain that the record no longer exists and offer a path back
+
+## 5.9 Skeleton
+
+Use `Skeleton` placeholders for known layouts while content is loading.
+
+- Prefer skeletons over spinners for page and section loading
+- Match the shape and approximate dimensions of the real content
+- Use page-level skeletons for full-page first load
+- Use section-level skeletons when only one card, table, or panel is loading
+- Reserve inline spinners for button-level actions only
 
 ---
 
@@ -300,6 +419,59 @@ Every data view must include:
 - Empty state
 - Error state
 
+## 8.3 Rich Table Pattern
+
+Rich Table is the default pattern for Crown management-system list views.
+
+### Use Rich Table when
+
+- users need to scan many records quickly
+- sorting, filtering, or bulk actions are part of the workflow
+- row-level actions should stay close to the data
+
+### Required table capabilities
+
+- sortable column headers when sorting is meaningful
+- inline filter bar directly above the table
+- active filter chips shown below the filter bar
+- pagination with total count and page-size controls
+- row selection when bulk actions exist
+- toolbar actions for refresh, export, import, or bulk operations
+
+### Column rules
+
+- Put identifier or name columns first
+- Put status near the beginning of the table
+- Put dates, metrics, and utility actions toward the end
+- Use `tabular-nums` for numeric and date-heavy columns
+
+### Filter and toolbar rules
+
+- Keep simple filters inline and visible
+- When filters grow beyond 3 primary dimensions, move overflow filters behind a "More filters" affordance
+- Show active filters as removable chips, not hidden state
+- Bulk action controls appear only after one or more rows are selected
+
+### Pagination rules
+
+- Pagination is the default for entity listings
+- Default page size: `25`
+- Expose page-size options and total record count
+- Infinite scroll is reserved for timelines and feed-like activity, not admin record lists
+
+### State rules
+
+- Loading: use a table-shaped Skeleton, not a centered spinner
+- Empty (no data): show an Empty State with create-oriented CTA
+- Filtered empty: explain that no results match the current filters and provide a "Clear filters" action
+- Error: replace the table section with a contained error state and retry action
+
+### Responsive behavior
+
+- Keep full tables on desktop and larger tablet layouts
+- On smaller screens, degrade gracefully into stacked card rows or another readable mobile presentation
+- Do not hide critical identifiers or status cues when adapting the layout
+
 ---
 
 # 9. UI States
@@ -312,6 +484,7 @@ Every component must support:
 - Active
 - Disabled
 - Loading
+- Empty / Filtered Empty (if applicable)
 - Error (if applicable)
 - Success (if applicable)
 

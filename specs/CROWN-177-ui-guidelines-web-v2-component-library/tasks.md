@@ -11,10 +11,10 @@
 
 **Purpose**: Confirm the existing guideline baseline, source references, and artifact scaffolding for `CROWN-177`.
 
-- [ ] T001 Create and review the `CROWN-177` Spec Kit artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/`
-- [ ] T002 [P] Review the current guideline baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
-- [ ] T003 [P] Review the UI-agent workflow and table-first design guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/.github/agents/ui-ux.agent.md`
-- [ ] T004 [P] Review the current web design-token source in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css`
+- [x] T001 Create and review the `CROWN-177` Spec Kit artifacts in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/`
+- [x] T002 [P] Review the current guideline baseline in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
+- [x] T003 [P] Review the UI-agent workflow and table-first design guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/.github/agents/ui-ux.agent.md`
+- [x] T004 [P] Review the current web design-token source in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css`
 
 ---
 
@@ -24,9 +24,9 @@
 
 **⚠️ CRITICAL**: No user story implementation should begin until this phase is complete
 
-- [ ] T005 Define the updated section structure and insertion points for `docs/process/ui-guidlines.md` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/plan.md`
-- [ ] T006 [P] Capture the component catalog, workflow stages, token reference groups, and Rich Table rule set in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/data-model.md`
-- [ ] T007 [P] Capture the required guideline coverage and integrity rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/contracts/ui-guidelines-update-contract.md`
+- [x] T005 Define the updated section structure and insertion points for `docs/process/ui-guidlines.md` in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/plan.md`
+- [x] T006 [P] Capture the component catalog, workflow stages, token reference groups, and Rich Table rule set in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/data-model.md`
+- [x] T007 [P] Capture the required guideline coverage and integrity rules in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/contracts/ui-guidelines-update-contract.md`
 
 **Checkpoint**: The guideline update structure and coverage rules are defined clearly enough to implement without widening scope.
 
@@ -40,9 +40,9 @@
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Add a component-library catalog section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
-- [ ] T009 [US1] Document approved usage guidance for Rich Table, Toggle, Multi-toggle, Breadcrumb, Skeleton, and Empty State in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
-- [ ] T010 [US1] Reconcile or reorganize overlapping component guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` so the new catalog does not duplicate or contradict existing rules
+- [x] T008 [US1] Add a component-library catalog section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
+- [x] T009 [US1] Document approved usage guidance for Rich Table, Toggle, Multi-toggle, Breadcrumb, Skeleton, and Empty State in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
+- [x] T010 [US1] Reconcile or reorganize overlapping component guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` so the new catalog does not duplicate or contradict existing rules
 
 **Checkpoint**: Contributors can identify the approved web-v2 patterns and intended reuse directly from the guideline document.
 
@@ -56,9 +56,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Add a wireframe-first workflow section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
-- [ ] T012 [US2] Document the required handoff outputs for UI work in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`, including layout intent, primary action hierarchy, state coverage, accessibility expectations, and responsive behavior
-- [ ] T013 [US2] Align the workflow language in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` with `.github/agents/ui-ux.agent.md` without conflicting with `docs/process/engineering-constitution.md` or the tagged Spec Kit workflow
+- [x] T011 [US2] Add a wireframe-first workflow section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`
+- [x] T012 [US2] Document the required handoff outputs for UI work in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md`, including layout intent, primary action hierarchy, state coverage, accessibility expectations, and responsive behavior
+- [x] T013 [US2] Align the workflow language in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` with `.github/agents/ui-ux.agent.md` without conflicting with `docs/process/engineering-constitution.md` or the tagged Spec Kit workflow
 
 **Checkpoint**: The guideline document teaches a clear, reusable UI delivery flow instead of leaving design handoff implicit.
 
@@ -72,9 +72,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Add a design-token reference section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` using the CSS variable source in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css`
-- [ ] T015 [US3] Expand the table guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` into a Rich Table pattern that covers filters, filter chips, pagination, toolbar or bulk actions, and loading/empty/error states
-- [ ] T016 [US3] Extend state-pattern guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` so Skeleton and Empty State behavior are explicit for both empty-data and filtered-no-results conditions
+- [x] T014 [US3] Add a design-token reference section to `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` using the CSS variable source in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/apps/web/app/globals.css`
+- [x] T015 [US3] Expand the table guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` into a Rich Table pattern that covers filters, filter chips, pagination, toolbar or bulk actions, and loading/empty/error states
+- [x] T016 [US3] Extend state-pattern guidance in `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/docs/process/ui-guidlines.md` so Skeleton and Empty State behavior are explicit for both empty-data and filtered-no-results conditions
 
 **Checkpoint**: The guideline document anchors future UI work to real tokens and a concrete table-first pattern system.
 
@@ -84,9 +84,9 @@
 
 **Purpose**: Validate the documentation update and prepare the branch for review-safe delivery.
 
-- [ ] T017 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
-- [ ] T018 [P] Review `docs/process/ui-guidlines.md` against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/spec.md`
-- [ ] T019 [P] Review `docs/process/ui-guidlines.md` against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/contracts/ui-guidelines-update-contract.md`
+- [x] T017 [P] Run `pnpm specify.audit` from `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app`
+- [x] T018 [P] Review `docs/process/ui-guidlines.md` against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/spec.md`
+- [x] T019 [P] Review `docs/process/ui-guidlines.md` against `/Users/ramanpreetaujla/Documents/AI-Projects/crown-app/specs/CROWN-177-ui-guidelines-web-v2-component-library/contracts/ui-guidelines-update-contract.md`
 - [ ] T020 Mark completed tasks, commit the documentation update, push the branch, and prepare the PR with links to `spec.md`, `plan.md`, and `tasks.md`
 
 ---
