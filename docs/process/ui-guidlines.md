@@ -46,6 +46,8 @@ All new or materially changed UI work must follow this order:
 - Do not begin implementation from a loose idea or screenshot alone.
 - For Jira-scoped UI work, save the wireframe spec to `specs/CROWN-<id>/wireframe.md`.
 - Treat the UI agent as the design-system guide, not as a replacement for this document.
+- For the full ordered development flow, see `docs/process/development-workflow.md`.
+- For component delivery rules and Storybook requirements, see `docs/process/component-development.md`.
 
 ---
 
