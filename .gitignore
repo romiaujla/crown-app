@@ -4,6 +4,7 @@ node_modules
 .next
 dist
 build
+storybook-static
 coverage
 *.log
 package-lock.json
@@ -22,3 +23,4 @@ Thumbs.db
 *.tsbuildinfo
 .codex/
 apps/api/src/generated/
+apps/web2/storybook-static/
