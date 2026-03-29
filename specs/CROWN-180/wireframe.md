@@ -3,11 +3,11 @@
 **Issue**: `CROWN-180`  
 **Branch**: `feat/CROWN-180-button-toggle-variant`  
 **Date**: 2026-03-29  
-**Surface Type**: Reusable primitive component (`apps/web/components/ui/button.tsx`)
+**Surface Type**: Reusable primitive components (`apps/web/components/ui/button.tsx`, `apps/web2/components/ui/button.tsx`)
 
 ## 1. Purpose
 
-Define the required interaction and visual behavior for a shared toggle button variant so implementation extends the existing `Button` primitive without inventing a new component pattern.
+Define the required interaction and visual behavior for a shared toggle button variant so implementation extends the existing `Button` primitive patterns in both web surfaces without inventing a new component pattern.
 
 ## 2. Layout Structure
 
@@ -83,6 +83,8 @@ Define the required interaction and visual behavior for a shared toggle button v
 
 - `apps/web/components/ui/button.tsx`
 - `apps/web/components/ui/button.stories.tsx`
+- `apps/web2/components/ui/button.tsx`
+- `apps/web2/components/ui/button.stories.tsx`
 
 ### New Reusable Components
 
@@ -97,6 +99,8 @@ Define the required interaction and visual behavior for a shared toggle button v
 
 - `apps/web/components/ui/button.tsx`
 - `apps/web/components/ui/button.stories.tsx`
+- `apps/web2/components/ui/button.tsx`
+- `apps/web2/components/ui/button.stories.tsx`
 - `specs/CROWN-180/wireframe.md`
 
 ## 10. Out Of Scope
@@ -104,4 +108,3 @@ Define the required interaction and visual behavior for a shared toggle button v
 - Page-level toggle business logic or API integration.
 - A separate toggle-group component.
 - New page assemblies in `apps/web/app/*`.
-- Changes to `apps/web2/*`.
