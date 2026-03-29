@@ -4,7 +4,8 @@ const config: Config = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   theme: {
     fontFamily: {
-      sans: ['"Google Sans"', 'system-ui', 'sans-serif'],
+      sans: ['"Inter"', 'system-ui', 'sans-serif'],
+      display: ['"Manrope"', '"Inter"', 'system-ui', 'sans-serif'],
     },
     fontSize: {
       xs: ['12px', { lineHeight: '1.4' }],

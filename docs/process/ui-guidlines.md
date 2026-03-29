@@ -133,7 +133,9 @@ Use consistent spacing tokens:
 - Do not introduce arbitrary font sizes
 - Avoid excessive uppercase usage
 - Keep descriptions concise (1–2 lines max)
-- Use the web-v2 app font stack from `apps/web/app/globals.css`: `"Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
+- Use the web-v2 control-plane typography pairing from `apps/web2/app/globals.css` and `apps/web2/tailwind.config.ts`:
+  - Headings and prominent action labels: `"Manrope", sans-serif`
+  - Body copy, form fields, table text, helper text, and metadata: `"Inter", sans-serif`
 - Stay within the approved type scale only:
   - `text-xs` = 12px
   - `text-sm` = 13px
@@ -157,6 +159,15 @@ Use consistent spacing tokens:
 - Helper text and validation hints: `text-xs`
 - Table body cells: `text-sm`, `font-normal`
 
+## 3.4 Web-v2 Control Plane Typography Application
+
+- Use `Manrope` for page titles, section titles, card titles, and primary CTA emphasis.
+- Use `Inter` for paragraphs, forms, tables, badges, helper text, and navigation labels.
+- Do not introduce a third font family into the control plane product UI.
+- Keep button typography aligned to the surrounding surface:
+  - primary CTA labels may use `Manrope` when the button is the dominant action
+  - secondary and ghost button labels should default to `Inter`
+
 ---
 
 # 4. Color & Visual Hierarchy
@@ -176,7 +187,7 @@ Use consistent spacing tokens:
 
 ## 4.3 Design Token Reference
 
-Use CSS custom properties from `apps/web/app/globals.css` as the source of truth for web-v2 styling decisions. Do not introduce hex values in product guidance when a shared token already exists.
+Use CSS custom properties from `apps/web2/app/globals.css` as the source of truth for web-v2 styling decisions. Do not introduce hex values in product guidance when a shared token already exists.
 
 ### Foundational tokens
 
@@ -208,6 +219,29 @@ Use CSS custom properties from `apps/web/app/globals.css` as the source of truth
 - Use `--accent` and `--accent-strong` for primary-action emphasis.
 - Use `--danger` for destructive and error treatments.
 - Use `--tenant-accent` only for tenant-branded surfaces.
+
+## 4.4 Web-v2 Control Plane Palette
+
+For the web-v2 control plane, use a `Slate + Blue` palette:
+
+- Light theme:
+  - cloud-gray page background
+  - white or near-white surfaces
+  - muted cobalt primary accent
+  - soft slate borders
+- Dark theme:
+  - deep navy-slate page background
+  - blue-gray surfaces
+  - electric-but-controlled blue primary accent
+  - subdued slate borders
+
+### Palette intent
+
+- The control plane should feel familiar SaaS, clean, and dependable.
+- Avoid gradients in core product surfaces.
+- Use blue for action hierarchy and orientation, not decoration.
+- Keep dark mode contrast strong enough for dense tables and forms.
+- Prefer neutral surfaces with blue reserved for focus, selection, and primary actions.
 
 ---
 
