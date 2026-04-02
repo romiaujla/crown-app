@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
 
 import { Button } from './button';
 
@@ -56,7 +55,7 @@ const meta = {
     },
     variant: {
       control: 'select',
-      options: ['default', 'secondary', 'ghost', 'toggle'],
+      options: ['default', 'secondary', 'ghost'],
     },
     iconPosition: {
       control: 'inline-radio',
@@ -142,64 +141,5 @@ export const DarkTheme: Story = {
   },
   globals: {
     theme: 'dark',
-  },
-};
-
-export const ToggleOff: Story = {
-  args: {
-    children: 'Map view',
-    variant: 'toggle',
-    'aria-pressed': false,
-  },
-};
-
-export const ToggleOn: Story = {
-  args: {
-    children: 'Map view',
-    variant: 'toggle',
-    'aria-pressed': true,
-  },
-};
-
-export const ToggleDisabled: Story = {
-  args: {
-    children: 'Map view',
-    disabled: true,
-    variant: 'toggle',
-    'aria-pressed': false,
-  },
-};
-
-export const ToggleHover: Story = {
-  args: {
-    children: 'Map view',
-    variant: 'toggle',
-    'aria-pressed': false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.hover(canvas.getByRole('button', { name: 'Map view' }));
-  },
-};
-
-export const ToggleFocus: Story = {
-  args: {
-    children: 'Map view',
-    variant: 'toggle',
-    'aria-pressed': false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    canvas.getByRole('button', { name: 'Map view' }).focus();
-  },
-};
-
-export const ToggleActive: Story = {
-  args: {
-    children: 'Map view',
-    className: 'scale-[0.99] bg-accent/80 text-accent-foreground',
-    variant: 'toggle',
-    'aria-pressed': false,
   },
 };

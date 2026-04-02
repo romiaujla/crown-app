@@ -15,8 +15,6 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground shadow-none hover:bg-accent/80 hover:text-accent-foreground',
         ghost:
           'border-transparent bg-transparent text-foreground shadow-none hover:bg-accent/70 hover:text-accent-foreground',
-        toggle:
-          'border border-border bg-background text-foreground shadow-none hover:bg-accent/80 hover:text-accent-foreground aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:hover:bg-primary/90',
       },
       size: {
         default: 'h-10 px-4',
