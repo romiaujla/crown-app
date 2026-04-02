@@ -8,7 +8,6 @@ import { TenantDetailsSections } from '@/components/platform/tenant-details-sect
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { CrownDetailsComponent } from '@/components/ui/crown-details-component';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   CrownDetailsActionIntentEnum,
   CrownDetailsFieldSurfaceEnum,
@@ -102,7 +101,7 @@ export const TenantDetailsPage = ({ slug }: { slug: string }) => {
         <p className="text-sm font-medium text-stone-700">Loading tenant details</p>
         <div className="grid gap-2 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-20 rounded-2xl bg-white" />
+            <div key={index} className="h-20 animate-pulse rounded-2xl bg-white" />
           ))}
         </div>
       </div>

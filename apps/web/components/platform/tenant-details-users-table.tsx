@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -71,7 +70,7 @@ export const TenantDetailsUsersTable = ({
         <p className="text-sm font-medium text-stone-700">Loading users for this tenant</p>
         <div className="grid gap-2">
           {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-12 rounded-2xl bg-white" />
+            <div key={index} className="h-12 animate-pulse rounded-2xl bg-white" />
           ))}
         </div>
       </div>

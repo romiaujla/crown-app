@@ -40,13 +40,13 @@ export const RectangleCard: Story = {
 
 export const TableRow: Story = {
   render: () => (
-    <div className="w-full max-w-4xl rounded-2xl border border-stone-200 bg-stone-50/80 p-4">
+    <div className="w-full max-w-4xl rounded-2xl border border-border bg-muted/40 p-4">
       <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] gap-3">
-        <Skeleton className="h-12 rounded-2xl bg-white" />
-        <Skeleton className="h-12 rounded-2xl bg-white" />
-        <Skeleton className="h-12 rounded-2xl bg-white" />
-        <Skeleton className="h-12 rounded-2xl bg-white" />
-        <Skeleton className="h-12 w-24 rounded-full bg-white" />
+        <Skeleton className="h-12 rounded-2xl bg-card" />
+        <Skeleton className="h-12 rounded-2xl bg-card" />
+        <Skeleton className="h-12 rounded-2xl bg-card" />
+        <Skeleton className="h-12 rounded-2xl bg-card" />
+        <Skeleton className="h-12 w-24 rounded-full bg-card" />
       </div>
     </div>
   ),

@@ -22,7 +22,6 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getPlatformDashboardOverview } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 import { ViewState, ViewStatusEnum } from '@/lib/view-state';
@@ -185,15 +184,15 @@ const DashboardOverviewSection = () => {
           <CardTitle className="text-2xl text-stone-950">Loading tenant overview</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 pt-0">
-          <Skeleton className="platform-skeleton h-12 rounded-2xl" />
+          <div className="platform-skeleton h-12 animate-pulse rounded-2xl" />
           <div
             className="grid grid-cols-1 gap-3 sm:grid-cols-5 sm:gap-3"
             data-testid="platform-footprint-kpi-grid"
           >
             {Array.from({ length: 5 }).map((_, index) => (
-              <Skeleton
+              <div
                 key={index}
-                className="platform-skeleton h-20 rounded-2xl border"
+                className="platform-skeleton h-20 animate-pulse rounded-2xl border"
                 data-testid="platform-footprint-kpi-card"
               />
             ))}
