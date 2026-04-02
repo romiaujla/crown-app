@@ -64,7 +64,15 @@ const meta = {
     },
   },
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
+    docs: {
+      canvas: {
+        className: 'docs-button-canvas',
+      },
+      story: {
+        height: '96px',
+      },
+    },
   },
 } satisfies Meta<typeof Button>;
 

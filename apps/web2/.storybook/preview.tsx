@@ -1,8 +1,8 @@
 import '../app/globals.css';
 
-import type { Preview } from '@storybook/experimental-nextjs-vite';
+import type { Decorator, Preview } from '@storybook/react';
 
-const withTheme = (Story: () => JSX.Element, context: { globals: { theme?: string } }) => {
+const withTheme: Decorator = (Story, context) => {
   const isDark = context.globals.theme === 'dark';
 
   if (typeof document !== 'undefined') {
@@ -10,7 +10,7 @@ const withTheme = (Story: () => JSX.Element, context: { globals: { theme?: strin
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 text-foreground">
+    <div className="grid w-full place-items-center p-6 text-foreground">
       <Story />
     </div>
   );
@@ -43,7 +43,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    layout: 'centered',
+    layout: 'padded',
     nextjs: {
       appDirectory: true,
     },
