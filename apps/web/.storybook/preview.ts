@@ -31,9 +31,9 @@ const withCrownPreview: Decorator = (Story) => {
     React.createElement(
       'div',
       {
-        // Keep the preview wrapper token-aware without forcing page-sized empty space
-        // around small primitives like buttons.
-        className: 'inline-flex bg-background p-6 text-foreground',
+        // Use a compact centering wrapper instead of Storybook's centered layout mode,
+        // which gives Docs stories an overly tall iframe for small primitives.
+        className: 'grid w-full place-items-center p-6 text-foreground',
       },
       React.createElement(Story, {}),
     ),
@@ -49,7 +49,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    layout: 'centered',
+    layout: 'padded',
     nextjs: {
       appDirectory: true,
     },

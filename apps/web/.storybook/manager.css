@@ -1,0 +1,12 @@
+.docs-button-canvas {
+  min-height: 96px !important;
+}
+
+.docs-button-canvas > div {
+  min-height: 96px !important;
+}
+
+.docs-button-canvas iframe {
+  min-height: 96px !important;
+  height: 96px !important;
+}
