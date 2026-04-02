@@ -1,14 +1,14 @@
 import * as React from 'react';
 import '../app/globals.css';
 
-import type { Preview } from '@storybook/experimental-nextjs-vite';
+import type { Decorator, Preview } from '@storybook/react';
 
 import {
   PLATFORM_THEME_STORAGE_KEY,
   PlatformThemeProvider,
 } from '../components/platform/platform-theme-provider';
 
-const ensureLightPlatformTheme = () => {
+const ensureLightPlatformTheme = (): void => {
   if (typeof document !== 'undefined') {
     document.documentElement.dataset.platformTheme = 'light';
   }
@@ -16,13 +16,13 @@ const ensureLightPlatformTheme = () => {
   if (typeof window !== 'undefined') {
     try {
       window.localStorage.setItem(PLATFORM_THEME_STORAGE_KEY, 'light');
-    } catch (error) {
+    } catch {
       // Ignore storage failures in preview mode and fall back to the document theme.
     }
   }
 };
 
-const withCrownPreview: NonNullable<Preview['decorators']>[number] = (Story) => {
+const withCrownPreview: Decorator = (Story) => {
   ensureLightPlatformTheme();
 
   return React.createElement(
@@ -31,9 +31,11 @@ const withCrownPreview: NonNullable<Preview['decorators']>[number] = (Story) => 
     React.createElement(
       'div',
       {
-        className: 'min-h-screen bg-background p-6 text-foreground',
+        // Keep the preview wrapper token-aware without forcing page-sized empty space
+        // around small primitives like buttons.
+        className: 'inline-flex bg-background p-6 text-foreground',
       },
-      React.createElement(Story),
+      React.createElement(Story, {}),
     ),
   );
 };

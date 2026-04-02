@@ -1,3 +1,5 @@
+import type { Meta, StoryObj } from '@storybook/react';
+
 import { Button } from './button';
 
 const PlusIcon = () => (
@@ -61,44 +63,54 @@ const meta = {
     },
   },
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
+    docs: {
+      canvas: {
+        className: 'docs-button-canvas',
+      },
+      story: {
+        height: '96px',
+      },
+    },
   },
-};
+} satisfies Meta<typeof Button>;
 
 export default meta;
 
-export const Default = {
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
   args: {},
 };
 
-export const Secondary = {
+export const Secondary: Story = {
   args: {
     variant: 'secondary',
     children: 'Secondary action',
   },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   args: {
     disabled: true,
     children: 'Disabled action',
   },
 };
 
-export const Ghost = {
+export const Ghost: Story = {
   args: {
     variant: 'ghost',
     children: 'Ghost action',
   },
 };
 
-export const TextOnly = {
+export const TextOnly: Story = {
   args: {
     children: 'Text only',
   },
 };
 
-export const TextWithIconLeft = {
+export const TextWithIconLeft: Story = {
   args: {
     children: 'Add tenant',
     icon: <PlusIcon />,
@@ -106,7 +118,7 @@ export const TextWithIconLeft = {
   },
 };
 
-export const TextWithIconRight = {
+export const TextWithIconRight: Story = {
   args: {
     children: 'Continue',
     icon: <ArrowRightIcon />,
@@ -114,7 +126,7 @@ export const TextWithIconRight = {
   },
 };
 
-export const IconOnly = {
+export const IconOnly: Story = {
   args: {
     'aria-label': 'Add tenant',
     children: null,
@@ -122,7 +134,7 @@ export const IconOnly = {
   },
 };
 
-export const DarkTheme = {
+export const DarkTheme: Story = {
   args: {
     children: 'Create workspace',
     icon: <PlusIcon />,
