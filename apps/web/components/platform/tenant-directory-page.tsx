@@ -25,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
 import { searchPlatformTenants } from '@/lib/auth/api';
 import { getStoredAccessToken } from '@/lib/auth/storage';
 import { ViewState, ViewStatusEnum } from '@/lib/view-state';
@@ -202,7 +203,7 @@ export const TenantDirectoryPage = () => {
           <p className="text-sm font-medium text-stone-700">Loading tenant directory</p>
           <div className="grid gap-2">
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-14 animate-pulse rounded-2xl bg-white" />
+              <Skeleton key={index} className="h-14 rounded-2xl bg-white" />
             ))}
           </div>
         </div>
