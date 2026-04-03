@@ -5,7 +5,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const chipGroupVariants = cva(
-  'inline-grid w-max max-w-max shrink-0 grid-flow-col auto-cols-max items-stretch justify-start self-start justify-self-start place-self-start overflow-hidden rounded-full border align-middle shadow-sm transition-[border-color,background-color,box-shadow] duration-150 ease-out',
+  'inline-flex w-fit max-w-fit shrink-0 items-stretch justify-start self-start overflow-hidden rounded-full border align-middle shadow-sm transition-[border-color,background-color,box-shadow] duration-150 ease-out',
   {
     variants: {
       disabled: {
@@ -39,13 +39,13 @@ const chipGroupVariants = cva(
 const chipActionVariants = cva(
   cn(
     buttonVariants({ size: 'sm', variant: 'ghost' }),
-    'h-auto w-auto min-w-0 max-w-max flex-none justify-start gap-2 rounded-full bg-transparent px-3.5 py-2.5 font-medium leading-none shadow-none hover:bg-transparent focus-visible:ring-offset-0',
+    'h-8 w-auto min-w-0 max-w-max flex-none items-center justify-start gap-2 bg-transparent px-3.5 font-medium leading-none shadow-none hover:bg-transparent focus-visible:ring-offset-0',
   ),
   {
     variants: {
       removable: {
-        true: 'pr-2',
-        false: '',
+        true: 'rounded-l-full rounded-r-none pr-2',
+        false: 'rounded-full',
       },
     },
     defaultVariants: {
@@ -57,7 +57,7 @@ const chipActionVariants = cva(
 const chipRemoveButtonVariants = cva(
   cn(
     buttonVariants({ iconOnly: true, size: 'sm', variant: 'ghost' }),
-    'h-auto min-w-9 shrink-0 self-stretch rounded-none rounded-r-full border-l border-l-border/70 px-2 text-foreground/80 shadow-none focus-visible:ring-offset-0',
+    'h-8 w-8 shrink-0 self-auto rounded-none rounded-r-full border-l border-l-border/70 p-0 text-foreground/80 shadow-none focus-visible:ring-offset-0',
   ),
   {
     variants: {
@@ -136,7 +136,10 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
           {...props}
         >
           {leadingIcon ? (
-            <span aria-hidden="true" className="shrink-0">
+            <span
+              aria-hidden="true"
+              className="inline-flex shrink-0 items-center justify-center text-muted-foreground"
+            >
               {leadingIcon}
             </span>
           ) : null}

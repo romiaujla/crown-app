@@ -6,19 +6,25 @@ import { Chip } from './chip';
 const FilterIcon = () => (
   <svg
     aria-hidden="true"
-    className="h-3.5 w-3.5"
+    className="h-4 w-4"
     fill="none"
     viewBox="0 0 24 24"
+    height="16"
     xmlns="http://www.w3.org/2000/svg"
+    width="16"
   >
     <path
       d="M4 6H20M7 12H17M10 18H14"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="1.8"
+      strokeWidth="2"
     />
   </svg>
+);
+
+const StoryCanvas = ({ children }: { children: React.ReactNode }) => (
+  <div className="inline-flex items-start">{children}</div>
 );
 
 const GroupPreview = (args: React.ComponentProps<typeof Chip>) => (
@@ -61,6 +67,11 @@ const meta = {
       },
     },
   },
+  render: (args) => (
+    <StoryCanvas>
+      <Chip {...args} />
+    </StoryCanvas>
+  ),
 } satisfies Meta<typeof Chip>;
 
 export default meta;
