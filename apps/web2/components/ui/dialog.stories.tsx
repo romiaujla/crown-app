@@ -56,6 +56,7 @@ type DialogStoryPreviewProps = {
   defaultOpen?: boolean;
   footer?: React.ReactNode;
   showCloseButton?: boolean;
+  showDefaultBody?: boolean;
   triggerLabel?: string;
   variant?: 'default' | 'confirmation' | 'alert';
 };
@@ -66,6 +67,7 @@ const DialogStoryPreview = ({
   defaultOpen = true,
   footer,
   showCloseButton = true,
+  showDefaultBody = true,
   triggerLabel,
   variant = 'default',
 }: DialogStoryPreviewProps) => (
@@ -93,7 +95,8 @@ const DialogStoryPreview = ({
                 : 'Assign one owner to receive billing alerts, onboarding reminders, and access requests for this workspace.'}
           </DialogDescription>
         </DialogHeader>
-        {body ?? (
+        {body}
+        {showDefaultBody ? (
           <>
             {variant === 'default' ? (
               <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
@@ -123,7 +126,7 @@ const DialogStoryPreview = ({
               </div>
             ) : null}
           </>
-        )}
+        ) : null}
         {footer ?? (
           <DialogFooter>
             <DialogClose asChild>
@@ -157,7 +160,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, and higher-risk alerts. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
+          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, higher-risk alerts, and unsaved-changes form guards. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
       },
       story: {
         height: '640px',
@@ -184,6 +187,25 @@ export const Confirmation: Story = {
     <DialogStoryPreview
       showCloseButton={false}
       variant="confirmation"
+      footer={
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Keep editing</Button>
+          </DialogClose>
+          <Button>Discard changes</Button>
+        </DialogFooter>
+      }
+    />
+  ),
+};
+
+export const LeaveConfirmation: Story = {
+  render: () => (
+    // Reuse the confirmation title/subtitle only, without a nested body section.
+    <DialogStoryPreview
+      showCloseButton={false}
+      variant="confirmation"
+      showDefaultBody={false}
       footer={
         <DialogFooter>
           <DialogClose asChild>
