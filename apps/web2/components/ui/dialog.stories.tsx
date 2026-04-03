@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from '@storybook/test';
+import { CheckCircle2, CircleX, Info, TriangleAlert, type LucideIcon } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 import { Button } from './button';
 import {
@@ -18,172 +21,39 @@ const StoryCanvas = ({ children }: { children: React.ReactNode }) => (
   <div className="flex min-h-[32rem] w-full items-center justify-center">{children}</div>
 );
 
-const WarningIcon = () => (
-  <svg
-    aria-hidden="true"
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 3.75L21 19.5H3L12 3.75Z"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M12 9V13.25"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M12 16.5H12.01"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-  </svg>
-);
-
-const SuccessIcon = () => (
-  <svg
-    aria-hidden="true"
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M5 12.5L9.25 16.75L19 7"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-  </svg>
-);
-
-const InfoIcon = () => (
-  <svg
-    aria-hidden="true"
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 12V16"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M12 8H12.01"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-  </svg>
-);
-
-const ErrorIcon = () => (
-  <svg
-    aria-hidden="true"
-    className="h-5 w-5"
-    fill="none"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M8 8L16 16M16 8L8 16"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-    <path
-      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    />
-  </svg>
-);
-
 type AlertTone = 'success' | 'info' | 'warning' | 'error';
 
 const alertToneStyles: Record<
   AlertTone,
   {
-    iconContainerClassName: string;
     iconClassName: string;
-    panelClassName: string;
   }
 > = {
   success: {
-    iconContainerClassName: 'bg-emerald-100 dark:bg-emerald-950/60',
-    iconClassName: 'text-emerald-700 dark:text-emerald-300',
-    panelClassName:
-      'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/35',
+    iconClassName: 'text-emerald-800 dark:text-emerald-300',
   },
   info: {
-    iconContainerClassName: 'bg-sky-100 dark:bg-sky-950/60',
-    iconClassName: 'text-sky-700 dark:text-sky-300',
-    panelClassName: 'border-sky-200 bg-sky-50 dark:border-sky-900/60 dark:bg-sky-950/35',
+    iconClassName: 'text-sky-800 dark:text-sky-300',
   },
   warning: {
-    iconContainerClassName: 'bg-amber-100 dark:bg-amber-950/60',
-    iconClassName: 'text-amber-700 dark:text-amber-300',
-    panelClassName: 'border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/35',
+    iconClassName: 'text-amber-800 dark:text-amber-300',
   },
   error: {
-    iconContainerClassName: 'bg-red-100 dark:bg-red-950/60',
-    iconClassName: 'text-red-700 dark:text-red-300',
-    panelClassName: 'border-red-200 bg-red-50 dark:border-red-900/60 dark:bg-red-950/35',
+    iconClassName:
+      'text-[rgb(252_27_27_/_var(--tw-text-opacity,_1))] dark:text-[rgb(252_27_27_/_var(--tw-text-opacity,_1))]',
   },
 };
 
-const AlertPanel = ({
-  children,
-  icon,
-  title,
-  tone,
-}: {
-  children: React.ReactNode;
-  icon: React.ReactNode;
-  title: string;
-  tone: AlertTone;
-}) => {
+const AlertHeroIcon = ({ icon: Icon, tone }: { icon: LucideIcon; tone: AlertTone }) => {
   const toneStyles = alertToneStyles[tone];
 
   return (
-    <div className={`grid gap-3 rounded-2xl border p-4 text-sm ${toneStyles.panelClassName}`}>
-      <div className="flex items-start gap-3">
-        <span
-          className={`mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${toneStyles.iconContainerClassName} ${toneStyles.iconClassName}`}
-        >
-          {icon}
-        </span>
-        <div className="grid gap-2 text-foreground">
-          <p className="font-medium text-foreground">{title}</p>
-          <p className="text-foreground/80">{children}</p>
-        </div>
-      </div>
+    <div className="mx-auto">
+      <Icon
+        aria-hidden="true"
+        className={cn('h-12 w-12', toneStyles.iconClassName)}
+        strokeWidth={2.05}
+      />
     </div>
   );
 };
@@ -191,10 +61,15 @@ const AlertPanel = ({
 type DialogStoryPreviewProps = {
   autoFocusPrimary?: boolean;
   body?: React.ReactNode;
+  contentClassName?: string;
   defaultOpen?: boolean;
+  description?: React.ReactNode;
   footer?: React.ReactNode;
+  headerClassName?: string;
+  headerLeading?: React.ReactNode;
   showCloseButton?: boolean;
   showDefaultBody?: boolean;
+  title?: React.ReactNode;
   triggerLabel?: string;
   variant?: 'default' | 'confirmation' | 'alert';
 };
@@ -202,92 +77,114 @@ type DialogStoryPreviewProps = {
 const DialogStoryPreview = ({
   autoFocusPrimary = false,
   body,
+  contentClassName,
   defaultOpen = true,
+  description,
   footer,
+  headerClassName,
+  headerLeading,
   showCloseButton = true,
   showDefaultBody = true,
+  title,
   triggerLabel,
   variant = 'default',
-}: DialogStoryPreviewProps) => (
-  <StoryCanvas>
-    <Dialog defaultOpen={defaultOpen}>
-      {triggerLabel ? (
-        <DialogTrigger asChild>
-          <Button>{triggerLabel}</Button>
-        </DialogTrigger>
-      ) : null}
-      <DialogContent showCloseButton={showCloseButton} variant={variant}>
-        <DialogHeader>
-          <DialogTitle>
-            {variant === 'alert'
-              ? 'Archive 12 inactive workspaces?'
-              : variant === 'confirmation'
-                ? 'Discard the unsaved policy edits?'
-                : 'Invite a workspace owner'}
-          </DialogTitle>
-          <DialogDescription>
-            {variant === 'alert'
-              ? 'Archiving will remove these workspaces from the active portfolio view. You can restore them later from the audit log.'
-              : variant === 'confirmation'
-                ? 'Your configuration changes have not been saved yet. Confirm before leaving this setup step.'
-                : 'Assign one owner to receive billing alerts, onboarding reminders, and access requests for this workspace.'}
-          </DialogDescription>
-        </DialogHeader>
-        {body}
-        {showDefaultBody && body === undefined ? (
-          <>
-            {variant === 'default' ? (
-              <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">What happens next</p>
-                <p>
-                  The selected owner receives an email invite immediately and can finish access
-                  setup from the workspace console.
-                </p>
-              </div>
-            ) : null}
-            {variant === 'confirmation' ? (
-              <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">Before you leave</p>
-                <p>
-                  Leaving now returns this workflow to its previous saved state. Unsaved policy
-                  changes from this step cannot be recovered.
-                </p>
-              </div>
-            ) : null}
-            {variant === 'alert' ? (
-              <div className="grid gap-3 rounded-2xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-muted-foreground">
-                <p className="font-medium text-foreground">High-impact change</p>
-                <p>
-                  Archive only if the inactive workspaces should immediately lose active access and
-                  leave the operating portfolio.
-                </p>
-              </div>
-            ) : null}
-          </>
+}: DialogStoryPreviewProps) => {
+  const resolvedTitle =
+    title ??
+    (variant === 'alert'
+      ? 'Archive 12 inactive workspaces?'
+      : variant === 'confirmation'
+        ? 'Discard the unsaved policy edits?'
+        : 'Invite a workspace owner');
+
+  const resolvedDescription =
+    description ??
+    (variant === 'alert'
+      ? 'Archiving removes these workspaces from the active portfolio view and suspends sign-in until you restore them from the audit log.'
+      : variant === 'confirmation'
+        ? 'Your configuration changes have not been saved yet. Confirm before leaving this setup step.'
+        : 'Assign one owner to receive billing alerts, onboarding reminders, and access requests for this workspace.');
+
+  return (
+    <StoryCanvas>
+      <Dialog defaultOpen={defaultOpen}>
+        {triggerLabel ? (
+          <DialogTrigger asChild>
+            <Button>{triggerLabel}</Button>
+          </DialogTrigger>
         ) : null}
-        {footer ?? (
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="secondary">
-                {variant === 'confirmation' ? 'Keep editing' : 'Cancel'}
-              </Button>
-            </DialogClose>
-            <Button
-              autoFocus={autoFocusPrimary}
-              variant={variant === 'alert' ? 'destructive' : 'default'}
+        <DialogContent
+          className={cn(variant === 'alert' ? 'max-w-[30rem] gap-7' : null, contentClassName)}
+          showCloseButton={showCloseButton}
+          variant={variant}
+        >
+          <DialogHeader
+            className={cn(
+              variant === 'alert' ? 'items-center gap-5 text-center sm:text-center' : undefined,
+              headerClassName,
+            )}
+          >
+            {headerLeading}
+            <DialogTitle className={variant === 'alert' ? 'max-w-[18ch]' : undefined}>
+              {resolvedTitle}
+            </DialogTitle>
+            <DialogDescription
+              className={variant === 'alert' ? 'max-w-[34ch] text-center' : undefined}
             >
-              {variant === 'confirmation'
-                ? 'Discard changes'
-                : variant === 'alert'
-                  ? 'Archive workspaces'
-                  : 'Send invitation'}
-            </Button>
-          </DialogFooter>
-        )}
-      </DialogContent>
-    </Dialog>
-  </StoryCanvas>
-);
+              {resolvedDescription}
+            </DialogDescription>
+          </DialogHeader>
+          {body}
+          {showDefaultBody && body === undefined ? (
+            <>
+              {variant === 'default' ? (
+                <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">What happens next</p>
+                  <p>
+                    The selected owner receives an email invite immediately and can finish access
+                    setup from the workspace console.
+                  </p>
+                </div>
+              ) : null}
+              {variant === 'confirmation' ? (
+                <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">Before you leave</p>
+                  <p>
+                    Leaving now returns this workflow to its previous saved state. Unsaved policy
+                    changes from this step cannot be recovered.
+                  </p>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+          {footer ?? (
+            <DialogFooter
+              className={
+                variant === 'alert' ? 'sm:justify-center sm:[&>*]:min-w-[10rem]' : undefined
+              }
+            >
+              <DialogClose asChild>
+                <Button variant="secondary">
+                  {variant === 'confirmation' ? 'Keep editing' : 'Cancel'}
+                </Button>
+              </DialogClose>
+              <Button
+                autoFocus={autoFocusPrimary}
+                variant={variant === 'alert' ? 'destructive' : 'default'}
+              >
+                {variant === 'confirmation'
+                  ? 'Discard changes'
+                  : variant === 'alert'
+                    ? 'Archive workspaces'
+                    : 'Send invitation'}
+              </Button>
+            </DialogFooter>
+          )}
+        </DialogContent>
+      </Dialog>
+    </StoryCanvas>
+  );
+};
 
 const meta = {
   title: 'UI/Dialog',
@@ -298,7 +195,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, higher-risk alerts, and unsaved-changes form guards. Storybook documents semantic alert compositions as success, info, warning, and error states without expanding the public Dialog API. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
+          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, higher-risk alerts, and unsaved-changes form guards. Storybook documents semantic alert compositions as centered, icon-led success, info, warning, and error states without expanding the public Dialog API. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
       },
       story: {
         height: '640px',
@@ -359,16 +256,14 @@ export const LeaveConfirmation: Story = {
 export const SuccessAlert: Story = {
   render: () => (
     <DialogStoryPreview
+      description="The policy update is now active for future submissions across the selected workspaces."
+      headerLeading={<AlertHeroIcon icon={CheckCircle2} tone="success" />}
       showCloseButton={false}
+      showDefaultBody={false}
+      title="Approval workflow is live"
       variant="alert"
-      body={
-        <AlertPanel icon={<SuccessIcon />} title="Workspace configuration saved." tone="success">
-          The updated approval rules are now active for future submissions. Existing requests keep
-          their current decision history.
-        </AlertPanel>
-      }
       footer={
-        <DialogFooter>
+        <DialogFooter className="sm:justify-center sm:[&>*]:min-w-[10rem]">
           <DialogClose asChild>
             <Button variant="secondary">Close</Button>
           </DialogClose>
@@ -382,14 +277,14 @@ export const SuccessAlert: Story = {
 export const InfoAlert: Story = {
   render: () => (
     <DialogStoryPreview
-      body={
-        <AlertPanel icon={<InfoIcon />} title="Billing owner access will be updated." tone="info">
-          Leaving this flow will re-open the team assignment step the next time you enter tenant
-          setup, so you can continue from the last saved checkpoint.
-        </AlertPanel>
-      }
+      description="Leaving now keeps your saved checkpoint, and you can return later to finish the ownership handoff."
+      headerLeading={<AlertHeroIcon icon={Info} tone="info" />}
+      showCloseButton={false}
+      showDefaultBody={false}
+      title="Billing owner access will update on exit"
+      variant="alert"
       footer={
-        <DialogFooter>
+        <DialogFooter className="sm:justify-center sm:[&>*]:min-w-[10rem]">
           <DialogClose asChild>
             <Button variant="secondary">Stay here</Button>
           </DialogClose>
@@ -403,24 +298,18 @@ export const InfoAlert: Story = {
 export const WarningAlert: Story = {
   render: () => (
     <DialogStoryPreview
+      description="Archiving removes these workspaces from the active portfolio and suspends sign-in until you explicitly restore them."
+      headerLeading={<AlertHeroIcon icon={TriangleAlert} tone="warning" />}
       showCloseButton={false}
+      showDefaultBody={false}
+      title="Archive 12 inactive workspaces?"
       variant="alert"
-      body={
-        <AlertPanel
-          icon={<WarningIcon />}
-          title="This will affect 38 assigned users."
-          tone="warning"
-        >
-          Restoring the workspaces later keeps audit history, but active sign-in and billing access
-          are suspended immediately.
-        </AlertPanel>
-      }
       footer={
-        <DialogFooter>
+        <DialogFooter className="sm:justify-center sm:[&>*]:min-w-[10rem]">
           <DialogClose asChild>
             <Button variant="secondary">Cancel</Button>
           </DialogClose>
-          <Button>Archive workspaces</Button>
+          <Button variant="destructive">Archive workspaces</Button>
         </DialogFooter>
       }
     />
@@ -430,20 +319,18 @@ export const WarningAlert: Story = {
 export const ErrorAlert: Story = {
   render: () => (
     <DialogStoryPreview
+      description="The selected email is already linked to another control-plane owner. Update the recipient details to continue."
+      headerLeading={<AlertHeroIcon icon={CircleX} tone="error" />}
       showCloseButton={false}
+      showDefaultBody={false}
+      title="Invitation couldn't be sent"
       variant="alert"
-      body={
-        <AlertPanel icon={<ErrorIcon />} title="Invitation could not be sent." tone="error">
-          The selected email is already linked to another control-plane owner profile. Review the
-          recipient details or choose a different owner before retrying.
-        </AlertPanel>
-      }
       footer={
-        <DialogFooter>
+        <DialogFooter className="sm:justify-center sm:[&>*]:min-w-[10rem]">
           <DialogClose asChild>
             <Button variant="secondary">Back</Button>
           </DialogClose>
-          <Button variant="destructive">Retry invitation</Button>
+          <Button>Review recipient</Button>
         </DialogFooter>
       }
     />

@@ -24,8 +24,10 @@ Define a shared dialog primitive for `apps/web2` so confirmation, alert, and gen
    - Rounded elevated surface with semantic border, shadow, and centered layout.
 3. **Header**
    - Title and description establish orientation immediately.
+   - Alert compositions may use a centered icon-first header with no additional nested panel when the decision can be explained with a title, subtitle, and buttons alone.
 4. **Body**
    - Flexible content area for supporting copy, forms, loading state, or warning content.
+   - Optional for alert compositions; do not default to a second nested card when the dialog can stay concise.
 5. **Footer**
    - Action row with one dominant primary decision and secondary dismissal action.
 
@@ -63,6 +65,7 @@ Define a shared dialog primitive for `apps/web2` so confirmation, alert, and gen
 - **Default**: Neutral modal surface for general-purpose tasks.
 - **Confirmation**: Action-oriented surface emphasizing the decision footer.
 - **Alert**: Higher-risk surface using semantic destructive emphasis without relying on color alone.
+  - Preferred Storybook reference: centered icon, title, description, and action row, with supporting body content added only when the decision requires more context.
 - **Focus**: Keyboard focus must land on the first intended action or consumer-defined target.
 - **Hover**: Footer actions rely on their underlying shared button states.
 - **Disabled**: Footer actions may disable during async work while keeping the dialog readable.

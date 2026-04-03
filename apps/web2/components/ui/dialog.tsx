@@ -12,17 +12,17 @@ const DialogPortal = DialogPrimitive.Portal;
 const DialogClose = DialogPrimitive.Close;
 
 const dialogOverlayVariants = cva(
-  'fixed inset-0 z-50 bg-[hsl(var(--foreground)/0.52)] backdrop-blur-[2px] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+  'fixed inset-0 z-50 bg-[hsl(var(--foreground)/0.56)] backdrop-blur-[8px] backdrop-saturate-150 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
 );
 
 const dialogContentVariants = cva(
-  'fixed left-[50%] top-[50%] z-50 grid w-[calc(100vw-2rem)] max-w-[36rem] translate-x-[-50%] translate-y-[-50%] gap-5 rounded-[28px] border bg-card p-6 text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:w-full sm:p-7',
+  'fixed left-[50%] top-[50%] z-50 grid w-[calc(100vw-2rem)] max-w-[36rem] translate-x-[-50%] translate-y-[-50%] gap-5 overflow-hidden rounded-[28px] border bg-card/95 p-6 text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:w-full sm:p-7',
   {
     variants: {
       variant: {
-        default: 'border-border/80',
+        default: 'border-border/75',
         confirmation: 'border-primary/20 bg-card',
-        alert: 'border-destructive/35 bg-card',
+        alert: 'border-border/75 bg-card/95 shadow-[0_36px_110px_hsl(var(--foreground)/0.22)]',
       },
     },
     defaultVariants: {
