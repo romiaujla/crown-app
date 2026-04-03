@@ -3,9 +3,10 @@
 import type { LucideIcon } from 'lucide-react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 
 import { LogoutButton } from '@/components/auth/logout-button';
+import { Avatar } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
@@ -84,15 +85,6 @@ const toneClasses = {
   },
 } as const;
 
-const buildInitials = (displayName: string) => {
-  const words = displayName.trim().split(/\s+/).filter(Boolean);
-
-  if (words.length === 0) return 'U';
-  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
-
-  return `${words[0][0] ?? ''}${words.at(-1)?.[0] ?? ''}`.toUpperCase();
-};
-
 const formatRoleLabel = (role: string) =>
   role
     .split('_')
@@ -117,8 +109,7 @@ export const WorkspaceShell = ({
   const profileMenuId = useId();
   const profileContainerRef = useRef<HTMLDivElement | null>(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const profileInitials = useMemo(() => buildInitials(userDisplayName), [userDisplayName]);
-  const roleLabel = useMemo(() => formatRoleLabel(userRole), [userRole]);
+  const roleLabel = formatRoleLabel(userRole);
 
   useEffect(() => {
     if (!isProfileMenuOpen) return;
@@ -279,9 +270,11 @@ export const WorkspaceShell = ({
                     title={userDisplayName}
                     type="button"
                   >
-                    <span aria-hidden="true" className="sidebar-profile__avatar">
-                      {profileInitials}
-                    </span>
+                    <Avatar
+                      aria-hidden="true"
+                      className="sidebar-profile__avatar"
+                      name={userDisplayName}
+                    />
                     <span className="sidebar-profile__summary">
                       <span className="sidebar-profile__name">{userDisplayName}</span>
                       <span className="sidebar-profile__role">{roleLabel}</span>
