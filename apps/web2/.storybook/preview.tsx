@@ -7,10 +7,11 @@ const withTheme: Decorator = (Story, context) => {
 
   if (typeof document !== 'undefined') {
     document.documentElement.classList.toggle('dark', isDark);
+    document.body.classList.toggle('dark', isDark);
   }
 
   return (
-    <div className="grid w-full place-items-center p-6 text-foreground">
+    <div className="grid min-h-screen w-full place-items-center bg-background p-6 text-foreground transition-colors">
       <Story />
     </div>
   );
