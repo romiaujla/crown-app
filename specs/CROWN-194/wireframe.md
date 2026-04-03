@@ -2,8 +2,11 @@
 
 ## Surface
 
-- Reusable UI primitive: `apps/web/components/ui/avatar.tsx`
-- Initial consumer: authenticated sidebar profile entry in `apps/web/components/auth/workspace-shell.tsx`
+- Reusable UI primitives:
+  - `apps/web/components/ui/avatar.tsx`
+  - `apps/web2/components/ui/avatar.tsx`
+- Initial `apps/web` consumer: authenticated sidebar profile entry in `apps/web/components/auth/workspace-shell.tsx`
+- Initial `apps/web2` delivery shape: primitive + Storybook validation for future control-plane compositions
 - Primary user: platform and tenant operators who need a compact identity marker in dense shell and table/card contexts
 
 ## Layout Pattern
@@ -43,8 +46,9 @@
 
 ## Component Reuse
 
-- New reusable primitive: `Avatar`
-- Existing consumer to refactor: `WorkspaceShell` sidebar profile trigger
+- New reusable primitive: `Avatar` in both `apps/web` and `apps/web2`
+- Existing consumer to refactor: `WorkspaceShell` sidebar profile trigger in `apps/web`
+- `apps/web2` should expose the same primitive contract for future cards, rows, and shell/profile compositions
 - No reusable avatar markup should remain inline in page or shell files after extraction
 
 ## Design Tokens
