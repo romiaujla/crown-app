@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release_tests:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Backend tests
+        run: pnpm --filter @crown/api test
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @crown/web exec playwright install --with-deps chromium
+
+      - name: Frontend Playwright smoke
+        run: pnpm --filter @crown/web test:smoke
+
+  publish_release:
+    if: github.ref == 'refs/heads/main'
+    needs: release_tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Capture previous release tag
+        id: previous_release
+        run: |
+          previous_tag="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+          echo "tag=${previous_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Semantic release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm release
+
+      - name: Capture current release tag
+        id: current_release
+        run: |
+          current_tag="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+          echo "tag=${current_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Append Jira issues to GitHub release notes
+        if: steps.current_release.outputs.tag != '' && steps.current_release.outputs.tag != steps.previous_release.outputs.tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PREVIOUS_TAG: ${{ steps.previous_release.outputs.tag }}
+          RELEASE_TAG: ${{ steps.current_release.outputs.tag }}
+        run: node scripts/update-release-jira-issues.mjs
