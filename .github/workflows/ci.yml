@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   pr_title:
@@ -66,7 +67,7 @@ jobs:
           if-no-files-found: ignore
 
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
     permissions:
@@ -93,7 +94,28 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Capture previous release tag
+        id: previous_release
+        run: |
+          previous_tag="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+          echo "tag=${previous_tag}" >> "$GITHUB_OUTPUT"
+
       - name: Semantic release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm release
+
+      - name: Capture current release tag
+        id: current_release
+        run: |
+          current_tag="$(git describe --tags --abbrev=0 --match 'v*' 2>/dev/null || true)"
+          echo "tag=${current_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Append Jira issues to GitHub release notes
+        if: steps.current_release.outputs.tag != '' && steps.current_release.outputs.tag != steps.previous_release.outputs.tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PREVIOUS_TAG: ${{ steps.previous_release.outputs.tag }}
+          RELEASE_TAG: ${{ steps.current_release.outputs.tag }}
+        run: node scripts/update-release-jira-issues.mjs
