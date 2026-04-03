@@ -50,6 +50,147 @@ const WarningIcon = () => (
   </svg>
 );
 
+const SuccessIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 12.5L9.25 16.75L19 7"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 12V16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+    <path
+      d="M12 8H12.01"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+    <path
+      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+  </svg>
+);
+
+const ErrorIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8 8L16 16M16 8L8 16"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+    <path
+      d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    />
+  </svg>
+);
+
+type AlertTone = 'success' | 'info' | 'warning' | 'error';
+
+const alertToneStyles: Record<
+  AlertTone,
+  {
+    iconContainerClassName: string;
+    iconClassName: string;
+    panelClassName: string;
+  }
+> = {
+  success: {
+    iconContainerClassName: 'bg-emerald-100 dark:bg-emerald-950/60',
+    iconClassName: 'text-emerald-700 dark:text-emerald-300',
+    panelClassName:
+      'border-emerald-200 bg-emerald-50 text-slate-600 dark:border-emerald-900/60 dark:bg-emerald-950/35 dark:text-slate-300',
+  },
+  info: {
+    iconContainerClassName: 'bg-sky-100 dark:bg-sky-950/60',
+    iconClassName: 'text-sky-700 dark:text-sky-300',
+    panelClassName:
+      'border-sky-200 bg-sky-50 text-slate-600 dark:border-sky-900/60 dark:bg-sky-950/35 dark:text-slate-300',
+  },
+  warning: {
+    iconContainerClassName: 'bg-amber-100 dark:bg-amber-950/60',
+    iconClassName: 'text-amber-700 dark:text-amber-300',
+    panelClassName:
+      'border-amber-200 bg-amber-50 text-slate-600 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-slate-300',
+  },
+  error: {
+    iconContainerClassName: 'bg-red-100 dark:bg-red-950/60',
+    iconClassName: 'text-red-700 dark:text-red-300',
+    panelClassName:
+      'border-red-200 bg-red-50 text-slate-600 dark:border-red-900/60 dark:bg-red-950/35 dark:text-slate-300',
+  },
+};
+
+const AlertPanel = ({
+  children,
+  icon,
+  title,
+  tone,
+}: {
+  children: React.ReactNode;
+  icon: React.ReactNode;
+  title: string;
+  tone: AlertTone;
+}) => {
+  const toneStyles = alertToneStyles[tone];
+
+  return (
+    <div className={`grid gap-3 rounded-2xl border p-4 text-sm ${toneStyles.panelClassName}`}>
+      <div className="flex items-start gap-3">
+        <span
+          className={`mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${toneStyles.iconContainerClassName} ${toneStyles.iconClassName}`}
+        >
+          {icon}
+        </span>
+        <div className="grid gap-2">
+          <p className="font-medium text-foreground">{title}</p>
+          <p>{children}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 type DialogStoryPreviewProps = {
   autoFocusPrimary?: boolean;
   body?: React.ReactNode;
@@ -96,7 +237,7 @@ const DialogStoryPreview = ({
           </DialogDescription>
         </DialogHeader>
         {body}
-        {showDefaultBody ? (
+        {showDefaultBody && body === undefined ? (
           <>
             {variant === 'default' ? (
               <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/35 p-4 text-sm text-muted-foreground">
@@ -160,7 +301,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, higher-risk alerts, and unsaved-changes form guards. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
+          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, higher-risk alerts, and unsaved-changes form guards. Storybook documents semantic alert compositions as success, info, warning, and error states without expanding the public Dialog API. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
       },
       story: {
         height: '640px',
@@ -218,33 +359,94 @@ export const LeaveConfirmation: Story = {
   ),
 };
 
-export const Alert: Story = {
+export const SuccessAlert: Story = {
   render: () => (
     <DialogStoryPreview
       showCloseButton={false}
       variant="alert"
       body={
-        <div className="grid gap-3 rounded-2xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-muted-foreground">
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
-              <WarningIcon />
-            </span>
-            <div className="grid gap-2">
-              <p className="font-medium text-foreground">This will affect 38 assigned users.</p>
-              <p>
-                Restoring the workspaces later keeps audit history, but active sign-in and billing
-                access are suspended immediately.
-              </p>
-            </div>
-          </div>
-        </div>
+        <AlertPanel icon={<SuccessIcon />} title="Workspace configuration saved." tone="success">
+          The updated approval rules are now active for future submissions. Existing requests keep
+          their current decision history.
+        </AlertPanel>
+      }
+      footer={
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Close</Button>
+          </DialogClose>
+          <Button>View workflow</Button>
+        </DialogFooter>
+      }
+    />
+  ),
+};
+
+export const InfoAlert: Story = {
+  render: () => (
+    <DialogStoryPreview
+      body={
+        <AlertPanel icon={<InfoIcon />} title="Billing owner access will be updated." tone="info">
+          Leaving this flow will re-open the team assignment step the next time you enter tenant
+          setup, so you can continue from the last saved checkpoint.
+        </AlertPanel>
+      }
+      footer={
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Stay here</Button>
+          </DialogClose>
+          <Button>Continue anyway</Button>
+        </DialogFooter>
+      }
+    />
+  ),
+};
+
+export const WarningAlert: Story = {
+  render: () => (
+    <DialogStoryPreview
+      showCloseButton={false}
+      variant="alert"
+      body={
+        <AlertPanel
+          icon={<WarningIcon />}
+          title="This will affect 38 assigned users."
+          tone="warning"
+        >
+          Restoring the workspaces later keeps audit history, but active sign-in and billing access
+          are suspended immediately.
+        </AlertPanel>
       }
       footer={
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="secondary">Cancel</Button>
           </DialogClose>
-          <Button variant="destructive">Archive workspaces</Button>
+          <Button>Archive workspaces</Button>
+        </DialogFooter>
+      }
+    />
+  ),
+};
+
+export const ErrorAlert: Story = {
+  render: () => (
+    <DialogStoryPreview
+      showCloseButton={false}
+      variant="alert"
+      body={
+        <AlertPanel icon={<ErrorIcon />} title="Invitation could not be sent." tone="error">
+          The selected email is already linked to another control-plane owner profile. Review the
+          recipient details or choose a different owner before retrying.
+        </AlertPanel>
+      }
+      footer={
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="secondary">Back</Button>
+          </DialogClose>
+          <Button variant="destructive">Retry invitation</Button>
         </DialogFooter>
       }
     />
@@ -270,31 +472,6 @@ export const Loading: Story = {
             </Button>
           </DialogClose>
           <Button disabled>Inviting owner...</Button>
-        </DialogFooter>
-      }
-    />
-  ),
-};
-
-export const ErrorState: Story = {
-  render: () => (
-    <DialogStoryPreview
-      variant="alert"
-      body={
-        <div className="grid gap-3 rounded-2xl border border-destructive/25 bg-destructive/5 p-4 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">Invitation could not be sent.</p>
-          <p>
-            The selected email is already linked to another control-plane owner profile. Review the
-            recipient details or choose a different owner before retrying.
-          </p>
-        </div>
-      }
-      footer={
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary">Back</Button>
-          </DialogClose>
-          <Button>Retry invitation</Button>
         </DialogFooter>
       }
     />
