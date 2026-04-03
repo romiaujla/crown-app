@@ -159,6 +159,9 @@ const meta = {
         component:
           'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, and higher-risk alerts.',
       },
+      story: {
+        inline: false,
+      },
     },
   },
 } satisfies Meta<typeof DialogContent>;
