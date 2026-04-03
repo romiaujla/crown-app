@@ -139,25 +139,22 @@ const alertToneStyles: Record<
     iconContainerClassName: 'bg-emerald-100 dark:bg-emerald-950/60',
     iconClassName: 'text-emerald-700 dark:text-emerald-300',
     panelClassName:
-      'border-emerald-200 bg-emerald-50 text-slate-600 dark:border-emerald-900/60 dark:bg-emerald-950/35 dark:text-slate-300',
+      'border-emerald-200 bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/35',
   },
   info: {
     iconContainerClassName: 'bg-sky-100 dark:bg-sky-950/60',
     iconClassName: 'text-sky-700 dark:text-sky-300',
-    panelClassName:
-      'border-sky-200 bg-sky-50 text-slate-600 dark:border-sky-900/60 dark:bg-sky-950/35 dark:text-slate-300',
+    panelClassName: 'border-sky-200 bg-sky-50 dark:border-sky-900/60 dark:bg-sky-950/35',
   },
   warning: {
     iconContainerClassName: 'bg-amber-100 dark:bg-amber-950/60',
     iconClassName: 'text-amber-700 dark:text-amber-300',
-    panelClassName:
-      'border-amber-200 bg-amber-50 text-slate-600 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-slate-300',
+    panelClassName: 'border-amber-200 bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/35',
   },
   error: {
     iconContainerClassName: 'bg-red-100 dark:bg-red-950/60',
     iconClassName: 'text-red-700 dark:text-red-300',
-    panelClassName:
-      'border-red-200 bg-red-50 text-slate-600 dark:border-red-900/60 dark:bg-red-950/35 dark:text-slate-300',
+    panelClassName: 'border-red-200 bg-red-50 dark:border-red-900/60 dark:bg-red-950/35',
   },
 };
 
@@ -182,9 +179,9 @@ const AlertPanel = ({
         >
           {icon}
         </span>
-        <div className="grid gap-2">
+        <div className="grid gap-2 text-foreground">
           <p className="font-medium text-foreground">{title}</p>
-          <p>{children}</p>
+          <p className="text-foreground/80">{children}</p>
         </div>
       </div>
     </div>
