@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from './button';
 
+const StoryCanvas = ({ children }: { children: React.ReactNode }) => (
+  <div className="inline-flex items-start">{children}</div>
+);
+
 const PlusIcon = () => (
   <svg
     aria-hidden="true"
@@ -73,6 +77,11 @@ const meta = {
       },
     },
   },
+  render: (args) => (
+    <StoryCanvas>
+      <Button {...args} />
+    </StoryCanvas>
+  ),
 } satisfies Meta<typeof Button>;
 
 export default meta;
