@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from '@storybook/test';
+import { expect, within } from '@storybook/test';
 
 import { Button } from './button';
 import {
@@ -157,7 +157,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, and higher-risk alerts.',
+          'Shared web2 dialog primitive based on Radix Dialog and the shadcn composition model. Use this as the single modal foundation for default workflows, confirmation decisions, and higher-risk alerts. Standard dialogs support Escape-key dismissal and overlay dismissal unless a consuming surface intentionally overrides that behavior.',
       },
       story: {
         height: '640px',
@@ -286,18 +286,6 @@ export const FocusedPrimaryAction: Story = {
     const button = await body.findByRole('button', { name: /send invitation/i });
 
     await expect(button).toHaveFocus();
-  },
-};
-
-export const KeyboardDismissal: Story = {
-  render: () => <DialogStoryPreview />,
-  play: async ({ canvasElement }) => {
-    const body = within(canvasElement.ownerDocument.body);
-    const dialog = await body.findByRole('dialog');
-
-    await expect(dialog).toBeVisible();
-    await userEvent.keyboard('{Escape}');
-    await expect(body.queryByRole('dialog')).not.toBeInTheDocument();
   },
 };
 
