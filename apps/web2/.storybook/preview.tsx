@@ -2,17 +2,16 @@ import '../app/globals.css';
 
 import type { Decorator, Preview } from '@storybook/react';
 
+import { cn } from '@/lib/utils';
+
 const withTheme: Decorator = (Story, context) => {
   const isDark = context.globals.theme === 'dark';
 
-  if (typeof document !== 'undefined') {
-    document.documentElement.classList.toggle('dark', isDark);
-    document.body.classList.toggle('dark', isDark);
-  }
-
   return (
-    <div className="grid min-h-screen w-full place-items-center bg-background p-6 text-foreground transition-colors">
-      <Story />
+    <div className={cn('w-full transition-colors', isDark ? 'dark' : null)}>
+      <div className="grid w-full place-items-center bg-background p-6 text-foreground transition-colors">
+        <Story />
+      </div>
     </div>
   );
 };
