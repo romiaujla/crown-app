@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { cva } from 'class-variance-authority';
 
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const chipGroupVariants = cva(
@@ -36,7 +37,10 @@ const chipGroupVariants = cva(
 );
 
 const chipActionVariants = cva(
-  'inline-flex min-w-0 items-center gap-2 rounded-full px-3 py-1.5 font-sans text-sm font-medium leading-none transition-[color,background-color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none',
+  cn(
+    buttonVariants({ size: 'sm', variant: 'ghost' }),
+    'h-auto min-w-0 rounded-full bg-transparent px-3 py-1.5 font-medium leading-none shadow-none hover:bg-transparent focus-visible:ring-offset-0',
+  ),
   {
     variants: {
       removable: {
@@ -51,7 +55,10 @@ const chipActionVariants = cva(
 );
 
 const chipRemoveButtonVariants = cva(
-  'mr-1 inline-flex items-center justify-center self-center rounded-full border border-transparent p-1.5 text-muted-foreground transition-[background-color,color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:opacity-50',
+  cn(
+    buttonVariants({ iconOnly: true, size: 'sm', variant: 'ghost' }),
+    'mr-1 h-auto w-auto self-center rounded-full border border-transparent p-1.5 text-muted-foreground shadow-none focus-visible:ring-offset-0',
+  ),
   {
     variants: {
       selected: {
