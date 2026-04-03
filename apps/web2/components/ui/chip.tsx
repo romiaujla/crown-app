@@ -5,7 +5,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const chipGroupVariants = cva(
-  'inline-flex max-w-full items-stretch rounded-full border shadow-sm transition-[border-color,background-color,box-shadow] duration-150 ease-out',
+  'inline-grid w-max max-w-max shrink-0 grid-flow-col auto-cols-max items-stretch justify-start self-start justify-self-start place-self-start overflow-hidden rounded-full border align-middle shadow-sm transition-[border-color,background-color,box-shadow] duration-150 ease-out',
   {
     variants: {
       disabled: {
@@ -39,7 +39,7 @@ const chipGroupVariants = cva(
 const chipActionVariants = cva(
   cn(
     buttonVariants({ size: 'sm', variant: 'ghost' }),
-    'h-auto min-w-0 rounded-full bg-transparent px-3 py-1.5 font-medium leading-none shadow-none hover:bg-transparent focus-visible:ring-offset-0',
+    'h-auto w-auto min-w-0 max-w-max flex-none justify-start gap-2 rounded-full bg-transparent px-3.5 py-2.5 font-medium leading-none shadow-none hover:bg-transparent focus-visible:ring-offset-0',
   ),
   {
     variants: {
@@ -57,12 +57,12 @@ const chipActionVariants = cva(
 const chipRemoveButtonVariants = cva(
   cn(
     buttonVariants({ iconOnly: true, size: 'sm', variant: 'ghost' }),
-    'mr-1 h-auto w-auto self-center rounded-full border border-transparent p-1.5 text-muted-foreground shadow-none focus-visible:ring-offset-0',
+    'h-auto min-w-9 shrink-0 self-stretch rounded-none rounded-r-full border-l border-l-border/70 px-2 text-foreground/80 shadow-none focus-visible:ring-offset-0',
   ),
   {
     variants: {
       selected: {
-        true: 'hover:bg-primary/15 hover:text-foreground',
+        true: 'border-primary/30 hover:bg-primary/15 hover:text-foreground',
         false: 'hover:bg-muted hover:text-foreground',
       },
     },
@@ -75,7 +75,7 @@ const chipRemoveButtonVariants = cva(
 const RemoveIcon = () => (
   <svg
     aria-hidden="true"
-    className="h-3.5 w-3.5"
+    className="h-4 w-4"
     fill="none"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +85,7 @@ const RemoveIcon = () => (
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth="1.8"
+      strokeWidth="2"
     />
   </svg>
 );
@@ -140,7 +140,7 @@ export const Chip = React.forwardRef<HTMLButtonElement, ChipProps>(
               {leadingIcon}
             </span>
           ) : null}
-          <span className="truncate">{children}</span>
+          <span className="whitespace-nowrap">{children}</span>
         </button>
         {showRemoveButton ? (
           <button
