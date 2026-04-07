@@ -59,7 +59,7 @@ const meta = {
     },
     variant: {
       control: 'select',
-      options: ['default', 'secondary', 'ghost'],
+      options: ['default', 'destructive', 'secondary', 'ghost'],
     },
     iconPosition: {
       control: 'inline-radio',
@@ -96,6 +96,13 @@ export const Secondary: Story = {
   args: {
     variant: 'secondary',
     children: 'Secondary action',
+  },
+};
+
+export const Destructive: Story = {
+  args: {
+    variant: 'destructive',
+    children: 'Archive workspace',
   },
 };
 
