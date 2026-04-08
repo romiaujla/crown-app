@@ -138,4 +138,41 @@
     animation: none;
     transform: translateX(0);
   }
+
+  .ui-notification-timer,
+  .ui-notification-indeterminate {
+    animation: none;
+  }
+}
+
+@keyframes ui-notification-timer {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.ui-notification-timer {
+  animation-fill-mode: forwards;
+  animation-name: ui-notification-timer;
+  animation-timing-function: linear;
+  transform-origin: left center;
+}
+
+@keyframes ui-notification-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.ui-notification-indeterminate {
+  animation: ui-notification-indeterminate 1.2s ease-in-out infinite;
+  width: 40%;
 }
