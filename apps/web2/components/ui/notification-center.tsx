@@ -135,17 +135,12 @@ const CATEGORY_LABELS: Record<NotificationCategoryEnum, string> = {
   [NotificationCategoryEnum.SYSTEM]: 'System',
 };
 
-const SEVERITY_BADGE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]:
-    'border-emerald-300 bg-emerald-100 text-emerald-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.55)] dark:border-emerald-400/40 dark:bg-emerald-500/20 dark:text-emerald-50',
-  [NotificationSeverityEnum.INFO]:
-    'border-sky-300 bg-sky-100 text-sky-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.55)] dark:border-sky-400/40 dark:bg-sky-500/20 dark:text-sky-50',
-  [NotificationSeverityEnum.WARNING]:
-    'border-amber-300 bg-amber-100 text-amber-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.5)] dark:border-amber-400/40 dark:bg-amber-500/20 dark:text-amber-50',
-  [NotificationSeverityEnum.ERROR]:
-    'border-rose-300 bg-rose-100 text-rose-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.5)] dark:border-rose-400/40 dark:bg-rose-500/20 dark:text-rose-50',
-  [NotificationSeverityEnum.PROGRESS]:
-    'border-primary/30 bg-primary/15 text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.45)] dark:border-primary/40 dark:bg-primary/20 dark:text-primary-foreground',
+const SEVERITY_ICON_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]: 'text-emerald-700 dark:text-emerald-300',
+  [NotificationSeverityEnum.INFO]: 'text-sky-700 dark:text-sky-300',
+  [NotificationSeverityEnum.WARNING]: 'text-amber-700 dark:text-amber-300',
+  [NotificationSeverityEnum.ERROR]: 'text-rose-700 dark:text-rose-300',
+  [NotificationSeverityEnum.PROGRESS]: 'text-primary dark:text-primary',
 };
 
 const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
@@ -262,21 +257,15 @@ const NotificationToast = ({
       )}
     >
       <div className="flex items-start gap-3">
-        <div
+        <Icon
+          aria-hidden="true"
           className={cn(
-            'mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl border',
-            SEVERITY_BADGE_STYLES[entry.severity],
+            'mt-1 size-5 shrink-0',
+            SEVERITY_ICON_STYLES[entry.severity],
+            entry.severity === NotificationSeverityEnum.PROGRESS && 'animate-spin',
           )}
-        >
-          <Icon
-            aria-hidden="true"
-            className={cn(
-              'size-4',
-              entry.severity === NotificationSeverityEnum.PROGRESS && 'animate-spin',
-            )}
-            strokeWidth={2.1}
-          />
-        </div>
+          strokeWidth={2.15}
+        />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
@@ -667,21 +656,15 @@ export function NotificationsPanel({
         key={item.id}
       >
         <div className="flex items-start gap-3">
-          <div
+          <Icon
+            aria-hidden="true"
             className={cn(
-              'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-2xl border',
-              SEVERITY_BADGE_STYLES[item.severity],
+              'mt-1 size-5 shrink-0',
+              SEVERITY_ICON_STYLES[item.severity],
+              item.severity === NotificationSeverityEnum.PROGRESS && 'animate-spin',
             )}
-          >
-            <Icon
-              aria-hidden="true"
-              className={cn(
-                'size-4',
-                item.severity === NotificationSeverityEnum.PROGRESS && 'animate-spin',
-              )}
-              strokeWidth={2.1}
-            />
-          </div>
+            strokeWidth={2.15}
+          />
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
