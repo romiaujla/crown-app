@@ -136,7 +136,7 @@ const CATEGORY_LABELS: Record<NotificationCategoryEnum, string> = {
 };
 
 const SEVERITY_ICON_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'text-emerald-700 dark:text-emerald-300',
+  [NotificationSeverityEnum.SUCCESS]: 'text-green-600 dark:text-green-400',
   [NotificationSeverityEnum.INFO]: 'text-sky-700 dark:text-sky-300',
   [NotificationSeverityEnum.WARNING]: 'text-amber-700 dark:text-amber-300',
   [NotificationSeverityEnum.ERROR]: 'text-rose-700 dark:text-rose-300',
@@ -144,7 +144,7 @@ const SEVERITY_ICON_STYLES: Record<NotificationSeverityEnum, string> = {
 };
 
 const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'border-l-emerald-500',
+  [NotificationSeverityEnum.SUCCESS]: 'border-l-green-500',
   [NotificationSeverityEnum.INFO]: 'border-l-sky-500',
   [NotificationSeverityEnum.WARNING]: 'border-l-amber-500',
   [NotificationSeverityEnum.ERROR]: 'border-l-rose-500',
@@ -153,7 +153,7 @@ const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
 
 const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'border-emerald-200/80 bg-emerald-50 dark:border-emerald-500/25 dark:bg-emerald-950/35',
+    'border-green-200 bg-green-50 dark:border-[rgba(16,185,129,0.25)] dark:bg-[rgba(16,185,129,0.12)]',
   [NotificationSeverityEnum.INFO]:
     'border-sky-200/80 bg-sky-50 dark:border-sky-500/25 dark:bg-sky-950/35',
   [NotificationSeverityEnum.WARNING]:
@@ -165,11 +165,27 @@ const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
 };
 
 const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'bg-emerald-50/70 dark:bg-emerald-950/25',
+  [NotificationSeverityEnum.SUCCESS]: 'bg-green-50/70 dark:bg-[rgba(16,185,129,0.12)]',
   [NotificationSeverityEnum.INFO]: 'bg-sky-50/70 dark:bg-sky-950/25',
   [NotificationSeverityEnum.WARNING]: 'bg-amber-50/75 dark:bg-amber-950/25',
   [NotificationSeverityEnum.ERROR]: 'bg-rose-50/75 dark:bg-rose-950/25',
   [NotificationSeverityEnum.PROGRESS]: 'bg-primary/10 dark:bg-primary/15',
+};
+
+const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]: 'text-gray-900 dark:text-green-200',
+  [NotificationSeverityEnum.INFO]: 'text-foreground',
+  [NotificationSeverityEnum.WARNING]: 'text-foreground',
+  [NotificationSeverityEnum.ERROR]: 'text-foreground',
+  [NotificationSeverityEnum.PROGRESS]: 'text-foreground',
+};
+
+const SEVERITY_BODY_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]: 'text-gray-700 dark:text-green-300',
+  [NotificationSeverityEnum.INFO]: 'text-muted-foreground',
+  [NotificationSeverityEnum.WARNING]: 'text-muted-foreground',
+  [NotificationSeverityEnum.ERROR]: 'text-muted-foreground',
+  [NotificationSeverityEnum.PROGRESS]: 'text-muted-foreground',
 };
 
 const ATTENTION_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
@@ -294,7 +310,12 @@ const NotificationToast = ({
                   <CategoryIcon aria-hidden="true" className="size-3.5" />
                   {CATEGORY_LABELS[entry.category ?? NotificationCategoryEnum.SYSTEM]}
                 </span>
-                <p className="font-display text-base font-semibold leading-5 text-foreground">
+                <p
+                  className={cn(
+                    'font-display text-base font-semibold leading-5',
+                    SEVERITY_TITLE_STYLES[entry.severity],
+                  )}
+                >
                   {entry.title}
                 </p>
                 {countLabel ? (
@@ -304,7 +325,9 @@ const NotificationToast = ({
                 ) : null}
               </div>
               {entry.description ? (
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">{entry.description}</p>
+                <p className={cn('mt-1 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
+                  {entry.description}
+                </p>
               ) : null}
               {showNextStep ? (
                 <p className="mt-2 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
@@ -717,7 +740,14 @@ export function NotificationsPanel({
                 <CategoryIcon aria-hidden="true" className="size-3.5" />
                 {CATEGORY_LABELS[item.category ?? NotificationCategoryEnum.SYSTEM]}
               </span>
-              <p className="font-display text-base font-semibold text-foreground">{item.title}</p>
+              <p
+                className={cn(
+                  'font-display text-base font-semibold',
+                  SEVERITY_TITLE_STYLES[item.severity],
+                )}
+              >
+                {item.title}
+              </p>
               {item.count > 1 ? (
                 <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
                   {item.count} events
@@ -728,7 +758,9 @@ export function NotificationsPanel({
               </span>
             </div>
             {item.description ? (
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">{item.description}</p>
+              <p className={cn('mt-1 text-sm leading-6', SEVERITY_BODY_STYLES[item.severity])}>
+                {item.description}
+              </p>
             ) : null}
             {showNextStep ? (
               <p className="mt-3 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
