@@ -151,15 +151,38 @@ const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.PROGRESS]: 'border-l-primary',
 };
 
+const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]:
+    'border-emerald-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_76%_96%/.98))] dark:border-emerald-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_70%_14%/.92))]',
+  [NotificationSeverityEnum.INFO]:
+    'border-sky-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(204_100%_97%/.98))] dark:border-sky-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(215_70%_14%/.92))]',
+  [NotificationSeverityEnum.WARNING]:
+    'border-amber-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(48_100%_95%/.98))] dark:border-amber-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(42_80%_14%/.92))]',
+  [NotificationSeverityEnum.ERROR]:
+    'border-rose-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(351_100%_96%/.98))] dark:border-rose-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(350_75%_14%/.92))]',
+  [NotificationSeverityEnum.PROGRESS]:
+    'border-primary/20 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.12))] dark:border-primary/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.16))]',
+};
+
+const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]:
+    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_76%_97%/.92))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_70%_14%/.74))]',
+  [NotificationSeverityEnum.INFO]:
+    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(204_100%_97%/.92))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(215_70%_14%/.74))]',
+  [NotificationSeverityEnum.WARNING]:
+    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(48_100%_95%/.94))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(42_80%_14%/.76))]',
+  [NotificationSeverityEnum.ERROR]:
+    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(351_100%_96%/.94))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(350_75%_14%/.78))]',
+  [NotificationSeverityEnum.PROGRESS]:
+    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.08))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.12))]',
+};
+
 const ATTENTION_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]: '',
   [NotificationSeverityEnum.INFO]: '',
-  [NotificationSeverityEnum.WARNING]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--accent)/0.38))] shadow-[0_18px_44px_hsl(var(--foreground)/0.12)]',
-  [NotificationSeverityEnum.ERROR]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--destructive)/0.08))] shadow-[0_18px_44px_hsl(var(--foreground)/0.16)]',
-  [NotificationSeverityEnum.PROGRESS]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.08))] shadow-[0_18px_44px_hsl(var(--foreground)/0.12)]',
+  [NotificationSeverityEnum.WARNING]: 'shadow-[0_18px_44px_hsl(var(--foreground)/0.12)]',
+  [NotificationSeverityEnum.ERROR]: 'shadow-[0_18px_44px_hsl(var(--foreground)/0.16)]',
+  [NotificationSeverityEnum.PROGRESS]: 'shadow-[0_18px_44px_hsl(var(--foreground)/0.12)]',
 };
 
 const isAutoDismissSeverity = (severity: NotificationSeverityEnum) =>
@@ -252,7 +275,8 @@ const NotificationToast = ({
   return (
     <div
       className={cn(
-        'group/notification relative overflow-hidden rounded-[26px] border border-border/80 bg-card/95 p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)] backdrop-blur-md',
+        'group/notification relative overflow-hidden rounded-[26px] border p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)] backdrop-blur-md',
+        SEVERITY_TOAST_SURFACE_STYLES[entry.severity],
         'w-[min(24rem,calc(100vw-2rem))]',
       )}
     >
@@ -362,6 +386,31 @@ const NotificationToast = ({
     </div>
   );
 };
+
+export function NotificationPreview({
+  count = 1,
+  createdAt = Date.now(),
+  dismissible = true,
+  id = 'storybook-notification',
+  status = NotificationStatusEnum.ACTIVE,
+  updatedAt = Date.now(),
+  ...notification
+}: Partial<NotificationRecord> & NotificationInput) {
+  const entry: NotificationRecord = {
+    count,
+    createdAt,
+    description: notification.description,
+    dismissible,
+    duration: resolveNotificationDuration(notification),
+    id,
+    position: notification.position ?? DEFAULT_POSITION,
+    status,
+    updatedAt,
+    ...notification,
+  };
+
+  return <NotificationToast entry={entry} onDismiss={() => undefined} />;
+}
 
 const renderTimestamp = (value: number) =>
   new Intl.DateTimeFormat('en-US', {
@@ -649,8 +698,9 @@ export function NotificationsPanel({
     return (
       <article
         className={cn(
-          'rounded-[24px] border border-border/80 border-l-4 bg-card/80 p-4 shadow-[0_12px_32px_hsl(var(--foreground)/0.08)]',
+          'rounded-[24px] border border-l-4 p-4 shadow-[0_12px_32px_hsl(var(--foreground)/0.08)]',
           SEVERITY_PANEL_STYLES[item.severity],
+          SEVERITY_PANEL_SURFACE_STYLES[item.severity],
           item.status === NotificationStatusEnum.ACTIVE && ATTENTION_PANEL_STYLES[item.severity],
         )}
         key={item.id}

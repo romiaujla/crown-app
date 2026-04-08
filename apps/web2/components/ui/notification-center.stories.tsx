@@ -7,6 +7,7 @@ import { Button } from './button';
 import {
   NotificationCategoryEnum,
   NotificationPositionEnum,
+  NotificationPreview,
   NotificationProvider,
   NotificationSeverityEnum,
   NotificationsPanel,
@@ -24,72 +25,30 @@ type AutoFireNotification = {
 };
 
 const StoryFrame = ({ children }: { children: React.ReactNode }) => (
-  <div className="mx-auto flex min-h-[22rem] w-full max-w-3xl items-center justify-center rounded-[32px] border border-border/70 bg-background/90 p-6 shadow-[0_24px_80px_hsl(var(--foreground)/0.08)] sm:p-8">
+  <div className="mx-auto flex min-h-[22rem] w-full max-w-3xl items-center justify-center bg-background/90 p-6 sm:p-8">
     {children}
   </div>
 );
 
-const ToastAutoFire = ({ notification }: { notification: AutoFireNotification }) => {
-  const { completeTask, showNotification, startTask } = useNotifications();
-
-  React.useEffect(() => {
-    if (notification.severity === NotificationSeverityEnum.PROGRESS) {
-      const id = startTask({
-        action: notification.actionLabel
-          ? {
-              href: '#activity-log',
-              label: notification.actionLabel,
-            }
-          : undefined,
-        category: notification.category,
-        description: notification.description,
-        nextStep: notification.nextStep,
-        position: notification.position,
-        title: notification.title,
-      });
-
-      const timeout = window.setTimeout(() => {
-        completeTask(id, {
-          action: notification.actionLabel
-            ? {
-                href: '#activity-log',
-                label: notification.actionLabel,
-              }
-            : undefined,
-          category: notification.category,
-          description: 'The export finished and is now ready to review.',
-          title: 'Export complete',
-        });
-      }, 1800);
-
-      return () => window.clearTimeout(timeout);
-    }
-
-    showNotification({
-      action: notification.actionLabel
-        ? {
-            href: '#details',
-            label: notification.actionLabel,
-          }
-        : undefined,
-      category: notification.category,
-      description: notification.description,
-      nextStep: notification.nextStep,
-      position: notification.position,
-      severity: notification.severity,
-      title: notification.title,
-    });
-  }, [completeTask, notification, showNotification, startTask]);
-
+const StaticNotificationStory = ({ notification }: { notification: AutoFireNotification }) => {
   return (
     <StoryFrame>
-      <div className="max-w-xl text-center">
-        <p className="font-display text-2xl font-semibold text-foreground">{notification.title}</p>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          This story opens a single {notification.severity} notification so the visual treatment can
-          be reviewed without the full center demo.
-        </p>
-      </div>
+      <NotificationPreview
+        action={
+          notification.actionLabel
+            ? {
+                href: '#details',
+                label: notification.actionLabel,
+              }
+            : undefined
+        }
+        category={notification.category}
+        description={notification.description}
+        nextStep={notification.nextStep}
+        position={notification.position}
+        severity={notification.severity}
+        title={notification.title}
+      />
     </StoryFrame>
   );
 };
@@ -241,7 +200,7 @@ type Story = StoryObj<typeof meta>;
 
 export const SuccessAlert: Story = {
   render: () => (
-    <ToastAutoFire
+    <StaticNotificationStory
       notification={{
         category: NotificationCategoryEnum.ACCESS,
         description: 'Workspace access updates were saved successfully.',
@@ -254,7 +213,7 @@ export const SuccessAlert: Story = {
 
 export const InfoAlert: Story = {
   render: () => (
-    <ToastAutoFire
+    <StaticNotificationStory
       notification={{
         category: NotificationCategoryEnum.SYSTEM,
         description: 'The weekly operations digest is ready to review.',
@@ -268,7 +227,7 @@ export const InfoAlert: Story = {
 
 export const WarningAlert: Story = {
   render: () => (
-    <ToastAutoFire
+    <StaticNotificationStory
       notification={{
         actionLabel: 'Review billing',
         category: NotificationCategoryEnum.BILLING,
@@ -284,7 +243,7 @@ export const WarningAlert: Story = {
 
 export const ErrorAlert: Story = {
   render: () => (
-    <ToastAutoFire
+    <StaticNotificationStory
       notification={{
         actionLabel: 'Open incident',
         category: NotificationCategoryEnum.SYNC,
@@ -299,7 +258,7 @@ export const ErrorAlert: Story = {
 
 export const ProgressAlert: Story = {
   render: () => (
-    <ToastAutoFire
+    <StaticNotificationStory
       notification={{
         actionLabel: 'View details',
         category: NotificationCategoryEnum.EXPORT,
