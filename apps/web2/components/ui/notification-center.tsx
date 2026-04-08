@@ -153,28 +153,23 @@ const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
 
 const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'border-emerald-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_76%_96%/.98))] dark:border-emerald-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_70%_14%/.92))]',
+    'border-emerald-200/80 bg-emerald-50 dark:border-emerald-500/25 dark:bg-emerald-950/35',
   [NotificationSeverityEnum.INFO]:
-    'border-sky-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(204_100%_97%/.98))] dark:border-sky-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(215_70%_14%/.92))]',
+    'border-sky-200/80 bg-sky-50 dark:border-sky-500/25 dark:bg-sky-950/35',
   [NotificationSeverityEnum.WARNING]:
-    'border-amber-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(48_100%_95%/.98))] dark:border-amber-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(42_80%_14%/.92))]',
+    'border-amber-200/80 bg-amber-50 dark:border-amber-500/25 dark:bg-amber-950/35',
   [NotificationSeverityEnum.ERROR]:
-    'border-rose-200/80 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(351_100%_96%/.98))] dark:border-rose-500/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(350_75%_14%/.92))]',
+    'border-rose-200/80 bg-rose-50 dark:border-rose-500/25 dark:bg-rose-950/35',
   [NotificationSeverityEnum.PROGRESS]:
-    'border-primary/20 bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.12))] dark:border-primary/25 dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.16))]',
+    'border-primary/20 bg-primary/10 dark:border-primary/25 dark:bg-primary/15',
 };
 
 const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_76%_97%/.92))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(142_70%_14%/.74))]',
-  [NotificationSeverityEnum.INFO]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(204_100%_97%/.92))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(215_70%_14%/.74))]',
-  [NotificationSeverityEnum.WARNING]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(48_100%_95%/.94))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(42_80%_14%/.76))]',
-  [NotificationSeverityEnum.ERROR]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(351_100%_96%/.94))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(350_75%_14%/.78))]',
-  [NotificationSeverityEnum.PROGRESS]:
-    'bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.08))] dark:bg-[linear-gradient(135deg,hsl(var(--card)),hsl(var(--primary)/0.12))]',
+  [NotificationSeverityEnum.SUCCESS]: 'bg-emerald-50/70 dark:bg-emerald-950/25',
+  [NotificationSeverityEnum.INFO]: 'bg-sky-50/70 dark:bg-sky-950/25',
+  [NotificationSeverityEnum.WARNING]: 'bg-amber-50/75 dark:bg-amber-950/25',
+  [NotificationSeverityEnum.ERROR]: 'bg-rose-50/75 dark:bg-rose-950/25',
+  [NotificationSeverityEnum.PROGRESS]: 'bg-primary/10 dark:bg-primary/15',
 };
 
 const ATTENTION_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
