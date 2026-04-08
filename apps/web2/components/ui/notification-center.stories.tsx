@@ -13,99 +13,110 @@ import {
   useNotifications,
 } from './notification-center';
 
-const StoryShell = ({ children }: { children: React.ReactNode }) => (
-  <div className="mx-auto flex min-h-[44rem] w-full max-w-6xl flex-col gap-6 rounded-[32px] border border-border/70 bg-background/80 p-6 shadow-[0_24px_80px_hsl(var(--foreground)/0.08)] sm:p-8">
+type AutoFireNotification = {
+  actionLabel?: string;
+  category?: NotificationCategoryEnum;
+  description?: string;
+  nextStep?: string;
+  position?: NotificationPositionEnum;
+  severity: NotificationSeverityEnum;
+  title: string;
+};
+
+const StoryFrame = ({ children }: { children: React.ReactNode }) => (
+  <div className="mx-auto flex min-h-[22rem] w-full max-w-3xl items-center justify-center rounded-[32px] border border-border/70 bg-background/90 p-6 shadow-[0_24px_80px_hsl(var(--foreground)/0.08)] sm:p-8">
     {children}
   </div>
 );
 
-const NotificationStoryHarness = ({
-  autoFire,
-  severity,
-}: {
-  autoFire?: {
-    category?: NotificationCategoryEnum;
-    description?: string;
-    nextStep?: string;
-    position?: NotificationPositionEnum;
-    severity: NotificationSeverityEnum;
-    title: string;
-  };
-  severity?: NotificationSeverityEnum;
-}) => {
+const ToastAutoFire = ({ notification }: { notification: AutoFireNotification }) => {
   const { completeTask, showNotification, startTask } = useNotifications();
 
   React.useEffect(() => {
-    if (!autoFire) {
-      return;
-    }
-
-    if (autoFire.severity === NotificationSeverityEnum.PROGRESS) {
+    if (notification.severity === NotificationSeverityEnum.PROGRESS) {
       const id = startTask({
-        action: {
-          href: '#activity-log',
-          label: 'View details',
-        },
-        category: autoFire.category,
-        description: autoFire.description,
-        nextStep: autoFire.nextStep,
-        position: autoFire.position,
-        title: autoFire.title,
+        action: notification.actionLabel
+          ? {
+              href: '#activity-log',
+              label: notification.actionLabel,
+            }
+          : undefined,
+        category: notification.category,
+        description: notification.description,
+        nextStep: notification.nextStep,
+        position: notification.position,
+        title: notification.title,
       });
 
       const timeout = window.setTimeout(() => {
         completeTask(id, {
-          action: {
-            href: '#activity-log',
-            label: 'View details',
-          },
-          category: autoFire.category,
-          description: 'The export finished and the file is now available in the activity log.',
-          position: autoFire.position,
+          action: notification.actionLabel
+            ? {
+                href: '#activity-log',
+                label: notification.actionLabel,
+              }
+            : undefined,
+          category: notification.category,
+          description: 'The export finished and is now ready to review.',
           title: 'Export complete',
         });
       }, 1800);
 
-      return () => {
-        window.clearTimeout(timeout);
-      };
+      return () => window.clearTimeout(timeout);
     }
 
     showNotification({
-      category: autoFire.category,
-      description: autoFire.description,
-      nextStep: autoFire.nextStep,
-      position: autoFire.position,
-      severity: autoFire.severity,
-      title: autoFire.title,
+      action: notification.actionLabel
+        ? {
+            href: '#details',
+            label: notification.actionLabel,
+          }
+        : undefined,
+      category: notification.category,
+      description: notification.description,
+      nextStep: notification.nextStep,
+      position: notification.position,
+      severity: notification.severity,
+      title: notification.title,
     });
-  }, [autoFire, completeTask, showNotification, startTask]);
+  }, [completeTask, notification, showNotification, startTask]);
 
   return (
-    <StoryShell>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
-            Crown web2
+    <StoryFrame>
+      <div className="max-w-xl text-center">
+        <p className="font-display text-2xl font-semibold text-foreground">{notification.title}</p>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          This story opens a single {notification.severity} notification so the visual treatment can
+          be reviewed without the full center demo.
+        </p>
+      </div>
+    </StoryFrame>
+  );
+};
+
+const ToastTriggerActions = () => {
+  const { completeTask, showNotification, startTask } = useNotifications();
+
+  return (
+    <StoryFrame>
+      <div className="flex max-w-2xl flex-col items-center gap-5 text-center">
+        <div className="space-y-2">
+          <p className="font-display text-2xl font-semibold text-foreground">
+            Trigger one notification at a time
           </p>
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground">
-            Notification defaults for the dashboard shell
-          </h2>
           <p className="text-sm leading-6 text-muted-foreground">
-            Toasts stay transient for success and info, warnings/errors stay durable, and repeated
-            events aggregate instead of stacking endlessly. The log panel keeps every message
-            recoverable for keyboard and screen-reader users.
+            Each button opens a single toast variant so we can review the treatment cleanly.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-center gap-2">
           <Button
             onClick={() =>
               showNotification({
                 category: NotificationCategoryEnum.ACCESS,
-                description: 'Tenant access was updated for Operations East and Finance West.',
+                description: 'Workspace access updates were saved successfully.',
                 severity: NotificationSeverityEnum.SUCCESS,
-                title: 'Permissions saved',
+                title: 'Changes saved',
               })
             }
             size="sm"
@@ -116,7 +127,7 @@ const NotificationStoryHarness = ({
             onClick={() =>
               showNotification({
                 category: NotificationCategoryEnum.SYSTEM,
-                description: 'The weekly health summary is ready in the reporting workspace.',
+                description: 'The weekly operations digest is ready to review.',
                 severity: NotificationSeverityEnum.INFO,
                 title: 'Digest available',
               })
@@ -167,96 +178,38 @@ const NotificationStoryHarness = ({
           >
             Error
           </Button>
-        </div>
-      </div>
+          <Button
+            onClick={() => {
+              const id = startTask({
+                action: {
+                  href: '#activity-log',
+                  label: 'View details',
+                },
+                category: NotificationCategoryEnum.EXPORT,
+                description: 'The tenant data export is currently being prepared.',
+                title: 'Preparing export',
+              });
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(22rem,0.8fr)]">
-        <div className="rounded-[28px] border border-border/70 bg-card/75 p-5 shadow-[0_18px_48px_hsl(var(--foreground)/0.08)]">
-          <p className="font-display text-lg font-semibold text-foreground">Interaction demo</p>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-            Trigger multiple events to confirm the four-toast queue, newest-first behavior, and
-            aggregation defaults. Repeated export completions collapse into a single log entry and
-            toast count.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Button
-              onClick={() => {
-                showNotification({
-                  category: NotificationCategoryEnum.EXPORT,
-                  dedupeKey: 'export-complete',
-                  description: 'The finance export is ready for download.',
-                  severity: NotificationSeverityEnum.SUCCESS,
-                  title: 'Export complete',
-                });
-                showNotification({
-                  category: NotificationCategoryEnum.EXPORT,
-                  dedupeKey: 'export-complete',
-                  description: 'The finance export is ready for download.',
-                  severity: NotificationSeverityEnum.SUCCESS,
-                  title: 'Export complete',
-                });
-                showNotification({
-                  category: NotificationCategoryEnum.EXPORT,
-                  dedupeKey: 'export-complete',
-                  description: 'The finance export is ready for download.',
-                  severity: NotificationSeverityEnum.SUCCESS,
-                  title: 'Export complete',
-                });
-              }}
-              size="sm"
-            >
-              Aggregate exports
-            </Button>
-            <Button
-              onClick={() => {
-                const id = startTask({
+              window.setTimeout(() => {
+                completeTask(id, {
                   action: {
                     href: '#activity-log',
                     label: 'View details',
                   },
                   category: NotificationCategoryEnum.EXPORT,
-                  description: 'The tenant data export is currently being prepared.',
-                  title: 'Preparing export',
+                  description: 'The export finished and is now available to review.',
+                  title: 'Export complete',
                 });
-
-                window.setTimeout(() => {
-                  completeTask(id, {
-                    action: {
-                      href: '#activity-log',
-                      label: 'View details',
-                    },
-                    category: NotificationCategoryEnum.EXPORT,
-                    description: 'The export finished and is now available to review.',
-                    title: 'Export complete',
-                  });
-                }, 1800);
-              }}
-              size="sm"
-              variant="secondary"
-            >
-              Progress task
-            </Button>
-            <Button
-              onClick={() =>
-                showNotification({
-                  category: NotificationCategoryEnum.SYSTEM,
-                  description: 'You can move these advisory alerts to any supported edge position.',
-                  position: NotificationPositionEnum.BOTTOM_MIDDLE,
-                  severity: severity ?? NotificationSeverityEnum.INFO,
-                  title: 'Bottom-middle placement',
-                })
-              }
-              size="sm"
-              variant="secondary"
-            >
-              Bottom-middle
-            </Button>
-          </div>
+              }, 1800);
+            }}
+            size="sm"
+            variant="secondary"
+          >
+            Progress
+          </Button>
         </div>
-
-        <NotificationsPanel actionHref="#notifications-center" />
       </div>
-    </StoryShell>
+    </StoryFrame>
   );
 };
 
@@ -269,7 +222,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 notification system built on top of shadcn sonner. Success and informational toasts auto-dismiss with a progress bar, warnings and errors stay durable by default, progress tasks persist until completion, and a companion log panel keeps the message history recoverable.',
+          'Reusable web2 notification system built on top of shadcn sonner. Storybook keeps the surface intentionally small: one trigger story and one static story per notification type.',
       },
     },
   },
@@ -286,14 +239,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => <NotificationStoryHarness />,
-};
-
-export const SuccessAutoDismiss: Story = {
+export const SuccessAlert: Story = {
   render: () => (
-    <NotificationStoryHarness
-      autoFire={{
+    <ToastAutoFire
+      notification={{
         category: NotificationCategoryEnum.ACCESS,
         description: 'Workspace access updates were saved successfully.',
         severity: NotificationSeverityEnum.SUCCESS,
@@ -303,45 +252,65 @@ export const SuccessAutoDismiss: Story = {
   ),
 };
 
-export const PersistentWarning: Story = {
+export const InfoAlert: Story = {
   render: () => (
-    <NotificationStoryHarness
-      autoFire={{
-        category: NotificationCategoryEnum.BILLING,
-        description: 'Tenant provisioning is waiting for one missing billing contact.',
-        nextStep: 'Assign a billing contact and resume provisioning from the tenant checklist.',
-        severity: NotificationSeverityEnum.WARNING,
-        title: 'Provisioning blocked',
+    <ToastAutoFire
+      notification={{
+        category: NotificationCategoryEnum.SYSTEM,
+        description: 'The weekly operations digest is ready to review.',
+        position: NotificationPositionEnum.BOTTOM_MIDDLE,
+        severity: NotificationSeverityEnum.INFO,
+        title: 'Digest available',
       }}
     />
   ),
 };
 
-export const PersistentError: Story = {
+export const WarningAlert: Story = {
   render: () => (
-    <NotificationStoryHarness
-      autoFire={{
+    <ToastAutoFire
+      notification={{
+        actionLabel: 'Review billing',
+        category: NotificationCategoryEnum.BILLING,
+        description: 'Two tenants are nearing the billing retry limit and need review.',
+        nextStep:
+          'Open billing review and confirm the retry owner before the next invoice attempt.',
+        severity: NotificationSeverityEnum.WARNING,
+        title: 'Attention needed',
+      }}
+    />
+  ),
+};
+
+export const ErrorAlert: Story = {
+  render: () => (
+    <ToastAutoFire
+      notification={{
+        actionLabel: 'Open incident',
         category: NotificationCategoryEnum.SYNC,
         description: 'The latest sync failed. Open the incident to retry or inspect credentials.',
         nextStep: 'Open the incident timeline, verify credentials, and retry the sync.',
         severity: NotificationSeverityEnum.ERROR,
         title: 'Sync failed',
       }}
-      severity={NotificationSeverityEnum.ERROR}
     />
   ),
 };
 
-export const ProgressLifecycle: Story = {
+export const ProgressAlert: Story = {
   render: () => (
-    <NotificationStoryHarness
-      autoFire={{
+    <ToastAutoFire
+      notification={{
+        actionLabel: 'View details',
         category: NotificationCategoryEnum.EXPORT,
         description: 'Compiling the export package for the selected tenants.',
-        position: NotificationPositionEnum.TOP_RIGHT,
         severity: NotificationSeverityEnum.PROGRESS,
         title: 'Preparing export',
       }}
     />
   ),
+};
+
+export const NotificationCenter: Story = {
+  render: () => <ToastTriggerActions />,
 };

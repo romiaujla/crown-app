@@ -137,15 +137,15 @@ const CATEGORY_LABELS: Record<NotificationCategoryEnum, string> = {
 
 const SEVERITY_BADGE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'border-emerald-200/80 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/12 dark:text-emerald-100',
+    'border-emerald-300 bg-emerald-100 text-emerald-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.55)] dark:border-emerald-400/40 dark:bg-emerald-500/20 dark:text-emerald-50',
   [NotificationSeverityEnum.INFO]:
-    'border-sky-200/80 bg-sky-50 text-sky-900 dark:border-sky-500/30 dark:bg-sky-500/12 dark:text-sky-100',
+    'border-sky-300 bg-sky-100 text-sky-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.55)] dark:border-sky-400/40 dark:bg-sky-500/20 dark:text-sky-50',
   [NotificationSeverityEnum.WARNING]:
-    'border-amber-200/80 bg-amber-50 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/12 dark:text-amber-100',
+    'border-amber-300 bg-amber-100 text-amber-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.5)] dark:border-amber-400/40 dark:bg-amber-500/20 dark:text-amber-50',
   [NotificationSeverityEnum.ERROR]:
-    'border-rose-200/80 bg-rose-50 text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/12 dark:text-rose-100',
+    'border-rose-300 bg-rose-100 text-rose-950 shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.5)] dark:border-rose-400/40 dark:bg-rose-500/20 dark:text-rose-50',
   [NotificationSeverityEnum.PROGRESS]:
-    'border-primary/15 bg-primary/10 text-foreground dark:border-primary/30 dark:bg-primary/12 dark:text-primary-foreground',
+    'border-primary/30 bg-primary/15 text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%_/_0.45)] dark:border-primary/40 dark:bg-primary/20 dark:text-primary-foreground',
 };
 
 const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
