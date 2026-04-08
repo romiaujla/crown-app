@@ -25,7 +25,7 @@ type AutoFireNotification = {
 };
 
 const StoryFrame = ({ children }: { children: React.ReactNode }) => (
-  <div className="mx-auto flex min-h-[22rem] w-full max-w-3xl items-center justify-center bg-background/90 p-6 sm:p-8">
+  <div className="mx-auto flex min-h-[22rem] w-full max-w-3xl items-center justify-center p-6 sm:p-8">
     {children}
   </div>
 );

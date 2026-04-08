@@ -153,7 +153,7 @@ const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
 
 const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'border-green-200 bg-green-50 dark:border-[rgba(16,185,129,0.25)] dark:bg-[rgba(16,185,129,0.12)]',
+    'border-green-200 border-l-4 border-l-green-500 bg-white shadow-[0_18px_44px_rgba(16,185,129,0.08)] dark:border-[rgba(16,185,129,0.25)] dark:border-l-green-400 dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_18px_44px_rgba(3,105,77,0.24)]',
   [NotificationSeverityEnum.INFO]:
     'border-sky-200/80 bg-sky-50 dark:border-sky-500/25 dark:bg-sky-950/35',
   [NotificationSeverityEnum.WARNING]:
@@ -165,7 +165,8 @@ const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
 };
 
 const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'bg-green-50/70 dark:bg-[rgba(16,185,129,0.12)]',
+  [NotificationSeverityEnum.SUCCESS]:
+    'bg-white shadow-[0_12px_28px_rgba(16,185,129,0.06)] dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,77,0.18)]',
   [NotificationSeverityEnum.INFO]: 'bg-sky-50/70 dark:bg-sky-950/25',
   [NotificationSeverityEnum.WARNING]: 'bg-amber-50/75 dark:bg-amber-950/25',
   [NotificationSeverityEnum.ERROR]: 'bg-rose-50/75 dark:bg-rose-950/25',
@@ -173,7 +174,7 @@ const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
 };
 
 const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'text-gray-900 dark:text-green-200',
+  [NotificationSeverityEnum.SUCCESS]: '!text-slate-950 dark:!text-green-200',
   [NotificationSeverityEnum.INFO]: 'text-foreground',
   [NotificationSeverityEnum.WARNING]: 'text-foreground',
   [NotificationSeverityEnum.ERROR]: 'text-foreground',
@@ -181,11 +182,40 @@ const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
 };
 
 const SEVERITY_BODY_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'text-gray-700 dark:text-green-300',
+  [NotificationSeverityEnum.SUCCESS]: '!text-slate-700 dark:!text-green-300',
   [NotificationSeverityEnum.INFO]: 'text-muted-foreground',
   [NotificationSeverityEnum.WARNING]: 'text-muted-foreground',
   [NotificationSeverityEnum.ERROR]: 'text-muted-foreground',
   [NotificationSeverityEnum.PROGRESS]: 'text-muted-foreground',
+};
+
+const SEVERITY_BADGE_TEXT_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]: '!text-slate-700 dark:!text-muted-foreground',
+  [NotificationSeverityEnum.INFO]: 'text-muted-foreground',
+  [NotificationSeverityEnum.WARNING]: 'text-muted-foreground',
+  [NotificationSeverityEnum.ERROR]: 'text-muted-foreground',
+  [NotificationSeverityEnum.PROGRESS]: 'text-muted-foreground',
+};
+
+const SEVERITY_BADGE_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]: 'bg-slate-50 ring-1 ring-slate-200/80',
+  [NotificationSeverityEnum.INFO]: 'bg-muted',
+  [NotificationSeverityEnum.WARNING]: 'bg-muted',
+  [NotificationSeverityEnum.ERROR]: 'bg-muted',
+  [NotificationSeverityEnum.PROGRESS]: 'bg-muted',
+};
+
+const SEVERITY_DISMISS_BUTTON_STYLES: Record<NotificationSeverityEnum, string> = {
+  [NotificationSeverityEnum.SUCCESS]:
+    'text-slate-400 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-600 focus-visible:ring-green-200',
+  [NotificationSeverityEnum.INFO]:
+    'text-muted-foreground hover:border-border/80 hover:bg-muted/70 hover:text-foreground',
+  [NotificationSeverityEnum.WARNING]:
+    'text-muted-foreground hover:border-border/80 hover:bg-muted/70 hover:text-foreground',
+  [NotificationSeverityEnum.ERROR]:
+    'text-muted-foreground hover:border-border/80 hover:bg-muted/70 hover:text-foreground',
+  [NotificationSeverityEnum.PROGRESS]:
+    'text-muted-foreground hover:border-border/80 hover:bg-muted/70 hover:text-foreground',
 };
 
 const ATTENTION_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
@@ -286,7 +316,7 @@ const NotificationToast = ({
   return (
     <div
       className={cn(
-        'group/notification relative overflow-hidden rounded-[26px] border p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)] backdrop-blur-md',
+        'group/notification relative overflow-hidden rounded-[22px] border p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)]',
         SEVERITY_TOAST_SURFACE_STYLES[entry.severity],
         'w-[min(24rem,calc(100vw-2rem))]',
       )}
@@ -305,30 +335,36 @@ const NotificationToast = ({
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+              <p
+                className={cn(
+                  'font-display text-base font-semibold leading-5 tracking-[-0.01em]',
+                  SEVERITY_TITLE_STYLES[entry.severity],
+                )}
+              >
+                {entry.title}
+              </p>
+              {entry.description ? (
+                <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
+                  {entry.description}
+                </p>
+              ) : null}
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium',
+                    SEVERITY_BADGE_SURFACE_STYLES[entry.severity],
+                    SEVERITY_BADGE_TEXT_STYLES[entry.severity],
+                  )}
+                >
                   <CategoryIcon aria-hidden="true" className="size-3.5" />
                   {CATEGORY_LABELS[entry.category ?? NotificationCategoryEnum.SYSTEM]}
                 </span>
-                <p
-                  className={cn(
-                    'font-display text-base font-semibold leading-5',
-                    SEVERITY_TITLE_STYLES[entry.severity],
-                  )}
-                >
-                  {entry.title}
-                </p>
                 {countLabel ? (
-                  <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
+                  <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
                     {countLabel}
                   </span>
                 ) : null}
               </div>
-              {entry.description ? (
-                <p className={cn('mt-1 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
-                  {entry.description}
-                </p>
-              ) : null}
               {showNextStep ? (
                 <p className="mt-2 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
                   Next step: {entry.nextStep}
@@ -339,7 +375,10 @@ const NotificationToast = ({
             {entry.dismissible ? (
               <button
                 aria-label="Dismiss notification"
-                className="rounded-full border border-transparent p-1 text-muted-foreground transition-colors hover:border-border/80 hover:bg-muted/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                className={cn(
+                  'rounded-full border border-transparent p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-card',
+                  SEVERITY_DISMISS_BUTTON_STYLES[entry.severity],
+                )}
                 onClick={() => onDismiss(entry.id)}
                 type="button"
               >
@@ -735,33 +774,39 @@ export function NotificationsPanel({
           />
 
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                <CategoryIcon aria-hidden="true" className="size-3.5" />
-                {CATEGORY_LABELS[item.category ?? NotificationCategoryEnum.SYSTEM]}
-              </span>
-              <p
-                className={cn(
-                  'font-display text-base font-semibold',
-                  SEVERITY_TITLE_STYLES[item.severity],
-                )}
-              >
-                {item.title}
-              </p>
-              {item.count > 1 ? (
-                <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
-                  {item.count} events
-                </span>
-              ) : null}
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                {STATUS_LABELS[item.status]}
-              </span>
-            </div>
+            <p
+              className={cn(
+                'font-display text-base font-semibold tracking-[-0.01em]',
+                SEVERITY_TITLE_STYLES[item.severity],
+              )}
+            >
+              {item.title}
+            </p>
             {item.description ? (
-              <p className={cn('mt-1 text-sm leading-6', SEVERITY_BODY_STYLES[item.severity])}>
+              <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[item.severity])}>
                 {item.description}
               </p>
             ) : null}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium',
+                  SEVERITY_BADGE_SURFACE_STYLES[item.severity],
+                  SEVERITY_BADGE_TEXT_STYLES[item.severity],
+                )}
+              >
+                <CategoryIcon aria-hidden="true" className="size-3.5" />
+                {CATEGORY_LABELS[item.category ?? NotificationCategoryEnum.SYSTEM]}
+              </span>
+              {item.count > 1 ? (
+                <span className="rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
+                  {item.count} events
+                </span>
+              ) : null}
+              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                {STATUS_LABELS[item.status]}
+              </span>
+            </div>
             {showNextStep ? (
               <p className="mt-3 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
                 Next step: {item.nextStep}
