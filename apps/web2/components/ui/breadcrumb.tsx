@@ -61,7 +61,7 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWit
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn('font-normal text-foreground', className)}
+      className={cn('font-medium text-primary', className)}
       {...props}
     />
   ),
@@ -107,7 +107,6 @@ type CrownBreadcrumbProps = Omit<React.ComponentPropsWithoutRef<'nav'>, 'childre
   pathname?: string;
   rootHref?: string;
   rootLabel?: string;
-  separator?: '/' | '>' | React.ReactNode;
   showMobileBackLink?: boolean;
 };
 
@@ -152,14 +151,6 @@ const getPathnameSegments = ({
   return segments;
 };
 
-const renderSeparator = (separator: CrownBreadcrumbProps['separator']) => {
-  if (separator === undefined) {
-    return undefined;
-  }
-
-  return separator;
-};
-
 const getResolvedItems = ({
   currentLabel,
   formatSegmentLabel,
@@ -187,7 +178,6 @@ function CrownBreadcrumb({
   pathname,
   rootHref = '/',
   rootLabel,
-  separator,
   showMobileBackLink = true,
   ...props
 }: CrownBreadcrumbProps) {
@@ -215,12 +205,15 @@ function CrownBreadcrumb({
     mobileBackLabel ?? (parentItem ? `Back to ${parentItem.label}` : currentItem.label);
 
   return (
-    <Breadcrumb className={cn('w-full text-sm', className)} {...props}>
+    <Breadcrumb
+      className={cn('w-full text-xs font-medium uppercase tracking-[0.18em]', className)}
+      {...props}
+    >
       {showMobileBackLink ? (
         <div className="flex min-h-8 items-center sm:hidden">
           {parentItem?.href ? (
             <BreadcrumbLink
-              className="inline-flex items-center gap-1 font-medium text-muted-foreground"
+              className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
               href={parentItem.href}
             >
               <ChevronLeft aria-hidden="true" className="size-4" />
@@ -231,7 +224,12 @@ function CrownBreadcrumb({
           )}
         </div>
       ) : null}
-      <BreadcrumbList className={cn(showMobileBackLink ? 'hidden sm:flex' : null)}>
+      <BreadcrumbList
+        className={cn(
+          'gap-2 text-xs text-muted-foreground sm:gap-2',
+          showMobileBackLink ? 'hidden sm:flex' : null,
+        )}
+      >
         {resolvedItems.map((item, index) => {
           const isCurrent = item.current ?? index === resolvedItems.length - 1;
 
@@ -241,11 +239,13 @@ function CrownBreadcrumb({
                 {isCurrent || !item.href ? (
                   <BreadcrumbPage>{item.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                  <BreadcrumbLink className="hover:text-primary" href={item.href}>
+                    {item.label}
+                  </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
               {index < resolvedItems.length - 1 ? (
-                <BreadcrumbSeparator>{renderSeparator(separator)}</BreadcrumbSeparator>
+                <BreadcrumbSeparator className="text-muted-foreground/70">/</BreadcrumbSeparator>
               ) : null}
             </React.Fragment>
           );

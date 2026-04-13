@@ -8,7 +8,7 @@ Reusable `apps/web2` UI primitive for deep-route positional navigation in dashbo
 
 - Desktop and larger tablet: inline breadcrumb trail above the page title or inside the approved page header context.
 - Mobile: optional single-line parent navigation fallback before the page title, rendered as `Back to parent` when a parent route exists.
-- Current page: final segment is rendered as non-interactive text with `aria-current="page"`.
+- Current page: final segment is rendered as non-interactive text with `aria-current="page"` and primary-color emphasis.
 
 Approved pattern: Standard Admin Page header orientation from `docs/process/ui-guidlines.md`.
 
@@ -22,7 +22,7 @@ Approved pattern: Standard Admin Page header orientation from `docs/process/ui-g
 ## Required States
 
 - Default: desktop breadcrumb trail with ancestor links and non-interactive current page.
-- Hover: ancestor links receive semantic hover color.
+- Hover: ancestor links receive semantic primary-color hover treatment.
 - Focus: ancestor links use visible focus ring.
 - Disabled: current page is non-interactive through `aria-disabled` and `aria-current`.
 - Loading: not applicable; callers should render skeletons around the page header if route context is loading.
@@ -52,5 +52,7 @@ Approved pattern: Standard Admin Page header orientation from `docs/process/ui-g
 
 ## Design Tokens
 
-- Use semantic shadcn/Tailwind tokens: `text-muted-foreground`, `text-foreground`, `hover:text-foreground`, `focus-visible:ring-ring`, and `focus-visible:ring-offset-background`.
+- Match the `CardEyebrow` treatment: `text-xs`, `font-medium`, `uppercase`, `tracking-[0.18em]`, and `text-muted-foreground`.
+- Use `/` as the Crown breadcrumb separator.
+- Use semantic shadcn/Tailwind tokens: `text-muted-foreground`, `text-primary`, `hover:text-primary`, `focus-visible:ring-ring`, and `focus-visible:ring-offset-background`.
 - Do not introduce raw color values.

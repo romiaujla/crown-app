@@ -46,17 +46,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const SlashSeparator: Story = {
-  args: {
-    separator: '/',
-  },
-};
-
-export const GreaterThanSeparator: Story = {
-  args: {
-    separator: '>',
-  },
-};
+export const SlashSeparator: Story = {};
 
 export const DerivedFromPathname: Story = {
   args: {
