@@ -153,28 +153,28 @@ const SEVERITY_PANEL_STYLES: Record<NotificationSeverityEnum, string> = {
 
 const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'border-green-200 border-l-4 border-l-green-500 bg-white shadow-[0_18px_44px_rgba(16,185,129,0.08)] dark:border-[rgba(16,185,129,0.25)] dark:border-l-green-400 dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_18px_44px_rgba(3,105,77,0.24)]',
+    'border-green-200 border-l-4 border-l-green-500 bg-card shadow-[0_18px_44px_rgba(16,185,129,0.08)] dark:border-[rgba(16,185,129,0.25)] dark:border-l-green-400 dark:bg-card dark:shadow-[0_18px_44px_rgba(3,105,77,0.24)]',
   [NotificationSeverityEnum.INFO]:
-    'border-sky-200 border-l-4 border-l-sky-500 bg-white shadow-[0_18px_44px_rgba(14,165,233,0.08)] dark:border-[rgba(14,165,233,0.25)] dark:border-l-sky-400 dark:bg-[rgba(14,165,233,0.12)] dark:shadow-[0_18px_44px_rgba(3,105,161,0.24)]',
+    'border-sky-200 border-l-4 border-l-sky-500 bg-card shadow-[0_18px_44px_rgba(14,165,233,0.08)] dark:border-[rgba(14,165,233,0.25)] dark:border-l-sky-400 dark:bg-card dark:shadow-[0_18px_44px_rgba(3,105,161,0.24)]',
   [NotificationSeverityEnum.WARNING]:
-    'border-amber-200 border-l-4 border-l-amber-500 bg-white shadow-[0_18px_44px_rgba(245,158,11,0.08)] dark:border-[rgba(245,158,11,0.25)] dark:border-l-amber-400 dark:bg-[rgba(245,158,11,0.12)] dark:shadow-[0_18px_44px_rgba(146,64,14,0.24)]',
+    'border-amber-200 border-l-4 border-l-amber-500 bg-card shadow-[0_18px_44px_rgba(245,158,11,0.08)] dark:border-[rgba(245,158,11,0.25)] dark:border-l-amber-400 dark:bg-card dark:shadow-[0_18px_44px_rgba(146,64,14,0.24)]',
   [NotificationSeverityEnum.ERROR]:
-    'border-rose-200 border-l-4 border-l-rose-500 bg-white shadow-[0_18px_44px_rgba(244,63,94,0.08)] dark:border-[rgba(244,63,94,0.25)] dark:border-l-rose-400 dark:bg-[rgba(244,63,94,0.12)] dark:shadow-[0_18px_44px_rgba(159,18,57,0.24)]',
+    'border-rose-200 border-l-4 border-l-rose-500 bg-card shadow-[0_18px_44px_rgba(244,63,94,0.08)] dark:border-[rgba(244,63,94,0.25)] dark:border-l-rose-400 dark:bg-card dark:shadow-[0_18px_44px_rgba(159,18,57,0.24)]',
   [NotificationSeverityEnum.PROGRESS]:
-    'border-primary/20 border-l-4 border-l-primary bg-white shadow-[0_18px_44px_hsl(var(--primary)/0.08)] dark:border-primary/25 dark:border-l-primary dark:bg-[hsl(var(--primary)/0.12)] dark:shadow-[0_18px_44px_hsl(var(--primary)/0.22)]',
+    'border-primary/20 border-l-4 border-l-primary bg-card shadow-[0_18px_44px_hsl(var(--primary)/0.08)] dark:border-primary/25 dark:border-l-primary dark:bg-card dark:shadow-[0_18px_44px_hsl(var(--primary)/0.22)]',
 };
 
 const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
-    'bg-white shadow-[0_12px_28px_rgba(16,185,129,0.06)] dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,77,0.18)]',
+    'bg-card shadow-[0_12px_28px_rgba(16,185,129,0.06)] dark:bg-card dark:shadow-[0_12px_28px_rgba(3,105,77,0.18)]',
   [NotificationSeverityEnum.INFO]:
-    'bg-white shadow-[0_12px_28px_rgba(14,165,233,0.06)] dark:bg-[rgba(14,165,233,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,161,0.18)]',
+    'bg-card shadow-[0_12px_28px_rgba(14,165,233,0.06)] dark:bg-card dark:shadow-[0_12px_28px_rgba(3,105,161,0.18)]',
   [NotificationSeverityEnum.WARNING]:
-    'bg-white shadow-[0_12px_28px_rgba(245,158,11,0.06)] dark:bg-[rgba(245,158,11,0.12)] dark:shadow-[0_12px_28px_rgba(146,64,14,0.18)]',
+    'bg-card shadow-[0_12px_28px_rgba(245,158,11,0.06)] dark:bg-card dark:shadow-[0_12px_28px_rgba(146,64,14,0.18)]',
   [NotificationSeverityEnum.ERROR]:
-    'bg-white shadow-[0_12px_28px_rgba(244,63,94,0.06)] dark:bg-[rgba(244,63,94,0.12)] dark:shadow-[0_12px_28px_rgba(159,18,57,0.18)]',
+    'bg-card shadow-[0_12px_28px_rgba(244,63,94,0.06)] dark:bg-card dark:shadow-[0_12px_28px_rgba(159,18,57,0.18)]',
   [NotificationSeverityEnum.PROGRESS]:
-    'bg-white shadow-[0_12px_28px_hsl(var(--primary)/0.06)] dark:bg-[hsl(var(--primary)/0.12)] dark:shadow-[0_12px_28px_hsl(var(--primary)/0.18)]',
+    'bg-card shadow-[0_12px_28px_hsl(var(--primary)/0.06)] dark:bg-card dark:shadow-[0_12px_28px_hsl(var(--primary)/0.18)]',
 };
 
 const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
@@ -381,7 +381,7 @@ const NotificationToast = ({
                 </p>
               ) : null}
               {showNextStep ? (
-                <p className="mt-2 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
+                <p className="mt-2 rounded-2xl border border-border/70 bg-muted px-3 py-2 text-sm font-medium text-foreground">
                   Next step: {entry.nextStep}
                 </p>
               ) : null}
@@ -452,7 +452,7 @@ const NotificationToast = ({
           ) : null}
 
           {showTaskProgress ? (
-            <div className="mt-3 overflow-hidden rounded-full bg-accent/60 transition-colors duration-300 ease-out">
+            <div className="mt-3 overflow-hidden rounded-full bg-accent transition-colors duration-300 ease-out">
               <div className="ui-notification-indeterminate h-1 rounded-full bg-primary" />
             </div>
           ) : null}
@@ -828,7 +828,7 @@ export function NotificationsPanel({
               </span>
             </div>
             {showNextStep ? (
-              <p className="mt-3 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
+              <p className="mt-3 rounded-2xl border border-border/70 bg-muted px-3 py-2 text-sm font-medium text-foreground">
                 Next step: {item.nextStep}
               </p>
             ) : null}
