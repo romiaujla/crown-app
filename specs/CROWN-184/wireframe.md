@@ -22,7 +22,7 @@ Approved pattern: Standard Admin Page header orientation from `docs/process/ui-g
 ## Required States
 
 - Default: desktop breadcrumb trail with ancestor links and non-interactive current page.
-- Hover: ancestor links receive semantic primary-color hover treatment.
+- Hover: ancestor links receive semantic primary-color hover treatment with underline decoration to signify clickability.
 - Focus: ancestor links use visible focus ring.
 - Disabled: current page is non-interactive through `aria-disabled` and `aria-current`.
 - Loading: not applicable; callers should render skeletons around the page header if route context is loading.
