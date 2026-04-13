@@ -68,6 +68,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button';
     const isIconOnly = !children && Boolean(icon);
     const iconElement = icon ? <span className="shrink-0">{icon}</span> : null;
+    const hasInlineIcon = !isIconOnly && Boolean(icon);
     const content = isIconOnly ? (
       iconElement
     ) : (
@@ -82,13 +83,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(
           buttonVariants({ iconOnly: isIconOnly, size, variant }),
-          !isIconOnly && icon ? 'gap-1.5' : null,
+          hasInlineIcon ? 'gap-1.5' : null,
           className,
         )}
         ref={ref}
         {...props}
       >
-        {content}
+        {asChild ? children : content}
       </Comp>
     );
   },

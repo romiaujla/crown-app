@@ -657,16 +657,16 @@ The shared `Alert` component (`components/ui/alert.tsx`) supports four severity 
 
 ## 17.2 Inline Alert vs. Toast
 
-| Use Case                        | Pattern      |
-| ------------------------------- | ------------ |
-| Form validation errors          | Inline Alert |
-| Contextual info banners         | Inline Alert |
-| Page-level error/degraded state | Inline Alert |
-| Operation success confirmation  | Toast        |
-| Async error after network call  | Toast        |
-| Transient notification          | Toast        |
+| Use Case                        | Pattern                                 |
+| ------------------------------- | --------------------------------------- |
+| Form validation errors          | Inline Alert                            |
+| Contextual info banners         | Inline Alert                            |
+| Page-level error/degraded state | Inline Alert                            |
+| Operation success confirmation  | Toast                                   |
+| Async error after network call  | Inline Alert + optional secondary toast |
+| Transient notification          | Toast                                   |
 
-**Rule**: Use inline alerts when the message relates to content already on the page. Use toasts for ephemeral feedback from an action the user just performed.
+**Rule**: Use inline alerts when the message relates to content already on the page. Use toasts for ephemeral feedback from an action the user just performed. Do not rely on toast-only delivery for blocked or recoverable error states.
 
 ## 17.3 Inline Alert Usage
 
@@ -686,45 +686,68 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 ## 17.4 Toast Usage
 
 ```tsx
-import { useAlerts } from '@/components/ui/alert-toast';
+import { NotificationSeverityEnum, useNotifications } from '@/components/ui/notification-center';
 
-const { showAlert, dismissAlert } = useAlerts();
+const { showNotification, startTask, completeTask } = useNotifications();
 
-// Fire-and-forget
-showAlert({ severity: 'success', title: 'Tenant created' });
-
-// With all options
-const id = showAlert({
-  severity: 'error',
-  title: 'Save failed',
-  description: 'Please retry.',
-  position: 'top-right',
-  duration: 8000,
-  dismissible: true,
+showNotification({
+  severity: NotificationSeverityEnum.SUCCESS,
+  title: 'Tenant created',
 });
 
-// Programmatic dismiss
-dismissAlert(id);
+showNotification({
+  action: { href: '/notifications', label: 'View incident' },
+  description: 'Please review the sync logs before retrying.',
+  severity: NotificationSeverityEnum.ERROR,
+  title: 'Save failed',
+});
+
+const taskId = startTask({
+  action: { href: '/activity', label: 'View details' },
+  description: 'Preparing the latest export package.',
+  title: 'Preparing export',
+});
+
+completeTask(taskId, {
+  description: 'The export is ready to download.',
+  title: 'Export complete',
+});
 ```
+
+- Warning and error toasts must communicate both the issue and the next step in compact copy.
+- Notification logs or centers should group attention-needed items separately from passive history.
+- Severity iconography is required but not sufficient on its own for dense lists; add a category icon or label when users need to distinguish billing, exports, access, sync, or system events quickly.
 
 ## 17.5 Positioning (Toast Only)
 
-Supported positions: `top-right` (default), `top-left`, `top-center`, `bottom-right`, `bottom-left`, `bottom-center`, `center`.
+Supported positions in web2: `top-right` (default), `top-middle`, `top-left`, `bottom-right`, `bottom-middle`, `bottom-left`.
 
 - **Default**: `top-right` — use for most transient notifications.
-- **Center**: reserve for critical blocking alerts only.
 - Keep one consistent position per flow when possible.
+- Reserve top and bottom middle placements for workflow-specific exceptions; do not make them the product-wide default.
 
 ## 17.6 Auto-Dismiss Conventions
 
-| Severity | Default Duration |
-| -------- | ---------------- |
-| success  | 5 000 ms         |
-| info     | 5 000 ms         |
-| warning  | 5 000 ms         |
-| error    | 5 000 ms         |
+| Severity             | Default Duration         |
+| -------------------- | ------------------------ |
+| success              | 5 000–8 000 ms           |
+| info                 | 5 000–8 000 ms           |
+| warning              | persistent by default    |
+| error                | persistent by default    |
+| progress/system task | persistent while running |
 
-Pass `duration={0}` for persistent toasts that require explicit dismissal.
+- Success and informational toasts may auto-dismiss, and should pause on hover.
+- If a toast contains interactive controls, prefer persistent behavior rather than a short timeout.
+- Warnings should usually be inline or message-bar based when the condition is ongoing.
+- Errors must pair durable recovery guidance with any toast cue.
+- Progress notifications should remain visible until completion, then update to success/info and dismiss after completion.
+
+## 17.7 Queueing And Recovery
+
+- Show at most four visible toasts at once and queue the rest.
+- Aggregate repeated events instead of stacking identical notifications repeatedly.
+- Do not move focus for ordinary toasts; announce them via live regions instead.
+- Provide a durable notification log or panel so missed messages remain recoverable.
 
 ---
 
