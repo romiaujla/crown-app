@@ -99,10 +99,15 @@ type CrownBreadcrumbSegment = {
   label: string;
 };
 
+type CrownBreadcrumbDisplaySegment = CrownBreadcrumbSegment & {
+  ellipsis?: boolean;
+};
+
 type CrownBreadcrumbProps = Omit<React.ComponentPropsWithoutRef<'nav'>, 'children'> & {
   currentLabel?: string;
   formatSegmentLabel?: (segment: string) => string;
   items?: CrownBreadcrumbSegment[];
+  maxVisibleItems?: 3 | 4;
   mobileBackLabel?: string;
   pathname?: string;
   rootHref?: string;
@@ -169,11 +174,34 @@ const getResolvedItems = ({
   return rawItems.filter((item) => item.label.trim().length > 0);
 };
 
+const getVisibleItems = (
+  items: CrownBreadcrumbSegment[],
+  maxVisibleItems: NonNullable<CrownBreadcrumbProps['maxVisibleItems']>,
+): CrownBreadcrumbDisplaySegment[] => {
+  if (items.length <= 3) {
+    return items;
+  }
+
+  const currentItem = items[items.length - 1];
+  const parentItem = items[items.length - 2];
+  const ellipsisItem: CrownBreadcrumbDisplaySegment = {
+    ellipsis: true,
+    label: '...',
+  };
+
+  if (maxVisibleItems === 3) {
+    return [ellipsisItem, parentItem, currentItem];
+  }
+
+  return [items[0], ellipsisItem, parentItem, currentItem];
+};
+
 function CrownBreadcrumb({
   className,
   currentLabel,
   formatSegmentLabel,
   items,
+  maxVisibleItems = 4,
   mobileBackLabel,
   pathname,
   rootHref = '/',
@@ -203,6 +231,7 @@ function CrownBreadcrumb({
     .find((item) => item.href);
   const mobileLabel =
     mobileBackLabel ?? (parentItem ? `Back to ${parentItem.label}` : currentItem.label);
+  const visibleItems = getVisibleItems(resolvedItems, maxVisibleItems);
 
   return (
     <Breadcrumb
@@ -226,17 +255,26 @@ function CrownBreadcrumb({
       ) : null}
       <BreadcrumbList
         className={cn(
-          'gap-2 text-xs text-muted-foreground sm:gap-2',
+          'min-w-0 flex-nowrap gap-2 overflow-hidden whitespace-nowrap text-xs text-muted-foreground sm:gap-2',
           showMobileBackLink ? 'hidden sm:flex' : null,
         )}
       >
-        {resolvedItems.map((item, index) => {
-          const isCurrent = item.current ?? index === resolvedItems.length - 1;
+        {visibleItems.map((item, index) => {
+          const isCurrent = item.current ?? item === currentItem;
 
           return (
-            <React.Fragment key={`${item.href ?? 'current'}-${item.label}-${index}`}>
-              <BreadcrumbItem>
-                {isCurrent || !item.href ? (
+            <React.Fragment
+              key={`${item.href ?? (item.ellipsis ? 'ellipsis' : 'current')}-${item.label}-${index}`}
+            >
+              <BreadcrumbItem className="min-w-0 shrink-0">
+                {item.ellipsis ? (
+                  <span
+                    aria-label="Collapsed breadcrumb items"
+                    className="text-muted-foreground/70"
+                  >
+                    ...
+                  </span>
+                ) : isCurrent || !item.href ? (
                   <BreadcrumbPage>{item.label}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink className="hover:text-primary" href={item.href}>
@@ -244,7 +282,7 @@ function CrownBreadcrumb({
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
-              {index < resolvedItems.length - 1 ? (
+              {index < visibleItems.length - 1 ? (
                 <BreadcrumbSeparator className="text-muted-foreground/70">/</BreadcrumbSeparator>
               ) : null}
             </React.Fragment>

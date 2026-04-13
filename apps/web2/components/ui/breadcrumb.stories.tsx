@@ -48,6 +48,14 @@ export const Default: Story = {};
 
 export const SlashSeparator: Story = {};
 
+export const CollapsedTrail: Story = {};
+
+export const CompactCollapsedTrail: Story = {
+  args: {
+    maxVisibleItems: 3,
+  },
+};
+
 export const DerivedFromPathname: Story = {
   args: {
     currentLabel: 'Audit trail',
