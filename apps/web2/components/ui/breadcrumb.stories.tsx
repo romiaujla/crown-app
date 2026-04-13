@@ -66,6 +66,9 @@ export const DerivedFromPathname: Story = {
 };
 
 export const MobileBackToParent: Story = {
+  args: {
+    showMobileBackLink: true,
+  },
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

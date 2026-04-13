@@ -216,7 +216,7 @@ function CrownBreadcrumb({
   pathname,
   rootHref = '/',
   rootLabel,
-  showMobileBackLink = true,
+  showMobileBackLink = false,
   ...props
 }: CrownBreadcrumbProps) {
   const resolvedItems = getResolvedItems({

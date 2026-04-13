@@ -8,7 +8,7 @@ Reusable `apps/web2` UI primitive for deep-route positional navigation in dashbo
 
 - Desktop and larger tablet: inline breadcrumb trail above the page title or inside the approved page header context.
 - Trails longer than three crumbs collapse middle items with an ellipsis while preserving the current page and immediate parent context.
-- Mobile: optional single-line parent navigation fallback before the page title, rendered as `Back to parent` when a parent route exists.
+- Mobile: optional single-line parent navigation fallback before the page title, rendered as `Back to parent` when a parent route exists and `showMobileBackLink` is enabled.
 - Current page: final segment is rendered as non-interactive text with `aria-current="page"` and primary-color emphasis.
 
 Approved pattern: Standard Admin Page header orientation from `docs/process/ui-guidlines.md`.
