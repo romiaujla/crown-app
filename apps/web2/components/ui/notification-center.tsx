@@ -339,20 +339,15 @@ const NotificationToast = ({
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
             <div className="min-w-0 flex-1">
-              <p
-                className={cn(
-                  'font-display text-base font-semibold leading-5 tracking-[-0.01em]',
-                  SEVERITY_TITLE_STYLES[entry.severity],
-                )}
-              >
-                {entry.title}
-              </p>
-              {entry.description ? (
-                <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
-                  {entry.description}
+              <div className="flex flex-wrap items-center gap-2">
+                <p
+                  className={cn(
+                    'font-display text-base font-semibold leading-5 tracking-[-0.01em]',
+                    SEVERITY_TITLE_STYLES[entry.severity],
+                  )}
+                >
+                  {entry.title}
                 </p>
-              ) : null}
-              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
                     'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
@@ -369,6 +364,11 @@ const NotificationToast = ({
                   </span>
                 ) : null}
               </div>
+              {entry.description ? (
+                <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
+                  {entry.description}
+                </p>
+              ) : null}
               {showNextStep ? (
                 <p className="mt-2 rounded-2xl border border-border/70 bg-muted/35 px-3 py-2 text-sm font-medium text-foreground">
                   Next step: {entry.nextStep}
@@ -778,20 +778,15 @@ export function NotificationsPanel({
           />
 
           <div className="min-w-0 flex-1">
-            <p
-              className={cn(
-                'font-display text-base font-semibold tracking-[-0.01em]',
-                SEVERITY_TITLE_STYLES[item.severity],
-              )}
-            >
-              {item.title}
-            </p>
-            {item.description ? (
-              <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[item.severity])}>
-                {item.description}
+            <div className="flex flex-wrap items-center gap-2">
+              <p
+                className={cn(
+                  'font-display text-base font-semibold tracking-[-0.01em]',
+                  SEVERITY_TITLE_STYLES[item.severity],
+                )}
+              >
+                {item.title}
               </p>
-            ) : null}
-            <div className="mt-2 flex flex-wrap items-center gap-2">
               <span
                 className={cn(
                   'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
@@ -807,6 +802,13 @@ export function NotificationsPanel({
                   {item.count} events
                 </span>
               ) : null}
+            </div>
+            {item.description ? (
+              <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[item.severity])}>
+                {item.description}
+              </p>
+            ) : null}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
                 {STATUS_LABELS[item.status]}
               </span>
