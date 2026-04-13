@@ -140,7 +140,8 @@
   }
 
   .ui-notification-timer,
-  .ui-notification-indeterminate {
+  .ui-notification-indeterminate,
+  .ui-notification-complete-icon {
     animation: none;
   }
 }
@@ -160,6 +161,24 @@
   animation-name: ui-notification-timer;
   animation-timing-function: linear;
   transform-origin: left center;
+}
+
+@keyframes ui-notification-complete-icon {
+  0% {
+    transform: scale(0.82) rotate(-8deg);
+  }
+
+  70% {
+    transform: scale(1.08) rotate(0deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.ui-notification-complete-icon {
+  animation: ui-notification-complete-icon 220ms ease-out;
 }
 
 @keyframes ui-notification-indeterminate {

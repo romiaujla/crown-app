@@ -309,6 +309,9 @@ const NotificationToast = ({
   const Icon = getSeverityIcon(entry.severity);
   const CategoryIcon = getCategoryIcon(entry.category);
   const countLabel = resolveNotificationCountLabel(entry.count);
+  const isCompletedTask =
+    entry.status === NotificationStatusEnum.COMPLETED &&
+    entry.severity === NotificationSeverityEnum.SUCCESS;
   const showLifetimeProgress =
     entry.showLifetimeProgress && entry.duration > 0 && isAutoDismissSeverity(entry.severity);
   const showTaskProgress = entry.severity === NotificationSeverityEnum.PROGRESS;
@@ -320,7 +323,7 @@ const NotificationToast = ({
   return (
     <div
       className={cn(
-        'group/notification relative overflow-hidden rounded-[22px] border p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)]',
+        'group/notification relative overflow-hidden rounded-[22px] border p-4 text-card-foreground shadow-[0_18px_48px_hsl(var(--foreground)/0.16)] transition-[background-color,border-color,box-shadow] duration-300 ease-out',
         SEVERITY_TOAST_SURFACE_STYLES[entry.severity],
         'w-[min(24rem,calc(100vw-2rem))]',
       )}
@@ -329,9 +332,10 @@ const NotificationToast = ({
         <Icon
           aria-hidden="true"
           className={cn(
-            'mt-1 size-5 shrink-0',
+            'mt-1 size-5 shrink-0 transition-[color,transform] duration-300 ease-out',
             SEVERITY_ICON_STYLES[entry.severity],
             entry.severity === NotificationSeverityEnum.PROGRESS && 'animate-spin',
+            isCompletedTask && 'ui-notification-complete-icon',
           )}
           strokeWidth={2.15}
         />
@@ -343,6 +347,7 @@ const NotificationToast = ({
                 <p
                   className={cn(
                     'font-display text-base font-semibold leading-5 tracking-[-0.01em]',
+                    'transition-colors duration-300 ease-out',
                     SEVERITY_TITLE_STYLES[entry.severity],
                   )}
                 >
@@ -351,6 +356,7 @@ const NotificationToast = ({
                 <span
                   className={cn(
                     'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
+                    'transition-[background-color,border-color,color,box-shadow] duration-300 ease-out',
                     SEVERITY_BADGE_SURFACE_STYLES[entry.severity],
                     SEVERITY_BADGE_TEXT_STYLES[entry.severity],
                   )}
@@ -365,7 +371,12 @@ const NotificationToast = ({
                 ) : null}
               </div>
               {entry.description ? (
-                <p className={cn('mt-1.5 text-sm leading-6', SEVERITY_BODY_STYLES[entry.severity])}>
+                <p
+                  className={cn(
+                    'mt-1.5 text-sm leading-6 transition-colors duration-300 ease-out',
+                    SEVERITY_BODY_STYLES[entry.severity],
+                  )}
+                >
                   {entry.description}
                 </p>
               ) : null}
@@ -429,16 +440,19 @@ const NotificationToast = ({
           ) : null}
 
           {showLifetimeProgress ? (
-            <div className="mt-3 overflow-hidden rounded-full bg-muted">
+            <div className="mt-3 overflow-hidden rounded-full bg-muted transition-colors duration-300 ease-out">
               <div
-                className="ui-notification-timer h-1 rounded-full bg-foreground/60 group-hover/notification:[animation-play-state:paused] group-focus-within/notification:[animation-play-state:paused]"
+                className={cn(
+                  'ui-notification-timer h-1 rounded-full transition-colors duration-300 ease-out group-hover/notification:[animation-play-state:paused] group-focus-within/notification:[animation-play-state:paused]',
+                  isCompletedTask ? 'bg-green-500' : 'bg-foreground/60',
+                )}
                 style={{ animationDuration: `${entry.duration}ms` }}
               />
             </div>
           ) : null}
 
           {showTaskProgress ? (
-            <div className="mt-3 overflow-hidden rounded-full bg-accent/60">
+            <div className="mt-3 overflow-hidden rounded-full bg-accent/60 transition-colors duration-300 ease-out">
               <div className="ui-notification-indeterminate h-1 rounded-full bg-primary" />
             </div>
           ) : null}
