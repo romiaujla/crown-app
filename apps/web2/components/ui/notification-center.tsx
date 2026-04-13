@@ -155,7 +155,7 @@ const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
   [NotificationSeverityEnum.SUCCESS]:
     'border-green-200 border-l-4 border-l-green-500 bg-white shadow-[0_18px_44px_rgba(16,185,129,0.08)] dark:border-[rgba(16,185,129,0.25)] dark:border-l-green-400 dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_18px_44px_rgba(3,105,77,0.24)]',
   [NotificationSeverityEnum.INFO]:
-    'border-sky-200/80 bg-sky-50 dark:border-sky-500/25 dark:bg-sky-950/35',
+    'border-sky-200 border-l-4 border-l-sky-500 bg-white shadow-[0_18px_44px_rgba(14,165,233,0.08)] dark:border-[rgba(14,165,233,0.25)] dark:border-l-sky-400 dark:bg-[rgba(14,165,233,0.12)] dark:shadow-[0_18px_44px_rgba(3,105,161,0.24)]',
   [NotificationSeverityEnum.WARNING]:
     'border-amber-200/80 bg-amber-50 dark:border-amber-500/25 dark:bg-amber-950/35',
   [NotificationSeverityEnum.ERROR]:
@@ -167,14 +167,15 @@ const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
 const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
   [NotificationSeverityEnum.SUCCESS]:
     'bg-white shadow-[0_12px_28px_rgba(16,185,129,0.06)] dark:bg-[rgba(16,185,129,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,77,0.18)]',
-  [NotificationSeverityEnum.INFO]: 'bg-sky-50/70 dark:bg-sky-950/25',
+  [NotificationSeverityEnum.INFO]:
+    'bg-white shadow-[0_12px_28px_rgba(14,165,233,0.06)] dark:bg-[rgba(14,165,233,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,161,0.18)]',
   [NotificationSeverityEnum.WARNING]: 'bg-amber-50/75 dark:bg-amber-950/25',
   [NotificationSeverityEnum.ERROR]: 'bg-rose-50/75 dark:bg-rose-950/25',
   [NotificationSeverityEnum.PROGRESS]: 'bg-primary/10 dark:bg-primary/15',
 };
 
 const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: '!text-slate-950 dark:!text-green-200',
+  [NotificationSeverityEnum.SUCCESS]: 'text-foreground',
   [NotificationSeverityEnum.INFO]: 'text-foreground',
   [NotificationSeverityEnum.WARNING]: 'text-foreground',
   [NotificationSeverityEnum.ERROR]: 'text-foreground',
@@ -182,7 +183,7 @@ const SEVERITY_TITLE_STYLES: Record<NotificationSeverityEnum, string> = {
 };
 
 const SEVERITY_BODY_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: '!text-slate-700 dark:!text-green-300',
+  [NotificationSeverityEnum.SUCCESS]: 'text-muted-foreground',
   [NotificationSeverityEnum.INFO]: 'text-muted-foreground',
   [NotificationSeverityEnum.WARNING]: 'text-muted-foreground',
   [NotificationSeverityEnum.ERROR]: 'text-muted-foreground',
@@ -190,7 +191,7 @@ const SEVERITY_BODY_STYLES: Record<NotificationSeverityEnum, string> = {
 };
 
 const SEVERITY_BADGE_TEXT_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: '!text-slate-700 dark:!text-muted-foreground',
+  [NotificationSeverityEnum.SUCCESS]: 'text-muted-foreground',
   [NotificationSeverityEnum.INFO]: 'text-muted-foreground',
   [NotificationSeverityEnum.WARNING]: 'text-muted-foreground',
   [NotificationSeverityEnum.ERROR]: 'text-muted-foreground',
@@ -198,8 +199,8 @@ const SEVERITY_BADGE_TEXT_STYLES: Record<NotificationSeverityEnum, string> = {
 };
 
 const SEVERITY_BADGE_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = {
-  [NotificationSeverityEnum.SUCCESS]: 'bg-slate-50 ring-1 ring-slate-200/80',
-  [NotificationSeverityEnum.INFO]: 'bg-muted',
+  [NotificationSeverityEnum.SUCCESS]: 'bg-muted ring-1 ring-border/80',
+  [NotificationSeverityEnum.INFO]: 'bg-muted ring-1 ring-border/80',
   [NotificationSeverityEnum.WARNING]: 'bg-muted',
   [NotificationSeverityEnum.ERROR]: 'bg-muted',
   [NotificationSeverityEnum.PROGRESS]: 'bg-muted',
