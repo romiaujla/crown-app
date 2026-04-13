@@ -50,9 +50,9 @@ export const SlashSeparator: Story = {};
 
 export const CollapsedTrail: Story = {};
 
-export const CompactCollapsedTrail: Story = {
+export const ExpandedCollapsedTrail: Story = {
   args: {
-    maxVisibleItems: 3,
+    maxVisibleItems: 4,
   },
 };
 
@@ -72,7 +72,7 @@ export const MobileBackToParent: Story = {
     },
   },
   render: (args) => (
-    <div className="w-80">
+    <div className="w-80 overflow-hidden">
       <CrownBreadcrumb {...args} />
     </div>
   ),

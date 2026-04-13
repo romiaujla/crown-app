@@ -17,7 +17,7 @@ const BreadcrumbList = React.forwardRef<HTMLOListElement, React.ComponentPropsWi
     <ol
       ref={ref}
       className={cn(
-        'flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5',
+        'flex flex-nowrap items-center gap-1.5 overflow-hidden whitespace-nowrap text-sm text-muted-foreground [overflow-wrap:normal] sm:gap-2.5',
         className,
       )}
       {...props}
@@ -28,7 +28,14 @@ BreadcrumbList.displayName = 'BreadcrumbList';
 
 const BreadcrumbItem = React.forwardRef<HTMLLIElement, React.ComponentPropsWithoutRef<'li'>>(
   ({ className, ...props }, ref) => (
-    <li ref={ref} className={cn('inline-flex items-center gap-1.5', className)} {...props} />
+    <li
+      ref={ref}
+      className={cn(
+        'inline-flex min-w-0 shrink-0 items-center gap-1.5 whitespace-nowrap',
+        className,
+      )}
+      {...props}
+    />
   ),
 );
 BreadcrumbItem.displayName = 'BreadcrumbItem';
@@ -45,7 +52,7 @@ const BreadcrumbLink = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        'rounded-md underline decoration-transparent underline-offset-4 transition-[color,text-decoration-color] hover:text-foreground hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        'inline-flex max-w-full min-w-0 whitespace-nowrap rounded-md underline decoration-transparent underline-offset-4 transition-[color,text-decoration-color] hover:text-foreground hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         className,
       )}
       {...props}
@@ -61,7 +68,10 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWit
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn('font-medium text-primary', className)}
+      className={cn(
+        'inline-block max-w-full truncate whitespace-nowrap font-medium text-primary',
+        className,
+      )}
       {...props}
     />
   ),
@@ -72,7 +82,7 @@ const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentP
   <li
     role="presentation"
     aria-hidden="true"
-    className={cn('select-none [&>svg]:size-3.5', className)}
+    className={cn('shrink-0 select-none whitespace-nowrap [&>svg]:size-3.5', className)}
     {...props}
   >
     {children ?? <ChevronRight />}
@@ -84,7 +94,7 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'
   <span
     role="presentation"
     aria-hidden="true"
-    className={cn('flex size-9 items-center justify-center', className)}
+    className={cn('flex size-9 shrink-0 items-center justify-center', className)}
     {...props}
   >
     <MoreHorizontal className="size-4" />
@@ -201,7 +211,7 @@ function CrownBreadcrumb({
   currentLabel,
   formatSegmentLabel,
   items,
-  maxVisibleItems = 4,
+  maxVisibleItems = 3,
   mobileBackLabel,
   pathname,
   rootHref = '/',
@@ -235,18 +245,21 @@ function CrownBreadcrumb({
 
   return (
     <Breadcrumb
-      className={cn('w-full text-xs font-medium uppercase tracking-[0.18em]', className)}
+      className={cn(
+        'w-full max-w-full overflow-hidden whitespace-nowrap text-xs font-medium uppercase tracking-[0.18em] [overflow-wrap:normal]',
+        className,
+      )}
       {...props}
     >
       {showMobileBackLink ? (
-        <div className="flex min-h-8 items-center sm:hidden">
+        <div className="flex min-h-8 min-w-0 max-w-full items-center overflow-hidden whitespace-nowrap max-sm:flex sm:!hidden">
           {parentItem?.href ? (
             <BreadcrumbLink
-              className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+              className="items-center gap-1 overflow-hidden text-muted-foreground hover:text-primary"
               href={parentItem.href}
             >
-              <ChevronLeft aria-hidden="true" className="size-4" />
-              <span>{mobileLabel}</span>
+              <ChevronLeft aria-hidden="true" className="size-4 shrink-0" />
+              <span className="truncate">{mobileLabel}</span>
             </BreadcrumbLink>
           ) : (
             <BreadcrumbPage>{mobileLabel}</BreadcrumbPage>
@@ -255,8 +268,8 @@ function CrownBreadcrumb({
       ) : null}
       <BreadcrumbList
         className={cn(
-          'min-w-0 flex-nowrap gap-2 overflow-hidden whitespace-nowrap text-xs text-muted-foreground sm:gap-2',
-          showMobileBackLink ? 'hidden sm:flex' : null,
+          'min-w-0 !flex-nowrap gap-2 overflow-hidden whitespace-nowrap break-normal text-xs text-muted-foreground [overflow-wrap:normal] sm:gap-2',
+          showMobileBackLink ? 'hidden max-sm:!hidden sm:flex' : null,
         )}
       >
         {visibleItems.map((item, index) => {
@@ -266,7 +279,7 @@ function CrownBreadcrumb({
             <React.Fragment
               key={`${item.href ?? (item.ellipsis ? 'ellipsis' : 'current')}-${item.label}-${index}`}
             >
-              <BreadcrumbItem className="min-w-0 shrink-0">
+              <BreadcrumbItem>
                 {item.ellipsis ? (
                   <span
                     aria-label="Collapsed breadcrumb items"

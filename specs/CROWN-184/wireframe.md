@@ -42,7 +42,7 @@ Approved pattern: Standard Admin Page header orientation from `docs/process/ui-g
 ## Responsive Behavior
 
 - `sm` and above: show a single-line breadcrumb trail.
-- When the trail has more than three crumbs, use the default `Root / ... / Parent / Current` pattern; allow the stricter `... / Parent / Current` pattern for compact placements.
+- When the trail has more than three crumbs, use the default `... / Parent / Current` pattern; allow `Root / ... / Parent / Current` only when the placement has enough horizontal room.
 - Below `sm`: collapse to the nearest parent link when available.
 - If no parent link exists, show the current page label on mobile as non-interactive context.
 
