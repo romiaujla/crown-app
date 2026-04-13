@@ -355,12 +355,12 @@ const NotificationToast = ({
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium',
+                    'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
                     SEVERITY_BADGE_SURFACE_STYLES[entry.severity],
                     SEVERITY_BADGE_TEXT_STYLES[entry.severity],
                   )}
                 >
-                  <CategoryIcon aria-hidden="true" className="size-3.5" />
+                  <CategoryIcon aria-hidden="true" className="size-3.5 shrink-0" />
                   {CATEGORY_LABELS[entry.category ?? NotificationCategoryEnum.SYSTEM]}
                 </span>
                 {countLabel ? (
@@ -408,10 +408,10 @@ const NotificationToast = ({
           {entry.action ? (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {entry.action.href ? (
-                <Button asChild size="sm">
+                <Button asChild className="gap-1.5" size="sm">
                   <a href={entry.action.href}>
-                    <ExternalLink data-icon="inline-end" />
-                    {entry.action.label}
+                    <span>{entry.action.label}</span>
+                    <ExternalLink aria-hidden="true" className="size-3.5 shrink-0" />
                   </a>
                 </Button>
               ) : (
@@ -794,12 +794,12 @@ export function NotificationsPanel({
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <span
                 className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium',
+                  'inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap',
                   SEVERITY_BADGE_SURFACE_STYLES[item.severity],
                   SEVERITY_BADGE_TEXT_STYLES[item.severity],
                 )}
               >
-                <CategoryIcon aria-hidden="true" className="size-3.5" />
+                <CategoryIcon aria-hidden="true" className="size-3.5 shrink-0" />
                 {CATEGORY_LABELS[item.category ?? NotificationCategoryEnum.SYSTEM]}
               </span>
               {item.count > 1 ? (
@@ -819,10 +819,10 @@ export function NotificationsPanel({
             {item.action ? (
               <div className="mt-3">
                 {item.action.href ? (
-                  <Button asChild size="sm">
+                  <Button asChild className="gap-1.5" size="sm">
                     <a href={item.action.href}>
-                      <ArrowRight data-icon="inline-end" />
-                      {item.action.label}
+                      <span>{item.action.label}</span>
+                      <ArrowRight aria-hidden="true" className="size-3.5 shrink-0" />
                     </a>
                   </Button>
                 ) : (
@@ -862,10 +862,10 @@ export function NotificationsPanel({
             <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
               {totalAttentionCount} need attention
             </span>
-            <Button asChild size="sm">
+            <Button asChild className="gap-1.5" size="sm">
               <a href={actionHref}>
-                <ArrowRight data-icon="inline-end" />
-                {actionLabel}
+                <span>{actionLabel}</span>
+                <ArrowRight aria-hidden="true" className="size-3.5 shrink-0" />
               </a>
             </Button>
           </div>
