@@ -159,7 +159,7 @@ const SEVERITY_TOAST_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
   [NotificationSeverityEnum.WARNING]:
     'border-amber-200 border-l-4 border-l-amber-500 bg-white shadow-[0_18px_44px_rgba(245,158,11,0.08)] dark:border-[rgba(245,158,11,0.25)] dark:border-l-amber-400 dark:bg-[rgba(245,158,11,0.12)] dark:shadow-[0_18px_44px_rgba(146,64,14,0.24)]',
   [NotificationSeverityEnum.ERROR]:
-    'border-rose-200/80 bg-rose-50 dark:border-rose-500/25 dark:bg-rose-950/35',
+    'border-rose-200 border-l-4 border-l-rose-500 bg-white shadow-[0_18px_44px_rgba(244,63,94,0.08)] dark:border-[rgba(244,63,94,0.25)] dark:border-l-rose-400 dark:bg-[rgba(244,63,94,0.12)] dark:shadow-[0_18px_44px_rgba(159,18,57,0.24)]',
   [NotificationSeverityEnum.PROGRESS]:
     'border-primary/20 bg-primary/10 dark:border-primary/25 dark:bg-primary/15',
 };
@@ -171,7 +171,8 @@ const SEVERITY_PANEL_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
     'bg-white shadow-[0_12px_28px_rgba(14,165,233,0.06)] dark:bg-[rgba(14,165,233,0.12)] dark:shadow-[0_12px_28px_rgba(3,105,161,0.18)]',
   [NotificationSeverityEnum.WARNING]:
     'bg-white shadow-[0_12px_28px_rgba(245,158,11,0.06)] dark:bg-[rgba(245,158,11,0.12)] dark:shadow-[0_12px_28px_rgba(146,64,14,0.18)]',
-  [NotificationSeverityEnum.ERROR]: 'bg-rose-50/75 dark:bg-rose-950/25',
+  [NotificationSeverityEnum.ERROR]:
+    'bg-white shadow-[0_12px_28px_rgba(244,63,94,0.06)] dark:bg-[rgba(244,63,94,0.12)] dark:shadow-[0_12px_28px_rgba(159,18,57,0.18)]',
   [NotificationSeverityEnum.PROGRESS]: 'bg-primary/10 dark:bg-primary/15',
 };
 
@@ -203,7 +204,7 @@ const SEVERITY_BADGE_SURFACE_STYLES: Record<NotificationSeverityEnum, string> = 
   [NotificationSeverityEnum.SUCCESS]: 'bg-muted ring-1 ring-border/80',
   [NotificationSeverityEnum.INFO]: 'bg-muted ring-1 ring-border/80',
   [NotificationSeverityEnum.WARNING]: 'bg-muted ring-1 ring-border/80',
-  [NotificationSeverityEnum.ERROR]: 'bg-muted',
+  [NotificationSeverityEnum.ERROR]: 'bg-muted ring-1 ring-border/80',
   [NotificationSeverityEnum.PROGRESS]: 'bg-muted',
 };
 
