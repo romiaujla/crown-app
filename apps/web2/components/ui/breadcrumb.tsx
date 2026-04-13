@@ -52,7 +52,7 @@ const BreadcrumbLink = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        'inline-flex max-w-full min-w-0 whitespace-nowrap rounded-md underline decoration-transparent underline-offset-4 transition-[color,text-decoration-color] hover:text-foreground hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        '-mx-1 inline-flex max-w-full min-w-0 rounded-md px-1 py-0.5 whitespace-nowrap underline decoration-transparent underline-offset-4 transition-[background-color,color,text-decoration-color] duration-150 ease-out hover:bg-primary/10 hover:text-primary hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         className,
       )}
       {...props}
@@ -255,7 +255,7 @@ function CrownBreadcrumb({
         <div className="flex min-h-8 min-w-0 max-w-full items-center overflow-hidden whitespace-nowrap max-sm:flex sm:!hidden">
           {parentItem?.href ? (
             <BreadcrumbLink
-              className="items-center gap-1 overflow-hidden text-muted-foreground hover:text-primary"
+              className="items-center gap-1 overflow-hidden text-muted-foreground"
               href={parentItem.href}
             >
               <ChevronLeft aria-hidden="true" className="size-4 shrink-0" />
@@ -290,8 +290,8 @@ function CrownBreadcrumb({
                 ) : isCurrent || !item.href ? (
                   <BreadcrumbPage>{item.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink className="hover:text-primary" href={item.href}>
-                    {item.label}
+                  <BreadcrumbLink className="text-muted-foreground" href={item.href}>
+                    <span className="truncate">{item.label}</span>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

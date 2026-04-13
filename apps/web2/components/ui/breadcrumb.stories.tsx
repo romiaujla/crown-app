@@ -116,6 +116,8 @@ export const HoveredAncestor: Story = {
 
     await userEvent.hover(link);
 
+    await expect(link).toHaveClass('hover:bg-primary/10');
+    await expect(link).toHaveClass('hover:text-primary');
     await expect(link).toBeVisible();
   },
 };
