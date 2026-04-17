@@ -24,6 +24,11 @@ export enum RichListColumnAlignEnum {
   RIGHT = 'right',
 }
 
+export enum RichListDensityEnum {
+  BREATHABLE = 'breathable',
+  COMPACT = 'compact',
+}
+
 export enum RichListSelectionModeEnum {
   SINGLE = 'single',
   MULTIPLE = 'multiple',
@@ -67,6 +72,7 @@ export type RichListProps<TData> = {
   caption?: React.ReactNode;
   className?: string;
   columns: RichListColumn<TData>[];
+  density?: RichListDensityEnum;
   emptyState: EmptyStateProps;
   errorState?: EmptyStateProps;
   filteredEmptyState?: EmptyStateProps;
@@ -90,6 +96,7 @@ function RichList<TData>({
   caption,
   className,
   columns,
+  density = RichListDensityEnum.COMPACT,
   emptyState,
   errorState,
   filteredEmptyState,
@@ -225,6 +232,7 @@ function RichList<TData>({
             ? Array.from({ length: loadingRowCount }).map((_, index) => (
                 <LoadingRow
                   columnCount={columns.length}
+                  density={density}
                   hasSelection={Boolean(selection)}
                   key={index}
                 />
@@ -240,7 +248,7 @@ function RichList<TData>({
                 return (
                   <TableRow data-state={rowSelected ? 'selected' : undefined} key={rowId}>
                     {selection ? (
-                      <TableCell className="w-12">
+                      <TableCell className={cn('w-12', getCellDensityClassName(density))}>
                         <Checkbox
                           aria-label={
                             selection.getRowSelectionLabel?.(row) ??
@@ -255,6 +263,7 @@ function RichList<TData>({
                     {columns.map((column) => (
                       <TableCell
                         className={cn(
+                          getCellDensityClassName(density),
                           alignClassNames[column.align ?? RichListColumnAlignEnum.LEFT],
                           column.className,
                         )}
@@ -280,16 +289,24 @@ function RichList<TData>({
   );
 }
 
-function LoadingRow({ columnCount, hasSelection }: { columnCount: number; hasSelection: boolean }) {
+function LoadingRow({
+  columnCount,
+  density,
+  hasSelection,
+}: {
+  columnCount: number;
+  density: RichListDensityEnum;
+  hasSelection: boolean;
+}) {
   return (
     <TableRow>
       {hasSelection ? (
-        <TableCell className="w-12">
+        <TableCell className={cn('w-12', getCellDensityClassName(density))}>
           <Skeleton className="size-4 rounded-sm" />
         </TableCell>
       ) : null}
       {Array.from({ length: columnCount }).map((_, index) => (
-        <TableCell key={index}>
+        <TableCell className={getCellDensityClassName(density)} key={index}>
           <Skeleton className="h-4 w-full max-w-40" />
         </TableCell>
       ))}
@@ -387,6 +404,10 @@ function renderCell<TData>(row: TData, column: RichListColumn<TData>) {
   }
 
   return null;
+}
+
+function getCellDensityClassName(density: RichListDensityEnum) {
+  return density === RichListDensityEnum.BREATHABLE ? 'py-4' : undefined;
 }
 
 export { RichList };

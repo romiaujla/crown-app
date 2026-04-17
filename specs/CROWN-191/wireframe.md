@@ -26,6 +26,8 @@ Create the reusable `RichList` foundation for dense record-list and Rich Table s
 ## Required States
 
 - Default: records render with configured columns and optional row selection.
+- Compact density: records render with the current dense row spacing for operational scan speed.
+- Breathable density: records render with additional vertical cell padding for review contexts where rows need more air.
 - Loading: skeleton rows preserve column rhythm and row height while data loads.
 - Empty: `EmptyState` communicates that no records exist yet.
 - Filtered empty: `EmptyState` communicates that current filters returned no matches.
@@ -48,6 +50,7 @@ Create the reusable `RichList` foundation for dense record-list and Rich Table s
 - Tablet: horizontal overflow is allowed inside the table wrapper so data columns remain readable.
 - Mobile: horizontal overflow remains available; row height and selection controls stay stable.
 - Text in cells truncates only where the consuming column renderer chooses truncation.
+- Compact and breathable density variants must preserve the same column widths and interaction model.
 
 ## Component Reuse
 
@@ -72,3 +75,4 @@ Create the reusable `RichList` foundation for dense record-list and Rich Table s
 - Do not introduce raw color values.
 - Maintain table typography at `text-sm` with `tabular-nums` available to cell renderers for numeric columns.
 - Keep row and cell dimensions stable across default, hover, selected, loading, and empty states.
+- Use compact density by default; use breathable density when a consuming surface prioritizes row readability over maximum vertical density.

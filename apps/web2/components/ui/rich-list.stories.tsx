@@ -5,6 +5,7 @@ import { expect, userEvent, within } from '@storybook/test';
 import {
   RichList,
   RichListColumnAlignEnum,
+  RichListDensityEnum,
   RichListSelectionModeEnum,
   RichListSortDirectionEnum,
   RichListStateEnum,
@@ -156,6 +157,7 @@ const meta = {
   args: {
     caption: 'Tenant workspaces',
     columns,
+    density: RichListDensityEnum.COMPACT,
     emptyState,
     getRowId: (row: TenantRecord) => row.id,
     getRowLabel: (row: TenantRecord) => row.name,
@@ -169,6 +171,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const Breathable: Story = {
+  args: {
+    density: RichListDensityEnum.BREATHABLE,
+  },
+};
 
 export const MultiSelect: Story = {
   render: () => <StatefulRichList />,
