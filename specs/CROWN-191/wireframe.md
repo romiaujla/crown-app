@@ -14,6 +14,7 @@ Create the reusable `RichList` foundation for dense record-list and Rich Table s
   - Body rows with stable cell alignment and optional selected state.
   - Footer slot for downstream summary, result metadata, or later pagination integration.
   - State region for loading, empty, filtered-empty, and error states.
+  - Consistent left and right table-edge padding across header, body, loading, footer, and state rows.
 
 ## Action Hierarchy
 
@@ -51,6 +52,7 @@ Create the reusable `RichList` foundation for dense record-list and Rich Table s
 - Mobile: horizontal overflow remains available; row height and selection controls stay stable.
 - Text in cells truncates only where the consuming column renderer chooses truncation.
 - Compact and breathable density variants must preserve the same column widths and interaction model.
+- Left and right table-edge padding must remain present at desktop, tablet, and mobile widths.
 
 ## Component Reuse
 

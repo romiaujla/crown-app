@@ -92,6 +92,11 @@ const alignClassNames = {
   [RichListColumnAlignEnum.RIGHT]: 'text-right',
 };
 
+const tableEdgePaddingClassNames = {
+  left: 'pl-4 sm:pl-5',
+  right: 'pr-4 sm:pr-5',
+};
+
 function RichList<TData>({
   caption,
   className,
@@ -178,7 +183,7 @@ function RichList<TData>({
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             {selection ? (
-              <TableHead className="w-12">
+              <TableHead className={cn('w-12', tableEdgePaddingClassNames.left)}>
                 {selection.mode === RichListSelectionModeEnum.MULTIPLE ? (
                   <Checkbox
                     aria-label="Select all rows"
@@ -193,10 +198,15 @@ function RichList<TData>({
                 )}
               </TableHead>
             ) : null}
-            {columns.map((column) => (
+            {columns.map((column, columnIndex) => (
               <TableHead
                 aria-sort={getAriaSort(column)}
                 className={cn(
+                  getColumnEdgePaddingClassName({
+                    columnCount: columns.length,
+                    columnIndex,
+                    hasSelection: Boolean(selection),
+                  }),
                   alignClassNames[column.align ?? RichListColumnAlignEnum.LEFT],
                   column.headerClassName,
                 )}
@@ -248,7 +258,13 @@ function RichList<TData>({
                 return (
                   <TableRow data-state={rowSelected ? 'selected' : undefined} key={rowId}>
                     {selection ? (
-                      <TableCell className={cn('w-12', getCellDensityClassName(density))}>
+                      <TableCell
+                        className={cn(
+                          'w-12',
+                          tableEdgePaddingClassNames.left,
+                          getCellDensityClassName(density),
+                        )}
+                      >
                         <Checkbox
                           aria-label={
                             selection.getRowSelectionLabel?.(row) ??
@@ -260,9 +276,14 @@ function RichList<TData>({
                         />
                       </TableCell>
                     ) : null}
-                    {columns.map((column) => (
+                    {columns.map((column, columnIndex) => (
                       <TableCell
                         className={cn(
+                          getColumnEdgePaddingClassName({
+                            columnCount: columns.length,
+                            columnIndex,
+                            hasSelection: Boolean(selection),
+                          }),
                           getCellDensityClassName(density),
                           alignClassNames[column.align ?? RichListColumnAlignEnum.LEFT],
                           column.className,
@@ -280,7 +301,9 @@ function RichList<TData>({
         {footer ? (
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={columnSpan}>{footer}</TableCell>
+              <TableCell className="px-4 sm:px-5" colSpan={columnSpan}>
+                {footer}
+              </TableCell>
             </TableRow>
           </TableFooter>
         ) : null}
@@ -301,12 +324,24 @@ function LoadingRow({
   return (
     <TableRow>
       {hasSelection ? (
-        <TableCell className={cn('w-12', getCellDensityClassName(density))}>
+        <TableCell
+          className={cn('w-12', tableEdgePaddingClassNames.left, getCellDensityClassName(density))}
+        >
           <Skeleton className="size-4 rounded-sm" />
         </TableCell>
       ) : null}
       {Array.from({ length: columnCount }).map((_, index) => (
-        <TableCell className={getCellDensityClassName(density)} key={index}>
+        <TableCell
+          className={cn(
+            getColumnEdgePaddingClassName({
+              columnCount,
+              columnIndex: index,
+              hasSelection,
+            }),
+            getCellDensityClassName(density),
+          )}
+          key={index}
+        >
           <Skeleton className="h-4 w-full max-w-40" />
         </TableCell>
       ))}
@@ -334,11 +369,31 @@ function SortIndicator({ direction }: { direction?: RichListSortDirectionEnum })
 function StateRow({ children, columnSpan }: { children: React.ReactNode; columnSpan: number }) {
   return (
     <TableRow className="hover:bg-transparent">
-      <TableCell className="p-0" colSpan={columnSpan}>
+      <TableCell className="px-4 py-0 sm:px-5" colSpan={columnSpan}>
         {children}
       </TableCell>
     </TableRow>
   );
+}
+
+function getColumnEdgePaddingClassName({
+  columnCount,
+  columnIndex,
+  hasSelection,
+}: {
+  columnCount: number;
+  columnIndex: number;
+  hasSelection: boolean;
+}) {
+  if (!hasSelection && columnIndex === 0) {
+    return tableEdgePaddingClassNames.left;
+  }
+
+  if (columnIndex === columnCount - 1) {
+    return tableEdgePaddingClassNames.right;
+  }
+
+  return undefined;
 }
 
 function getStateContent({
