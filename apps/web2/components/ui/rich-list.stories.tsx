@@ -159,6 +159,7 @@ const meta = {
     emptyState,
     getRowId: (row: TenantRecord) => row.id,
     getRowLabel: (row: TenantRecord) => row.name,
+    onSortChange: () => undefined,
     rows,
   },
 } satisfies Meta<typeof RichList<TenantRecord>>;

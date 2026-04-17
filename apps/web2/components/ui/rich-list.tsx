@@ -166,8 +166,8 @@ function RichList<TData>({
         className,
       )}
     >
-      <Table>
-        {caption ? <TableCaption>{caption}</TableCaption> : null}
+      <Table className="min-w-[760px]">
+        {caption ? <TableCaption className="sr-only">{caption}</TableCaption> : null}
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             {selection ? (
@@ -196,22 +196,25 @@ function RichList<TData>({
                 key={column.key}
                 style={column.width ? { width: column.width } : undefined}
               >
-                {column.sortable ? (
+                {column.sortable && onSortChange ? (
                   <Button
                     aria-label={`Sort by ${getTextLabel(column.header)}`}
                     className={cn(
                       '-ml-3 h-8 px-3 text-muted-foreground hover:text-foreground',
                       column.align === RichListColumnAlignEnum.RIGHT ? 'ml-auto' : null,
                     )}
-                    disabled={!onSortChange}
+                    icon={<SortIndicator direction={column.sortDirection} />}
+                    iconPosition="right"
                     onClick={() => onSortChange?.(column)}
                     variant="ghost"
                   >
-                    <span>{column.header}</span>
-                    <SortIndicator direction={column.sortDirection} />
+                    {column.header}
                   </Button>
                 ) : (
-                  column.header
+                  <span className="inline-flex items-center gap-2">
+                    <span>{column.header}</span>
+                    {column.sortable ? <SortIndicator direction={column.sortDirection} /> : null}
+                  </span>
                 )}
               </TableHead>
             ))}
