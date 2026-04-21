@@ -10,6 +10,7 @@ import {
   CardMetric,
   CardTitle,
 } from '@/components/ui/card';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const TrendingUpIcon = () => (
   <svg
@@ -93,9 +94,32 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button>Review component library</Button>
-              <Button variant="secondary">Inspect Storybook states</Button>
+            <div className="flex max-w-sm flex-col gap-4">
+              <div className="rounded-[28px] border border-border/80 bg-background/80 p-4 shadow-[0_18px_40px_hsl(var(--foreground)/0.08)]">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                  Dashboard preview
+                </p>
+                <div className="mt-3 flex flex-col gap-3">
+                  <ToggleGroup
+                    aria-label="Preview reporting window"
+                    defaultValue="month"
+                    size="sm"
+                    type="single"
+                  >
+                    <ToggleGroupItem value="week">Week</ToggleGroupItem>
+                    <ToggleGroupItem value="month">Month</ToggleGroupItem>
+                    <ToggleGroupItem value="year">Year</ToggleGroupItem>
+                  </ToggleGroup>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Shared segmented control for mutually exclusive window switching in future
+                    dashboard surfaces.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button>Review component library</Button>
+                <Button variant="secondary">Inspect Storybook states</Button>
+              </div>
             </div>
           </div>
         </header>
