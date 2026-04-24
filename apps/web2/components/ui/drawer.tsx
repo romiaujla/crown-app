@@ -49,6 +49,28 @@ function measureCssWidth(width: string) {
   return measuredWidth;
 }
 
+function resolveDrawerWidthPixels(width: string) {
+  if (typeof window === 'undefined') {
+    return 0;
+  }
+
+  const trimmedWidth = width.trim();
+
+  if (trimmedWidth.endsWith('vw')) {
+    return (window.innerWidth * Number.parseFloat(trimmedWidth)) / 100;
+  }
+
+  if (trimmedWidth.endsWith('%')) {
+    return (window.innerWidth * Number.parseFloat(trimmedWidth)) / 100;
+  }
+
+  if (trimmedWidth.endsWith('px')) {
+    return Number.parseFloat(trimmedWidth);
+  }
+
+  return measureCssWidth(trimmedWidth);
+}
+
 function clampWidth(width: number, minWidth: number, maxWidth: number) {
   return Math.min(Math.max(width, minWidth), maxWidth);
 }
@@ -127,7 +149,7 @@ const drawerOverlayVariants = cva(
 );
 
 const drawerContentVariants = cva(
-  'ui-drawer-panel-motion fixed inset-y-0 right-0 z-50 flex h-screen w-[var(--drawer-width)] max-w-[100vw] flex-col overflow-hidden border-l border-border/75 bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 data-[state=closed]:animate-[ui-drawer-panel-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-panel-in_220ms_cubic-bezier(0.16,1,0.3,1)]',
+  'ui-drawer-panel-motion fixed inset-y-0 right-0 z-50 flex h-screen w-[var(--drawer-width)] min-w-[var(--drawer-min-width)] max-w-[100vw] flex-col overflow-hidden border-l border-border/75 bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 data-[state=closed]:animate-[ui-drawer-panel-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-panel-in_220ms_cubic-bezier(0.16,1,0.3,1)]',
 );
 
 type DrawerOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>;
@@ -150,6 +172,7 @@ const DrawerOverlay = React.forwardRef<
 DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 type DrawerContentStyle = React.CSSProperties & {
+  '--drawer-min-width'?: string;
   '--drawer-width'?: string;
 };
 
@@ -249,7 +272,7 @@ const DrawerContent = React.forwardRef<
         }
 
         resizeStateRef.current = {
-          minWidth: measureCssWidth(resolvedMinWidth),
+          minWidth: resolveDrawerWidthPixels(resolvedMinWidth),
           startWidth: contentWidth,
           startX: event.clientX,
         };
@@ -268,7 +291,7 @@ const DrawerContent = React.forwardRef<
       }
 
       const nextWidth =
-        measureCssWidth(resolvedWidth) < measureCssWidth(resolvedMinWidth)
+        resolveDrawerWidthPixels(resolvedWidth) < resolveDrawerWidthPixels(resolvedMinWidth)
           ? resolvedMinWidth
           : resolvedWidth;
 
@@ -295,6 +318,7 @@ const DrawerContent = React.forwardRef<
 
     const resolvedStyle: DrawerContentStyle = {
       ...(style ?? {}),
+      '--drawer-min-width': resizable ? resolvedMinWidth : resolvedWidth,
       '--drawer-width': drawerWidth,
     };
 
