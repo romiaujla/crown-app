@@ -812,10 +812,10 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
       <span
         aria-hidden={collapsed}
         className={cn(
-          'ml-auto flex shrink-0 transition-[max-width,opacity,transform] duration-200 ease-out motion-reduce:transition-none',
+          'flex shrink-0 transition-[max-width,opacity,transform,margin] duration-200 ease-out motion-reduce:transition-none',
           collapsed
             ? 'max-w-0 translate-x-1 overflow-hidden opacity-0'
-            : 'max-w-6 translate-x-0 opacity-100',
+            : 'ml-auto max-w-6 translate-x-0 opacity-100',
         )}
       >
         <TrailingIcon aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
