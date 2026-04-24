@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
+import {
+  getDesktopSelectionSync,
+  getNavigationTargetHref,
+} from '@/components/shell/navigation-logic';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -219,17 +223,18 @@ function AppShell({
   const selectedDesktopParentId = desktopOpenParentId ?? activeChildParentId;
 
   React.useEffect(() => {
-    if (!activeChildParentId) {
+    const nextSelection = getDesktopSelectionSync(activeChildParentId, desktopOpenParentId);
+
+    if (!nextSelection) {
       return;
     }
 
-    const parentChanged = activeChildParentId !== selectedDesktopParentId;
-    setDesktopOpenParentId(activeChildParentId);
-    if (parentChanged) {
+    setDesktopOpenParentId(nextSelection.selectedParentId);
+    if (nextSelection.parentChanged) {
       setIsDesktopSubmenuExpanded(true);
     }
     setIsDesktopRailCollapsed(true);
-  }, [activeChildParentId, selectedDesktopParentId]);
+  }, [activeChildParentId]);
 
   const desktopActiveParentId = selectedDesktopParentId;
   const selectedDesktopParent = selectedDesktopParentId
@@ -251,38 +256,6 @@ function AppShell({
     window.location.reload();
   }, [onRetry]);
 
-  const navigateToHref = React.useCallback(
-    (href: string) => {
-      if (typeof window === 'undefined') {
-        return;
-      }
-
-      const [pathPart, hashPart] = href.split('#');
-      const targetPathname = pathPart || pathname;
-      const targetHash = hashPart ? `#${hashPart}` : '';
-
-      if (targetPathname !== pathname) {
-        window.location.assign(href);
-        return;
-      }
-
-      if (!targetHash) {
-        window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
-        setCurrentHash('');
-        return;
-      }
-
-      window.history.pushState(
-        null,
-        '',
-        `${window.location.pathname}${window.location.search}${targetHash}`,
-      );
-      setCurrentHash(targetHash);
-      document.getElementById(hashPart)?.scrollIntoView({ block: 'start' });
-    },
-    [pathname],
-  );
-
   const collapseDesktopSubmenu = React.useCallback(() => {
     setIsDesktopSubmenuExpanded(false);
   }, []);
@@ -303,9 +276,8 @@ function AppShell({
       setDesktopOpenParentId(item.id);
       setIsDesktopSubmenuExpanded(true);
       setIsDesktopRailCollapsed(true);
-      navigateToHref(item.children[0].href);
     },
-    [handleDirectNavigation, navigateToHref],
+    [handleDirectNavigation],
   );
 
   const primaryNavigation = renderNavigationGroups({
@@ -447,7 +419,6 @@ function AppShell({
                       icon={child.icon}
                       key={child.id}
                       label={child.label}
-                      onClick={handleDirectNavigation}
                       onKeyDown={(event) =>
                         handleNavigationKeyDown(event, {
                           onCloseSubmenu: collapseDesktopSubmenu,
@@ -714,6 +685,7 @@ function renderNavigationGroups({
                 ariaExpanded={item.id === openParentId}
                 collapsed={isCollapsed}
                 disabled={item.disabled}
+                href={getNavigationTargetHref(item)}
                 icon={item.icon}
                 key={item.id}
                 label={item.label}
