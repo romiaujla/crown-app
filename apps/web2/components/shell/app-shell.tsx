@@ -783,7 +783,7 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
     ref,
   ) => {
     const rowClassName = cn(
-      'flex h-10 w-full items-center overflow-hidden pr-4 pl-0 text-left text-sm transition-[background-color,color,box-shadow,padding,gap] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+      'flex h-10 w-full items-center overflow-hidden px-4 text-left text-sm transition-[background-color,color,box-shadow,padding,gap] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
       collapsed ? 'justify-center gap-0 px-0' : 'gap-3',
       active
         ? 'bg-secondary text-secondary-foreground shadow-sm'
