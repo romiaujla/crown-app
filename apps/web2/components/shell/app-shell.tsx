@@ -156,7 +156,7 @@ function AppShell({
   const [isDesktopRailCollapsed, setIsDesktopRailCollapsed] = React.useState(
     defaultDesktopRailCollapsed ?? Boolean(defaultDesktopOpenParentId),
   );
-  const [isDesktopSubmenuOpen, setIsDesktopSubmenuOpen] = React.useState(
+  const [isDesktopSubmenuExpanded, setIsDesktopSubmenuExpanded] = React.useState(
     Boolean(defaultDesktopOpenParentId),
   );
   const [isMobileNavOpen, setIsMobileNavOpen] = React.useState(defaultMobileNavOpen);
@@ -216,21 +216,22 @@ function AppShell({
     () => findActiveChildParentId(normalizedGroups, pathname, currentHash),
     [currentHash, normalizedGroups, pathname],
   );
+  const selectedDesktopParentId = desktopOpenParentId ?? activeChildParentId;
 
   React.useEffect(() => {
     if (!activeChildParentId) {
       return;
     }
 
+    const parentChanged = activeChildParentId !== selectedDesktopParentId;
     setDesktopOpenParentId(activeChildParentId);
-    setIsDesktopSubmenuOpen(true);
-    setIsDesktopRailCollapsed((currentRailState) =>
-      currentRailState || !isDesktopSubmenuOpen ? true : currentRailState,
-    );
-  }, [activeChildParentId, isDesktopSubmenuOpen]);
+    if (parentChanged) {
+      setIsDesktopSubmenuExpanded(true);
+    }
+    setIsDesktopRailCollapsed(true);
+  }, [activeChildParentId, selectedDesktopParentId]);
 
-  const selectedDesktopParentId = desktopOpenParentId ?? activeChildParentId;
-  const desktopActiveParentId = isDesktopSubmenuOpen ? desktopOpenParentId : activeChildParentId;
+  const desktopActiveParentId = selectedDesktopParentId;
   const selectedDesktopParent = selectedDesktopParentId
     ? findParentItemById(normalizedGroups, selectedDesktopParentId)
     : null;
@@ -253,24 +254,21 @@ function AppShell({
   const openDesktopSubmenu = React.useCallback(
     (parentId: string) => {
       setDesktopOpenParentId(parentId);
-      setIsDesktopSubmenuOpen(true);
-      setIsDesktopRailCollapsed((currentRailState) =>
-        currentRailState || !isDesktopSubmenuOpen ? true : currentRailState,
+      setIsDesktopSubmenuExpanded((currentExpandedState) =>
+        desktopOpenParentId === parentId ? !currentExpandedState : true,
       );
+      setIsDesktopRailCollapsed(true);
     },
-    [isDesktopSubmenuOpen],
+    [desktopOpenParentId],
   );
 
-  const closeDesktopSubmenu = React.useCallback((parentId?: string) => {
-    setIsDesktopSubmenuOpen(false);
-
-    if (parentId) {
-      desktopParentButtonRefs.current[parentId]?.focus();
-    }
+  const collapseDesktopSubmenu = React.useCallback(() => {
+    setIsDesktopSubmenuExpanded(false);
   }, []);
 
   const handleDirectNavigation = React.useCallback(() => {
-    setIsDesktopSubmenuOpen(false);
+    setDesktopOpenParentId(null);
+    setIsDesktopSubmenuExpanded(false);
     setIsMobileNavOpen(false);
   }, []);
 
@@ -281,20 +279,9 @@ function AppShell({
         return;
       }
 
-      if (desktopOpenParentId === item.id && isDesktopSubmenuOpen) {
-        closeDesktopSubmenu(item.id);
-        return;
-      }
-
       openDesktopSubmenu(item.id);
     },
-    [
-      closeDesktopSubmenu,
-      desktopOpenParentId,
-      handleDirectNavigation,
-      isDesktopSubmenuOpen,
-      openDesktopSubmenu,
-    ],
+    [handleDirectNavigation, openDesktopSubmenu],
   );
 
   const primaryNavigation = renderNavigationGroups({
@@ -303,7 +290,7 @@ function AppShell({
     currentPathname: pathname,
     groups: normalizedGroups,
     isCollapsed: isDesktopRailCollapsed,
-    openParentId: isDesktopSubmenuOpen ? desktopOpenParentId : null,
+    openParentId: isDesktopSubmenuExpanded ? selectedDesktopParentId : null,
     onDirectNavigation: handleDirectNavigation,
     onParentActivate: handleParentActivation,
     parentButtonRefs: desktopParentButtonRefs,
@@ -382,36 +369,55 @@ function AppShell({
         {selectedDesktopParent?.children?.length ? (
           <aside
             className={cn(
-              'sticky top-0 hidden h-screen shrink-0 overflow-hidden bg-card/90 transition-[width,opacity,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
-              isDesktopSubmenuOpen
-                ? 'w-56 border-r border-border/80 opacity-100'
-                : 'w-0 border-r-0 opacity-0',
+              'sticky top-0 hidden h-screen shrink-0 overflow-hidden border-r border-border/80 bg-card/90 transition-[width,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
+              isDesktopSubmenuExpanded ? 'w-56' : 'w-[72px]',
             )}
           >
             <nav
               aria-label={`${selectedDesktopParent.label} submenu`}
-              className={cn(
-                'flex min-h-0 flex-1 flex-col transition-opacity duration-200 ease-out motion-reduce:transition-none',
-                isDesktopSubmenuOpen ? 'opacity-100 delay-75' : 'opacity-0',
-              )}
+              className="flex min-h-0 flex-1 flex-col"
               id={`desktop-submenu-${selectedDesktopParent.id}`}
             >
-              <div className="flex min-h-24 items-start gap-3 border-b border-border/80 px-4 py-4">
-                <div className="min-w-0">
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
-                    Submenu
-                  </p>
-                  <h2 className="mt-2 font-display text-lg font-semibold text-card-foreground">
-                    {selectedDesktopParent.label}
-                  </h2>
-                </div>
+              <div
+                className={cn(
+                  'flex min-h-24 border-b border-border/80 px-4 py-4',
+                  isDesktopSubmenuExpanded
+                    ? 'items-start gap-3'
+                    : 'items-center justify-center px-3',
+                )}
+              >
+                {isDesktopSubmenuExpanded ? (
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                      Submenu
+                    </p>
+                    <h2 className="mt-2 font-display text-lg font-semibold text-card-foreground">
+                      {selectedDesktopParent.label}
+                    </h2>
+                  </div>
+                ) : (
+                  <span className="flex size-10 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
+                    <selectedDesktopParent.icon
+                      aria-hidden="true"
+                      className="h-4 w-4"
+                      strokeWidth={1.9}
+                    />
+                    <span className="sr-only">{selectedDesktopParent.label}</span>
+                  </span>
+                )}
               </div>
-              <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+              <div
+                className={cn(
+                  'flex min-h-0 flex-1 flex-col py-4',
+                  isDesktopSubmenuExpanded ? 'px-4' : 'px-3',
+                )}
+              >
                 <div className="flex flex-col gap-2" data-nav-list="desktop-submenu">
                   {selectedDesktopParent.children.map((child) => (
                     <NavRow
                       active={isHrefActive(child.href, pathname, currentHash)}
-                      className="rounded-xl px-3"
+                      className={cn('rounded-xl', isDesktopSubmenuExpanded && 'px-3')}
+                      collapsed={!isDesktopSubmenuExpanded}
                       disabled={child.disabled}
                       href={child.href}
                       icon={child.icon}
@@ -420,7 +426,7 @@ function AppShell({
                       onClick={handleDirectNavigation}
                       onKeyDown={(event) =>
                         handleNavigationKeyDown(event, {
-                          onCloseSubmenu: () => closeDesktopSubmenu(selectedDesktopParent.id),
+                          onCloseSubmenu: collapseDesktopSubmenu,
                         })
                       }
                     />
@@ -429,13 +435,39 @@ function AppShell({
               </div>
               <div className="border-t border-border/80 p-2">
                 <button
-                  aria-label={`Collapse ${selectedDesktopParent.label} submenu`}
-                  className="flex h-10 w-full items-center gap-3 rounded-2xl px-4 text-left text-sm text-muted-foreground transition-[background-color,color] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  onClick={() => closeDesktopSubmenu(selectedDesktopParent.id)}
+                  aria-label={
+                    isDesktopSubmenuExpanded
+                      ? `Collapse ${selectedDesktopParent.label} submenu`
+                      : `Expand ${selectedDesktopParent.label} submenu`
+                  }
+                  className={cn(
+                    'flex h-10 w-full items-center rounded-2xl text-left text-sm text-muted-foreground transition-[background-color,color] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isDesktopSubmenuExpanded ? 'gap-3 px-4' : 'justify-center px-0',
+                  )}
+                  onClick={() =>
+                    setIsDesktopSubmenuExpanded((currentExpandedState) => !currentExpandedState)
+                  }
                   type="button"
                 >
-                  <ChevronLeft aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
-                  <span>Collapse submenu</span>
+                  {isDesktopSubmenuExpanded ? (
+                    <>
+                      <ChevronLeft
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0"
+                        strokeWidth={1.9}
+                      />
+                      <span>Collapse submenu</span>
+                    </>
+                  ) : (
+                    <>
+                      <ChevronRight
+                        aria-hidden="true"
+                        className="h-4 w-4 shrink-0"
+                        strokeWidth={1.9}
+                      />
+                      <span className="sr-only">Expand submenu</span>
+                    </>
+                  )}
                 </button>
               </div>
             </nav>
