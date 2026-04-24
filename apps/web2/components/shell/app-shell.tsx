@@ -322,7 +322,7 @@ function AppShell({
           <div
             className={cn(
               'flex items-start gap-3 pr-4 pb-4 pl-0 pt-0',
-              isDesktopRailCollapsed && 'justify-center px-0 py-0',
+              isDesktopRailCollapsed && 'justify-center px-3 py-3',
             )}
           >
             {brandIcon}
@@ -396,8 +396,8 @@ function AppShell({
               )}
               id={`desktop-submenu-${selectedDesktopParent.id}`}
             >
-              <div className="flex items-start justify-between gap-3 border-b border-border/80 pr-4 pb-4 pl-0 pt-0">
-                <div className="min-w-0 pt-4">
+              <div className="flex items-start justify-between gap-3 border-b border-border/80 px-4 py-4">
+                <div className="min-w-0">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Submenu
                   </p>
