@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 type TabsPreviewProps = {
   disabledValue?: string;
   listClassName?: string;
+  variant?: 'line' | 'segmented';
 };
 
 const tabItems = [
@@ -22,9 +23,9 @@ const tabItems = [
   },
 ] as const;
 
-const TabsPreview = ({ disabledValue, listClassName }: TabsPreviewProps) => (
+const TabsPreview = ({ disabledValue, listClassName, variant = 'line' }: TabsPreviewProps) => (
   <Tabs className="w-full max-w-3xl" defaultValue="overview">
-    <TabsList aria-label="Workspace sections" className={listClassName}>
+    <TabsList aria-label="Workspace sections" className={listClassName} variant={variant}>
       {tabItems.map((item) => (
         <TabsTrigger disabled={item.value === disabledValue} key={item.value} value={item.value}>
           {item.label}
@@ -32,7 +33,7 @@ const TabsPreview = ({ disabledValue, listClassName }: TabsPreviewProps) => (
       ))}
     </TabsList>
     {tabItems.map((item) => (
-      <TabsContent key={item.value} value={item.value}>
+      <TabsContent key={item.value} value={item.value} variant={variant}>
         <Card variant="info">
           <CardHeader>
             <CardTitle>{item.label}</CardTitle>
@@ -65,6 +66,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const SegmentedVariant: Story = {
+  args: {
+    variant: 'segmented',
+  },
+};
 
 export const DisabledTrigger: Story = {
   args: {
