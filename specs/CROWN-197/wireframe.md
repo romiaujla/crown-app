@@ -25,6 +25,7 @@ Sheet
 ## Drawer behavior
 
 - The drawer opens from the **right** side only.
+- The drawer should **slide in from the right viewport edge** when the trigger button is clicked.
 - The drawer fills the full viewport height (`h-screen`).
 - The drawer width is **adjustable** via a public prop.
 - Initial/default width is **`20vw`**.
@@ -81,12 +82,13 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 Create `apps/web2/components/ui/sheet.stories.tsx` with stories that cover:
 
 1. Trigger-driven right drawer open behavior
-2. Adjustable width
-3. Header actions
-4. Form layout
-5. Loading
-6. Empty
-7. Error
-8. Success
-9. Long scrollable content
-10. Dark theme
+2. Right-edge slide-in motion
+3. Adjustable width
+4. Header actions
+5. Form layout
+6. Loading
+7. Empty
+8. Error
+9. Success
+10. Long scrollable content
+11. Dark theme

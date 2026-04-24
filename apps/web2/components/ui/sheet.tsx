@@ -13,11 +13,11 @@ const SheetPortal = DialogPrimitive.Portal;
 const SheetClose = DialogPrimitive.Close;
 
 const sheetOverlayVariants = cva(
-  'fixed inset-0 z-50 bg-[hsl(var(--foreground)/0.56)] backdrop-blur-[8px] backdrop-saturate-150 transition-opacity duration-200 ease-out data-[state=closed]:opacity-0 data-[state=open]:opacity-100 motion-reduce:transition-none',
+  'ui-drawer-overlay-motion fixed inset-0 z-50 bg-[hsl(var(--foreground)/0.56)] backdrop-blur-[8px] backdrop-saturate-150 data-[state=closed]:animate-[ui-drawer-overlay-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-overlay-in_220ms_ease-out]',
 );
 
 const sheetContentVariants = cva(
-  'fixed inset-y-0 right-0 z-50 flex h-screen w-[var(--sheet-width)] max-w-[100vw] flex-col overflow-hidden border-l border-border/75 bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 transition-transform duration-200 ease-out data-[state=closed]:translate-x-full data-[state=open]:translate-x-0 motion-reduce:transition-none',
+  'ui-drawer-panel-motion fixed inset-y-0 right-0 z-50 flex h-screen w-[var(--sheet-width)] max-w-[100vw] flex-col overflow-hidden border-l border-border/75 bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 data-[state=closed]:animate-[ui-drawer-panel-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-panel-in_220ms_cubic-bezier(0.16,1,0.3,1)]',
 );
 
 type SheetOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>;

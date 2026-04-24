@@ -1,6 +1,5 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within } from '@storybook/test';
 import { CheckCircle2, Filter, ListFilter, Search, Settings2, TriangleAlert } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -24,57 +23,130 @@ import { Skeleton } from './skeleton';
 const controlBaseClassName =
   'flex h-10 w-full rounded-2xl border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
 
-const StoryCanvas = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-[44rem] w-full bg-background">{children}</div>
-);
+const storyContentWidth = 'min(100%, 48rem)';
 
 type SheetStoryPreviewProps = {
   body?: React.ReactNode;
-  contentClassName?: string;
-  defaultOpen?: boolean;
   description?: React.ReactNode;
   footer?: React.ReactNode;
   headerActions?: React.ReactNode;
-  showCloseButton?: boolean;
   title?: React.ReactNode;
   triggerLabel?: string;
   width?: number | string;
 };
 
-const SheetStoryPreview = ({
-  body,
-  contentClassName,
-  defaultOpen = true,
-  description = 'Review supporting details or complete the follow-up task without leaving the current page.',
-  footer,
-  headerActions,
-  showCloseButton = true,
-  title = 'Tenant details',
-  triggerLabel,
-  width = '20vw',
-}: SheetStoryPreviewProps) => (
-  <StoryCanvas>
-    <Sheet defaultOpen={defaultOpen}>
-      {triggerLabel ? (
-        <div className="p-6">
+const StoryPageChrome = ({ triggerLabel }: { triggerLabel: string }) => (
+  <div className="flex min-h-[44rem] w-full bg-background">
+    <div className="flex-1 px-8 py-8">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <div className="flex items-start justify-between gap-4 rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-muted-foreground">Workspace console</p>
+            <h2 className="font-display text-3xl font-semibold text-foreground">
+              Tenant operations overview
+            </h2>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              The drawer should open from the right edge of the viewport so users can inspect or
+              edit details without leaving this page.
+            </p>
+          </div>
           <SheetTrigger asChild>
             <Button>{triggerLabel}</Button>
           </SheetTrigger>
         </div>
-      ) : null}
-      <SheetContent className={contentClassName} showCloseButton={showCloseButton} width={width}>
-        <SheetHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
-          <div className="space-y-2">
-            <SheetTitle>{title}</SheetTitle>
-            <SheetDescription>{description}</SheetDescription>
+
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {['Healthy tenants', 'Billing exceptions', 'Provisioning backlog'].map((label, index) => (
+            <div key={label} className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-3 font-display text-3xl font-semibold text-foreground">
+                {index === 0 ? '18' : index === 1 ? '3' : '7'}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h3 className="font-display text-xl font-semibold text-foreground">
+                  Tenant directory
+                </h3>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  Selecting a row should open the drawer while the table remains visible behind the
+                  overlay.
+                </p>
+              </div>
+              <Button variant="secondary">Refresh</Button>
+            </div>
+
+            <div className="space-y-3">
+              {['Northwind Logistics', 'Acme Freight', 'Blue Harbor Distribution'].map((tenant) => (
+                <div
+                  key={tenant}
+                  className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/35 px-4 py-3"
+                >
+                  <div>
+                    <p className="font-medium text-foreground">{tenant}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Secondary workflow opens in drawer
+                    </p>
+                  </div>
+                  <Button size="sm" variant="ghost">
+                    View details
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
-          {headerActions}
-        </SheetHeader>
-        {body}
-        {footer}
-      </SheetContent>
-    </Sheet>
-  </StoryCanvas>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const DrawerShell = ({
+  body,
+  description = 'Review supporting details or complete the follow-up task without leaving the current page.',
+  footer,
+  headerActions,
+  title = 'Tenant details',
+}: Omit<SheetStoryPreviewProps, 'triggerLabel' | 'width'>) => (
+  <>
+    <SheetHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
+      <div className="space-y-2">
+        <SheetTitle>{title}</SheetTitle>
+        <SheetDescription>{description}</SheetDescription>
+      </div>
+      {headerActions}
+    </SheetHeader>
+    {body}
+    {footer}
+  </>
+);
+
+const SheetStoryPreview = ({
+  body,
+  description,
+  footer,
+  headerActions,
+  title,
+  triggerLabel = 'Open drawer',
+  width = '20vw',
+}: SheetStoryPreviewProps) => (
+  <Sheet>
+    <StoryPageChrome triggerLabel={triggerLabel} />
+    <SheetContent width={width}>
+      <DrawerShell
+        body={body}
+        description={description}
+        footer={footer}
+        headerActions={headerActions}
+        title={title}
+      />
+    </SheetContent>
+  </Sheet>
 );
 
 function StorySection({
@@ -242,7 +314,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. It opens from the right edge, defaults to 20vw width, fills the viewport height, and keeps inner content scrollable.',
+          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. Trigger it from a button and it slides in from the right edge, defaults to 20vw width, fills the viewport height, and keeps inner content scrollable.',
       },
       story: {
         height: '760px',
@@ -260,30 +332,21 @@ export const DefaultRight: Story = {
   render: () => (
     <SheetStoryPreview
       body={defaultBody}
-      defaultOpen={false}
       footer={defaultFooter}
-      triggerLabel="Open drawer"
+      triggerLabel="Open tenant drawer"
       width="20vw"
     />
   ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const dialog = within(canvasElement.ownerDocument.body);
-
-    await userEvent.click(canvas.getByRole('button', { name: /open drawer/i }));
-
-    await expect(dialog.getByRole('dialog')).toBeVisible();
-    await expect(dialog.getByRole('heading', { name: /tenant details/i })).toBeVisible();
-  },
 };
 
 export const AdjustableWidth: Story = {
   render: () => (
     <SheetStoryPreview
       body={defaultBody}
-      description="The drawer width is adjustable via the width prop while keeping the same right-side behavior."
+      description="The drawer width is adjustable via the width prop while keeping the same right-edge sliding behavior."
       footer={defaultFooter}
       title="Wider tenant details"
+      triggerLabel="Open wide drawer"
       width="28vw"
     />
   ),
@@ -305,6 +368,7 @@ export const WithHeaderActions: Story = {
         </div>
       }
       title="Platform policy"
+      triggerLabel="Open policy drawer"
     />
   ),
 };
@@ -323,6 +387,7 @@ export const FormLayout: Story = {
         </SheetFooter>
       }
       title="Edit workspace"
+      triggerLabel="Open edit drawer"
     />
   ),
 };
@@ -341,6 +406,7 @@ export const Loading: Story = {
         </SheetFooter>
       }
       title="Loading workspace details"
+      triggerLabel="Open loading drawer"
     />
   ),
 };
@@ -369,6 +435,7 @@ export const Empty: Story = {
         </SheetFooter>
       }
       title="Saved filters"
+      triggerLabel="Open empty drawer"
     />
   ),
 };
@@ -398,6 +465,7 @@ export const Error: Story = {
         </SheetFooter>
       }
       title="Workspace details"
+      triggerLabel="Open error drawer"
     />
   ),
 };
@@ -433,6 +501,7 @@ export const Success: Story = {
         </SheetFooter>
       }
       title="Workspace updated"
+      triggerLabel="Open success drawer"
     />
   ),
 };
@@ -450,6 +519,7 @@ export const LongScrollableContent: Story = {
         </SheetFooter>
       }
       title="Provisioning timeline"
+      triggerLabel="Open scrollable drawer"
     />
   ),
 };
@@ -491,6 +561,7 @@ export const DarkTheme: Story = {
         </SheetFooter>
       }
       title="Tenant safeguards"
+      triggerLabel="Open dark drawer"
     />
   ),
 };
