@@ -2,15 +2,16 @@
 
 ## Target surface
 
-Create a reusable primitive at `apps/web2/components/ui/drawer.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page.
+Create a reusable primitive at `apps/web2/components/ui/drawer.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page. The primitive must support both a default overlay presentation and an opt-in push presentation that compresses the source page area when the drawer opens.
 
 ## Layout structure
 
-**Pattern:** trigger + overlay + right-side drawer
+**Pattern:** trigger + optional `DrawerViewport` + right-side drawer
 
 ```text
 Drawer
-└─ DrawerTrigger
+├─ DrawerViewport (optional; used for push variant)
+│  └─ page content + DrawerTrigger
 └─ DrawerPortal
    ├─ DrawerOverlay
    └─ DrawerContent
@@ -31,6 +32,8 @@ Drawer
 - The drawer width is **adjustable** via a public prop.
 - Initial/default width is **`35vw`**.
 - The outer drawer container stays fixed; only the body content scrolls.
+- The default **overlay** presentation keeps the source page visible behind a dimmed overlay.
+- The optional **push** presentation uses `DrawerViewport` to compress the source page area so it sits adjacent to the open drawer instead of underneath it.
 
 ## Action hierarchy
 
@@ -53,7 +56,8 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 ## Required states
 
 - **Default:** closed until the trigger button opens the drawer.
-- **Open:** right-side drawer visible with fixed chrome and scrollable body.
+- **Open / overlay:** right-side drawer visible with fixed chrome and scrollable body over a dimmed page.
+- **Open / push:** right-side drawer visible with fixed chrome and scrollable body while the source page area compresses left.
 - **Hover:** applies to the close button and consumer action controls only.
 - **Focus:** visible focus ring on the close button and interactive children.
 - **Disabled:** applies to trigger and consumer actions when supplied.
@@ -69,7 +73,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 - Optional header icons are decorative by default and should be `aria-hidden` unless they communicate meaningful status text elsewhere.
 - Close button must expose an accessible label (`Close panel` by default).
 - `Escape` closes the drawer unless the consumer intentionally intercepts it.
-- Overlay click closes the drawer by default unless the consumer intentionally blocks outside interaction.
+- Overlay click closes the drawer by default unless the consumer intentionally blocks outside interaction. In push mode, the overlay should remain visually transparent so the compressed page remains readable.
 - Focus moves into the drawer on open and returns to the trigger on close.
 
 ## Design tokens and styling rules
@@ -86,13 +90,15 @@ Create `apps/web2/components/ui/drawer.stories.tsx` with stories that cover:
 
 1. Trigger-driven right drawer open behavior
 2. Right-edge slide-in motion
-3. Adjustable width
-4. Header icon composition
-5. Header actions
-6. Form layout
-7. Loading
-8. Empty
-9. Error
-10. Success
-11. Long scrollable content
-12. Dark theme
+3. Default overlay presentation
+4. Push presentation with `DrawerViewport` compressing the source page
+5. Adjustable width
+6. Header icon composition
+7. Header actions
+8. Form layout
+9. Loading
+10. Empty
+11. Error
+12. Success
+13. Long scrollable content
+14. Dark theme

@@ -16,6 +16,8 @@ import {
   DrawerHeaderIcon,
   DrawerTitle,
   DrawerTrigger,
+  DrawerViewport,
+  type DrawerVariant,
 } from './drawer';
 import { EmptyState } from './empty-state';
 import { FormField } from './form-field';
@@ -32,79 +34,101 @@ type DrawerStoryPreviewProps = {
   headerActions?: React.ReactNode;
   title?: React.ReactNode;
   triggerLabel?: string;
+  variant?: DrawerVariant;
   width?: number | string;
 };
 
-const StoryPageChrome = ({ triggerLabel }: { triggerLabel: string }) => (
-  <div className="flex min-h-[44rem] w-full bg-background">
-    <div className="flex-1 px-8 py-8">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-        <div className="flex items-start justify-between gap-4 rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Workspace console</p>
-            <h2 className="font-display text-3xl font-semibold text-foreground">
-              Tenant operations overview
-            </h2>
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-              The drawer should open from the right edge of the viewport so users can inspect or
-              edit details without leaving this page.
-            </p>
-          </div>
-          <DrawerTrigger asChild>
-            <Button>{triggerLabel}</Button>
-          </DrawerTrigger>
-        </div>
+const StoryPageChrome = ({
+  triggerLabel,
+  variant,
+}: {
+  triggerLabel: string;
+  variant: DrawerVariant;
+}) => {
+  const isPushVariant = variant === 'push';
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {['Healthy tenants', 'Billing exceptions', 'Provisioning backlog'].map((label, index) => (
-            <div key={label} className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <p className="mt-3 font-display text-3xl font-semibold text-foreground">
-                {index === 0 ? '18' : index === 1 ? '3' : '7'}
+  return (
+    <div className="flex min-h-[44rem] w-full bg-background">
+      <div className="flex-1 px-8 py-8">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+          <div className="flex items-start justify-between gap-4 rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">
+                {isPushVariant ? 'Push drawer layout' : 'Overlay drawer layout'}
+              </p>
+              <h2 className="font-display text-3xl font-semibold text-foreground">
+                Tenant operations overview
+              </h2>
+              <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                {isPushVariant
+                  ? 'The drawer should compress the workspace surface so the source table stays adjacent to the panel instead of sitting underneath a dimmed overlay.'
+                  : 'The drawer should open from the right edge of the viewport so users can inspect or edit details without leaving this page.'}
               </p>
             </div>
-          ))}
-        </div>
+            <DrawerTrigger asChild>
+              <Button>{triggerLabel}</Button>
+            </DrawerTrigger>
+          </div>
 
-        <div className="rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h3 className="font-display text-xl font-semibold text-foreground">
-                  Tenant directory
-                </h3>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Selecting a row should open the drawer while the table remains visible behind the
-                  overlay.
-                </p>
-              </div>
-              <Button variant="secondary">Refresh</Button>
-            </div>
-
-            <div className="space-y-3">
-              {['Northwind Logistics', 'Acme Freight', 'Blue Harbor Distribution'].map((tenant) => (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {['Healthy tenants', 'Billing exceptions', 'Provisioning backlog'].map(
+              (label, index) => (
                 <div
-                  key={tenant}
-                  className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/35 px-4 py-3"
+                  key={label}
+                  className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm"
                 >
-                  <div>
-                    <p className="font-medium text-foreground">{tenant}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Secondary workflow opens in drawer
-                    </p>
-                  </div>
-                  <Button size="sm" variant="ghost">
-                    View details
-                  </Button>
+                  <p className="text-sm text-muted-foreground">{label}</p>
+                  <p className="mt-3 font-display text-3xl font-semibold text-foreground">
+                    {index === 0 ? '18' : index === 1 ? '3' : '7'}
+                  </p>
                 </div>
-              ))}
+              ),
+            )}
+          </div>
+
+          <div className="rounded-3xl border border-border/70 bg-card p-6 shadow-sm">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-foreground">
+                    Tenant directory
+                  </h3>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {isPushVariant
+                      ? 'Selecting a row should push the page area left so the table and drawer remain visible side by side.'
+                      : 'Selecting a row should open the drawer while the table remains visible behind the overlay.'}
+                  </p>
+                </div>
+                <Button variant="secondary">Refresh</Button>
+              </div>
+
+              <div className="space-y-3">
+                {['Northwind Logistics', 'Acme Freight', 'Blue Harbor Distribution'].map(
+                  (tenant) => (
+                    <div
+                      key={tenant}
+                      className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/35 px-4 py-3"
+                    >
+                      <div>
+                        <p className="font-medium text-foreground">{tenant}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Secondary workflow opens in drawer
+                        </p>
+                      </div>
+                      <Button size="sm" variant="ghost">
+                        View details
+                      </Button>
+                    </div>
+                  ),
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const DrawerShell = ({
   body,
@@ -138,10 +162,13 @@ const DrawerStoryPreview = ({
   headerActions,
   title,
   triggerLabel = 'Open drawer',
+  variant = 'overlay',
   width = '35vw',
 }: DrawerStoryPreviewProps) => (
-  <Drawer>
-    <StoryPageChrome triggerLabel={triggerLabel} />
+  <Drawer variant={variant}>
+    <DrawerViewport className="bg-background">
+      <StoryPageChrome triggerLabel={triggerLabel} variant={variant} />
+    </DrawerViewport>
     <DrawerContent width={width}>
       <DrawerShell
         body={body}
@@ -320,7 +347,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. Trigger it from a button and it slides in from the right edge, defaults to 35vw width, fills the viewport height, keeps inner content scrollable, and supports an optional header icon pattern.',
+          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. It supports the default overlay presentation plus an opt-in push presentation that compresses the source viewport via `DrawerViewport`, defaults to 35vw width, fills the viewport height, keeps inner content scrollable, and supports an optional header icon pattern.',
       },
       story: {
         height: '760px',
@@ -354,6 +381,20 @@ export const AdjustableWidth: Story = {
       title="Wider tenant details"
       triggerLabel="Open wide drawer"
       width="42vw"
+    />
+  ),
+};
+
+export const PushLayout: Story = {
+  render: () => (
+    <DrawerStoryPreview
+      body={defaultBody}
+      description="Use the push variant when the source workspace should compress to stay adjacent to the drawer instead of sitting beneath a dimmed overlay."
+      footer={defaultFooter}
+      title="Tenant details"
+      triggerLabel="Open push drawer"
+      variant="push"
+      width="35vw"
     />
   ),
 };

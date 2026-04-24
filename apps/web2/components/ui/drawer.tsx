@@ -7,13 +7,102 @@ import { cva } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
-const Drawer = DialogPrimitive.Root;
+export type DrawerVariant = 'overlay' | 'push';
+
+type DrawerContextValue = {
+  open: boolean;
+  setWidth: (width: string) => void;
+  variant: DrawerVariant;
+  width: string;
+};
+
+const DrawerContext = React.createContext<DrawerContextValue | null>(null);
+
+function useDrawerContext(componentName: string) {
+  const context = React.useContext(DrawerContext);
+
+  if (!context) {
+    throw new Error(`${componentName} must be used within <Drawer>.`);
+  }
+
+  return context;
+}
+
+function resolveDrawerWidth(width: number | string) {
+  return typeof width === 'number' ? `${width}px` : width;
+}
+
+type DrawerProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> & {
+  variant?: DrawerVariant;
+};
+
+function Drawer({
+  children,
+  defaultOpen = false,
+  onOpenChange,
+  open: openProp,
+  variant = 'overlay',
+  ...props
+}: DrawerProps) {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
+  const [width, setWidth] = React.useState('35vw');
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+
+  const handleOpenChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!isControlled) {
+        setUncontrolledOpen(nextOpen);
+      }
+
+      onOpenChange?.(nextOpen);
+    },
+    [isControlled, onOpenChange],
+  );
+
+  const contextValue = React.useMemo(
+    () => ({
+      open,
+      setWidth,
+      variant,
+      width,
+    }),
+    [open, variant, width],
+  );
+
+  return (
+    <DrawerContext.Provider value={contextValue}>
+      <DialogPrimitive.Root
+        defaultOpen={defaultOpen}
+        onOpenChange={handleOpenChange}
+        open={openProp}
+        {...props}
+      >
+        {children}
+      </DialogPrimitive.Root>
+    </DrawerContext.Provider>
+  );
+}
+
+Drawer.displayName = 'Drawer';
+
 const DrawerTrigger = DialogPrimitive.Trigger;
 const DrawerPortal = DialogPrimitive.Portal;
 const DrawerClose = DialogPrimitive.Close;
 
 const drawerOverlayVariants = cva(
-  'ui-drawer-overlay-motion fixed inset-0 z-50 bg-[hsl(var(--foreground)/0.56)] backdrop-blur-[8px] backdrop-saturate-150 data-[state=closed]:animate-[ui-drawer-overlay-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-overlay-in_220ms_ease-out]',
+  'ui-drawer-overlay-motion fixed inset-0 z-50 data-[state=closed]:animate-[ui-drawer-overlay-out_180ms_ease-in] data-[state=open]:animate-[ui-drawer-overlay-in_220ms_ease-out]',
+  {
+    variants: {
+      variant: {
+        overlay: 'bg-[hsl(var(--foreground)/0.56)] backdrop-blur-[8px] backdrop-saturate-150',
+        push: 'bg-transparent',
+      },
+    },
+    defaultVariants: {
+      variant: 'overlay',
+    },
+  },
 );
 
 const drawerContentVariants = cva(
@@ -25,13 +114,17 @@ type DrawerOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   DrawerOverlayProps
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    className={cn(drawerOverlayVariants(), className)}
-    {...props}
-    ref={ref}
-  />
-));
+>(({ className, ...props }, ref) => {
+  const { variant } = useDrawerContext('DrawerOverlay');
+
+  return (
+    <DialogPrimitive.Overlay
+      className={cn(drawerOverlayVariants({ variant }), className)}
+      {...props}
+      ref={ref}
+    />
+  );
+});
 
 DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
@@ -61,7 +154,13 @@ const DrawerContent = React.forwardRef<
     },
     ref,
   ) => {
-    const resolvedWidth = typeof width === 'number' ? `${width}px` : width;
+    const { setWidth, variant } = useDrawerContext('DrawerContent');
+    const resolvedWidth = resolveDrawerWidth(width);
+
+    React.useEffect(() => {
+      setWidth(resolvedWidth);
+    }, [resolvedWidth, setWidth]);
+
     const resolvedStyle: DrawerContentStyle = {
       ...(style ?? {}),
       '--drawer-width': resolvedWidth,
@@ -72,6 +171,7 @@ const DrawerContent = React.forwardRef<
         <DrawerOverlay />
         <DialogPrimitive.Content
           className={cn(drawerContentVariants(), className)}
+          data-variant={variant}
           style={resolvedStyle}
           {...props}
           ref={ref}
@@ -93,6 +193,32 @@ const DrawerContent = React.forwardRef<
 );
 
 DrawerContent.displayName = DialogPrimitive.Content.displayName;
+
+function DrawerViewport({ className, style, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const { open, variant, width } = useDrawerContext('DrawerViewport');
+  const shouldPush = open && variant === 'push';
+  const resolvedStyle: React.CSSProperties = {
+    ...(style ?? {}),
+    marginRight: shouldPush ? width : style?.marginRight,
+    maxWidth: shouldPush ? `calc(100% - ${width})` : style?.maxWidth,
+  };
+
+  return (
+    <div
+      className={cn(
+        'min-w-0 flex-1 transition-[margin-right,max-width,border-radius,box-shadow] duration-[220ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+        shouldPush
+          ? 'rounded-l-[2rem] border-r border-border/70 shadow-[0_24px_64px_hsl(var(--foreground)/0.14)]'
+          : undefined,
+        className,
+      )}
+      data-state={shouldPush ? 'open' : 'closed'}
+      data-variant={variant}
+      style={resolvedStyle}
+      {...props}
+    />
+  );
+}
 
 function DrawerHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
@@ -181,5 +307,6 @@ export {
   DrawerPortal,
   DrawerTitle,
   DrawerTrigger,
+  DrawerViewport,
   drawerContentVariants,
 };
