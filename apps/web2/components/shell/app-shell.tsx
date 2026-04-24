@@ -309,7 +309,7 @@ function AppShell({
           <div
             className={cn(
               'flex min-h-24 items-start gap-3 px-4 py-4',
-              isDesktopRailCollapsed && 'min-h-0 justify-center px-3 py-3',
+              isDesktopRailCollapsed && 'items-center justify-center px-3 py-4',
             )}
           >
             {brandIcon}
