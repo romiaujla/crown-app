@@ -229,7 +229,11 @@ function AppShell({
     );
   }, [activeChildParentId, isDesktopSubmenuOpen]);
 
+  const selectedDesktopParentId = desktopOpenParentId ?? activeChildParentId;
   const desktopActiveParentId = isDesktopSubmenuOpen ? desktopOpenParentId : activeChildParentId;
+  const selectedDesktopParent = selectedDesktopParentId
+    ? findParentItemById(normalizedGroups, selectedDesktopParentId)
+    : null;
   const activeDesktopParent = desktopActiveParentId
     ? findParentItemById(normalizedGroups, desktopActiveParentId)
     : null;
@@ -311,7 +315,7 @@ function AppShell({
       <div className="flex min-h-screen">
         <aside
           className={cn(
-            'sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border/80 bg-card/95 backdrop-blur lg:flex',
+            'sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border/80 bg-card/95 backdrop-blur transition-[width] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
             isDesktopRailCollapsed ? 'w-[72px]' : 'w-[240px]',
           )}
         >
@@ -375,12 +379,22 @@ function AppShell({
           </div>
         </aside>
 
-        {activeDesktopParent?.children?.length && isDesktopSubmenuOpen ? (
-          <aside className="sticky top-0 hidden h-screen w-56 shrink-0 border-r border-border/80 bg-card/90 lg:flex">
+        {selectedDesktopParent?.children?.length ? (
+          <aside
+            className={cn(
+              'sticky top-0 hidden h-screen shrink-0 overflow-hidden bg-card/90 transition-[width,opacity,transform,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
+              isDesktopSubmenuOpen
+                ? 'w-56 translate-x-0 border-r border-border/80 opacity-100'
+                : 'w-0 -translate-x-2 border-r-0 opacity-0',
+            )}
+          >
             <nav
-              aria-label={`${activeDesktopParent.label} submenu`}
-              className="flex min-h-0 flex-1 flex-col"
-              id={`desktop-submenu-${activeDesktopParent.id}`}
+              aria-label={`${selectedDesktopParent.label} submenu`}
+              className={cn(
+                'flex min-h-0 flex-1 flex-col transition-opacity duration-200 ease-out motion-reduce:transition-none',
+                isDesktopSubmenuOpen ? 'opacity-100 delay-75' : 'opacity-0',
+              )}
+              id={`desktop-submenu-${selectedDesktopParent.id}`}
             >
               <div className="flex items-start justify-between gap-3 border-b border-border/80 pr-4 pb-4 pl-0 pt-0">
                 <div className="min-w-0 pt-4">
@@ -388,13 +402,13 @@ function AppShell({
                     Submenu
                   </p>
                   <h2 className="mt-2 font-display text-lg font-semibold text-card-foreground">
-                    {activeDesktopParent.label}
+                    {selectedDesktopParent.label}
                   </h2>
                 </div>
                 <button
-                  aria-label={`Collapse ${activeDesktopParent.label} submenu`}
+                  aria-label={`Collapse ${selectedDesktopParent.label} submenu`}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-2xl text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  onClick={() => closeDesktopSubmenu(activeDesktopParent.id)}
+                  onClick={() => closeDesktopSubmenu(selectedDesktopParent.id)}
                   type="button"
                 >
                   <ChevronLeft aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
@@ -402,7 +416,7 @@ function AppShell({
               </div>
               <div className="flex min-h-0 flex-1 flex-col">
                 <div className="flex flex-col gap-1" data-nav-list="desktop-submenu">
-                  {activeDesktopParent.children.map((child) => (
+                  {selectedDesktopParent.children.map((child) => (
                     <NavRow
                       active={isHrefActive(child.href, pathname, currentHash)}
                       disabled={child.disabled}
@@ -413,7 +427,7 @@ function AppShell({
                       onClick={handleDirectNavigation}
                       onKeyDown={(event) =>
                         handleNavigationKeyDown(event, {
-                          onCloseSubmenu: () => closeDesktopSubmenu(activeDesktopParent.id),
+                          onCloseSubmenu: () => closeDesktopSubmenu(selectedDesktopParent.id),
                         })
                       }
                     />
