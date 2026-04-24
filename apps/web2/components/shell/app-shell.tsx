@@ -317,13 +317,13 @@ function AppShell({
         >
           <div
             className={cn(
-              'flex items-center gap-3 px-4 py-5',
-              isDesktopRailCollapsed && 'justify-center px-3',
+              'flex items-start gap-3 pr-4 pb-4 pl-0 pt-0',
+              isDesktopRailCollapsed && 'justify-center px-0 py-0',
             )}
           >
             {brandIcon}
             {!isDesktopRailCollapsed ? (
-              <div className="min-w-0">
+              <div className="min-w-0 pt-4">
                 <p className="truncate text-base font-semibold text-card-foreground">{brandName}</p>
                 <p className="text-xs text-muted-foreground">Application shell</p>
               </div>
@@ -382,8 +382,8 @@ function AppShell({
               className="flex min-h-0 flex-1 flex-col"
               id={`desktop-submenu-${activeDesktopParent.id}`}
             >
-              <div className="flex items-start justify-between gap-3 border-b border-border/80 px-4 py-5">
-                <div className="min-w-0">
+              <div className="flex items-start justify-between gap-3 border-b border-border/80 pr-4 pb-4 pl-0 pt-0">
+                <div className="min-w-0 pt-4">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Submenu
                   </p>
@@ -766,7 +766,7 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
     ref,
   ) => {
     const className = cn(
-      'flex h-10 w-full items-center px-4 text-left text-sm transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+      'flex h-10 w-full items-center pr-4 pl-0 text-left text-sm transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
       collapsed ? 'justify-center px-0' : 'gap-3',
       active
         ? 'bg-secondary text-secondary-foreground shadow-sm'
