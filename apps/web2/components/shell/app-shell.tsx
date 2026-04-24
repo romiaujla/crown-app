@@ -45,6 +45,7 @@ export type AppShellNavigationState = 'ready' | 'loading' | 'empty' | 'error';
 export type AppShellProps = {
   brandIcon: React.ReactNode;
   brandName: string;
+  defaultDesktopRailCollapsed?: boolean;
   children: React.ReactNode;
   defaultDesktopOpenParentId?: string | null;
   defaultMobileExpandedParentId?: string | null;
@@ -139,6 +140,7 @@ function AppShell({
   brandIcon,
   brandName,
   children,
+  defaultDesktopRailCollapsed,
   defaultDesktopOpenParentId,
   defaultMobileExpandedParentId,
   defaultMobileNavOpen = false,
@@ -150,6 +152,9 @@ function AppShell({
   const [currentHash, setCurrentHash] = React.useState('');
   const [desktopOpenParentId, setDesktopOpenParentId] = React.useState<string | null>(
     defaultDesktopOpenParentId ?? null,
+  );
+  const [isDesktopRailCollapsed, setIsDesktopRailCollapsed] = React.useState(
+    defaultDesktopRailCollapsed ?? Boolean(defaultDesktopOpenParentId),
   );
   const [isDesktopSubmenuOpen, setIsDesktopSubmenuOpen] = React.useState(
     Boolean(defaultDesktopOpenParentId),
@@ -219,13 +224,15 @@ function AppShell({
 
     setDesktopOpenParentId(activeChildParentId);
     setIsDesktopSubmenuOpen(true);
-  }, [activeChildParentId]);
+    setIsDesktopRailCollapsed((currentRailState) =>
+      currentRailState || !isDesktopSubmenuOpen ? true : currentRailState,
+    );
+  }, [activeChildParentId, isDesktopSubmenuOpen]);
 
   const desktopActiveParentId = isDesktopSubmenuOpen ? desktopOpenParentId : activeChildParentId;
   const activeDesktopParent = desktopActiveParentId
     ? findParentItemById(normalizedGroups, desktopActiveParentId)
     : null;
-  const isDesktopRailCollapsed = Boolean(activeDesktopParent && isDesktopSubmenuOpen);
   const activeItemLabel =
     findActiveItemLabel(normalizedGroups, pathname, currentHash) ??
     activeDesktopParent?.label ??
@@ -239,10 +246,16 @@ function AppShell({
     window.location.reload();
   }, [onRetry]);
 
-  const openDesktopSubmenu = React.useCallback((parentId: string) => {
-    setDesktopOpenParentId(parentId);
-    setIsDesktopSubmenuOpen(true);
-  }, []);
+  const openDesktopSubmenu = React.useCallback(
+    (parentId: string) => {
+      setDesktopOpenParentId(parentId);
+      setIsDesktopSubmenuOpen(true);
+      setIsDesktopRailCollapsed((currentRailState) =>
+        currentRailState || !isDesktopSubmenuOpen ? true : currentRailState,
+      );
+    },
+    [isDesktopSubmenuOpen],
+  );
 
   const closeDesktopSubmenu = React.useCallback((parentId?: string) => {
     setIsDesktopSubmenuOpen(false);
@@ -331,6 +344,34 @@ function AppShell({
                 variant="desktop"
               />
             )}
+          </div>
+          <div className="border-t border-border/80 p-2">
+            <button
+              aria-label={
+                isDesktopRailCollapsed ? 'Expand primary navigation' : 'Collapse primary navigation'
+              }
+              className={cn(
+                'flex h-10 w-full items-center text-left text-sm text-muted-foreground transition-[background-color,color] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                isDesktopRailCollapsed
+                  ? 'justify-center rounded-2xl px-0'
+                  : 'gap-3 rounded-2xl px-4',
+              )}
+              onClick={() => setIsDesktopRailCollapsed((currentRailState) => !currentRailState)}
+              title={isDesktopRailCollapsed ? 'Expand primary navigation' : undefined}
+              type="button"
+            >
+              {isDesktopRailCollapsed ? (
+                <>
+                  <ChevronRight aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
+                  <span className="sr-only">Expand primary navigation</span>
+                </>
+              ) : (
+                <>
+                  <ChevronLeft aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
+                  <span>Collapse navigation</span>
+                </>
+              )}
+            </button>
           </div>
         </aside>
 

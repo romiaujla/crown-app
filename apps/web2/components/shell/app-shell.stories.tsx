@@ -74,6 +74,13 @@ export const SubmenuOpen: Story = {
   },
 };
 
+export const ExpandedWithSubmenu: Story = {
+  args: {
+    defaultDesktopOpenParentId: 'operations',
+    defaultDesktopRailCollapsed: false,
+  },
+};
+
 export const Loading: Story = {
   args: {
     navigationState: 'loading',
