@@ -40,6 +40,9 @@ const sanitizeId = (value: string) => value.replace(/:/g, '');
 const formatCharacterCount = ({ current, max }: FormFieldCharacterCount) =>
   typeof max === 'number' ? `${current}/${max}` : `${current}`;
 
+const errorTextClassName =
+  'text-[hsl(var(--destructive)/0.9)] dark:text-[hsl(var(--destructive)/0.96)]';
+
 function FormField({
   characterCount,
   children,
@@ -119,7 +122,7 @@ function FormField({
       {!loading && (error || helperText) ? (
         <div className={cn('space-y-1', messageClassName)}>
           {error ? (
-            <div className="text-xs leading-5 text-destructive" id={errorId}>
+            <div className={cn('text-xs leading-5', errorTextClassName)} id={errorId}>
               {error}
             </div>
           ) : null}
