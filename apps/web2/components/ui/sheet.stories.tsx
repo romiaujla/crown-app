@@ -1,15 +1,7 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from '@storybook/test';
-import {
-  CheckCircle2,
-  Filter,
-  ListFilter,
-  Search,
-  Settings2,
-  ShieldCheck,
-  TriangleAlert,
-} from 'lucide-react';
+import { expect, userEvent, within } from '@storybook/test';
+import { CheckCircle2, Filter, ListFilter, Search, Settings2, TriangleAlert } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -26,20 +18,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  type SheetSide,
 } from './sheet';
 import { Skeleton } from './skeleton';
 
 const controlBaseClassName =
   'flex h-10 w-full rounded-2xl border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
 
-const StoryCanvas = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => <div className={cn('min-h-[44rem] w-full bg-background', className)}>{children}</div>;
+const StoryCanvas = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-[44rem] w-full bg-background">{children}</div>
+);
 
 type SheetStoryPreviewProps = {
   body?: React.ReactNode;
@@ -49,9 +36,9 @@ type SheetStoryPreviewProps = {
   footer?: React.ReactNode;
   headerActions?: React.ReactNode;
   showCloseButton?: boolean;
-  side?: SheetSide;
   title?: React.ReactNode;
   triggerLabel?: string;
+  width?: number | string;
 };
 
 const SheetStoryPreview = ({
@@ -62,9 +49,9 @@ const SheetStoryPreview = ({
   footer,
   headerActions,
   showCloseButton = true,
-  side = 'right',
   title = 'Tenant details',
   triggerLabel,
+  width = '20vw',
 }: SheetStoryPreviewProps) => (
   <StoryCanvas>
     <Sheet defaultOpen={defaultOpen}>
@@ -75,7 +62,7 @@ const SheetStoryPreview = ({
           </SheetTrigger>
         </div>
       ) : null}
-      <SheetContent className={contentClassName} side={side} showCloseButton={showCloseButton}>
+      <SheetContent className={contentClassName} showCloseButton={showCloseButton} width={width}>
         <SheetHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
           <div className="space-y-2">
             <SheetTitle>{title}</SheetTitle>
@@ -148,13 +135,13 @@ const defaultBody = (
             provisioning defaults inherited from the platform policy.
           </p>
           <p>
-            Use the sheet when operators need focused follow-up work without losing the surrounding
-            list or dashboard context.
+            This drawer keeps the page context visible while the side panel handles the secondary
+            workflow.
           </p>
         </div>
       </StorySection>
       <StorySection title="Current health">
-        <dl className="grid gap-3 text-sm sm:grid-cols-2">
+        <dl className="grid gap-3 text-sm">
           <div className="rounded-2xl bg-card px-4 py-3 shadow-sm">
             <dt className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Status</dt>
             <dd className="mt-1 font-medium text-foreground">Healthy</dd>
@@ -234,11 +221,11 @@ const formBody = (
 const longScrollableBody = (
   <SheetBody>
     <div className="space-y-4 pt-6">
-      {Array.from({ length: 8 }, (_, index) => (
+      {Array.from({ length: 10 }, (_, index) => (
         <StorySection key={index} title={`Activity section ${index + 1}`}>
           <p className="text-sm leading-6 text-muted-foreground">
             This section represents dense operational context, notes, and recovery guidance that
-            should remain scrollable while the header and footer stay anchored.
+            should scroll inside the drawer while the panel itself stays pinned to the right edge.
           </p>
         </StorySection>
       ))}
@@ -255,7 +242,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 sheet / drawer primitive for contextual workflows that should preserve surrounding page context. It follows the shadcn sheet composition model on top of Radix dialog semantics and supports right, left, and bottom placements.',
+          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. It opens from the right edge, defaults to 20vw width, fills the viewport height, and keeps inner content scrollable.',
       },
       story: {
         height: '760px',
@@ -270,60 +257,34 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const DefaultRight: Story = {
-  render: () => <SheetStoryPreview body={defaultBody} footer={defaultFooter} />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement.ownerDocument.body);
-    const title = canvas.getByRole('heading', { name: /tenant details/i });
-
-    await expect(title).toBeVisible();
-  },
-};
-
-export const Left: Story = {
   render: () => (
     <SheetStoryPreview
       body={defaultBody}
-      description="Use the left sheet when a workspace tool or navigation reserves the right edge."
+      defaultOpen={false}
       footer={defaultFooter}
-      side="left"
-      title="Policy preview"
+      triggerLabel="Open drawer"
+      width="20vw"
     />
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const dialog = within(canvasElement.ownerDocument.body);
+
+    await userEvent.click(canvas.getByRole('button', { name: /open drawer/i }));
+
+    await expect(dialog.getByRole('dialog')).toBeVisible();
+    await expect(dialog.getByRole('heading', { name: /tenant details/i })).toBeVisible();
+  },
 };
 
-export const Bottom: Story = {
+export const AdjustableWidth: Story = {
   render: () => (
     <SheetStoryPreview
-      body={
-        <SheetBody className="pt-6">
-          <div className="space-y-4">
-            <StorySection title="Saved filter presets">
-              <div className="grid gap-2">
-                <Button className="justify-start" variant="secondary">
-                  Recently provisioned
-                </Button>
-                <Button className="justify-start" variant="secondary">
-                  Billing exceptions
-                </Button>
-                <Button className="justify-start" variant="secondary">
-                  Operator access changes
-                </Button>
-              </div>
-            </StorySection>
-          </div>
-        </SheetBody>
-      }
-      description="Bottom sheets work well for compact filters, action bundles, and mobile-first workflows."
-      footer={
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button variant="secondary">Cancel</Button>
-          </SheetClose>
-          <Button>Apply filters</Button>
-        </SheetFooter>
-      }
-      side="bottom"
-      title="Filter tenants"
+      body={defaultBody}
+      description="The drawer width is adjustable via the width prop while keeping the same right-side behavior."
+      footer={defaultFooter}
+      title="Wider tenant details"
+      width="28vw"
     />
   ),
 };
@@ -338,8 +299,8 @@ export const WithHeaderActions: Story = {
           <Button icon={<Settings2 className="h-4 w-4" />} variant="secondary">
             Manage rules
           </Button>
-          <Button icon={<ShieldCheck className="h-4 w-4" />} variant="ghost">
-            Review access
+          <Button icon={<Search className="h-4 w-4" />} variant="ghost">
+            Review logs
           </Button>
         </div>
       }
@@ -352,7 +313,7 @@ export const FormLayout: Story = {
   render: () => (
     <SheetStoryPreview
       body={formBody}
-      description="Use the sheet for short edit flows that should stay contextual to the source table or dashboard."
+      description="Use the drawer for short edit flows that should stay contextual to the source table or dashboard."
       footer={
         <SheetFooter>
           <SheetClose asChild>
@@ -370,7 +331,7 @@ export const Loading: Story = {
   render: () => (
     <SheetStoryPreview
       body={loadingBody}
-      description="Keep the shell visible while loading so operators retain context and know the task is in progress."
+      description="Keep the drawer shell visible while loading so operators retain context and know the task is in progress."
       footer={
         <SheetFooter>
           <Button disabled variant="secondary">
@@ -407,7 +368,6 @@ export const Empty: Story = {
           </SheetClose>
         </SheetFooter>
       }
-      side="bottom"
       title="Saved filters"
     />
   ),
@@ -494,28 +454,6 @@ export const LongScrollableContent: Story = {
   ),
 };
 
-export const MobileFullscreen: Story = {
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile2',
-    },
-  },
-  render: () => (
-    <SheetStoryPreview
-      body={formBody}
-      footer={
-        <SheetFooter className="sm:flex-col sm:items-stretch sm:justify-start">
-          <SheetClose asChild>
-            <Button variant="secondary">Cancel</Button>
-          </SheetClose>
-          <Button>Save workspace</Button>
-        </SheetFooter>
-      }
-      title="Mobile edit flow"
-    />
-  ),
-};
-
 export const DarkTheme: Story = {
   globals: {
     theme: 'dark',
@@ -527,8 +465,8 @@ export const DarkTheme: Story = {
           <div className="space-y-6 pt-6">
             <StorySection className="bg-card/60" title="Dark mode system health">
               <p className="text-sm leading-6 text-muted-foreground">
-                The same sheet surface, focus treatments, and action hierarchy should remain legible
-                against the dark control-plane palette.
+                The same right-side drawer surface, focus treatments, and action hierarchy should
+                remain legible against the dark control-plane palette.
               </p>
             </StorySection>
             <StorySection className="bg-card/60" title="Recovery actions">

@@ -1,7 +1,9 @@
+'use client';
+
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
@@ -15,21 +17,7 @@ const sheetOverlayVariants = cva(
 );
 
 const sheetContentVariants = cva(
-  'fixed z-50 flex h-full flex-col overflow-hidden bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 transition-transform duration-200 ease-out motion-reduce:transition-none',
-  {
-    variants: {
-      side: {
-        right:
-          'inset-y-0 right-0 w-full border-l border-border/75 data-[state=closed]:translate-x-full data-[state=open]:translate-x-0 lg:max-w-[30rem]',
-        left: 'inset-y-0 left-0 w-full border-r border-border/75 data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0 lg:max-w-[30rem]',
-        bottom:
-          'inset-x-0 bottom-0 w-full max-h-[85vh] border-t border-border/75 rounded-t-[28px] data-[state=closed]:translate-y-full data-[state=open]:translate-y-0 max-md:h-full max-md:max-h-full',
-      },
-    },
-    defaultVariants: {
-      side: 'right',
-    },
-  },
+  'fixed inset-y-0 right-0 z-50 flex h-screen w-[var(--sheet-width)] max-w-[100vw] flex-col overflow-hidden border-l border-border/75 bg-card text-card-foreground shadow-[0_28px_90px_hsl(var(--foreground)/0.18)] ring-1 ring-border/30 transition-transform duration-200 ease-out data-[state=closed]:translate-x-full data-[state=open]:translate-x-0 motion-reduce:transition-none',
 );
 
 type SheetOverlayProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>;
@@ -43,30 +31,44 @@ const SheetOverlay = React.forwardRef<
 
 SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
-export type SheetSide = NonNullable<VariantProps<typeof sheetContentVariants>['side']>;
+type SheetContentStyle = React.CSSProperties & {
+  '--sheet-width'?: string;
+};
 
-export type SheetContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
-  VariantProps<typeof sheetContentVariants> & {
-    closeLabel?: string;
-    showCloseButton?: boolean;
-  };
+export type SheetContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+  closeLabel?: string;
+  showCloseButton?: boolean;
+  width?: number | string;
+};
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   SheetContentProps
 >(
   (
-    { children, className, closeLabel = 'Close panel', showCloseButton = true, side, ...props },
+    {
+      children,
+      className,
+      closeLabel = 'Close panel',
+      showCloseButton = true,
+      style,
+      width = '20vw',
+      ...props
+    },
     ref,
   ) => {
-    const resolvedSide = side ?? 'right';
+    const resolvedWidth = typeof width === 'number' ? `${width}px` : width;
+    const resolvedStyle: SheetContentStyle = {
+      ...(style ?? {}),
+      '--sheet-width': resolvedWidth,
+    };
 
     return (
       <SheetPortal>
         <SheetOverlay />
         <DialogPrimitive.Content
-          className={cn(sheetContentVariants({ side: resolvedSide }), className)}
-          data-side={resolvedSide}
+          className={cn(sheetContentVariants(), className)}
+          style={resolvedStyle}
           {...props}
           ref={ref}
         >

@@ -1,87 +1,72 @@
-# CROWN-197 — Sheet / Drawer component wireframe
+# CROWN-197 — Right-side drawer wireframe
 
 ## Target surface
 
-Create a reusable primitive at `apps/web2/components/ui/sheet.tsx` for contextual workflows that should keep the current page visible behind a slide-out panel. Use it for detail/edit side panels, compact follow-up tasks, and mobile-friendly bottom sheets. Do not use it for binary confirmations that already fit the centered `Dialog` pattern.
+Create a reusable primitive at `apps/web2/components/ui/sheet.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page.
 
 ## Layout structure
 
-**Pattern:** overlay + anchored panel primitive
+**Pattern:** trigger + overlay + right-side drawer
 
 ```text
 Sheet
+└─ SheetTrigger
 └─ SheetPortal
    ├─ SheetOverlay
-   └─ SheetContent (right | left | bottom)
+   └─ SheetContent
       ├─ SheetHeader
       │  ├─ SheetTitle
       │  ├─ SheetDescription
       │  └─ SheetClose
-      ├─ SheetBody (consumer content)
+      ├─ SheetBody (scrollable)
       └─ SheetFooter (optional consumer actions)
 ```
 
-### Direction variants
+## Drawer behavior
 
-- `right` (default): primary CRM drawer layout for detail and edit flows.
-- `left`: secondary contextual drawer when left-side placement is intentional.
-- `bottom`: compact bottom sheet for filters, short forms, and mobile action bundles.
-
-### Size model
-
-- Desktop side sheets: fixed `w-[30rem]`.
-- Tablet side sheets: full-width edge panel.
-- Bottom sheet: full width with `max-h-[85vh]`.
-- Mobile: all directions normalize to a full-screen overlay with fixed header and scrollable body.
+- The drawer opens from the **right** side only.
+- The drawer fills the full viewport height (`h-screen`).
+- The drawer width is **adjustable** via a public prop.
+- Initial/default width is **`20vw`**.
+- The outer drawer container stays fixed; only the body content scrolls.
 
 ## Action hierarchy
 
-- **Primary actions:** consumer-provided footer CTA, typically on the right/bottom of the footer area.
-- **Secondary actions:** consumer-provided cancel or supporting CTA, typically adjacent to the primary action.
+- **Primary actions:** consumer-provided footer CTA.
+- **Secondary actions:** cancel/supporting CTA in the footer.
 - **Tertiary action:** icon-only close button in the header.
-- **Destructive actions:** only through consumer-provided footer/header buttons using existing destructive button styles.
+- **Destructive actions:** only through consumer-provided buttons using existing destructive button styles.
 
 ## Component reuse
 
 Reuse the existing web2 patterns instead of introducing a new visual language:
 
 - `apps/web2/components/ui/dialog.tsx` for Radix dialog composition, overlay treatment, focus handling, and close affordance patterns.
-- `apps/web2/components/ui/button.tsx` for header/footer actions.
+- `apps/web2/components/ui/button.tsx` for trigger, header, and footer actions.
 - `apps/web2/components/ui/skeleton.tsx` for loading states.
 - `apps/web2/components/ui/empty-state.tsx` and `apps/web2/components/ui/empty.tsx` for empty and recovery states.
 - `apps/web2/app/globals.css` and `apps/web2/tailwind.config.ts` for semantic tokens, typography, and spacing.
 
-`sheet.tsx` is a **new primitive** for `apps/web2`; there is no existing reusable sheet component to extend directly.
-
 ## Required states
 
-- **Default:** overlay visible, anchored panel open, header/body/footer layout intact.
+- **Default:** closed until the trigger button opens the drawer.
+- **Open:** right-side drawer visible with fixed chrome and scrollable body.
 - **Hover:** applies to the close button and consumer action controls only.
-- **Focus:** visible focus ring on close button and interactive children.
-- **Active:** action controls use existing pressed behavior.
+- **Focus:** visible focus ring on the close button and interactive children.
 - **Disabled:** applies to trigger and consumer actions when supplied.
 - **Loading:** header remains visible; body uses `Skeleton` placeholders.
 - **Empty:** body may render `EmptyState` when no data exists.
-- **Filtered empty:** body may render an empty-result variant when filters remove all results.
-- **Error:** body keeps the panel open and shows a recoverable inline error state.
-- **Success:** preferred pattern is close the sheet and show success feedback outside; if the sheet remains open, keep success feedback non-blocking inside the body or footer.
+- **Error:** body keeps the drawer open and shows a recoverable inline error state.
+- **Success:** drawer may stay open with non-blocking success feedback or close after save.
 
 ## Accessibility behavior
 
 - Built on `@radix-ui/react-dialog` semantics with modal focus trapping by default.
 - `SheetTitle` maps to `aria-labelledby`; `SheetDescription` maps to `aria-describedby`.
 - Close button must expose an accessible label (`Close panel` by default).
-- `Escape` closes the sheet unless the consumer intentionally intercepts it for guarded flows.
-- Overlay click closes the sheet by default unless the consumer intentionally blocks outside interaction.
-- Focus moves into the sheet on open and returns to the trigger on close.
-- Header/body/footer structure must stay keyboard navigable with no hidden focus targets.
-
-## Responsive behavior
-
-- Desktop: right and left sheets stay anchored to the viewport edge; bottom sheet stays attached to the bottom edge.
-- Tablet: side sheets expand to full width for constrained layouts.
-- Mobile: right, left, and bottom all become full-screen overlays to preserve usability.
-- Motion should respect `prefers-reduced-motion`.
+- `Escape` closes the drawer unless the consumer intentionally intercepts it.
+- Overlay click closes the drawer by default unless the consumer intentionally blocks outside interaction.
+- Focus moves into the drawer on open and returns to the trigger on close.
 
 ## Design tokens and styling rules
 
@@ -89,21 +74,19 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 - Use existing web2 typography pairing:
   - title: `font-display`
   - body, metadata, form controls: `font-sans`
-- Reuse existing radius and shadow conventions from `dialog.tsx`; do not introduce raw hex colors or a separate sheet-specific palette.
+- Reuse existing shadow and focus conventions from `dialog.tsx`.
 
 ## Storybook requirements
 
-Create `apps/web2/components/ui/sheet.stories.tsx` with at least these stories:
+Create `apps/web2/components/ui/sheet.stories.tsx` with stories that cover:
 
-1. `DefaultRight`
-2. `Left`
-3. `Bottom`
-4. `WithHeaderActions`
-5. `FormLayout`
-6. `Loading`
-7. `Empty`
-8. `Error`
-9. `Success`
-10. `LongScrollableContent`
-11. `MobileFullscreen`
-12. `DarkTheme`
+1. Trigger-driven right drawer open behavior
+2. Adjustable width
+3. Header actions
+4. Form layout
+5. Loading
+6. Empty
+7. Error
+8. Success
+9. Long scrollable content
+10. Dark theme
