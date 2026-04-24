@@ -304,7 +304,7 @@ function AppShell({
         >
           <div
             className={cn(
-              'flex items-center gap-3 px-4 py-4',
+              'flex items-center gap-3 px-4 py-5',
               isDesktopRailCollapsed && 'justify-center px-3',
             )}
           >
@@ -318,8 +318,8 @@ function AppShell({
               <span className="sr-only">{brandName}</span>
             )}
           </div>
-          <div aria-hidden="true" className="mx-4 h-px bg-border/80" />
-          <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
+          <div aria-hidden="true" className="h-px w-full bg-border/80" />
+          <div className="flex min-h-0 flex-1 flex-col">
             {effectiveNavigationState === 'ready' ? (
               <nav aria-label="Primary navigation" className="flex min-h-0 flex-1 flex-col">
                 {primaryNavigation}
@@ -341,7 +341,7 @@ function AppShell({
               className="flex min-h-0 flex-1 flex-col"
               id={`desktop-submenu-${activeDesktopParent.id}`}
             >
-              <div className="flex items-start justify-between gap-3 border-b border-border/80 px-4 py-4">
+              <div className="flex items-start justify-between gap-3 border-b border-border/80 px-4 py-5">
                 <div className="min-w-0">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Submenu
@@ -359,7 +359,7 @@ function AppShell({
                   <ChevronLeft aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
                 </button>
               </div>
-              <div className="flex min-h-0 flex-1 flex-col px-3 py-4">
+              <div className="flex min-h-0 flex-1 flex-col">
                 <div className="flex flex-col gap-1" data-nav-list="desktop-submenu">
                   {activeDesktopParent.children.map((child) => (
                     <NavRow
@@ -644,7 +644,7 @@ type NavigationStateBodyProps = {
 function NavigationStateBody({ onRetry, state, variant }: NavigationStateBodyProps) {
   if (state === 'loading') {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 px-4 py-5">
         <div className="flex items-center gap-3">
           <Skeleton className="h-11 w-11 rounded-2xl" />
           {variant === 'desktop' ? <Skeleton className="h-4 w-28 rounded-full" /> : null}
@@ -668,7 +668,7 @@ function NavigationStateBody({ onRetry, state, variant }: NavigationStateBodyPro
           size: 'sm',
           variant: 'secondary',
         }}
-        className="min-h-0 rounded-[28px] border border-dashed border-border/80 bg-background/60 px-4 py-8"
+        className="min-h-0 rounded-none border-0 bg-background/60 px-4 py-8"
         description="The navigation schema could not be loaded. Try reloading the shell."
         icon={<TriangleAlert className="h-5 w-5" strokeWidth={1.9} />}
         title="Navigation failed to load"
@@ -685,7 +685,7 @@ function NavigationStateBody({ onRetry, state, variant }: NavigationStateBodyPro
         size: 'sm',
         variant: 'secondary',
       }}
-      className="min-h-0 rounded-[28px] border border-dashed border-border/80 bg-background/60 px-4 py-8"
+      className="min-h-0 rounded-none border-0 bg-background/60 px-4 py-8"
       description="Add menu items to the shell configuration to populate the navigation rail."
       icon={<Blocks className="h-5 w-5" strokeWidth={1.9} />}
       title="No navigation items"
@@ -725,7 +725,7 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
     ref,
   ) => {
     const className = cn(
-      'flex h-10 w-full items-center rounded-2xl px-3 text-left text-sm transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+      'flex h-10 w-full items-center px-4 text-left text-sm transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
       collapsed ? 'justify-center px-0' : 'gap-3',
       active
         ? 'bg-secondary text-secondary-foreground shadow-sm'
