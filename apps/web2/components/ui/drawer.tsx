@@ -32,6 +32,27 @@ function resolveDrawerWidth(width: number | string) {
   return typeof width === 'number' ? `${width}px` : width;
 }
 
+function measureCssWidth(width: string) {
+  if (typeof window === 'undefined') {
+    return 0;
+  }
+
+  const measurementNode = document.createElement('div');
+  measurementNode.style.position = 'absolute';
+  measurementNode.style.visibility = 'hidden';
+  measurementNode.style.pointerEvents = 'none';
+  measurementNode.style.width = width;
+  document.body.append(measurementNode);
+  const measuredWidth = measurementNode.getBoundingClientRect().width;
+  measurementNode.remove();
+
+  return measuredWidth;
+}
+
+function clampWidth(width: number, minWidth: number, maxWidth: number) {
+  return Math.min(Math.max(width, minWidth), maxWidth);
+}
+
 type DrawerProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> & {
   variant?: DrawerVariant;
 };
@@ -134,6 +155,8 @@ type DrawerContentStyle = React.CSSProperties & {
 
 export type DrawerContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
   closeLabel?: string;
+  minWidth?: number | string;
+  resizable?: boolean;
   showCloseButton?: boolean;
   width?: number | string;
 };
@@ -147,6 +170,8 @@ const DrawerContent = React.forwardRef<
       children,
       className,
       closeLabel = 'Close panel',
+      minWidth = '20vw',
+      resizable = false,
       showCloseButton = true,
       style,
       width = '35vw',
@@ -154,16 +179,123 @@ const DrawerContent = React.forwardRef<
     },
     ref,
   ) => {
-    const { setWidth, variant } = useDrawerContext('DrawerContent');
+    const { setWidth, variant, width: drawerWidth } = useDrawerContext('DrawerContent');
+    const contentRef = React.useRef<React.ElementRef<typeof DialogPrimitive.Content> | null>(null);
+    const resizeStateRef = React.useRef<{
+      minWidth: number;
+      startWidth: number;
+      startX: number;
+    } | null>(null);
+    const [isResizing, setIsResizing] = React.useState(false);
     const resolvedWidth = resolveDrawerWidth(width);
+    const resolvedMinWidth = resolveDrawerWidth(minWidth);
+
+    const setContentRef = React.useCallback(
+      (node: React.ElementRef<typeof DialogPrimitive.Content> | null) => {
+        contentRef.current = node;
+
+        if (typeof ref === 'function') {
+          ref(node);
+          return;
+        }
+
+        if (ref) {
+          ref.current = node;
+        }
+      },
+      [ref],
+    );
+
+    const stopResize = React.useCallback(() => {
+      resizeStateRef.current = null;
+      setIsResizing(false);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }, []);
+
+    const handleResizePointerMove = React.useCallback(
+      (event: PointerEvent) => {
+        const resizeState = resizeStateRef.current;
+
+        if (!resizeState) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const nextWidth = clampWidth(
+          resizeState.startWidth + (resizeState.startX - event.clientX),
+          resizeState.minWidth,
+          window.innerWidth,
+        );
+
+        setWidth(`${nextWidth}px`);
+      },
+      [setWidth],
+    );
+
+    const handleResizePointerDown = React.useCallback(
+      (event: React.PointerEvent<HTMLDivElement>) => {
+        if (!resizable || event.button !== 0) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const contentWidth = contentRef.current?.getBoundingClientRect().width;
+
+        if (!contentWidth) {
+          return;
+        }
+
+        resizeStateRef.current = {
+          minWidth: measureCssWidth(resolvedMinWidth),
+          startWidth: contentWidth,
+          startX: event.clientX,
+        };
+
+        setIsResizing(true);
+        document.body.style.cursor = 'ew-resize';
+        document.body.style.userSelect = 'none';
+      },
+      [resizable, resolvedMinWidth],
+    );
 
     React.useEffect(() => {
-      setWidth(resolvedWidth);
-    }, [resolvedWidth, setWidth]);
+      if (!resizable) {
+        setWidth(resolvedWidth);
+        return;
+      }
+
+      const nextWidth =
+        measureCssWidth(resolvedWidth) < measureCssWidth(resolvedMinWidth)
+          ? resolvedMinWidth
+          : resolvedWidth;
+
+      setWidth(nextWidth);
+    }, [resizable, resolvedMinWidth, resolvedWidth, setWidth]);
+
+    React.useEffect(() => {
+      if (!isResizing) {
+        return;
+      }
+
+      window.addEventListener('pointermove', handleResizePointerMove);
+      window.addEventListener('pointerup', stopResize);
+      window.addEventListener('pointercancel', stopResize);
+
+      return () => {
+        window.removeEventListener('pointermove', handleResizePointerMove);
+        window.removeEventListener('pointerup', stopResize);
+        window.removeEventListener('pointercancel', stopResize);
+      };
+    }, [handleResizePointerMove, isResizing, stopResize]);
+
+    React.useEffect(() => stopResize, [stopResize]);
 
     const resolvedStyle: DrawerContentStyle = {
       ...(style ?? {}),
-      '--drawer-width': resolvedWidth,
+      '--drawer-width': drawerWidth,
     };
 
     return (
@@ -174,8 +306,18 @@ const DrawerContent = React.forwardRef<
           data-variant={variant}
           style={resolvedStyle}
           {...props}
-          ref={ref}
+          ref={setContentRef}
         >
+          {resizable ? (
+            <div
+              aria-hidden="true"
+              className="group absolute inset-y-0 left-0 z-10 w-3 -translate-x-1/2 cursor-ew-resize touch-none"
+              data-state={isResizing ? 'active' : 'idle'}
+              onPointerDown={handleResizePointerDown}
+            >
+              <span className="absolute inset-y-6 left-1/2 w-px -translate-x-1/2 rounded-full bg-border/80 transition-colors duration-150 ease-out group-hover:bg-ring/70 group-data-[state=active]:bg-ring" />
+            </div>
+          ) : null}
           {children}
           {showCloseButton ? (
             <DrawerClose

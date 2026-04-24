@@ -32,6 +32,8 @@ type DrawerStoryPreviewProps = {
   footer?: React.ReactNode;
   headerIcon?: React.ReactNode;
   headerActions?: React.ReactNode;
+  minWidth?: number | string;
+  resizable?: boolean;
   title?: React.ReactNode;
   triggerLabel?: string;
   variant?: DrawerVariant;
@@ -160,6 +162,8 @@ const DrawerStoryPreview = ({
   footer,
   headerIcon,
   headerActions,
+  minWidth = '20vw',
+  resizable = false,
   title,
   triggerLabel = 'Open drawer',
   variant = 'overlay',
@@ -169,7 +173,7 @@ const DrawerStoryPreview = ({
     <DrawerViewport className="bg-background">
       <StoryPageChrome triggerLabel={triggerLabel} variant={variant} />
     </DrawerViewport>
-    <DrawerContent width={width}>
+    <DrawerContent minWidth={minWidth} resizable={resizable} width={width}>
       <DrawerShell
         body={body}
         description={description}
@@ -347,7 +351,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. It supports the default overlay presentation plus an opt-in push presentation that compresses the source viewport via `DrawerViewport`, defaults to 35vw width, fills the viewport height, keeps inner content scrollable, and supports an optional header icon pattern.',
+          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. It supports the default overlay presentation plus an opt-in push presentation that compresses the source viewport via `DrawerViewport`, defaults to 35vw width, can expose a draggable resize handle with a 20vw minimum, fills the viewport height, keeps inner content scrollable, and supports an optional header icon pattern.',
       },
       story: {
         height: '760px',
@@ -376,10 +380,11 @@ export const AdjustableWidth: Story = {
   render: () => (
     <DrawerStoryPreview
       body={defaultBody}
-      description="The drawer width is adjustable via the width prop while keeping the same right-edge sliding behavior."
+      description="Grab the left edge of the drawer to resize it. The resize handle keeps the panel at or above 20% of the viewport width."
       footer={defaultFooter}
-      title="Wider tenant details"
-      triggerLabel="Open wide drawer"
+      resizable
+      title="Resizable tenant details"
+      triggerLabel="Open resizable drawer"
       width="42vw"
     />
   ),

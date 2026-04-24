@@ -2,7 +2,7 @@
 
 ## Target surface
 
-Create a reusable primitive at `apps/web2/components/ui/drawer.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page. The primitive must support both a default overlay presentation and an opt-in push presentation that compresses the source page area when the drawer opens.
+Create a reusable primitive at `apps/web2/components/ui/drawer.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page. The primitive must support both a default overlay presentation and an opt-in push presentation that compresses the source page area when the drawer opens. The content surface must also support an opt-in draggable resize handle on the left edge.
 
 ## Layout structure
 
@@ -31,6 +31,8 @@ Drawer
 - The drawer fills the full viewport height (`h-screen`).
 - The drawer width is **adjustable** via a public prop.
 - Initial/default width is **`35vw`**.
+- When resizing is enabled, hovering the left edge of the drawer shows a horizontal resize cursor and the user can click-drag to change width.
+- The minimum resizable width is **`20vw`** (20% of the viewport).
 - The outer drawer container stays fixed; only the body content scrolls.
 - The default **overlay** presentation keeps the source page visible behind a dimmed overlay.
 - The optional **push** presentation uses `DrawerViewport` to compress the source page area so it sits adjacent to the open drawer instead of underneath it.
@@ -58,7 +60,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 - **Default:** closed until the trigger button opens the drawer.
 - **Open / overlay:** right-side drawer visible with fixed chrome and scrollable body over a dimmed page.
 - **Open / push:** right-side drawer visible with fixed chrome and scrollable body while the source page area compresses left.
-- **Hover:** applies to the close button and consumer action controls only.
+- **Hover:** applies to the close button, resize handle, and consumer action controls.
 - **Focus:** visible focus ring on the close button and interactive children.
 - **Disabled:** applies to trigger and consumer actions when supplied.
 - **Loading:** header remains visible; body uses `Skeleton` placeholders.
@@ -72,6 +74,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 - `DrawerTitle` maps to `aria-labelledby`; `DrawerDescription` maps to `aria-describedby`.
 - Optional header icons are decorative by default and should be `aria-hidden` unless they communicate meaningful status text elsewhere.
 - Close button must expose an accessible label (`Close panel` by default).
+- When resizing is enabled, the left-edge drag affordance should remain pointer-friendly without breaking the dialog's close and focus behavior.
 - `Escape` closes the drawer unless the consumer intentionally intercepts it.
 - Overlay click closes the drawer by default unless the consumer intentionally blocks outside interaction. In push mode, the overlay should remain visually transparent so the compressed page remains readable.
 - Focus moves into the drawer on open and returns to the trigger on close.
@@ -92,7 +95,7 @@ Create `apps/web2/components/ui/drawer.stories.tsx` with stories that cover:
 2. Right-edge slide-in motion
 3. Default overlay presentation
 4. Push presentation with `DrawerViewport` compressing the source page
-5. Adjustable width
+5. Adjustable width with draggable resize handle and `20vw` minimum
 6. Header icon composition
 7. Header actions
 8. Form layout
