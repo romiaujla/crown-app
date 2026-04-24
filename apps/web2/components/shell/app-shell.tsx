@@ -267,15 +267,17 @@ function AppShell({
       }
 
       if (!targetHash) {
-        window.location.assign(targetPathname);
+        window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
+        setCurrentHash('');
         return;
       }
 
-      if (window.location.hash !== targetHash) {
-        window.location.hash = targetHash;
-        return;
-      }
-
+      window.history.pushState(
+        null,
+        '',
+        `${window.location.pathname}${window.location.search}${targetHash}`,
+      );
+      setCurrentHash(targetHash);
       document.getElementById(hashPart)?.scrollIntoView({ block: 'start' });
     },
     [pathname],
