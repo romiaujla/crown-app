@@ -382,10 +382,10 @@ function AppShell({
         {selectedDesktopParent?.children?.length ? (
           <aside
             className={cn(
-              'sticky top-0 hidden h-screen shrink-0 overflow-hidden bg-card/90 transition-[width,opacity,transform,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
+              'sticky top-0 hidden h-screen shrink-0 overflow-hidden bg-card/90 transition-[width,opacity,border-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:flex',
               isDesktopSubmenuOpen
-                ? 'w-56 translate-x-0 border-r border-border/80 opacity-100'
-                : 'w-0 -translate-x-2 border-r-0 opacity-0',
+                ? 'w-56 border-r border-border/80 opacity-100'
+                : 'w-0 border-r-0 opacity-0',
             )}
           >
             <nav
@@ -414,11 +414,12 @@ function AppShell({
                   <ChevronLeft aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
                 </button>
               </div>
-              <div className="flex min-h-0 flex-1 flex-col">
-                <div className="flex flex-col gap-1" data-nav-list="desktop-submenu">
+              <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
+                <div className="flex flex-col gap-2" data-nav-list="desktop-submenu">
                   {selectedDesktopParent.children.map((child) => (
                     <NavRow
                       active={isHrefActive(child.href, pathname, currentHash)}
+                      className="rounded-xl px-3"
                       disabled={child.disabled}
                       href={child.href}
                       icon={child.icon}
@@ -752,6 +753,7 @@ type NavRowProps = {
   active?: boolean;
   ariaControls?: string;
   ariaExpanded?: boolean;
+  className?: string;
   collapsed?: boolean;
   disabled?: boolean;
   href?: string;
@@ -768,6 +770,7 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
       active = false,
       ariaControls,
       ariaExpanded,
+      className,
       collapsed = false,
       disabled = false,
       href,
@@ -779,27 +782,52 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
     },
     ref,
   ) => {
-    const className = cn(
-      'flex h-10 w-full items-center pr-4 pl-0 text-left text-sm transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-      collapsed ? 'justify-center px-0' : 'gap-3',
+    const rowClassName = cn(
+      'flex h-10 w-full items-center overflow-hidden pr-4 pl-0 text-left text-sm transition-[background-color,color,box-shadow,padding,gap] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+      collapsed ? 'justify-center gap-0 px-0' : 'gap-3',
       active
         ? 'bg-secondary text-secondary-foreground shadow-sm'
         : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
       disabled && 'pointer-events-none opacity-50',
+      className,
     );
     const iconMarkup = <Icon aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />;
-    const labelMarkup = collapsed ? <span className="sr-only">{label}</span> : <span>{label}</span>;
-    const trailingMarkup =
-      TrailingIcon && !collapsed ? (
-        <TrailingIcon aria-hidden="true" className="ml-auto h-4 w-4 shrink-0" strokeWidth={1.9} />
-      ) : null;
+    const labelMarkup = (
+      <>
+        <span className={cn('sr-only', !collapsed && 'hidden')}>{label}</span>
+        <span
+          aria-hidden={collapsed}
+          className={cn(
+            'whitespace-nowrap transition-[max-width,opacity,transform] duration-200 ease-out motion-reduce:transition-none',
+            collapsed
+              ? 'max-w-0 -translate-x-1 opacity-0'
+              : 'max-w-[12rem] translate-x-0 opacity-100',
+          )}
+        >
+          {label}
+        </span>
+      </>
+    );
+    const trailingMarkup = TrailingIcon ? (
+      <span
+        aria-hidden={collapsed}
+        className={cn(
+          'ml-auto flex shrink-0 transition-[max-width,opacity,transform] duration-200 ease-out motion-reduce:transition-none',
+          collapsed
+            ? 'max-w-0 translate-x-1 overflow-hidden opacity-0'
+            : 'max-w-6 translate-x-0 opacity-100',
+        )}
+      >
+        <TrailingIcon aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
+      </span>
+    ) : null;
 
     if (href) {
       return (
         <a
           aria-current={active ? 'page' : undefined}
           aria-disabled={disabled || undefined}
-          className={className}
+          className={rowClassName}
           data-nav-item="true"
           href={href}
           onClick={onClick}
@@ -819,7 +847,7 @@ const NavRow = React.forwardRef<HTMLButtonElement, NavRowProps>(
         aria-disabled={disabled || undefined}
         aria-expanded={ariaExpanded}
         aria-label={collapsed ? label : undefined}
-        className={className}
+        className={rowClassName}
         data-nav-item="true"
         onClick={onClick}
         onKeyDown={onKeyDown as React.KeyboardEventHandler<HTMLButtonElement> | undefined}
