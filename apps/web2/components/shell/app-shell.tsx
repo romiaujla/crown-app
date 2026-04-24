@@ -396,7 +396,7 @@ function AppShell({
               )}
               id={`desktop-submenu-${selectedDesktopParent.id}`}
             >
-              <div className="flex min-h-24 items-start justify-between gap-3 border-b border-border/80 px-4 py-4">
+              <div className="flex min-h-24 items-start gap-3 border-b border-border/80 px-4 py-4">
                 <div className="min-w-0">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Submenu
@@ -405,14 +405,6 @@ function AppShell({
                     {selectedDesktopParent.label}
                   </h2>
                 </div>
-                <button
-                  aria-label={`Collapse ${selectedDesktopParent.label} submenu`}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-2xl text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  onClick={() => closeDesktopSubmenu(selectedDesktopParent.id)}
-                  type="button"
-                >
-                  <ChevronLeft aria-hidden="true" className="h-4 w-4" strokeWidth={1.9} />
-                </button>
               </div>
               <div className="flex min-h-0 flex-1 flex-col px-4 py-4">
                 <div className="flex flex-col gap-2" data-nav-list="desktop-submenu">
@@ -434,6 +426,17 @@ function AppShell({
                     />
                   ))}
                 </div>
+              </div>
+              <div className="border-t border-border/80 p-2">
+                <button
+                  aria-label={`Collapse ${selectedDesktopParent.label} submenu`}
+                  className="flex h-10 w-full items-center gap-3 rounded-2xl px-4 text-left text-sm text-muted-foreground transition-[background-color,color] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => closeDesktopSubmenu(selectedDesktopParent.id)}
+                  type="button"
+                >
+                  <ChevronLeft aria-hidden="true" className="h-4 w-4 shrink-0" strokeWidth={1.9} />
+                  <span>Collapse submenu</span>
+                </button>
               </div>
             </nav>
           </aside>
