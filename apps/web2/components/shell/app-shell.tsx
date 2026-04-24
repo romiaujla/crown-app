@@ -251,15 +251,34 @@ function AppShell({
     window.location.reload();
   }, [onRetry]);
 
-  const openDesktopSubmenu = React.useCallback(
-    (parentId: string) => {
-      setDesktopOpenParentId(parentId);
-      setIsDesktopSubmenuExpanded((currentExpandedState) =>
-        desktopOpenParentId === parentId ? !currentExpandedState : true,
-      );
-      setIsDesktopRailCollapsed(true);
+  const navigateToHref = React.useCallback(
+    (href: string) => {
+      if (typeof window === 'undefined') {
+        return;
+      }
+
+      const [pathPart, hashPart] = href.split('#');
+      const targetPathname = pathPart || pathname;
+      const targetHash = hashPart ? `#${hashPart}` : '';
+
+      if (targetPathname !== pathname) {
+        window.location.assign(href);
+        return;
+      }
+
+      if (!targetHash) {
+        window.location.assign(targetPathname);
+        return;
+      }
+
+      if (window.location.hash !== targetHash) {
+        window.location.hash = targetHash;
+        return;
+      }
+
+      document.getElementById(hashPart)?.scrollIntoView({ block: 'start' });
     },
-    [desktopOpenParentId],
+    [pathname],
   );
 
   const collapseDesktopSubmenu = React.useCallback(() => {
@@ -279,9 +298,12 @@ function AppShell({
         return;
       }
 
-      openDesktopSubmenu(item.id);
+      setDesktopOpenParentId(item.id);
+      setIsDesktopSubmenuExpanded(true);
+      setIsDesktopRailCollapsed(true);
+      navigateToHref(item.children[0].href);
     },
-    [handleDirectNavigation, openDesktopSubmenu],
+    [handleDirectNavigation, navigateToHref],
   );
 
   const primaryNavigation = renderNavigationGroups({
