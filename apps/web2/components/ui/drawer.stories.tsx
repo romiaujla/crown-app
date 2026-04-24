@@ -5,26 +5,26 @@ import { CheckCircle2, Filter, ListFilter, Search, Settings2, TriangleAlert } fr
 import { cn } from '@/lib/utils';
 
 import { Button } from './button';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerHeaderIcon,
+  DrawerTitle,
+  DrawerTrigger,
+} from './drawer';
 import { EmptyState } from './empty-state';
 import { FormField } from './form-field';
-import {
-  Sheet,
-  SheetBody,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetHeaderIcon,
-  SheetTitle,
-  SheetTrigger,
-} from './sheet';
 import { Skeleton } from './skeleton';
 
 const controlBaseClassName =
   'flex h-10 w-full rounded-2xl border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
 
-type SheetStoryPreviewProps = {
+type DrawerStoryPreviewProps = {
   body?: React.ReactNode;
   description?: React.ReactNode;
   footer?: React.ReactNode;
@@ -50,9 +50,9 @@ const StoryPageChrome = ({ triggerLabel }: { triggerLabel: string }) => (
               edit details without leaving this page.
             </p>
           </div>
-          <SheetTrigger asChild>
+          <DrawerTrigger asChild>
             <Button>{triggerLabel}</Button>
-          </SheetTrigger>
+          </DrawerTrigger>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -113,24 +113,24 @@ const DrawerShell = ({
   headerIcon,
   headerActions,
   title = 'Tenant details',
-}: Omit<SheetStoryPreviewProps, 'triggerLabel' | 'width'>) => (
+}: Omit<DrawerStoryPreviewProps, 'triggerLabel' | 'width'>) => (
   <>
-    <SheetHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
+    <DrawerHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
       <div className={cn('flex gap-4', headerIcon ? 'items-start' : undefined)}>
-        {headerIcon ? <SheetHeaderIcon>{headerIcon}</SheetHeaderIcon> : null}
+        {headerIcon ? <DrawerHeaderIcon>{headerIcon}</DrawerHeaderIcon> : null}
         <div className="space-y-2">
-          <SheetTitle>{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
+          <DrawerTitle>{title}</DrawerTitle>
+          <DrawerDescription>{description}</DrawerDescription>
         </div>
       </div>
       {headerActions}
-    </SheetHeader>
+    </DrawerHeader>
     {body}
     {footer}
   </>
 );
 
-const SheetStoryPreview = ({
+const DrawerStoryPreview = ({
   body,
   description,
   footer,
@@ -139,10 +139,10 @@ const SheetStoryPreview = ({
   title,
   triggerLabel = 'Open drawer',
   width = '35vw',
-}: SheetStoryPreviewProps) => (
-  <Sheet>
+}: DrawerStoryPreviewProps) => (
+  <Drawer>
     <StoryPageChrome triggerLabel={triggerLabel} />
-    <SheetContent width={width}>
+    <DrawerContent width={width}>
       <DrawerShell
         body={body}
         description={description}
@@ -151,8 +151,8 @@ const SheetStoryPreview = ({
         headerActions={headerActions}
         title={title}
       />
-    </SheetContent>
-  </Sheet>
+    </DrawerContent>
+  </Drawer>
 );
 
 function StorySection({
@@ -204,7 +204,7 @@ function FormFieldInput({
 }
 
 const defaultBody = (
-  <SheetBody>
+  <DrawerBody>
     <div className="space-y-6 pt-6">
       <StorySection title="Workspace summary">
         <div className="grid gap-2 text-sm text-muted-foreground">
@@ -231,20 +231,20 @@ const defaultBody = (
         </dl>
       </StorySection>
     </div>
-  </SheetBody>
+  </DrawerBody>
 );
 
 const defaultFooter = (
-  <SheetFooter>
-    <SheetClose asChild>
+  <DrawerFooter>
+    <DrawerClose asChild>
       <Button variant="secondary">Close</Button>
-    </SheetClose>
+    </DrawerClose>
     <Button>Save changes</Button>
-  </SheetFooter>
+  </DrawerFooter>
 );
 
 const loadingBody = (
-  <SheetBody>
+  <DrawerBody>
     <div className="space-y-6 pt-6">
       <Skeleton className="h-8 w-40 rounded-full" />
       <div className="space-y-3">
@@ -257,11 +257,11 @@ const loadingBody = (
         <Skeleton className="h-10 w-2/3 rounded-2xl" />
       </div>
     </div>
-  </SheetBody>
+  </DrawerBody>
 );
 
 const formBody = (
-  <SheetBody>
+  <DrawerBody>
     <form className="space-y-6 pt-6">
       <StorySection title="Workspace profile">
         <div className="grid gap-4">
@@ -293,11 +293,11 @@ const formBody = (
         </div>
       </StorySection>
     </form>
-  </SheetBody>
+  </DrawerBody>
 );
 
 const longScrollableBody = (
-  <SheetBody>
+  <DrawerBody>
     <div className="space-y-4 pt-6">
       {Array.from({ length: 10 }, (_, index) => (
         <StorySection key={index} title={`Activity section ${index + 1}`}>
@@ -308,12 +308,12 @@ const longScrollableBody = (
         </StorySection>
       ))}
     </div>
-  </SheetBody>
+  </DrawerBody>
 );
 
 const meta = {
-  title: 'UI/Sheet',
-  component: SheetContent,
+  title: 'UI/Drawer',
+  component: DrawerContent,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -328,7 +328,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof SheetContent>;
+} satisfies Meta<typeof DrawerContent>;
 
 export default meta;
 
@@ -336,7 +336,7 @@ type Story = StoryObj<typeof meta>;
 
 export const DefaultRight: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={defaultBody}
       footer={defaultFooter}
       triggerLabel="Open tenant drawer"
@@ -347,7 +347,7 @@ export const DefaultRight: Story = {
 
 export const AdjustableWidth: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={defaultBody}
       description="The drawer width is adjustable via the width prop while keeping the same right-edge sliding behavior."
       footer={defaultFooter}
@@ -360,7 +360,7 @@ export const AdjustableWidth: Story = {
 
 export const WithHeaderIcon: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={defaultBody}
       description="Use an optional header icon when the drawer needs a stronger contextual cue before the title and description."
       footer={defaultFooter}
@@ -373,7 +373,7 @@ export const WithHeaderIcon: Story = {
 
 export const WithHeaderActions: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={defaultBody}
       footer={defaultFooter}
       headerIcon={<Search aria-hidden="true" />}
@@ -395,16 +395,16 @@ export const WithHeaderActions: Story = {
 
 export const FormLayout: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={formBody}
       description="Use the drawer for short edit flows that should stay contextual to the source table or dashboard."
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Cancel</Button>
-          </SheetClose>
+          </DrawerClose>
           <Button>Save workspace</Button>
-        </SheetFooter>
+        </DrawerFooter>
       }
       title="Edit workspace"
       triggerLabel="Open edit drawer"
@@ -414,16 +414,16 @@ export const FormLayout: Story = {
 
 export const Loading: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={loadingBody}
       description="Keep the drawer shell visible while loading so operators retain context and know the task is in progress."
       footer={
-        <SheetFooter>
+        <DrawerFooter>
           <Button disabled variant="secondary">
             Cancel
           </Button>
           <Button disabled>Saving...</Button>
-        </SheetFooter>
+        </DrawerFooter>
       }
       title="Loading workspace details"
       triggerLabel="Open loading drawer"
@@ -433,9 +433,9 @@ export const Loading: Story = {
 
 export const Empty: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={
-        <SheetBody className="flex items-center py-6">
+        <DrawerBody className="flex items-center py-6">
           <EmptyState
             action={{
               icon: <Filter className="h-4 w-4" />,
@@ -445,14 +445,14 @@ export const Empty: Story = {
             icon={<ListFilter className="h-6 w-6" />}
             title="No saved presets"
           />
-        </SheetBody>
+        </DrawerBody>
       }
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Close</Button>
-          </SheetClose>
-        </SheetFooter>
+          </DrawerClose>
+        </DrawerFooter>
       }
       title="Saved filters"
       triggerLabel="Open empty drawer"
@@ -462,9 +462,9 @@ export const Empty: Story = {
 
 export const Error: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={
-        <SheetBody className="flex items-center py-6">
+        <DrawerBody className="flex items-center py-6">
           <EmptyState
             action={{
               label: 'Retry',
@@ -474,15 +474,15 @@ export const Error: Story = {
             icon={<TriangleAlert className="h-6 w-6" />}
             title="Unable to load details"
           />
-        </SheetBody>
+        </DrawerBody>
       }
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Close</Button>
-          </SheetClose>
+          </DrawerClose>
           <Button>Retry request</Button>
-        </SheetFooter>
+        </DrawerFooter>
       }
       title="Workspace details"
       triggerLabel="Open error drawer"
@@ -492,9 +492,9 @@ export const Error: Story = {
 
 export const Success: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={
-        <SheetBody>
+        <DrawerBody>
           <div className="pt-6">
             <div className="space-y-4 rounded-3xl border border-border/70 bg-muted/35 p-5">
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -511,14 +511,14 @@ export const Success: Story = {
               </div>
             </div>
           </div>
-        </SheetBody>
+        </DrawerBody>
       }
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Done</Button>
-          </SheetClose>
-        </SheetFooter>
+          </DrawerClose>
+        </DrawerFooter>
       }
       title="Workspace updated"
       triggerLabel="Open success drawer"
@@ -528,15 +528,15 @@ export const Success: Story = {
 
 export const LongScrollableContent: Story = {
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={longScrollableBody}
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Close</Button>
-          </SheetClose>
+          </DrawerClose>
           <Button>Save notes</Button>
-        </SheetFooter>
+        </DrawerFooter>
       }
       title="Provisioning timeline"
       triggerLabel="Open scrollable drawer"
@@ -549,9 +549,9 @@ export const DarkTheme: Story = {
     theme: 'dark',
   },
   render: () => (
-    <SheetStoryPreview
+    <DrawerStoryPreview
       body={
-        <SheetBody>
+        <DrawerBody>
           <div className="space-y-6 pt-6">
             <StorySection className="bg-card/60" title="Dark mode system health">
               <p className="text-sm leading-6 text-muted-foreground">
@@ -570,15 +570,15 @@ export const DarkTheme: Story = {
               </div>
             </StorySection>
           </div>
-        </SheetBody>
+        </DrawerBody>
       }
       footer={
-        <SheetFooter>
-          <SheetClose asChild>
+        <DrawerFooter>
+          <DrawerClose asChild>
             <Button variant="secondary">Dismiss</Button>
-          </SheetClose>
+          </DrawerClose>
           <Button>Resolve issue</Button>
-        </SheetFooter>
+        </DrawerFooter>
       }
       title="Tenant safeguards"
       triggerLabel="Open dark drawer"

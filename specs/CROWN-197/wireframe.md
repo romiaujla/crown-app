@@ -2,25 +2,25 @@
 
 ## Target surface
 
-Create a reusable primitive at `apps/web2/components/ui/sheet.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page.
+Create a reusable primitive at `apps/web2/components/ui/drawer.tsx` that behaves as a right-side drawer. It should open when a trigger button is clicked, stay pinned to the right edge of the viewport, fill the full viewport height, and keep inner content scrollable. This is for contextual detail/edit workflows that should not navigate away from the current page.
 
 ## Layout structure
 
 **Pattern:** trigger + overlay + right-side drawer
 
 ```text
-Sheet
-└─ SheetTrigger
-└─ SheetPortal
-   ├─ SheetOverlay
-   └─ SheetContent
-      ├─ SheetHeader
-      │  ├─ SheetHeaderIcon (optional)
-      │  ├─ SheetTitle
-      │  ├─ SheetDescription
-      │  └─ SheetClose
-      ├─ SheetBody (scrollable)
-      └─ SheetFooter (optional consumer actions)
+Drawer
+└─ DrawerTrigger
+└─ DrawerPortal
+   ├─ DrawerOverlay
+   └─ DrawerContent
+      ├─ DrawerHeader
+      │  ├─ DrawerHeaderIcon (optional)
+      │  ├─ DrawerTitle
+      │  ├─ DrawerDescription
+      │  └─ DrawerClose
+      ├─ DrawerBody (scrollable)
+      └─ DrawerFooter (optional consumer actions)
 ```
 
 ## Drawer behavior
@@ -65,7 +65,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 ## Accessibility behavior
 
 - Built on `@radix-ui/react-dialog` semantics with modal focus trapping by default.
-- `SheetTitle` maps to `aria-labelledby`; `SheetDescription` maps to `aria-describedby`.
+- `DrawerTitle` maps to `aria-labelledby`; `DrawerDescription` maps to `aria-describedby`.
 - Optional header icons are decorative by default and should be `aria-hidden` unless they communicate meaningful status text elsewhere.
 - Close button must expose an accessible label (`Close panel` by default).
 - `Escape` closes the drawer unless the consumer intentionally intercepts it.
@@ -82,7 +82,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 
 ## Storybook requirements
 
-Create `apps/web2/components/ui/sheet.stories.tsx` with stories that cover:
+Create `apps/web2/components/ui/drawer.stories.tsx` with stories that cover:
 
 1. Trigger-driven right drawer open behavior
 2. Right-edge slide-in motion
