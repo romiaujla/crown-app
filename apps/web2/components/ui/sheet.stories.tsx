@@ -15,6 +15,7 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetHeaderIcon,
   SheetTitle,
   SheetTrigger,
 } from './sheet';
@@ -23,12 +24,11 @@ import { Skeleton } from './skeleton';
 const controlBaseClassName =
   'flex h-10 w-full rounded-2xl border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
 
-const storyContentWidth = 'min(100%, 48rem)';
-
 type SheetStoryPreviewProps = {
   body?: React.ReactNode;
   description?: React.ReactNode;
   footer?: React.ReactNode;
+  headerIcon?: React.ReactNode;
   headerActions?: React.ReactNode;
   title?: React.ReactNode;
   triggerLabel?: string;
@@ -110,14 +110,18 @@ const DrawerShell = ({
   body,
   description = 'Review supporting details or complete the follow-up task without leaving the current page.',
   footer,
+  headerIcon,
   headerActions,
   title = 'Tenant details',
 }: Omit<SheetStoryPreviewProps, 'triggerLabel' | 'width'>) => (
   <>
     <SheetHeader className={cn('space-y-4', headerActions ? 'pb-5' : undefined)}>
-      <div className="space-y-2">
-        <SheetTitle>{title}</SheetTitle>
-        <SheetDescription>{description}</SheetDescription>
+      <div className={cn('flex gap-4', headerIcon ? 'items-start' : undefined)}>
+        {headerIcon ? <SheetHeaderIcon>{headerIcon}</SheetHeaderIcon> : null}
+        <div className="space-y-2">
+          <SheetTitle>{title}</SheetTitle>
+          <SheetDescription>{description}</SheetDescription>
+        </div>
       </div>
       {headerActions}
     </SheetHeader>
@@ -130,10 +134,11 @@ const SheetStoryPreview = ({
   body,
   description,
   footer,
+  headerIcon,
   headerActions,
   title,
   triggerLabel = 'Open drawer',
-  width = '20vw',
+  width = '35vw',
 }: SheetStoryPreviewProps) => (
   <Sheet>
     <StoryPageChrome triggerLabel={triggerLabel} />
@@ -142,6 +147,7 @@ const SheetStoryPreview = ({
         body={body}
         description={description}
         footer={footer}
+        headerIcon={headerIcon}
         headerActions={headerActions}
         title={title}
       />
@@ -314,7 +320,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. Trigger it from a button and it slides in from the right edge, defaults to 20vw width, fills the viewport height, and keeps inner content scrollable.',
+          'Reusable web2 right-side drawer primitive built on Radix dialog semantics. Trigger it from a button and it slides in from the right edge, defaults to 35vw width, fills the viewport height, keeps inner content scrollable, and supports an optional header icon pattern.',
       },
       story: {
         height: '760px',
@@ -334,7 +340,7 @@ export const DefaultRight: Story = {
       body={defaultBody}
       footer={defaultFooter}
       triggerLabel="Open tenant drawer"
-      width="20vw"
+      width="35vw"
     />
   ),
 };
@@ -347,7 +353,20 @@ export const AdjustableWidth: Story = {
       footer={defaultFooter}
       title="Wider tenant details"
       triggerLabel="Open wide drawer"
-      width="28vw"
+      width="42vw"
+    />
+  ),
+};
+
+export const WithHeaderIcon: Story = {
+  render: () => (
+    <SheetStoryPreview
+      body={defaultBody}
+      description="Use an optional header icon when the drawer needs a stronger contextual cue before the title and description."
+      footer={defaultFooter}
+      headerIcon={<Settings2 aria-hidden="true" />}
+      title="Tenant settings"
+      triggerLabel="Open settings drawer"
     />
   ),
 };
@@ -357,6 +376,7 @@ export const WithHeaderActions: Story = {
     <SheetStoryPreview
       body={defaultBody}
       footer={defaultFooter}
+      headerIcon={<Search aria-hidden="true" />}
       headerActions={
         <div className="flex flex-wrap gap-2">
           <Button icon={<Settings2 className="h-4 w-4" />} variant="secondary">

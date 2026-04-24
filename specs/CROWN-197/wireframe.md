@@ -15,6 +15,7 @@ Sheet
    ├─ SheetOverlay
    └─ SheetContent
       ├─ SheetHeader
+      │  ├─ SheetHeaderIcon (optional)
       │  ├─ SheetTitle
       │  ├─ SheetDescription
       │  └─ SheetClose
@@ -28,7 +29,7 @@ Sheet
 - The drawer should **slide in from the right viewport edge** when the trigger button is clicked.
 - The drawer fills the full viewport height (`h-screen`).
 - The drawer width is **adjustable** via a public prop.
-- Initial/default width is **`20vw`**.
+- Initial/default width is **`35vw`**.
 - The outer drawer container stays fixed; only the body content scrolls.
 
 ## Action hierarchy
@@ -36,6 +37,7 @@ Sheet
 - **Primary actions:** consumer-provided footer CTA.
 - **Secondary actions:** cancel/supporting CTA in the footer.
 - **Tertiary action:** icon-only close button in the header.
+- **Optional context affordance:** icon + heading composition in the header for settings, alerts, or contextual detail drawers.
 - **Destructive actions:** only through consumer-provided buttons using existing destructive button styles.
 
 ## Component reuse
@@ -64,6 +66,7 @@ Reuse the existing web2 patterns instead of introducing a new visual language:
 
 - Built on `@radix-ui/react-dialog` semantics with modal focus trapping by default.
 - `SheetTitle` maps to `aria-labelledby`; `SheetDescription` maps to `aria-describedby`.
+- Optional header icons are decorative by default and should be `aria-hidden` unless they communicate meaningful status text elsewhere.
 - Close button must expose an accessible label (`Close panel` by default).
 - `Escape` closes the drawer unless the consumer intentionally intercepts it.
 - Overlay click closes the drawer by default unless the consumer intentionally blocks outside interaction.
@@ -84,11 +87,12 @@ Create `apps/web2/components/ui/sheet.stories.tsx` with stories that cover:
 1. Trigger-driven right drawer open behavior
 2. Right-edge slide-in motion
 3. Adjustable width
-4. Header actions
-5. Form layout
-6. Loading
-7. Empty
-8. Error
-9. Success
-10. Long scrollable content
-11. Dark theme
+4. Header icon composition
+5. Header actions
+6. Form layout
+7. Loading
+8. Empty
+9. Error
+10. Success
+11. Long scrollable content
+12. Dark theme

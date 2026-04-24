@@ -52,7 +52,7 @@ const SheetContent = React.forwardRef<
       closeLabel = 'Close panel',
       showCloseButton = true,
       style,
-      width = '20vw',
+      width = '35vw',
       ...props
     },
     ref,
@@ -111,6 +111,18 @@ function SheetBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
   );
 }
 
+function SheetHeaderIcon({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        'inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary [&_svg]:h-6 [&_svg]:w-6',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 function SheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -160,6 +172,7 @@ export {
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetHeaderIcon,
   SheetOverlay,
   SheetPortal,
   SheetTitle,
