@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { AppShell, CrownBrandMark, crownWeb2NavigationGroups } from './app-shell';
 
 const StoryContent = () => (
-  <div className="min-h-screen bg-background px-6 py-8 text-foreground sm:px-8">
+  <div className="bg-background px-6 py-8 text-foreground sm:px-8">
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
       <section className="rounded-[32px] border border-border/80 bg-card p-7 shadow-[0_22px_60px_hsl(var(--foreground)/0.12)]">
         <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
