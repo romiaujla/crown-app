@@ -321,13 +321,13 @@ function AppShell({
         >
           <div
             className={cn(
-              'flex items-start gap-3 pr-4 pb-4 pl-0 pt-0',
-              isDesktopRailCollapsed && 'justify-center px-3 py-3',
+              'flex min-h-24 items-start gap-3 px-4 py-4',
+              isDesktopRailCollapsed && 'min-h-0 justify-center px-3 py-3',
             )}
           >
             {brandIcon}
             {!isDesktopRailCollapsed ? (
-              <div className="min-w-0 pt-4">
+              <div className="min-w-0">
                 <p className="truncate text-base font-semibold text-card-foreground">{brandName}</p>
                 <p className="text-xs text-muted-foreground">Application shell</p>
               </div>
@@ -396,7 +396,7 @@ function AppShell({
               )}
               id={`desktop-submenu-${selectedDesktopParent.id}`}
             >
-              <div className="flex items-start justify-between gap-3 border-b border-border/80 px-4 py-4">
+              <div className="flex min-h-24 items-start justify-between gap-3 border-b border-border/80 px-4 py-4">
                 <div className="min-w-0">
                   <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
                     Submenu
