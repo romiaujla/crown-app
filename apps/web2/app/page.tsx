@@ -75,12 +75,18 @@ const ArrowRightIcon = () => (
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-background px-6 py-10 text-foreground sm:px-8 lg:px-10">
+    <div className="bg-background px-6 py-10 text-foreground sm:px-8 lg:px-10">
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-        <header className="rounded-[32px] border border-border/80 bg-card/90 p-7 shadow-[0_22px_60px_hsl(var(--foreground)/0.12)] sm:p-9">
+        <header
+          className="scroll-mt-24 rounded-[32px] border border-border/80 bg-card/90 p-7 shadow-[0_22px_60px_hsl(var(--foreground)/0.12)] sm:p-9"
+          id="overview"
+        >
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="flex max-w-3xl flex-col gap-4">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <p
+                className="scroll-mt-24 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                id="component-library"
+              >
                 Crown Web2
               </p>
               <div className="flex flex-col gap-3">
@@ -124,7 +130,10 @@ export default function HomePage() {
           </div>
         </header>
 
-        <section className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+        <section
+          className="scroll-mt-24 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]"
+          id="platform-overview"
+        >
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <Card className="h-full" variant="metric">
               <CardHeader>
@@ -176,7 +185,7 @@ export default function HomePage() {
             </Card>
           </div>
 
-          <Card className="h-full" variant="info">
+          <Card className="h-full scroll-mt-24" id="recommended-next-step" variant="info">
             <CardHeader className="gap-5">
               <CardIcon>
                 <SparkIcon />
@@ -196,8 +205,13 @@ export default function HomePage() {
           </Card>
         </section>
 
-        <section className="grid gap-4 lg:grid-cols-2">
-          <Card asChild className="text-left" variant="interactive">
+        <section className="scroll-mt-24 grid gap-4 lg:grid-cols-2" id="workflow-launchers">
+          <Card
+            asChild
+            className="scroll-mt-24 text-left"
+            id="tenant-directory-preview"
+            variant="interactive"
+          >
             <a href="#tenant-directory-preview">
               <CardHeader className="gap-2">
                 <CardEyebrow>Tenant operations</CardEyebrow>
@@ -216,7 +230,12 @@ export default function HomePage() {
             </a>
           </Card>
 
-          <Card asChild className="text-left" variant="interactive">
+          <Card
+            asChild
+            className="scroll-mt-24 text-left"
+            id="billing-preview"
+            variant="interactive"
+          >
             <a href="#billing-preview">
               <CardHeader className="gap-2">
                 <CardEyebrow>Finance controls</CardEyebrow>
@@ -236,6 +255,6 @@ export default function HomePage() {
           </Card>
         </section>
       </section>
-    </main>
+    </div>
   );
 }

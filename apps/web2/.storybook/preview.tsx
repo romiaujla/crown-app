@@ -6,10 +6,16 @@ import { cn } from '@/lib/utils';
 
 const withTheme: Decorator = (Story, context) => {
   const isDark = context.globals.theme === 'dark';
+  const isFullscreen = context.parameters.layout === 'fullscreen';
 
   return (
     <div className={cn('w-full transition-colors', isDark ? 'dark' : null)}>
-      <div className="grid w-full place-items-center bg-background p-6 text-foreground transition-colors">
+      <div
+        className={cn(
+          'w-full bg-background text-foreground transition-colors',
+          isFullscreen ? 'min-h-screen p-0' : 'grid place-items-center p-6',
+        )}
+      >
         <Story />
       </div>
     </div>
