@@ -287,9 +287,10 @@ function RichListFilterIntegration() {
   };
 
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-3">
+    <div className="w-full max-w-5xl overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
       <RichTableFilterBar
         activeFilters={activeFilters}
+        className="rounded-none border-0 bg-transparent shadow-none"
         clearAllLabel="Clear all"
         debounceMs={250}
         onClearAll={clearFilters}
@@ -327,6 +328,7 @@ function RichListFilterIntegration() {
       />
       <RichList
         caption="Tenant workspaces"
+        className="rounded-none border-0 shadow-none"
         columns={workspaceColumns}
         emptyState={{
           description: 'Tenant workspaces will appear here after the first record is provisioned.',
