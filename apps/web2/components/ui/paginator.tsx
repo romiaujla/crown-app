@@ -7,69 +7,69 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
-export enum RichTablePaginationPageSizeEnum {
+export enum PaginatorPageSizeEnum {
   TEN = 10,
   TWENTY_FIVE = 25,
   FIFTY = 50,
   ONE_HUNDRED = 100,
 }
 
-export type RichTablePaginationRange = {
+export type PaginatorRange = {
   end: number;
   start: number;
   totalCount: number;
 };
 
-export type RichTablePaginationChange = {
-  limit: RichTablePaginationPageSizeEnum;
+export type PaginatorChange = {
+  limit: PaginatorPageSizeEnum;
   offset: number;
   page: number;
 };
 
-type RichTablePaginationPageNumberItem = {
+type PaginatorPageNumberItem = {
   page: number;
   type: 'page';
 };
 
-type RichTablePaginationEllipsisItem = {
+type PaginatorEllipsisItem = {
   key: string;
   type: 'ellipsis';
 };
 
-type RichTablePaginationPageItem =
-  | RichTablePaginationPageNumberItem
-  | RichTablePaginationEllipsisItem;
+type PaginatorPageItem = PaginatorPageNumberItem | PaginatorEllipsisItem;
 
-export type RichTablePaginationProps = {
+export type PaginatorProps = {
   ariaLabel?: string;
   className?: string;
   disabled?: boolean;
-  getRangeLabel?: (range: RichTablePaginationRange) => string;
+  getRangeLabel?: (range: PaginatorRange) => string;
   hideWhenEmpty?: boolean;
-  limit: RichTablePaginationPageSizeEnum;
+  limit: PaginatorPageSizeEnum;
   loading?: boolean;
   maxPageButtons?: number;
   offset: number;
-  onPaginationChange: (next: RichTablePaginationChange) => void;
-  pageSizeOptions?: RichTablePaginationPageSizeEnum[];
+  onPaginationChange: (next: PaginatorChange) => void;
+  pageSizeOptions?: PaginatorPageSizeEnum[];
   totalCount: number;
 };
 
 const DEFAULT_PAGE_SIZE_OPTIONS = Object.freeze([
-  RichTablePaginationPageSizeEnum.TEN,
-  RichTablePaginationPageSizeEnum.TWENTY_FIVE,
-  RichTablePaginationPageSizeEnum.FIFTY,
-  RichTablePaginationPageSizeEnum.ONE_HUNDRED,
-]) as readonly RichTablePaginationPageSizeEnum[];
+  PaginatorPageSizeEnum.TEN,
+  PaginatorPageSizeEnum.TWENTY_FIVE,
+  PaginatorPageSizeEnum.FIFTY,
+  PaginatorPageSizeEnum.ONE_HUNDRED,
+]) as readonly PaginatorPageSizeEnum[];
 
 const pageSizeSelectClassName =
   'h-8 min-w-[5.5rem] rounded-xl border border-input bg-card px-2.5 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60';
 
-function RichTablePagination({
+const paginationButtonClassName = 'shrink-0 active:translate-y-0';
+
+function Paginator({
   ariaLabel = 'Table pagination',
   className,
   disabled = false,
-  getRangeLabel = formatRichTablePaginationRange,
+  getRangeLabel = formatPaginatorRange,
   hideWhenEmpty = true,
   limit,
   loading = false,
@@ -78,7 +78,7 @@ function RichTablePagination({
   onPaginationChange,
   pageSizeOptions = [...DEFAULT_PAGE_SIZE_OPTIONS],
   totalCount,
-}: RichTablePaginationProps) {
+}: PaginatorProps) {
   const pageSizeControlId = React.useId();
   const resolvedPageSizeOptions = React.useMemo(
     () => getResolvedPageSizeOptions({ limit, pageSizeOptions }),
@@ -87,8 +87,8 @@ function RichTablePagination({
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
   const safeOffset = totalCount === 0 ? 0 : Math.min(Math.max(offset, 0), (totalPages - 1) * limit);
   const currentPage = Math.floor(safeOffset / limit) + 1;
-  const range = getRichTablePaginationRange({ limit, offset: safeOffset, totalCount });
-  const pageItems = getRichTablePaginationPageItems({
+  const range = getPaginatorRange({ limit, offset: safeOffset, totalCount });
+  const pageItems = getPaginatorPageItems({
     currentPage,
     maxPageButtons,
     totalPages,
@@ -114,7 +114,7 @@ function RichTablePagination({
   const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const nextLimit = Number(event.target.value);
 
-    if (!isRichTablePaginationPageSize(nextLimit) || controlsDisabled || nextLimit === limit) {
+    if (!isPaginatorPageSize(nextLimit) || controlsDisabled || nextLimit === limit) {
       return;
     }
 
@@ -167,6 +167,7 @@ function RichTablePagination({
             <div className="flex min-w-0 items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
               <Button
                 aria-label="Go to previous page"
+                className={paginationButtonClassName}
                 disabled={controlsDisabled || currentPage === 1}
                 icon={<ChevronLeft aria-hidden="true" className="size-4 shrink-0" />}
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -191,7 +192,7 @@ function RichTablePagination({
                         ? `Current page, page ${item.page}`
                         : `Go to page ${item.page}`
                     }
-                    className="min-w-8 px-0 tabular-nums"
+                    className={cn('min-w-8 px-0 tabular-nums', paginationButtonClassName)}
                     key={item.page}
                     onClick={() => handlePageChange(item.page)}
                     size="sm"
@@ -204,6 +205,7 @@ function RichTablePagination({
 
               <Button
                 aria-label="Go to next page"
+                className={paginationButtonClassName}
                 disabled={controlsDisabled || currentPage === totalPages}
                 icon={<ChevronRight aria-hidden="true" className="size-4 shrink-0" />}
                 onClick={() => handlePageChange(currentPage + 1)}
@@ -243,21 +245,21 @@ function getResolvedPageSizeOptions({
   limit,
   pageSizeOptions,
 }: {
-  limit: RichTablePaginationPageSizeEnum;
-  pageSizeOptions: RichTablePaginationPageSizeEnum[];
+  limit: PaginatorPageSizeEnum;
+  pageSizeOptions: PaginatorPageSizeEnum[];
 }) {
   return Array.from(new Set([...pageSizeOptions, limit])).sort((left, right) => left - right);
 }
 
-function getRichTablePaginationRange({
+function getPaginatorRange({
   limit,
   offset,
   totalCount,
 }: {
-  limit: RichTablePaginationPageSizeEnum;
+  limit: PaginatorPageSizeEnum;
   offset: number;
   totalCount: number;
-}): RichTablePaginationRange {
+}): PaginatorRange {
   if (totalCount === 0) {
     return {
       end: 0,
@@ -273,7 +275,7 @@ function getRichTablePaginationRange({
   };
 }
 
-function getRichTablePaginationPageItems({
+function getPaginatorPageItems({
   currentPage,
   maxPageButtons,
   totalPages,
@@ -281,7 +283,7 @@ function getRichTablePaginationPageItems({
   currentPage: number;
   maxPageButtons: number;
   totalPages: number;
-}): RichTablePaginationPageItem[] {
+}): PaginatorPageItem[] {
   if (totalPages <= 1) {
     return [{ page: 1, type: 'page' }];
   }
@@ -304,7 +306,7 @@ function getRichTablePaginationPageItems({
     startPage = Math.max(2, endPage - middleButtonCount + 1);
   }
 
-  const items: RichTablePaginationPageItem[] = [{ page: 1, type: 'page' }];
+  const items: PaginatorPageItem[] = [{ page: 1, type: 'page' }];
 
   if (startPage > 2) {
     items.push({
@@ -335,17 +337,12 @@ function getRichTablePaginationPageItems({
   return items;
 }
 
-function isRichTablePaginationPageSize(value: number): value is RichTablePaginationPageSizeEnum {
-  return DEFAULT_PAGE_SIZE_OPTIONS.includes(value as RichTablePaginationPageSizeEnum);
+function isPaginatorPageSize(value: number): value is PaginatorPageSizeEnum {
+  return DEFAULT_PAGE_SIZE_OPTIONS.includes(value as PaginatorPageSizeEnum);
 }
 
-function formatRichTablePaginationRange(range: RichTablePaginationRange) {
+function formatPaginatorRange(range: PaginatorRange) {
   return `Showing ${range.start}-${range.end} of ${range.totalCount}`;
 }
 
-export {
-  RichTablePagination,
-  formatRichTablePaginationRange,
-  getRichTablePaginationPageItems,
-  getRichTablePaginationRange,
-};
+export { Paginator, formatPaginatorRange, getPaginatorPageItems, getPaginatorRange };

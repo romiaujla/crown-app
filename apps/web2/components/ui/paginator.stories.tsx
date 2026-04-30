@@ -4,11 +4,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { RichList, RichListColumnAlignEnum, type RichListColumn } from '@/components/ui/rich-list';
 
 import {
-  RichTablePagination,
-  RichTablePaginationPageSizeEnum,
-  type RichTablePaginationChange,
-  type RichTablePaginationProps,
-} from './rich-table-pagination';
+  Paginator,
+  PaginatorPageSizeEnum,
+  type PaginatorChange,
+  type PaginatorProps,
+} from './paginator';
 
 type WorkspaceRecord = {
   createdAt: string;
@@ -69,7 +69,7 @@ const workspaceRows: WorkspaceRecord[] = Array.from({ length: 42 }, (_, index) =
 
 const noop = () => undefined;
 
-function PaginationStoryPreview(props: RichTablePaginationProps) {
+function PaginationStoryPreview(props: PaginatorProps) {
   const { limit: initialLimit, offset: initialOffset, onPaginationChange, ...rest } = props;
   const [pagination, setPagination] = React.useState({
     limit: initialLimit,
@@ -83,7 +83,7 @@ function PaginationStoryPreview(props: RichTablePaginationProps) {
     });
   }, [initialLimit, initialOffset]);
 
-  const handlePaginationChange = (next: RichTablePaginationChange) => {
+  const handlePaginationChange = (next: PaginatorChange) => {
     setPagination({
       limit: next.limit,
       offset: next.offset,
@@ -92,7 +92,7 @@ function PaginationStoryPreview(props: RichTablePaginationProps) {
   };
 
   return (
-    <RichTablePagination
+    <Paginator
       {...rest}
       limit={pagination.limit}
       offset={pagination.offset}
@@ -103,7 +103,7 @@ function PaginationStoryPreview(props: RichTablePaginationProps) {
 
 function RichListPaginationPreview() {
   const [pagination, setPagination] = React.useState({
-    limit: RichTablePaginationPageSizeEnum.TEN,
+    limit: PaginatorPageSizeEnum.TEN,
     offset: 0,
   });
 
@@ -118,7 +118,7 @@ function RichListPaginationPreview() {
       columns={columns}
       emptyState={emptyState}
       footer={
-        <RichTablePagination
+        <Paginator
           limit={pagination.limit}
           offset={pagination.offset}
           onPaginationChange={(next) =>
@@ -138,8 +138,8 @@ function RichListPaginationPreview() {
 }
 
 const meta = {
-  title: 'UI/RichTablePagination',
-  component: RichTablePagination,
+  title: 'UI/Paginator',
+  component: Paginator,
   tags: ['autodocs'],
   parameters: {
     layout: 'padded',
@@ -151,7 +151,7 @@ const meta = {
     },
   },
   args: {
-    limit: RichTablePaginationPageSizeEnum.TEN,
+    limit: PaginatorPageSizeEnum.TEN,
     offset: 0,
     onPaginationChange: noop,
     totalCount: 42,
@@ -161,7 +161,7 @@ const meta = {
       <PaginationStoryPreview {...args} />
     </div>
   ),
-} satisfies Meta<typeof RichTablePagination>;
+} satisfies Meta<typeof Paginator>;
 
 export default meta;
 
@@ -212,19 +212,19 @@ export const ManyPagesCondensed: Story = {
 
 export const PageSize25: Story = {
   args: {
-    limit: RichTablePaginationPageSizeEnum.TWENTY_FIVE,
+    limit: PaginatorPageSizeEnum.TWENTY_FIVE,
   },
 };
 
 export const PageSize50: Story = {
   args: {
-    limit: RichTablePaginationPageSizeEnum.FIFTY,
+    limit: PaginatorPageSizeEnum.FIFTY,
   },
 };
 
 export const PageSize100: Story = {
   args: {
-    limit: RichTablePaginationPageSizeEnum.ONE_HUNDRED,
+    limit: PaginatorPageSizeEnum.ONE_HUNDRED,
     totalCount: 180,
   },
 };

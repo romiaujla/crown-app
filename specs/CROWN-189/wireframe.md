@@ -2,7 +2,7 @@
 
 ## Summary
 
-Create a reusable `RichTablePagination` footer component for dense data tables in `apps/web2`. The component sits below a `RichList` surface, standardizes result-count messaging, page-size selection, and page navigation, and emits offset/limit pagination intent for page-level or server-driven data fetching. It does not own data fetching, filters, or empty/error messaging for the surrounding table.
+Create a reusable `Paginator` footer component for dense data tables in `apps/web2`. The component sits below a `RichList` surface, standardizes result-count messaging, page-size selection, and page navigation, and emits offset/limit pagination intent for page-level or server-driven data fetching. It does not own data fetching, filters, or empty/error messaging for the surrounding table.
 
 ## Layout Structure
 
@@ -60,8 +60,8 @@ Create a reusable `RichTablePagination` footer component for dense data tables i
   - `apps/web2/components/ui/form-field.tsx` styling pattern for native inputs/selects
   - Lucide chevron icons already available in `apps/web2`
 - New reusable component:
-  - `apps/web2/components/ui/rich-table-pagination.tsx`
-  - `apps/web2/components/ui/rich-table-pagination.stories.tsx`
+  - `apps/web2/components/ui/paginator.tsx`
+  - `apps/web2/components/ui/paginator.stories.tsx`
 - The paginator must stay presentational and emit pagination intent via props rather than embedding API calls.
 
 ## Component Contract
