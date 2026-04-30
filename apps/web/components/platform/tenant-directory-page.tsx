@@ -1,22 +1,18 @@
 'use client';
 
 import { TenantStatusEnum, type TenantDirectoryListResponse } from '@crown/types';
-import { ArrowUpRight, Plus, Search } from 'lucide-react';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import {
+  RichTableFilterBar,
+  type RichTableActiveFilter,
+} from '../../../web2/components/ui/rich-table-filter-bar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -90,16 +86,6 @@ export const TenantDirectoryPage = () => {
   });
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setDebouncedNameFilter(nameFilter);
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [nameFilter]);
-
-  useEffect(() => {
     let cancelled = false;
     const accessToken = getStoredAccessToken();
     const trimmedName = debouncedNameFilter.trim();
@@ -150,53 +136,68 @@ export const TenantDirectoryPage = () => {
     };
   }, [debouncedNameFilter, statusFilter]);
 
+  const activeFilters: RichTableActiveFilter[] = [];
+  const trimmedNameFilter = nameFilter.trim();
+
+  if (trimmedNameFilter) {
+    activeFilters.push({
+      id: 'name',
+      label: 'Search',
+      onRemove: () => {
+        setNameFilter('');
+        setDebouncedNameFilter('');
+      },
+      valueLabel: trimmedNameFilter,
+    });
+  }
+
+  if (statusFilter) {
+    activeFilters.push({
+      id: 'status',
+      label: 'Status',
+      onRemove: () => {
+        setStatusFilter('');
+      },
+      valueLabel: formatTenantStatusLabel(statusFilter),
+    });
+  }
+
+  const clearFilters = () => {
+    setNameFilter('');
+    setDebouncedNameFilter('');
+    setStatusFilter('');
+  };
+
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-end">
-        <label className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-            Search by name
-          </span>
-          <span className="relative block">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
-            />
-            <Input
-              aria-label="Search tenants by name"
-              className="rounded-2xl border-stone-200 bg-stone-50 pl-10"
-              onChange={(event) => {
-                setNameFilter(event.target.value);
-              }}
-              placeholder="Search tenants"
-              value={nameFilter}
-            />
-          </span>
-        </label>
-        <label className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">
-            Status
-          </span>
-          <Select
-            onValueChange={(value) => {
+      <RichTableFilterBar
+        activeFilters={activeFilters}
+        debounceMs={SEARCH_DEBOUNCE_MS}
+        onClearAll={clearFilters}
+        onDebouncedSearchValueChange={setDebouncedNameFilter}
+        onSearchValueChange={setNameFilter}
+        searchAriaLabel="Search tenants by name"
+        searchLabel="Search by name"
+        searchPlaceholder="Search tenants"
+        searchValue={nameFilter}
+        selects={[
+          {
+            ariaLabel: 'Filter tenants by status',
+            label: 'Status',
+            onValueChange: (value) => {
               setStatusFilter(value === ALL_STATUSES_VALUE ? '' : (value as TenantStatusEnum));
-            }}
-            value={statusFilter || ALL_STATUSES_VALUE}
-          >
-            <SelectTrigger aria-label="Filter tenants by status">
-              <SelectValue placeholder="All statuses" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={ALL_STATUSES_VALUE}>All statuses</SelectItem>
-              {tenantStatusOptions.map((status) => (
-                <SelectItem key={status} value={status}>
-                  {formatTenantStatusLabel(status)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </label>
-      </div>
+            },
+            options: [
+              { label: 'All statuses', value: ALL_STATUSES_VALUE },
+              ...tenantStatusOptions.map((status) => ({
+                label: formatTenantStatusLabel(status),
+                value: status,
+              })),
+            ],
+            value: statusFilter || ALL_STATUSES_VALUE,
+          },
+        ]}
+      />
       {viewState.status === ViewStatusEnum.LOADING ? (
         <div className="space-y-3 rounded-3xl border border-stone-200 bg-stone-50/80 p-4">
           <p className="text-sm font-medium text-stone-700">Loading tenant directory</p>
@@ -217,8 +218,11 @@ export const TenantDirectoryPage = () => {
       ) : null}
       {viewState.status === ViewStatusEnum.SUCCESS ? (
         viewState.response.data.tenantList.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-sm text-stone-600">
+          <div className="flex flex-col gap-3 rounded-3xl border border-dashed border-stone-300 bg-stone-50/70 p-6 text-sm text-stone-600">
             No tenants matched the current filters.
+            <Button className="w-fit rounded-full px-4" onClick={clearFilters} variant="secondary">
+              Clear filters
+            </Button>
           </div>
         ) : (
           <Card className="overflow-hidden rounded-3xl border border-stone-200 bg-stone-50/80 shadow-sm">

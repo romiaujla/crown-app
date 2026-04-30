@@ -780,13 +780,13 @@ test('tenant directory filters tenants by name and explicit persisted status val
   await expect(page.getByRole('link', { name: 'Atlas Freight' })).toHaveCount(0);
 
   await page.getByLabel('Search tenants by name').fill('');
-  await page.getByLabel('Filter tenants by status').click();
-  await page.getByRole('option', { name: 'Provisioning', exact: true }).click();
+  await page.getByLabel('Filter tenants by status').selectOption(TenantStatusEnum.PROVISIONING);
   await expect(page.getByRole('link', { name: 'Summit Logistics' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Northwind TMS' })).toHaveCount(0);
 
-  await page.getByLabel('Filter tenants by status').click();
-  await page.getByRole('option', { name: 'Deprovisioned', exact: true }).click();
+  await page
+    .getByLabel('Filter tenants by status')
+    .selectOption(TenantStatusEnum.HARD_DEPROVISIONED);
   await expect(page.getByRole('link', { name: 'Legacy Fleet' })).toBeVisible();
   await expect(page.getByRole('table').getByText('Deprovisioned', { exact: true })).toBeVisible();
   await expect(page.getByRole('cell', { name: '-', exact: true })).toBeVisible();
