@@ -97,6 +97,14 @@ const tableEdgePaddingClassNames = {
   right: 'pr-4 sm:pr-5',
 };
 
+const headerRowClassName =
+  'border-b-2 border-border/90 bg-muted/70 hover:bg-muted/70 dark:bg-secondary/55';
+
+const headerCellClassName = 'h-11 font-semibold text-foreground';
+
+const sortableHeaderButtonClassName =
+  '-ml-3 h-8 px-3 text-foreground hover:bg-accent/70 hover:text-accent-foreground';
+
 function RichList<TData>({
   caption,
   className,
@@ -181,9 +189,11 @@ function RichList<TData>({
       <Table className="min-w-[760px]">
         {caption ? <TableCaption className="sr-only">{caption}</TableCaption> : null}
         <TableHeader>
-          <TableRow className="hover:bg-transparent">
+          <TableRow className={headerRowClassName}>
             {selection ? (
-              <TableHead className={cn('w-12', tableEdgePaddingClassNames.left)}>
+              <TableHead
+                className={cn('w-12', headerCellClassName, tableEdgePaddingClassNames.left)}
+              >
                 {selection.mode === RichListSelectionModeEnum.MULTIPLE ? (
                   <Checkbox
                     aria-label="Select all rows"
@@ -207,6 +217,7 @@ function RichList<TData>({
                     columnIndex,
                     hasSelection: Boolean(selection),
                   }),
+                  headerCellClassName,
                   alignClassNames[column.align ?? RichListColumnAlignEnum.LEFT],
                   column.headerClassName,
                 )}
@@ -217,7 +228,7 @@ function RichList<TData>({
                   <Button
                     aria-label={`Sort by ${getTextLabel(column.header)}`}
                     className={cn(
-                      '-ml-3 h-8 px-3 text-muted-foreground hover:text-foreground',
+                      sortableHeaderButtonClassName,
                       column.align === RichListColumnAlignEnum.RIGHT ? 'ml-auto' : null,
                     )}
                     icon={<SortIndicator direction={column.sortDirection} />}
