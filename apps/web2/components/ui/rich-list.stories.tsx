@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
 
+import { RichTableFilterBar, type RichTableActiveFilter } from './rich-table-filter-bar';
 import {
   RichList,
   RichListColumnAlignEnum,
@@ -107,6 +108,15 @@ const errorState = {
   title: 'Unable to load tenants',
 };
 
+const activeFilterChips: RichTableActiveFilter[] = [
+  {
+    id: 'status',
+    label: 'Status',
+    onRemove: () => undefined,
+    valueLabel: 'Active',
+  },
+];
+
 const StatefulRichList = ({
   mode = RichListSelectionModeEnum.MULTIPLE,
   selectedRowIds = ['tenant-01'],
@@ -140,6 +150,47 @@ const StatefulRichList = ({
     />
   );
 };
+
+function FilterIntegrationPreview() {
+  return (
+    <div className="w-full max-w-5xl overflow-hidden rounded-lg border border-border bg-card text-card-foreground shadow-sm">
+      <RichTableFilterBar
+        activeFilters={activeFilterChips}
+        className="rounded-none border-0 bg-transparent shadow-none"
+        clearAllLabel="Clear all"
+        onClearAll={() => undefined}
+        onSearchValueChange={() => undefined}
+        searchAriaLabel="Search tenant workspaces"
+        searchLabel="Search"
+        searchPlaceholder="Search workspaces"
+        searchValue=""
+        selects={[
+          {
+            ariaLabel: 'Filter tenants by status',
+            label: 'Status',
+            onValueChange: () => undefined,
+            options: [
+              { label: 'All statuses', value: 'all' },
+              { label: 'Active', value: 'active' },
+              { label: 'Provisioning', value: 'provisioning' },
+            ],
+            value: 'active',
+          },
+        ]}
+      />
+      <RichList
+        caption="Tenant workspaces with filters"
+        className="rounded-none border-0 shadow-none"
+        columns={columns}
+        emptyState={emptyState}
+        getRowId={(row) => row.id}
+        getRowLabel={(row) => row.name}
+        onSortChange={() => undefined}
+        rows={rows}
+      />
+    </div>
+  );
+}
 
 const meta = {
   title: 'UI/RichList',
@@ -227,6 +278,10 @@ export const SortableHeaderFocus: Story = {
 
     await expect(sortButton).toHaveFocus();
   },
+};
+
+export const FilterIntegration: Story = {
+  render: () => <FilterIntegrationPreview />,
 };
 
 export const RowSelectionKeyboardAccess: Story = {
