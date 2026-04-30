@@ -6,6 +6,7 @@ const config: Config = {
     './components/**/*.{ts,tsx}',
     './hooks/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
+    '../web2/components/ui/rich-table-filter-bar.tsx',
   ],
   theme: {
     fontFamily: {
