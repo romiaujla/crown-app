@@ -89,8 +89,8 @@ export function RichTableFilterBar({
         .filter(Boolean)
         .join(' ')}
     >
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-        <label className="flex min-w-0 flex-col gap-2 lg:flex-1" htmlFor={searchInputId}>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3">
+        <label className="flex min-w-0 flex-col gap-2" htmlFor={searchInputId}>
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {searchLabel}
           </span>
@@ -119,12 +119,14 @@ export function RichTableFilterBar({
         ))}
 
         <button
-          className="inline-flex h-10 items-center justify-center rounded-xl bg-secondary px-4 text-sm font-semibold text-secondary-foreground shadow-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:opacity-50 lg:self-end"
+          aria-label={clearAllLabel}
+          className="inline-flex h-10 min-w-10 items-center justify-center gap-2 self-end whitespace-nowrap rounded-xl bg-secondary px-4 text-sm font-semibold text-secondary-foreground shadow-sm transition-[background-color,color,box-shadow,transform] duration-150 ease-out hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:translate-y-px disabled:pointer-events-none disabled:opacity-50"
           disabled={disabled || !hasActiveFilters}
           onClick={onClearAll}
           type="button"
         >
-          {clearAllLabel}
+          <X aria-hidden="true" className="size-4" />
+          <span>{clearAllLabel}</span>
         </button>
       </div>
 
@@ -175,7 +177,7 @@ function FilterSelectControl({
       </span>
       <select
         aria-label={select.ariaLabel ?? select.label}
-        className={`${controlBaseClassName} lg:w-60`}
+        className={controlBaseClassName}
         disabled={disabled || select.disabled}
         id={selectId}
         onChange={(event) => {

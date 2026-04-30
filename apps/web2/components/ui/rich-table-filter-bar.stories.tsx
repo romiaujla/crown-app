@@ -7,6 +7,13 @@ import {
   type RichTableActiveFilter,
   type RichTableFilterSelect,
 } from './rich-table-filter-bar';
+import { Paginator, PaginatorPageSizeEnum, type PaginatorChange } from './paginator';
+import {
+  RichList,
+  RichListColumnAlignEnum,
+  RichListStateEnum,
+  type RichListColumn,
+} from './rich-list';
 
 const statusOptions = [
   { label: 'All statuses', value: 'all' },
@@ -24,6 +31,100 @@ const ownerOptions = [
 ];
 
 const noop = () => undefined;
+
+type WorkspaceRecord = {
+  createdAt: string;
+  health: string;
+  id: string;
+  name: string;
+  owner: string;
+  status: string;
+};
+
+const workspaceRows: WorkspaceRecord[] = [
+  {
+    createdAt: 'Apr 28, 2026',
+    health: 'Healthy',
+    id: 'workspace-01',
+    name: 'Northstar Freight',
+    owner: 'Avery Chen',
+    status: 'Active',
+  },
+  {
+    createdAt: 'Apr 25, 2026',
+    health: 'Review',
+    id: 'workspace-02',
+    name: 'Harbor Logistics',
+    owner: 'Mina Patel',
+    status: 'Provisioning',
+  },
+  {
+    createdAt: 'Apr 21, 2026',
+    health: 'Healthy',
+    id: 'workspace-03',
+    name: 'Atlas Freight',
+    owner: 'Avery Chen',
+    status: 'Active',
+  },
+  {
+    createdAt: 'Apr 18, 2026',
+    health: 'Attention',
+    id: 'workspace-04',
+    name: 'Summit Logistics',
+    owner: 'Diego Ramos',
+    status: 'Failed',
+  },
+  {
+    createdAt: 'Apr 12, 2026',
+    health: 'Healthy',
+    id: 'workspace-05',
+    name: 'Blue Ridge Distribution',
+    owner: 'Mina Patel',
+    status: 'Active',
+  },
+  {
+    createdAt: 'Apr 08, 2026',
+    health: 'Review',
+    id: 'workspace-06',
+    name: 'Legacy Fleet',
+    owner: 'Diego Ramos',
+    status: 'Deprovisioned',
+  },
+];
+
+const workspaceColumns: RichListColumn<WorkspaceRecord>[] = [
+  {
+    accessor: 'name',
+    header: 'Workspace',
+    key: 'name',
+    width: '30%',
+  },
+  {
+    accessor: 'status',
+    header: 'Status',
+    key: 'status',
+    width: '18%',
+  },
+  {
+    accessor: 'health',
+    header: 'Health',
+    key: 'health',
+    width: '18%',
+  },
+  {
+    accessor: 'owner',
+    header: 'Owner',
+    key: 'owner',
+    width: '18%',
+  },
+  {
+    align: RichListColumnAlignEnum.RIGHT,
+    accessor: 'createdAt',
+    header: 'Created',
+    key: 'createdAt',
+    width: '16%',
+  },
+];
 
 function StatefulFilterBar({ disabled = false }: { disabled?: boolean }) {
   const [searchValue, setSearchValue] = React.useState('');
@@ -108,6 +209,160 @@ function StatefulFilterBar({ disabled = false }: { disabled?: boolean }) {
   );
 }
 
+function RichListFilterIntegration() {
+  const [searchValue, setSearchValue] = React.useState('');
+  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState('');
+  const [status, setStatus] = React.useState('all');
+  const [owner, setOwner] = React.useState('all');
+  const [pagination, setPagination] = React.useState({
+    limit: PaginatorPageSizeEnum.TEN,
+    offset: 0,
+  });
+
+  const trimmedSearchValue = debouncedSearchValue.trim().toLowerCase();
+  const filteredRows = workspaceRows.filter((row) => {
+    const matchesSearch = trimmedSearchValue
+      ? row.name.toLowerCase().includes(trimmedSearchValue)
+      : true;
+    const matchesStatus = status === 'all' ? true : row.status.toLowerCase() === status;
+    const matchesOwner =
+      owner === 'all' ? true : row.owner.toLowerCase().replace(' ', '-') === owner;
+
+    return matchesSearch && matchesStatus && matchesOwner;
+  });
+  const visibleRows = filteredRows.slice(pagination.offset, pagination.offset + pagination.limit);
+  const hasFilters = Boolean(debouncedSearchValue.trim()) || status !== 'all' || owner !== 'all';
+  const activeFilters: RichTableActiveFilter[] = [];
+
+  if (debouncedSearchValue.trim()) {
+    activeFilters.push({
+      id: 'search',
+      label: 'Search',
+      onRemove: () => {
+        setSearchValue('');
+        setDebouncedSearchValue('');
+        setPagination((current) => ({ ...current, offset: 0 }));
+      },
+      valueLabel: debouncedSearchValue.trim(),
+    });
+  }
+
+  if (status !== 'all') {
+    activeFilters.push({
+      id: 'status',
+      label: 'Status',
+      onRemove: () => {
+        setStatus('all');
+        setPagination((current) => ({ ...current, offset: 0 }));
+      },
+      valueLabel: statusOptions.find((option) => option.value === status)?.label ?? status,
+    });
+  }
+
+  if (owner !== 'all') {
+    activeFilters.push({
+      id: 'owner',
+      label: 'Owner',
+      onRemove: () => {
+        setOwner('all');
+        setPagination((current) => ({ ...current, offset: 0 }));
+      },
+      valueLabel: ownerOptions.find((option) => option.value === owner)?.label ?? owner,
+    });
+  }
+
+  const clearFilters = () => {
+    setSearchValue('');
+    setDebouncedSearchValue('');
+    setStatus('all');
+    setOwner('all');
+    setPagination((current) => ({ ...current, offset: 0 }));
+  };
+
+  const handlePaginationChange = (next: PaginatorChange) => {
+    setPagination({
+      limit: next.limit,
+      offset: next.offset,
+    });
+  };
+
+  return (
+    <div className="flex w-full max-w-5xl flex-col gap-3">
+      <RichTableFilterBar
+        activeFilters={activeFilters}
+        clearAllLabel="Clear all"
+        debounceMs={250}
+        onClearAll={clearFilters}
+        onDebouncedSearchValueChange={(value) => {
+          setDebouncedSearchValue(value);
+          setPagination((current) => ({ ...current, offset: 0 }));
+        }}
+        onSearchValueChange={setSearchValue}
+        searchAriaLabel="Search tenant workspaces"
+        searchLabel="Search"
+        searchPlaceholder="Search workspaces"
+        searchValue={searchValue}
+        selects={[
+          {
+            ariaLabel: 'Filter workspaces by status',
+            label: 'Status',
+            onValueChange: (value) => {
+              setStatus(value);
+              setPagination((current) => ({ ...current, offset: 0 }));
+            },
+            options: statusOptions,
+            value: status,
+          },
+          {
+            ariaLabel: 'Filter workspaces by owner',
+            label: 'Owner',
+            onValueChange: (value) => {
+              setOwner(value);
+              setPagination((current) => ({ ...current, offset: 0 }));
+            },
+            options: ownerOptions,
+            value: owner,
+          },
+        ]}
+      />
+      <RichList
+        caption="Tenant workspaces"
+        columns={workspaceColumns}
+        emptyState={{
+          description: 'Tenant workspaces will appear here after the first record is provisioned.',
+          title: 'No workspaces yet',
+        }}
+        filteredEmptyState={{
+          action: {
+            label: 'Clear filters',
+            onClick: clearFilters,
+            variant: 'secondary',
+          },
+          description:
+            'No tenant workspaces match the current filters. Clear filters to return to the full list.',
+          title: 'No matching workspaces',
+        }}
+        footer={
+          <Paginator
+            limit={pagination.limit}
+            offset={pagination.offset}
+            onPaginationChange={handlePaginationChange}
+            totalCount={filteredRows.length}
+          />
+        }
+        getRowId={(row) => row.id}
+        getRowLabel={(row) => row.name}
+        rows={visibleRows}
+        state={
+          filteredRows.length === 0 && hasFilters
+            ? RichListStateEnum.FILTERED_EMPTY
+            : RichListStateEnum.DEFAULT
+        }
+      />
+    </div>
+  );
+}
+
 const meta = {
   title: 'UI/RichTableFilterBar',
   component: RichTableFilterBar,
@@ -188,10 +443,14 @@ export const Disabled: Story = {
 
 export const ResponsiveMobile: Story = {
   render: () => (
-    <div className="max-w-sm">
+    <div className="max-w-[22rem]">
       <StatefulFilterBar />
     </div>
   ),
+};
+
+export const RichListIntegration: Story = {
+  render: () => <RichListFilterIntegration />,
 };
 
 export const DarkTheme: Story = {

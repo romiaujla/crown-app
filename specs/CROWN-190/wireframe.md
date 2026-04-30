@@ -8,8 +8,8 @@ Reusable `RichTableFilterBar` for `apps/web2` Rich Table list views. The first c
 
 - Approved pattern: Rich Table / Filter Bar.
 - Place the filter bar directly above the table or list surface.
-- Desktop: search input spans the available width, dropdown filters align to the right, and clear-all remains adjacent to filters.
-- Tablet/mobile: controls stack in a single column with full-width inputs and selects.
+- Wide containers: controls distribute across an auto-fit grid and keep readable minimum widths.
+- Narrow containers: controls collapse to a single-column stack based on the filter bar container width, not only the viewport breakpoint.
 - Active filters render below the controls as removable chips.
 
 ## Action Hierarchy
@@ -38,9 +38,9 @@ Reusable `RichTableFilterBar` for `apps/web2` Rich Table list views. The first c
 
 ## Responsive Behavior
 
-- Desktop: a wrapping flex row where search takes remaining width, dropdowns use fixed readable widths, and clear-all aligns with the control baseline.
-- Tablet: controls wrap while preserving label-control grouping.
-- Mobile: controls stack and every target remains at least 40px tall.
+- Desktop/wide containers: controls wrap across readable grid columns.
+- Tablet/narrow containers: preserve label-control grouping and avoid horizontal overflow.
+- Mobile/constrained containers: controls stack and every target remains at least 40px tall.
 
 ## Component Reuse
 
